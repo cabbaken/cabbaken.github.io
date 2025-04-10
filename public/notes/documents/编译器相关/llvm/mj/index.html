@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>MJ</title>
+
+<meta name="description" content="MJ ptrace原理
+‍
+对编译器的了解 定义与目的
+编译器是一种计算机程序，它将用一种编程语言（源语言）编写的代码翻译成另一种语言（目标语言），通常是机器码或字节码。编译器的主要目的是将人类可读的高级语言代码转换为计算机能够理解和执行的低级指令。
+编译过程的关键阶段
+正如我们之前讨论过的，一个典型的编译器通常包含以下几个主要阶段：
+预处理（Preprocessing）： 处理源代码中的宏、包含指令和条件编译等。
+编译（Compilation）： 这是核心阶段，包括：
+词法分析（Lexical Analysis）： 将源代码分解成词法单元（tokens）。 语法分析（Syntax Analysis）： 根据语言的语法规则构建抽象语法树（AST）。 语义分析（Semantic Analysis）： 检查程序的语义正确性，例如类型检查。 中间代码生成（Intermediate Code Generation）： 将 AST 转换为一种中间表示形式。 优化（Optimization）： 对中间代码进行各种优化，以提高性能或减小程序大小。 目标代码生成（Target Code Generation）： 将优化后的中间代码翻译成目标机器的汇编语言或机器码。 汇编（Assembly）： 将汇编语言代码转换为机器码（如果编译阶段生成的是汇编代码）。
+链接（Linking）： 将多个目标文件和库文件合并成最终的可执行文件或库。
+不同类型的编译器
+根据不同的标准，编译器可以分为多种类型：
+基于目标语言：
+本机编译器（Native Compiler）： 生成目标机器可以直接执行的机器码。 交叉编译器（Cross Compiler）： 在一个平台上编译生成可以在另一个不同架构的平台上执行的代码。 字节码编译器（Bytecode Compiler）： 生成一种中间的字节码，通常由虚拟机（如 JVM 或 .NET CLR）解释执行。 转译器（Transpiler）或源代码到源代码编译器（Source-to-Source Compiler）： 将一种高级语言的代码转换为另一种高级语言的代码。 基于编译阶段：
+单遍编译器（Single-Pass Compiler）： 在一次扫描源代码的过程中完成所有的编译阶段。通常适用于语法结构相对简单的语言。 多遍编译器（Multi-Pass Compiler）： 需要多次扫描源代码，每个遍执行一个或多个编译阶段。更适合复杂的语言，可以进行更深入的分析和优化。 基于功能：
+优化编译器（Optimizing Compiler）： 特别注重生成高效的目标代码，包含各种优化技术。 调试编译器（Debugging Compiler）： 生成包含调试信息的目标代码，方便程序调试。 编译器的重要性和应用
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/llvm/mj/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/llvm/mj/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/llvm/mj/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="MJ">
+<meta property="og:description" content="MJ
+ptrace原理
+‍
+对编译器的了解
+定义与目的
+编译器是一种计算机程序，它将用一种编程语言（源语言）编写的代码翻译成另一种语言（目标语言），通常是机器码或字节码。编译器的主要目的是将人类可读的高级语言代码转换为计算机能够理解和执行的低级指令。
+编译过程的关键阶段
+正如我们之前讨论过的，一个典型的编译器通常包含以下几个主要阶段：
+
+
+预处理（Preprocessing）：  处理源代码中的宏、包含指令和条件编译等。
+
+
+编译（Compilation）：  这是核心阶段，包括：
+
+词法分析（Lexical Analysis）：  将源代码分解成词法单元（tokens）。
+语法分析（Syntax Analysis）：  根据语言的语法规则构建抽象语法树（AST）。
+语义分析（Semantic Analysis）：  检查程序的语义正确性，例如类型检查。
+中间代码生成（Intermediate Code Generation）：  将 AST 转换为一种中间表示形式。
+优化（Optimization）：  对中间代码进行各种优化，以提高性能或减小程序大小。
+目标代码生成（Target Code Generation）：  将优化后的中间代码翻译成目标机器的汇编语言或机器码。
+
+
+
+汇编（Assembly）：  将汇编语言代码转换为机器码（如果编译阶段生成的是汇编代码）。
+
+
+链接（Linking）：  将多个目标文件和库文件合并成最终的可执行文件或库。
+
+
+不同类型的编译器
+根据不同的标准，编译器可以分为多种类型：
+
+
+基于目标语言：
+
+本机编译器（Native Compiler）：  生成目标机器可以直接执行的机器码。
+交叉编译器（Cross Compiler）：  在一个平台上编译生成可以在另一个不同架构的平台上执行的代码。
+字节码编译器（Bytecode Compiler）：  生成一种中间的字节码，通常由虚拟机（如 JVM 或 .NET CLR）解释执行。
+转译器（Transpiler）或源代码到源代码编译器（Source-to-Source Compiler）：  将一种高级语言的代码转换为另一种高级语言的代码。
+
+
+
+基于编译阶段：
+
+单遍编译器（Single-Pass Compiler）：  在一次扫描源代码的过程中完成所有的编译阶段。通常适用于语法结构相对简单的语言。
+多遍编译器（Multi-Pass Compiler）：  需要多次扫描源代码，每个遍执行一个或多个编译阶段。更适合复杂的语言，可以进行更深入的分析和优化。
+
+
+
+基于功能：
+
+优化编译器（Optimizing Compiler）：  特别注重生成高效的目标代码，包含各种优化技术。
+调试编译器（Debugging Compiler）：  生成包含调试信息的目标代码，方便程序调试。
+
+
+
+编译器的重要性和应用">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/llvm/mj/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-31T10:10:45+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-31T10:32:35+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="MJ">
+<meta name="twitter:description" content="MJ
+ptrace原理
+‍
+对编译器的了解
+定义与目的
+编译器是一种计算机程序，它将用一种编程语言（源语言）编写的代码翻译成另一种语言（目标语言），通常是机器码或字节码。编译器的主要目的是将人类可读的高级语言代码转换为计算机能够理解和执行的低级指令。
+编译过程的关键阶段
+正如我们之前讨论过的，一个典型的编译器通常包含以下几个主要阶段：
+
+
+预处理（Preprocessing）：  处理源代码中的宏、包含指令和条件编译等。
+
+
+编译（Compilation）：  这是核心阶段，包括：
+
+词法分析（Lexical Analysis）：  将源代码分解成词法单元（tokens）。
+语法分析（Syntax Analysis）：  根据语言的语法规则构建抽象语法树（AST）。
+语义分析（Semantic Analysis）：  检查程序的语义正确性，例如类型检查。
+中间代码生成（Intermediate Code Generation）：  将 AST 转换为一种中间表示形式。
+优化（Optimization）：  对中间代码进行各种优化，以提高性能或减小程序大小。
+目标代码生成（Target Code Generation）：  将优化后的中间代码翻译成目标机器的汇编语言或机器码。
+
+
+
+汇编（Assembly）：  将汇编语言代码转换为机器码（如果编译阶段生成的是汇编代码）。
+
+
+链接（Linking）：  将多个目标文件和库文件合并成最终的可执行文件或库。
+
+
+不同类型的编译器
+根据不同的标准，编译器可以分为多种类型：
+
+
+基于目标语言：
+
+本机编译器（Native Compiler）：  生成目标机器可以直接执行的机器码。
+交叉编译器（Cross Compiler）：  在一个平台上编译生成可以在另一个不同架构的平台上执行的代码。
+字节码编译器（Bytecode Compiler）：  生成一种中间的字节码，通常由虚拟机（如 JVM 或 .NET CLR）解释执行。
+转译器（Transpiler）或源代码到源代码编译器（Source-to-Source Compiler）：  将一种高级语言的代码转换为另一种高级语言的代码。
+
+
+
+基于编译阶段：
+
+单遍编译器（Single-Pass Compiler）：  在一次扫描源代码的过程中完成所有的编译阶段。通常适用于语法结构相对简单的语言。
+多遍编译器（Multi-Pass Compiler）：  需要多次扫描源代码，每个遍执行一个或多个编译阶段。更适合复杂的语言，可以进行更深入的分析和优化。
+
+
+
+基于功能：
+
+优化编译器（Optimizing Compiler）：  特别注重生成高效的目标代码，包含各种优化技术。
+调试编译器（Debugging Compiler）：  生成包含调试信息的目标代码，方便程序调试。
+
+
+
+编译器的重要性和应用">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "MJ",
+  "datePublished": "2025-03-31T10:10:45+00:00",
+  "dateModified": "2025-03-31T10:32:35+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  12888 ,
+  "description": "MJ ptrace原理\n‍\n对编译器的了解 定义与目的\n编译器是一种计算机程序，它将用一种编程语言（源语言）编写的代码翻译成另一种语言（目标语言），通常是机器码或字节码。编译器的主要目的是将人类可读的高级语言代码转换为计算机能够理解和执行的低级指令。\n编译过程的关键阶段\n正如我们之前讨论过的，一个典型的编译器通常包含以下几个主要阶段：\n预处理（Preprocessing）： 处理源代码中的宏、包含指令和条件编译等。\n编译（Compilation）： 这是核心阶段，包括：\n词法分析（Lexical Analysis）： 将源代码分解成词法单元（tokens）。 语法分析（Syntax Analysis）： 根据语言的语法规则构建抽象语法树（AST）。 语义分析（Semantic Analysis）： 检查程序的语义正确性，例如类型检查。 中间代码生成（Intermediate Code Generation）： 将 AST 转换为一种中间表示形式。 优化（Optimization）： 对中间代码进行各种优化，以提高性能或减小程序大小。 目标代码生成（Target Code Generation）： 将优化后的中间代码翻译成目标机器的汇编语言或机器码。 汇编（Assembly）： 将汇编语言代码转换为机器码（如果编译阶段生成的是汇编代码）。\n链接（Linking）： 将多个目标文件和库文件合并成最终的可执行文件或库。\n不同类型的编译器\n根据不同的标准，编译器可以分为多种类型：\n基于目标语言：\n本机编译器（Native Compiler）： 生成目标机器可以直接执行的机器码。 交叉编译器（Cross Compiler）： 在一个平台上编译生成可以在另一个不同架构的平台上执行的代码。 字节码编译器（Bytecode Compiler）： 生成一种中间的字节码，通常由虚拟机（如 JVM 或 .NET CLR）解释执行。 转译器（Transpiler）或源代码到源代码编译器（Source-to-Source Compiler）： 将一种高级语言的代码转换为另一种高级语言的代码。 基于编译阶段：\n单遍编译器（Single-Pass Compiler）： 在一次扫描源代码的过程中完成所有的编译阶段。通常适用于语法结构相对简单的语言。 多遍编译器（Multi-Pass Compiler）： 需要多次扫描源代码，每个遍执行一个或多个编译阶段。更适合复杂的语言，可以进行更深入的分析和优化。 基于功能：\n优化编译器（Optimizing Compiler）： 特别注重生成高效的目标代码，包含各种优化技术。 调试编译器（Debugging Compiler）： 生成包含调试信息的目标代码，方便程序调试。 编译器的重要性和应用\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="mj">MJ</h1>
+<p>ptrace原理</p>
+<p>‍</p>
+<h2 id="对编译器的了解">对编译器的了解</h2>
+<p><strong>定义与目的</strong></p>
+<p>编译器是一种计算机程序，它将用一种编程语言（源语言）编写的代码翻译成另一种语言（目标语言），通常是机器码或字节码。编译器的主要目的是将人类可读的高级语言代码转换为计算机能够理解和执行的低级指令。</p>
+<p><strong>编译过程的关键阶段</strong></p>
+<p>正如我们之前讨论过的，一个典型的编译器通常包含以下几个主要阶段：</p>
+<ol>
+<li>
+<p><strong>预处理（Preprocessing）：</strong>  处理源代码中的宏、包含指令和条件编译等。</p>
+</li>
+<li>
+<p><strong>编译（Compilation）：</strong>  这是核心阶段，包括：</p>
+<ul>
+<li><strong>词法分析（Lexical Analysis）：</strong>  将源代码分解成词法单元（tokens）。</li>
+<li><strong>语法分析（Syntax Analysis）：</strong>  根据语言的语法规则构建抽象语法树（AST）。</li>
+<li><strong>语义分析（Semantic Analysis）：</strong>  检查程序的语义正确性，例如类型检查。</li>
+<li><strong>中间代码生成（Intermediate Code Generation）：</strong>  将 AST 转换为一种中间表示形式。</li>
+<li><strong>优化（Optimization）：</strong>  对中间代码进行各种优化，以提高性能或减小程序大小。</li>
+<li><strong>目标代码生成（Target Code Generation）：</strong>  将优化后的中间代码翻译成目标机器的汇编语言或机器码。</li>
+</ul>
+</li>
+<li>
+<p><strong>汇编（Assembly）：</strong>  将汇编语言代码转换为机器码（如果编译阶段生成的是汇编代码）。</p>
+</li>
+<li>
+<p><strong>链接（Linking）：</strong>  将多个目标文件和库文件合并成最终的可执行文件或库。</p>
+</li>
+</ol>
+<p><strong>不同类型的编译器</strong></p>
+<p>根据不同的标准，编译器可以分为多种类型：</p>
+<ul>
+<li>
+<p><strong>基于目标语言：</strong></p>
+<ul>
+<li><strong>本机编译器（Native Compiler）：</strong>  生成目标机器可以直接执行的机器码。</li>
+<li><strong>交叉编译器（Cross Compiler）：</strong>  在一个平台上编译生成可以在另一个不同架构的平台上执行的代码。</li>
+<li><strong>字节码编译器（Bytecode Compiler）：</strong>  生成一种中间的字节码，通常由虚拟机（如 JVM 或 .NET CLR）解释执行。</li>
+<li><strong>转译器（Transpiler）或源代码到源代码编译器（Source-to-Source Compiler）：</strong>  将一种高级语言的代码转换为另一种高级语言的代码。</li>
+</ul>
+</li>
+<li>
+<p><strong>基于编译阶段：</strong></p>
+<ul>
+<li><strong>单遍编译器（Single-Pass Compiler）：</strong>  在一次扫描源代码的过程中完成所有的编译阶段。通常适用于语法结构相对简单的语言。</li>
+<li><strong>多遍编译器（Multi-Pass Compiler）：</strong>  需要多次扫描源代码，每个遍执行一个或多个编译阶段。更适合复杂的语言，可以进行更深入的分析和优化。</li>
+</ul>
+</li>
+<li>
+<p><strong>基于功能：</strong></p>
+<ul>
+<li><strong>优化编译器（Optimizing Compiler）：</strong>  特别注重生成高效的目标代码，包含各种优化技术。</li>
+<li><strong>调试编译器（Debugging Compiler）：</strong>  生成包含调试信息的目标代码，方便程序调试。</li>
+</ul>
+</li>
+</ul>
+<p><strong>编译器的重要性和应用</strong></p>
+<p>编译器是现代计算机系统中至关重要的组成部分。它们使得程序员可以使用更易于理解和编写的高级语言来开发软件，而无需直接操作复杂的机器指令。编译器的质量直接影响到软件的性能、可靠性和开发效率。</p>
+<p><strong>关键概念</strong></p>
+<p>在编译器设计中，涉及许多重要的概念，包括但不限于：</p>
+<ul>
+<li><strong>词法分析器（Lexer）：</strong>  将字符流转换为 token 流。</li>
+<li><strong>语法分析器（Parser）：</strong>  根据语法规则构建 AST。</li>
+<li><strong>符号表（Symbol Table）：</strong>  存储程序中使用的标识符及其相关信息（如类型、作用域）。</li>
+<li><strong>中间表示（IR）：</strong>  一种介于源代码和目标代码之间的表示形式，方便进行优化和代码生成。</li>
+<li><strong>控制流图（Control Flow Graph，CFG）：</strong>  表示程序执行流程的图。</li>
+<li><strong>数据流分析（Data Flow Analysis）：</strong>  分析程序中数据如何流动和变化。</li>
+<li><strong>寄存器分配（Register Allocation）：</strong>  将程序中的变量映射到目标机器的寄存器中。</li>
+<li><strong>指令调度（Instruction Scheduling）：</strong>  优化指令的执行顺序以提高流水线效率。</li>
+</ul>
+<p>‍</p>
+<h2 id="编译原理过程">编译原理过程</h2>
+<ul>
+<li>
+<p><strong>作用：</strong>  将预处理后的源代码翻译成特定目标平台的汇编语言代码。</p>
+</li>
+<li>
+<p><strong>主要任务：</strong></p>
+<ul>
+<li><strong>词法分析（Lexical Analysis）：</strong>  将源代码分解成一个个的词法单元（Token），例如关键字、标识符、运算符、常量等。</li>
+<li><strong>语法分析（Syntax Analysis）：</strong>  根据语言的语法规则，检查词法单元的序列是否构成合法的语法结构，并构建抽象语法树（Abstract Syntax Tree, AST）。AST 是源代码的树状表示，方便后续的语义分析和代码生成。</li>
+<li><strong>语义分析（Semantic Analysis）：</strong>  对抽象语法树进行类型检查、作用域分析等，确保程序的语义是正确的。例如，检查变量是否已经声明、类型是否匹配等。</li>
+<li><strong>中间代码生成（Intermediate Code Generation）：</strong>  将抽象语法树转换为一种中间表示形式，例如三地址码。中间代码独立于具体的机器架构，方便进行优化。</li>
+<li><strong>目标代码优化（Optional）：</strong>  对中间代码进行各种优化，例如常量折叠、死代码消除、循环展开等，以提高程序的执行效率。</li>
+<li><strong>目标代码生成（Target Code Generation）：</strong>  将优化后的中间代码翻译成特定目标平台的汇编语言代码。</li>
+</ul>
+</li>
+</ul>
+<h2 id="了解ast吗-如何用ast表达一个语句">了解AST吗, 如何用AST表达一个语句?</h2>
+<p><strong>抽象语法树（AST）</strong>  是源代码的一种抽象的树状表示形式。它省略了源代码中不影响程序语义的细节（例如空格、注释、分号等），而是专注于程序的语法结构。AST 的每个节点代表源代码中的一个构造（construct），例如表达式、语句、声明等。节点之间的关系反映了这些构造在源代码中的层次结构和语法关系。</p>
+<p><strong>以下是关于 AST 的一些关键点：</strong></p>
+<ul>
+<li><strong>树状结构：</strong>  AST 是一个树状的数据结构，根节点通常代表整个程序或一个编译单元。</li>
+<li><strong>抽象性：</strong>  它抽象掉了源代码中的一些细节，例如标点符号和格式，只保留了对程序语义至关重要的信息。</li>
+<li><strong>语法表示：</strong>  AST 忠实地反映了源代码的语法结构，每个节点都对应着源代码中的一个语法规则。</li>
+<li><strong>编译器核心：</strong>  AST 是编译器前端（特别是语法分析阶段）的重要输出，也是后续语义分析、中间代码生成和目标代码生成等阶段的基础。</li>
+</ul>
+<p><strong>AST 的主要作用和特点：</strong></p>
+<ul>
+<li><strong>方便语义分析：</strong>  通过遍历 AST，编译器可以进行类型检查、作用域分析等语义分析，以确保程序的语义是正确的。</li>
+<li><strong>易于代码优化：</strong>  基于 AST，编译器可以进行各种代码优化，例如常量折叠、死代码消除等，以提高程序的执行效率。</li>
+<li><strong>支持代码转换和生成：</strong>  AST 可以作为代码转换工具的基础，例如代码重构、代码生成等。</li>
+<li><strong>语言无关性（一定程度上）：</strong>  虽然 AST 的具体结构取决于编程语言的语法，但其核心思想是通用的，可以用于表示多种编程语言的语法结构.</li>
+</ul>
+<p><strong>举个简单的例子：</strong></p>
+<p>对于源代码 <code>a = b + 5;</code>​，其对应的 AST 可能如下所示（简化表示）：</p>
+<pre tabindex="0"><code>      =
+     / \
+    a   +
+       / \
+      b   5
+</code></pre><p>在这个例子中：</p>
+<ul>
+<li>​<code>=</code>​ 是赋值操作符，是根节点。</li>
+<li>​<code>a</code>​ 是赋值操作的左操作数。</li>
+<li>​<code>+</code>​ 是加法操作符，是赋值操作的右操作数。</li>
+<li>​<code>b</code>​ 和 <code>5</code>​ 是加法操作的操作数。</li>
+</ul>
+<p><strong>总结来说，AST 是程序源代码在编译器内部的一种核心表示形式，它以树状结构清晰地表达了程序的语法结构，为后续的编译阶段提供了便利。</strong></p>
+<h2 id="对llvm中端优化的理解-什么是程序优化-为什么需要优化-怎么去做">对LLVM中端优化的理解, 什么是程序优化, 为什么需要优化, 怎么去做?</h2>
+<p><strong>LLVM 中端优化理解</strong></p>
+<p>LLVM 的编译过程可以大致分为三个部分：前端（Frontend）、中端（Middle-end）和后端（Backend）。</p>
+<ul>
+<li><strong>前端 (Frontend):</strong>  负责将源代码（如 C++, Objective-C, Swift 等）解析成 LLVM 中间表示（Intermediate Representation，IR）。LLVM IR 是一种与目标机器无关的低级语言。</li>
+<li><strong>中端 (Middle-end):</strong>  这是 LLVM 优化器的核心部分。它接收前端生成的 LLVM IR，并对其进行各种与目标机器无关的优化。这些优化旨在改进程序的性能、减小程序的大小、减少能源消耗等。</li>
+<li><strong>后端 (Backend):</strong>  也称为目标代码生成器 (Code Generator)，它将优化后的 LLVM IR 转换成特定目标机器的机器码。</li>
+</ul>
+<p><strong>LLVM 中端优化的关键特点：</strong></p>
+<ul>
+<li><strong>目标无关性：</strong>  中端优化不依赖于特定的目标机器架构。这意味着相同的优化可以在不同的硬件平台上应用，只要它们使用 LLVM 作为编译器基础设施。</li>
+<li><strong>基于 LLVM IR：</strong>  所有的中端优化都直接在 LLVM IR 上进行。LLVM IR 的设计使得它非常适合进行各种分析和转换。</li>
+<li><strong>Pass 框架：</strong>  LLVM 的优化器由一系列独立的优化“Pass”组成。每个 Pass 执行一种特定的优化或分析。这种模块化的设计使得添加、删除和组合优化变得非常灵活。</li>
+<li><strong>多种优化级别：</strong>  LLVM 提供了不同的优化级别（通常通过 <code>-O0</code>​, <code>-O1</code>​, <code>-O2</code>​, <code>-O3</code>​, <code>-Os</code>​, <code>-Oz</code>​ 等命令行选项指定），代表了不同强度和类型的优化组合。较高的优化级别通常会带来更好的性能，但也可能增加编译时间和代码大小（某些情况下 <code>Os</code>​ 和 <code>Oz</code>​ 旨在减小代码大小）。</li>
+</ul>
+<p><strong>程序优化</strong></p>
+<p>程序优化是指在不改变程序语义的前提下，通过各种技术手段来改善程序的某些方面特性，例如：</p>
+<ul>
+<li><strong>提高运行速度 (Performance Optimization):</strong>  这是最常见的优化目标，旨在使程序更快地执行。</li>
+<li><strong>减小程序体积 (Size Optimization):</strong>  特别是在嵌入式系统或对存储空间有限制的环境中非常重要。</li>
+<li><strong>降低能耗 (Power Optimization):</strong>  对于移动设备和长时间运行的服务器应用来说至关重要。</li>
+<li><strong>减少内存占用 (Memory Optimization):</strong>  改善程序的内存使用效率。</li>
+</ul>
+<p><strong>为什么需要优化？</strong></p>
+<ul>
+<li><strong>提升用户体验：</strong>  更快的程序响应速度和更流畅的运行可以显著提升用户体验。</li>
+<li><strong>降低硬件成本：</strong>  通过优化，可能在相同的硬件上运行更多的工作负载，或者在较低配置的硬件上达到相同的性能水平，从而降低硬件成本。</li>
+<li><strong>延长电池寿命：</strong>  对于移动设备，优化可以减少能耗，从而延长电池续航时间。</li>
+<li><strong>适应资源受限环境：</strong>  在嵌入式系统等资源有限的环境中，优化是使程序能够正常运行的关键。</li>
+<li><strong>提高软件竞争力：</strong>  性能优良的软件在市场上更具竞争力。</li>
+</ul>
+<p><strong>怎么去做程序优化？</strong></p>
+<p>程序优化是一个广泛的领域，涉及多种技术和策略。在编译器的中端优化阶段，主要通过对中间表示进行各种转换来实现。以下是一些常见的优化技术：</p>
+<p><strong>1. 基于控制流图和数据流分析的优化:</strong></p>
+<ul>
+<li><strong>常量传播 (Constant Propagation):</strong>  如果一个变量的值在某个点是已知的常量，那么在后续使用该变量的地方直接替换为该常量。</li>
+<li><strong>常量折叠 (Constant Folding):</strong>  在编译时计算常量表达式的值。例如，将 <code>3 + 5</code>​ 直接替换为 <code>8</code>​。</li>
+<li><strong>死代码消除 (Dead Code Elimination):</strong>  移除程序中永远不会被执行到的代码。</li>
+<li><strong>公共子表达式消除 (Common Subexpression Elimination):</strong>  如果程序中多次计算相同的表达式，只计算一次并将结果保存起来重复使用。</li>
+<li><strong>循环不变代码外提 (Loop-Invariant Code Motion):</strong>  将循环内部不依赖于循环变量的计算移动到循环外部，减少重复计算。</li>
+<li><strong>强度削弱 (Strength Reduction):</strong>  将开销较大的操作替换为开销较小的等价操作。例如，将乘法替换为加法（在某些特定情况下）。</li>
+</ul>
+<p><strong>2. 基于过程间的优化 (Interprocedural Optimization, IPO):</strong></p>
+<ul>
+<li><strong>函数内联 (Function Inlining):</strong>  将一个函数的代码直接插入到调用它的地方，消除函数调用的开销，并为其他优化提供机会。</li>
+<li><strong>过程间常量传播 (Interprocedural Constant Propagation):</strong>  在函数调用之间传播常量信息。</li>
+</ul>
+<p><strong>3. 基于内存访问的优化:</strong></p>
+<ul>
+<li><strong>循环展开 (Loop Unrolling):</strong>  增加循环体内的指令数量，减少循环控制的开销，并可能提高指令级并行性。</li>
+<li><strong>缓存优化 (Cache Optimization):</strong>  通过调整数据布局和访问模式来提高缓存的命中率。</li>
+</ul>
+<p><strong>4. 其他优化:</strong></p>
+<ul>
+<li><strong>尾调用优化 (Tail Call Optimization):</strong>  在满足特定条件的情况下，将函数的尾部调用转换为跳转，避免额外的栈帧分配。</li>
+<li><strong>指令选择 (Instruction Selection):</strong>  在目标代码生成阶段，选择最合适的机器指令来实现 LLVM IR 中的操作。虽然属于后端，但优化器也会参与指导指令选择。</li>
+</ul>
+<p><strong>LLVM 的 Pass 框架使得实现和管理这些优化变得非常方便。开发者可以根据需要选择和组合不同的 Pass 来达到期望的优化效果。</strong></p>
+<p>总而言之，LLVM 的中端优化是编译器优化的核心环节，它通过对目标无关的中间表示进行各种分析和转换，旨在提高程序的性能和效率。理解程序优化的基本概念和常见技术，有助于我们更好地理解编译器的工作原理，并在开发过程中编写出更高效的代码。</p>
+<h2 id="计算密集型与访存密集型程序">计算密集型与访存密集型程序</h2>
+<p><strong>计算密集型程序 (Compute-intensive Programs)</strong></p>
+<ul>
+<li>
+<p><strong>定义：</strong>  计算密集型程序是指那些主要受 CPU 运算速度限制的程序。这类程序在执行过程中需要进行大量的算术运算、逻辑运算、浮点运算或其他复杂的计算。</p>
+</li>
+<li>
+<p><strong>特点：</strong></p>
+<ul>
+<li><strong>CPU 利用率高：</strong>  程序的大部分时间都花费在 CPU 执行指令上。</li>
+<li><strong>对 CPU 的性能要求高：</strong>  更快的 CPU 时钟频率、更多的核心、更强的指令集支持等都能显著提升这类程序的性能。</li>
+<li><strong>内存访问相对较少：</strong>  虽然也需要内存来存储数据和指令，但与大量的计算相比，内存的读写操作相对较少。</li>
+</ul>
+</li>
+</ul>
+<p><strong>访存密集型程序 (Memory-intensive Programs)</strong></p>
+<ul>
+<li>
+<p><strong>定义：</strong>  访存密集型程序是指那些主要受内存访问速度和带宽限制的程序。这类程序在执行过程中需要频繁地读写大量的数据到内存中。</p>
+</li>
+<li>
+<p><strong>特点：</strong></p>
+<ul>
+<li><strong>内存带宽和延迟是瓶颈：</strong>  程序的大部分时间都花费在等待数据从内存加载到 CPU，或者将数据从 CPU 存储回内存。</li>
+<li><strong>CPU 利用率可能不高：</strong>  CPU 可能有很多时间处于空闲状态，等待内存操作完成。</li>
+<li><strong>对内存系统的性能要求高：</strong>  更高的内存频率、更大的内存带宽、更低的内存延迟、以及高效的缓存系统对这类程序的性能至关重要。</li>
+</ul>
+</li>
+</ul>
+<p><strong>区分两者</strong></p>
+<p>区分一个程序是计算密集型还是访存密集型，有助于我们理解程序的性能瓶颈，并采取相应的优化策略。</p>
+<ul>
+<li><strong>优化计算密集型程序：</strong>  重点在于提高 CPU 的计算效率，例如使用更快的算法、利用 SIMD 指令、进行并行计算等。</li>
+<li><strong>优化访存密集型程序：</strong>  重点在于提高内存系统的效率，例如优化数据结构以减少内存访问、利用缓存局部性、使用更快的内存技术等。</li>
+</ul>
+<p>在实际应用中，很多程序可能同时包含大量的计算和频繁的内存访问，但通常会有一个主要的瓶颈。理解这个瓶颈对于性能优化至关重要。</p>
+<h2 id="多态是什么">多态是什么</h2>
+<p>类型转换</p>
+<p>模板</p>
+<p>函数重写/载(同scope, 参数类型和数量不同)</p>
+<p>函数重载(继承, 实现虚函数)</p>
+<h2 id="运算符重载属于多态中的哪一部分编译时运行时">运算符重载属于多态中的哪一部分(编译时/运行时)</h2>
+<p>显然是上文中的函数重载, 也就是运行时多态</p>
+<p>‍</p>
+<h2 id="继承是编译时多态还是运行时多态">继承是编译时多态还是运行时多态</h2>
+<p>同上</p>
+<p>‍</p>
+<h2 id="虚函数表是什么">虚函数表是什么</h2>
+<p>‍</p>
+<h2 id="指针与引用的区别">指针与引用的区别</h2>
+<p>‍</p>
+<h2 id="lambda函数的特点">lambda函数的特点</h2>
+<p>可内联, 方便使用</p>
+<h2 id="static关键字">static关键字</h2>
+<p>‍</p>
+<h2 id="构造函数可以重载吗-可以是虚函数吗">构造函数可以重载吗, 可以是虚函数吗</h2>
+<ul>
+<li>
+<p>对象类型必须在编译时已知：C++ 是一种静态类型语言 19。编译器需要在编译时知道要创建的确切对象类型，以便确定其大小、在内存中的布局以及要调用的构造函数。虚构造函数意味着要创建的对象类型在运行时才能确定，这与 C++ 的这一基本特性直接矛盾。C++ 对象创建的静态特性要求构造函数在编译时就具备类型信息。虚函数专为运行时多态而设计，其前提是对象的具体类型可能在程序运行时才能知道。在对象实例化的上下文中，这两个概念从根本上是冲突的。当你编写 new MyDerivedClass() 时，编译器必须知道 MyDerivedClass 的大小和结构才能分配内存。此信息与 MyDerivedClass 的特定构造函数相关联。将构造函数设为虚函数会在编译时引入不确定性，即使用哪个构造函数（以及因此使用哪个类型和大小）</p>
+</li>
+<li>
+<p>虚函数机制依赖于现有对象：虚函数机制依赖于虚函数表（vtable）和虚函数指针（vptr）的存在，而 vptr 通常由对象的构造函数初始化 19。如果构造函数是虚函数，那么在调用构造函数时，vptr 尚不存在，这将使得无法使用虚函数机制来确定要执行哪个构造函数。启用虚函数的机制本身需要一个带有已初始化 vptr 的预先存在的对象。构造函数负责创建此对象并初始化 vptr。因此，虚构造函数会造成一种自相矛盾的情况，即进行虚分发所需的机制尚不存在。可以将其想象为需要一个地址才能找到房子。vptr 就像通往 vtable（房子）的地址。构造函数是建造房子的过程。如果房子尚未建造（对象尚未构造），则无法使用地址（vptr）找到房子（vtable 和函数）。</p>
+</li>
+<li>
+<p>构造函数负责对象创建：构造函数的主要职责是创建和初始化特定已知类型的对象 19。另一方面，虚函数的概念是基于已存在的对象的运行时类型来选择实现。这些是不同的角色，与虚构造函数的概念不符。构造函数本质上是关于创建特定类的实例。虚函数是关于当通过公共基类接口访问时，为不同的派生类提供不同的行为。尝试将两者结合起来会从根本上改变构造函数的目的。当你调用构造函数时，你明确要求创建一个特定类型的对象。使此过程成为虚拟的会引入关于实际应该创建哪种类型对象的歧义。</p>
+</li>
+<li>
+<p>没有指向构造函数的指针：在 C++ 中，无法获取构造函数的地址或拥有指向构造函数的指针 19。虚函数通常通过指针或引用调用。此限制进一步说明了为什么构造函数不能是虚函数。缺乏对构造函数指针的支持意味着它们无法参与标准的虚函数调用机制，该机制依赖于存储在 vtable 中的函数指针。虚函数调用过程涉及在 vtable 中查找函数指针。由于没有构造函数的函数指针，因此它们不能成为此机制的一部分。</p>
+</li>
+<li>
+<p>与虚析构函数的对比（再次说明）：简要重申为什么虚析构函数对于多态层次结构中的正确清理是必要的，强调这种需求出现在对象销毁期间（当对象已经存在并且其运行时类型可能通过基类指针未知时），这与对象创建是不同的场景。</p>
+</li>
+</ul>
+<h2 id="heading">‍</h2>
+<h2 id="lastmod-2025-03-31t103235z">title: MJ
+date: 2025-03-31T10:10:45Z
+lastmod: 2025-03-31T10:32:35Z</h2>
+<h1 id="mj-1">MJ</h1>
+<p>ptrace原理</p>
+<p>‍</p>
+<h2 id="对编译器的了解-1">对编译器的了解</h2>
+<p><strong>定义与目的</strong></p>
+<p>编译器是一种计算机程序，它将用一种编程语言（源语言）编写的代码翻译成另一种语言（目标语言），通常是机器码或字节码。编译器的主要目的是将人类可读的高级语言代码转换为计算机能够理解和执行的低级指令。</p>
+<p><strong>编译过程的关键阶段</strong></p>
+<p>正如我们之前讨论过的，一个典型的编译器通常包含以下几个主要阶段：</p>
+<ol>
+<li>
+<p><strong>预处理（Preprocessing）：</strong>  处理源代码中的宏、包含指令和条件编译等。</p>
+</li>
+<li>
+<p><strong>编译（Compilation）：</strong>  这是核心阶段，包括：</p>
+<ul>
+<li><strong>词法分析（Lexical Analysis）：</strong>  将源代码分解成词法单元（tokens）。</li>
+<li><strong>语法分析（Syntax Analysis）：</strong>  根据语言的语法规则构建抽象语法树（AST）。</li>
+<li><strong>语义分析（Semantic Analysis）：</strong>  检查程序的语义正确性，例如类型检查。</li>
+<li><strong>中间代码生成（Intermediate Code Generation）：</strong>  将 AST 转换为一种中间表示形式。</li>
+<li><strong>优化（Optimization）：</strong>  对中间代码进行各种优化，以提高性能或减小程序大小。</li>
+<li><strong>目标代码生成（Target Code Generation）：</strong>  将优化后的中间代码翻译成目标机器的汇编语言或机器码。</li>
+</ul>
+</li>
+<li>
+<p><strong>汇编（Assembly）：</strong>  将汇编语言代码转换为机器码（如果编译阶段生成的是汇编代码）。</p>
+</li>
+<li>
+<p><strong>链接（Linking）：</strong>  将多个目标文件和库文件合并成最终的可执行文件或库。</p>
+</li>
+</ol>
+<p><strong>不同类型的编译器</strong></p>
+<p>根据不同的标准，编译器可以分为多种类型：</p>
+<ul>
+<li>
+<p><strong>基于目标语言：</strong></p>
+<ul>
+<li><strong>本机编译器（Native Compiler）：</strong>  生成目标机器可以直接执行的机器码。</li>
+<li><strong>交叉编译器（Cross Compiler）：</strong>  在一个平台上编译生成可以在另一个不同架构的平台上执行的代码。</li>
+<li><strong>字节码编译器（Bytecode Compiler）：</strong>  生成一种中间的字节码，通常由虚拟机（如 JVM 或 .NET CLR）解释执行。</li>
+<li><strong>转译器（Transpiler）或源代码到源代码编译器（Source-to-Source Compiler）：</strong>  将一种高级语言的代码转换为另一种高级语言的代码。</li>
+</ul>
+</li>
+<li>
+<p><strong>基于编译阶段：</strong></p>
+<ul>
+<li><strong>单遍编译器（Single-Pass Compiler）：</strong>  在一次扫描源代码的过程中完成所有的编译阶段。通常适用于语法结构相对简单的语言。</li>
+<li><strong>多遍编译器（Multi-Pass Compiler）：</strong>  需要多次扫描源代码，每个遍执行一个或多个编译阶段。更适合复杂的语言，可以进行更深入的分析和优化。</li>
+</ul>
+</li>
+<li>
+<p><strong>基于功能：</strong></p>
+<ul>
+<li><strong>优化编译器（Optimizing Compiler）：</strong>  特别注重生成高效的目标代码，包含各种优化技术。</li>
+<li><strong>调试编译器（Debugging Compiler）：</strong>  生成包含调试信息的目标代码，方便程序调试。</li>
+</ul>
+</li>
+</ul>
+<p><strong>编译器的重要性和应用</strong></p>
+<p>编译器是现代计算机系统中至关重要的组成部分。它们使得程序员可以使用更易于理解和编写的高级语言来开发软件，而无需直接操作复杂的机器指令。编译器的质量直接影响到软件的性能、可靠性和开发效率。</p>
+<p><strong>关键概念</strong></p>
+<p>在编译器设计中，涉及许多重要的概念，包括但不限于：</p>
+<ul>
+<li><strong>词法分析器（Lexer）：</strong>  将字符流转换为 token 流。</li>
+<li><strong>语法分析器（Parser）：</strong>  根据语法规则构建 AST。</li>
+<li><strong>符号表（Symbol Table）：</strong>  存储程序中使用的标识符及其相关信息（如类型、作用域）。</li>
+<li><strong>中间表示（IR）：</strong>  一种介于源代码和目标代码之间的表示形式，方便进行优化和代码生成。</li>
+<li><strong>控制流图（Control Flow Graph，CFG）：</strong>  表示程序执行流程的图。</li>
+<li><strong>数据流分析（Data Flow Analysis）：</strong>  分析程序中数据如何流动和变化。</li>
+<li><strong>寄存器分配（Register Allocation）：</strong>  将程序中的变量映射到目标机器的寄存器中。</li>
+<li><strong>指令调度（Instruction Scheduling）：</strong>  优化指令的执行顺序以提高流水线效率。</li>
+</ul>
+<p>‍</p>
+<h2 id="编译原理过程-1">编译原理过程</h2>
+<ul>
+<li>
+<p><strong>作用：</strong>  将预处理后的源代码翻译成特定目标平台的汇编语言代码。</p>
+</li>
+<li>
+<p><strong>主要任务：</strong></p>
+<ul>
+<li><strong>词法分析（Lexical Analysis）：</strong>  将源代码分解成一个个的词法单元（Token），例如关键字、标识符、运算符、常量等。</li>
+<li><strong>语法分析（Syntax Analysis）：</strong>  根据语言的语法规则，检查词法单元的序列是否构成合法的语法结构，并构建抽象语法树（Abstract Syntax Tree, AST）。AST 是源代码的树状表示，方便后续的语义分析和代码生成。</li>
+<li><strong>语义分析（Semantic Analysis）：</strong>  对抽象语法树进行类型检查、作用域分析等，确保程序的语义是正确的。例如，检查变量是否已经声明、类型是否匹配等。</li>
+<li><strong>中间代码生成（Intermediate Code Generation）：</strong>  将抽象语法树转换为一种中间表示形式，例如三地址码。中间代码独立于具体的机器架构，方便进行优化。</li>
+<li><strong>目标代码优化（Optional）：</strong>  对中间代码进行各种优化，例如常量折叠、死代码消除、循环展开等，以提高程序的执行效率。</li>
+<li><strong>目标代码生成（Target Code Generation）：</strong>  将优化后的中间代码翻译成特定目标平台的汇编语言代码。</li>
+</ul>
+</li>
+</ul>
+<h2 id="了解ast吗-如何用ast表达一个语句-1">了解AST吗, 如何用AST表达一个语句?</h2>
+<p><strong>抽象语法树（AST）</strong>  是源代码的一种抽象的树状表示形式。它省略了源代码中不影响程序语义的细节（例如空格、注释、分号等），而是专注于程序的语法结构。AST 的每个节点代表源代码中的一个构造（construct），例如表达式、语句、声明等。节点之间的关系反映了这些构造在源代码中的层次结构和语法关系。</p>
+<p><strong>以下是关于 AST 的一些关键点：</strong></p>
+<ul>
+<li><strong>树状结构：</strong>  AST 是一个树状的数据结构，根节点通常代表整个程序或一个编译单元。</li>
+<li><strong>抽象性：</strong>  它抽象掉了源代码中的一些细节，例如标点符号和格式，只保留了对程序语义至关重要的信息。</li>
+<li><strong>语法表示：</strong>  AST 忠实地反映了源代码的语法结构，每个节点都对应着源代码中的一个语法规则。</li>
+<li><strong>编译器核心：</strong>  AST 是编译器前端（特别是语法分析阶段）的重要输出，也是后续语义分析、中间代码生成和目标代码生成等阶段的基础。</li>
+</ul>
+<p><strong>AST 的主要作用和特点：</strong></p>
+<ul>
+<li><strong>方便语义分析：</strong>  通过遍历 AST，编译器可以进行类型检查、作用域分析等语义分析，以确保程序的语义是正确的。</li>
+<li><strong>易于代码优化：</strong>  基于 AST，编译器可以进行各种代码优化，例如常量折叠、死代码消除等，以提高程序的执行效率。</li>
+<li><strong>支持代码转换和生成：</strong>  AST 可以作为代码转换工具的基础，例如代码重构、代码生成等。</li>
+<li><strong>语言无关性（一定程度上）：</strong>  虽然 AST 的具体结构取决于编程语言的语法，但其核心思想是通用的，可以用于表示多种编程语言的语法结构.</li>
+</ul>
+<p><strong>举个简单的例子：</strong></p>
+<p>对于源代码 <code>a = b + 5;</code>​，其对应的 AST 可能如下所示（简化表示）：</p>
+<pre tabindex="0"><code>      =
+     / \
+    a   +
+       / \
+      b   5
+</code></pre><p>在这个例子中：</p>
+<ul>
+<li>​<code>=</code>​ 是赋值操作符，是根节点。</li>
+<li>​<code>a</code>​ 是赋值操作的左操作数。</li>
+<li>​<code>+</code>​ 是加法操作符，是赋值操作的右操作数。</li>
+<li>​<code>b</code>​ 和 <code>5</code>​ 是加法操作的操作数。</li>
+</ul>
+<p><strong>总结来说，AST 是程序源代码在编译器内部的一种核心表示形式，它以树状结构清晰地表达了程序的语法结构，为后续的编译阶段提供了便利。</strong></p>
+<h2 id="对llvm中端优化的理解-什么是程序优化-为什么需要优化-怎么去做-1">对LLVM中端优化的理解, 什么是程序优化, 为什么需要优化, 怎么去做?</h2>
+<p><strong>LLVM 中端优化理解</strong></p>
+<p>LLVM 的编译过程可以大致分为三个部分：前端（Frontend）、中端（Middle-end）和后端（Backend）。</p>
+<ul>
+<li><strong>前端 (Frontend):</strong>  负责将源代码（如 C++, Objective-C, Swift 等）解析成 LLVM 中间表示（Intermediate Representation，IR）。LLVM IR 是一种与目标机器无关的低级语言。</li>
+<li><strong>中端 (Middle-end):</strong>  这是 LLVM 优化器的核心部分。它接收前端生成的 LLVM IR，并对其进行各种与目标机器无关的优化。这些优化旨在改进程序的性能、减小程序的大小、减少能源消耗等。</li>
+<li><strong>后端 (Backend):</strong>  也称为目标代码生成器 (Code Generator)，它将优化后的 LLVM IR 转换成特定目标机器的机器码。</li>
+</ul>
+<p><strong>LLVM 中端优化的关键特点：</strong></p>
+<ul>
+<li><strong>目标无关性：</strong>  中端优化不依赖于特定的目标机器架构。这意味着相同的优化可以在不同的硬件平台上应用，只要它们使用 LLVM 作为编译器基础设施。</li>
+<li><strong>基于 LLVM IR：</strong>  所有的中端优化都直接在 LLVM IR 上进行。LLVM IR 的设计使得它非常适合进行各种分析和转换。</li>
+<li><strong>Pass 框架：</strong>  LLVM 的优化器由一系列独立的优化“Pass”组成。每个 Pass 执行一种特定的优化或分析。这种模块化的设计使得添加、删除和组合优化变得非常灵活。</li>
+<li><strong>多种优化级别：</strong>  LLVM 提供了不同的优化级别（通常通过 <code>-O0</code>​, <code>-O1</code>​, <code>-O2</code>​, <code>-O3</code>​, <code>-Os</code>​, <code>-Oz</code>​ 等命令行选项指定），代表了不同强度和类型的优化组合。较高的优化级别通常会带来更好的性能，但也可能增加编译时间和代码大小（某些情况下 <code>Os</code>​ 和 <code>Oz</code>​ 旨在减小代码大小）。</li>
+</ul>
+<p><strong>程序优化</strong></p>
+<p>程序优化是指在不改变程序语义的前提下，通过各种技术手段来改善程序的某些方面特性，例如：</p>
+<ul>
+<li><strong>提高运行速度 (Performance Optimization):</strong>  这是最常见的优化目标，旨在使程序更快地执行。</li>
+<li><strong>减小程序体积 (Size Optimization):</strong>  特别是在嵌入式系统或对存储空间有限制的环境中非常重要。</li>
+<li><strong>降低能耗 (Power Optimization):</strong>  对于移动设备和长时间运行的服务器应用来说至关重要。</li>
+<li><strong>减少内存占用 (Memory Optimization):</strong>  改善程序的内存使用效率。</li>
+</ul>
+<p><strong>为什么需要优化？</strong></p>
+<ul>
+<li><strong>提升用户体验：</strong>  更快的程序响应速度和更流畅的运行可以显著提升用户体验。</li>
+<li><strong>降低硬件成本：</strong>  通过优化，可能在相同的硬件上运行更多的工作负载，或者在较低配置的硬件上达到相同的性能水平，从而降低硬件成本。</li>
+<li><strong>延长电池寿命：</strong>  对于移动设备，优化可以减少能耗，从而延长电池续航时间。</li>
+<li><strong>适应资源受限环境：</strong>  在嵌入式系统等资源有限的环境中，优化是使程序能够正常运行的关键。</li>
+<li><strong>提高软件竞争力：</strong>  性能优良的软件在市场上更具竞争力。</li>
+</ul>
+<p><strong>怎么去做程序优化？</strong></p>
+<p>程序优化是一个广泛的领域，涉及多种技术和策略。在编译器的中端优化阶段，主要通过对中间表示进行各种转换来实现。以下是一些常见的优化技术：</p>
+<p><strong>1. 基于控制流图和数据流分析的优化:</strong></p>
+<ul>
+<li><strong>常量传播 (Constant Propagation):</strong>  如果一个变量的值在某个点是已知的常量，那么在后续使用该变量的地方直接替换为该常量。</li>
+<li><strong>常量折叠 (Constant Folding):</strong>  在编译时计算常量表达式的值。例如，将 <code>3 + 5</code>​ 直接替换为 <code>8</code>​。</li>
+<li><strong>死代码消除 (Dead Code Elimination):</strong>  移除程序中永远不会被执行到的代码。</li>
+<li><strong>公共子表达式消除 (Common Subexpression Elimination):</strong>  如果程序中多次计算相同的表达式，只计算一次并将结果保存起来重复使用。</li>
+<li><strong>循环不变代码外提 (Loop-Invariant Code Motion):</strong>  将循环内部不依赖于循环变量的计算移动到循环外部，减少重复计算。</li>
+<li><strong>强度削弱 (Strength Reduction):</strong>  将开销较大的操作替换为开销较小的等价操作。例如，将乘法替换为加法（在某些特定情况下）。</li>
+</ul>
+<p><strong>2. 基于过程间的优化 (Interprocedural Optimization, IPO):</strong></p>
+<ul>
+<li><strong>函数内联 (Function Inlining):</strong>  将一个函数的代码直接插入到调用它的地方，消除函数调用的开销，并为其他优化提供机会。</li>
+<li><strong>过程间常量传播 (Interprocedural Constant Propagation):</strong>  在函数调用之间传播常量信息。</li>
+</ul>
+<p><strong>3. 基于内存访问的优化:</strong></p>
+<ul>
+<li><strong>循环展开 (Loop Unrolling):</strong>  增加循环体内的指令数量，减少循环控制的开销，并可能提高指令级并行性。</li>
+<li><strong>缓存优化 (Cache Optimization):</strong>  通过调整数据布局和访问模式来提高缓存的命中率。</li>
+</ul>
+<p><strong>4. 其他优化:</strong></p>
+<ul>
+<li><strong>尾调用优化 (Tail Call Optimization):</strong>  在满足特定条件的情况下，将函数的尾部调用转换为跳转，避免额外的栈帧分配。</li>
+<li><strong>指令选择 (Instruction Selection):</strong>  在目标代码生成阶段，选择最合适的机器指令来实现 LLVM IR 中的操作。虽然属于后端，但优化器也会参与指导指令选择。</li>
+</ul>
+<p><strong>LLVM 的 Pass 框架使得实现和管理这些优化变得非常方便。开发者可以根据需要选择和组合不同的 Pass 来达到期望的优化效果。</strong></p>
+<p>总而言之，LLVM 的中端优化是编译器优化的核心环节，它通过对目标无关的中间表示进行各种分析和转换，旨在提高程序的性能和效率。理解程序优化的基本概念和常见技术，有助于我们更好地理解编译器的工作原理，并在开发过程中编写出更高效的代码。</p>
+<h2 id="计算密集型与访存密集型程序-1">计算密集型与访存密集型程序</h2>
+<p><strong>计算密集型程序 (Compute-intensive Programs)</strong></p>
+<ul>
+<li>
+<p><strong>定义：</strong>  计算密集型程序是指那些主要受 CPU 运算速度限制的程序。这类程序在执行过程中需要进行大量的算术运算、逻辑运算、浮点运算或其他复杂的计算。</p>
+</li>
+<li>
+<p><strong>特点：</strong></p>
+<ul>
+<li><strong>CPU 利用率高：</strong>  程序的大部分时间都花费在 CPU 执行指令上。</li>
+<li><strong>对 CPU 的性能要求高：</strong>  更快的 CPU 时钟频率、更多的核心、更强的指令集支持等都能显著提升这类程序的性能。</li>
+<li><strong>内存访问相对较少：</strong>  虽然也需要内存来存储数据和指令，但与大量的计算相比，内存的读写操作相对较少。</li>
+</ul>
+</li>
+</ul>
+<p><strong>访存密集型程序 (Memory-intensive Programs)</strong></p>
+<ul>
+<li>
+<p><strong>定义：</strong>  访存密集型程序是指那些主要受内存访问速度和带宽限制的程序。这类程序在执行过程中需要频繁地读写大量的数据到内存中。</p>
+</li>
+<li>
+<p><strong>特点：</strong></p>
+<ul>
+<li><strong>内存带宽和延迟是瓶颈：</strong>  程序的大部分时间都花费在等待数据从内存加载到 CPU，或者将数据从 CPU 存储回内存。</li>
+<li><strong>CPU 利用率可能不高：</strong>  CPU 可能有很多时间处于空闲状态，等待内存操作完成。</li>
+<li><strong>对内存系统的性能要求高：</strong>  更高的内存频率、更大的内存带宽、更低的内存延迟、以及高效的缓存系统对这类程序的性能至关重要。</li>
+</ul>
+</li>
+</ul>
+<p><strong>区分两者</strong></p>
+<p>区分一个程序是计算密集型还是访存密集型，有助于我们理解程序的性能瓶颈，并采取相应的优化策略。</p>
+<ul>
+<li><strong>优化计算密集型程序：</strong>  重点在于提高 CPU 的计算效率，例如使用更快的算法、利用 SIMD 指令、进行并行计算等。</li>
+<li><strong>优化访存密集型程序：</strong>  重点在于提高内存系统的效率，例如优化数据结构以减少内存访问、利用缓存局部性、使用更快的内存技术等。</li>
+</ul>
+<p>在实际应用中，很多程序可能同时包含大量的计算和频繁的内存访问，但通常会有一个主要的瓶颈。理解这个瓶颈对于性能优化至关重要。</p>
+<h2 id="多态是什么-1">多态是什么</h2>
+<p>类型转换</p>
+<p>模板</p>
+<p>函数重写/载(同scope, 参数类型和数量不同)</p>
+<p>函数重载(继承, 实现虚函数)</p>
+<h2 id="运算符重载属于多态中的哪一部分编译时运行时-1">运算符重载属于多态中的哪一部分(编译时/运行时)</h2>
+<p>显然是上文中的函数重载, 也就是运行时多态</p>
+<p>‍</p>
+<h2 id="继承是编译时多态还是运行时多态-1">继承是编译时多态还是运行时多态</h2>
+<p>同上</p>
+<p>‍</p>
+<h2 id="虚函数表是什么-1">虚函数表是什么</h2>
+<p>‍</p>
+<h2 id="指针与引用的区别-1">指针与引用的区别</h2>
+<p>‍</p>
+<h2 id="lambda函数的特点-1">lambda函数的特点</h2>
+<p>可内联, 方便使用</p>
+<h2 id="static关键字-1">static关键字</h2>
+<p>‍</p>
+<h2 id="构造函数可以重载吗-可以是虚函数吗-1">构造函数可以重载吗, 可以是虚函数吗</h2>
+<ul>
+<li>
+<p>对象类型必须在编译时已知：C++ 是一种静态类型语言 19。编译器需要在编译时知道要创建的确切对象类型，以便确定其大小、在内存中的布局以及要调用的构造函数。虚构造函数意味着要创建的对象类型在运行时才能确定，这与 C++ 的这一基本特性直接矛盾。C++ 对象创建的静态特性要求构造函数在编译时就具备类型信息。虚函数专为运行时多态而设计，其前提是对象的具体类型可能在程序运行时才能知道。在对象实例化的上下文中，这两个概念从根本上是冲突的。当你编写 new MyDerivedClass() 时，编译器必须知道 MyDerivedClass 的大小和结构才能分配内存。此信息与 MyDerivedClass 的特定构造函数相关联。将构造函数设为虚函数会在编译时引入不确定性，即使用哪个构造函数（以及因此使用哪个类型和大小）</p>
+</li>
+<li>
+<p>虚函数机制依赖于现有对象：虚函数机制依赖于虚函数表（vtable）和虚函数指针（vptr）的存在，而 vptr 通常由对象的构造函数初始化 19。如果构造函数是虚函数，那么在调用构造函数时，vptr 尚不存在，这将使得无法使用虚函数机制来确定要执行哪个构造函数。启用虚函数的机制本身需要一个带有已初始化 vptr 的预先存在的对象。构造函数负责创建此对象并初始化 vptr。因此，虚构造函数会造成一种自相矛盾的情况，即进行虚分发所需的机制尚不存在。可以将其想象为需要一个地址才能找到房子。vptr 就像通往 vtable（房子）的地址。构造函数是建造房子的过程。如果房子尚未建造（对象尚未构造），则无法使用地址（vptr）找到房子（vtable 和函数）。</p>
+</li>
+<li>
+<p>构造函数负责对象创建：构造函数的主要职责是创建和初始化特定已知类型的对象 19。另一方面，虚函数的概念是基于已存在的对象的运行时类型来选择实现。这些是不同的角色，与虚构造函数的概念不符。构造函数本质上是关于创建特定类的实例。虚函数是关于当通过公共基类接口访问时，为不同的派生类提供不同的行为。尝试将两者结合起来会从根本上改变构造函数的目的。当你调用构造函数时，你明确要求创建一个特定类型的对象。使此过程成为虚拟的会引入关于实际应该创建哪种类型对象的歧义。</p>
+</li>
+<li>
+<p>没有指向构造函数的指针：在 C++ 中，无法获取构造函数的地址或拥有指向构造函数的指针 19。虚函数通常通过指针或引用调用。此限制进一步说明了为什么构造函数不能是虚函数。缺乏对构造函数指针的支持意味着它们无法参与标准的虚函数调用机制，该机制依赖于存储在 vtable 中的函数指针。虚函数调用过程涉及在 vtable 中查找函数指针。由于没有构造函数的函数指针，因此它们不能成为此机制的一部分。</p>
+</li>
+<li>
+<p>与虚析构函数的对比（再次说明）：简要重申为什么虚析构函数对于多态层次结构中的正确清理是必要的，强调这种需求出现在对象销毁期间（当对象已经存在并且其运行时类型可能通过基类指针未知时），这与对象创建是不同的场景。</p>
+</li>
+</ul>
+<p>‍</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

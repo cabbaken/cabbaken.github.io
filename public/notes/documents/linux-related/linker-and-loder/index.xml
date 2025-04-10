@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Linker and Loder on My New Hugo Site</title>
+    <link>http://localhost:1313/notes/documents/linux-related/linker-and-loder/</link>
+    <description>Recent content in Linker and Loder on My New Hugo Site</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 01 Apr 2025 16:43:52 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/notes/documents/linux-related/linker-and-loder/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Symbol</title>
+      <link>http://localhost:1313/notes/documents/linux-related/linker-and-loder/symbol/</link>
+      <pubDate>Mon, 24 Mar 2025 21:17:47 +0000</pubDate>
+      <guid>http://localhost:1313/notes/documents/linux-related/linker-and-loder/symbol/</guid>
+      <description>&lt;h1 id=&#34;symbol&#34;&gt;Symbol&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;http://localhost:1313/notes/documents/linux-related/linker-and-loder/&#34;&gt;Linker and Loder&lt;/a&gt;中大量提到了symbol的概念, 这里做简要介绍&lt;/p&gt;&#xA;&lt;p&gt;我们在linker和loader语境下的symbol一般都是指identifier, 也就是占位符.&lt;/p&gt;&#xA;&lt;p&gt;一般一个object包含三种symbol:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;defined external symbol: 可被其他模块调用&lt;/li&gt;&#xA;&lt;li&gt;undefined external symbol: 引用定义此symbol的其他模块&lt;/li&gt;&#xA;&lt;li&gt;local symbol: 在当前object文件中使用&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;用于表示变量, 类型, label, 模块, 函数等.&lt;/p&gt;&#xA;&lt;p&gt;variables, data types, labels, subroutines, and modules.&lt;/p&gt;&#xA;&lt;h2 id=&#34;heading&#34;&gt;‍&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-04-01t164352z&#34;&gt;title: Symbol&#xA;date: 2025-03-24T21:17:47Z&#xA;lastmod: 2025-04-01T16:43:52Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;symbol-1&#34;&gt;Symbol&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;http://localhost:1313/notes/documents/linux-related/linker-and-loder/&#34;&gt;Linker and Loder&lt;/a&gt;中大量提到了symbol的概念, 这里做简要介绍&lt;/p&gt;&#xA;&lt;p&gt;我们在linker和loader语境下的symbol一般都是指identifier, 也就是占位符.&lt;/p&gt;&#xA;&lt;p&gt;一般一个object包含三种symbol:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;defined external symbol: 可被其他模块调用&lt;/li&gt;&#xA;&lt;li&gt;undefined external symbol: 引用定义此symbol的其他模块&lt;/li&gt;&#xA;&lt;li&gt;local symbol: 在当前object文件中使用&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;用于表示变量, 类型, label, 模块, 函数等.&lt;/p&gt;&#xA;&lt;p&gt;variables, data types, labels, subroutines, and modules.&lt;/p&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

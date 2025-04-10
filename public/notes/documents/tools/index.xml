@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tools on My New Hugo Site</title>
+    <link>http://localhost:1313/notes/documents/tools/</link>
+    <description>Recent content in Tools on My New Hugo Site</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 11 Mar 2025 09:46:48 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/notes/documents/tools/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linux Middle Click paste disable</title>
+      <link>http://localhost:1313/notes/documents/tools/linux-middle-click-paste-disable/</link>
+      <pubDate>Tue, 11 Mar 2025 09:46:48 +0000</pubDate>
+      <guid>http://localhost:1313/notes/documents/tools/linux-middle-click-paste-disable/</guid>
+      <description>&lt;h1 id=&#34;linux-middle-click-paste-disable&#34;&gt;Linux Middle Click paste disable&lt;/h1&gt;&#xA;&lt;h1 id=&#34;linux-middle-click-paste-disable-1&#34;&gt;Linux Middle Click paste disable&lt;/h1&gt;&#xA;&lt;p&gt;当你在Linux使用鼠标中键关闭标签页时, 有时会粘贴剪切板中的内容. 以下&lt;a href=&#34;https://github.com/milaq/XMousePasteBlock&#34; title=&#34;QAQ&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;XMousePasteBlock&lt;/a&gt;解决这个问题.&lt;/p&gt;&#xA;&lt;h2 id=&#34;heading&#34;&gt;‍&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094648z&#34;&gt;title: Linux Middle Click paste disable&#xA;date: 2025-03-11T09:46:48Z&#xA;lastmod: 2025-03-11T09:46:48Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;linux-middle-click-paste-disable-2&#34;&gt;Linux Middle Click paste disable&lt;/h1&gt;&#xA;&lt;h1 id=&#34;linux-middle-click-paste-disable-3&#34;&gt;Linux Middle Click paste disable&lt;/h1&gt;&#xA;&lt;p&gt;当你在Linux使用鼠标中键关闭标签页时, 有时会粘贴剪切板中的内容. 以下&lt;a href=&#34;https://github.com/milaq/XMousePasteBlock&#34; title=&#34;QAQ&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;XMousePasteBlock&lt;/a&gt;解决这个问题.&lt;/p&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

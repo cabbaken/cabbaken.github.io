@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>Prompt指北</title>
+
+<meta name="description" content="Prompt指北 一个大模型(MiniCPM)Prompt示例: MiniCPM_system_prompt
+zhuanlan.zhihu.com/p/715868836
+Prompt结构
+1.角色设定 2.目标设定 3.业务规则 4.参考数据 5.表现评估 6.输出约束 角色设定 先给GPT设定一个角色，让它尽量激活庞大数据里相关的一部分数据。
+‍
+目标设定 描述自己的需求，使用此模型的目的
+GOALS: 1. 根据描述，分析游戏的一级分类 2. 根据描述，分析游戏的二级分类 业务规则 对GPT的结果和分析过程进行约束。
+Chain of Thought（CoT）：给GPT举例子应该怎么分析，来提升结果的准确性。
+根据所举的例子，约束GPT的分析行为，避免因为GPT根据训练数据进行想象，给出一些“可能”且不在我们限定数据范围内的结果。
+这部分也是In-Context Learning中，需要GPT来进行学习的重要内容。
+CONSTRAINTS: 1. ~4000 word limit for short term memory. Your short term memory is short。 2. If you are unsure how you previously did something or want to recall past events, thinking about similar events will help you remember. 3. No user assistance 4. Exclusively use the categories listed in following json structure. each item presents is series of categorys.&#34;category&#34; means the first class of category. the array which named &#39;sub-category&#39; stands for the second class of category related to the first class of category 5. 先判定category，再判定和category相对应的sub-category。不能反向判定。 6. 如果category为Simulation时，体现了体育的内容，优先判定为Sports 7. “躲避”障碍物是跑酷游戏中常见的一种操作，但有跑道、追求完赛速度的，category优先判定为Racing，sub-category优先判定为Parkour 8. 射击泡泡→同色泡泡消除游戏，类似泡泡龙、祖玛，category优先判定为Puzzle，sub-category优先判定为Blast 9. 画线救狗、拔出插销救动物or人、割断绳子救人/砸东西 等此类游戏均为解谜性质，category优先判定为Puzzle，sub-category优先判定为Puzzle 10. category判定为Racing时，如果体现了驾驶操作，则sub-category为Driving，否则为Parkour 11. category判定为Racing时，如果体现了多人同时在线游玩，sub-category优先判定为Party Game 12.jump scare 是指恐怖片的贴脸杀，并非游戏分类的JUMP；有密室探索、密室逃脱特征的游戏，category优先判定为Adventure，sub-category优先判定为Escape 13.培养鸭子属于培养动物，培养动物的游戏category优先判定为Simulation，sub-category优先判定为Pet 14.连连看玩法category应为Puzzle，sub-category应为Match；当麻将只作为UI元素出现时，和游戏玩法无关，不应该判定为Board。 15. 跳过障碍物属于操作性强的动作类游戏，category优先判定为Action，操作的行为是跳跃的，sub-category优先判定为Jump 16.模拟经营的游戏属于模拟，category优先判定为Simulation，涉及到店铺经营管理的，sub-category优先判定为Sim Business 17.给女孩们穿衣服的游戏，category优先判定为Casual，服饰搭配、穿搭时尚的游戏sub-category优先判定为Dressup，设计其他物品的游戏sub-category优先判定为Design 参考数据 当需要GPT的处理结果限定在一个具体的范围内时，可以通过在Prompt中传入具体数据的方式实现。
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84%E5%A4%A7%E6%A8%A1%E5%9E%8B/prompt%E6%8C%87%E5%8C%97/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84%E5%A4%A7%E6%A8%A1%E5%9E%8B/prompt%E6%8C%87%E5%8C%97/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84%E5%A4%A7%E6%A8%A1%E5%9E%8B/prompt%E6%8C%87%E5%8C%97/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Prompt指北">
+<meta property="og:description" content="Prompt指北
+一个大模型(MiniCPM)Prompt示例:
+MiniCPM_system_prompt
+zhuanlan.zhihu.com/p/715868836
+
+
+Prompt结构
+
+1.角色设定
+2.目标设定
+3.业务规则
+4.参考数据
+5.表现评估
+6.输出约束
+
+
+
+角色设定
+先给GPT设定一个角色，让它尽量激活庞大数据里相关的一部分数据。
+‍
+目标设定
+描述自己的需求，使用此模型的目的
+GOALS:
+
+1. 根据描述，分析游戏的一级分类
+2. 根据描述，分析游戏的二级分类
+业务规则
+对GPT的结果和分析过程进行约束。
+Chain of Thought（CoT）：给GPT举例子应该怎么分析，来提升结果的准确性。
+根据所举的例子，约束GPT的分析行为，避免因为GPT根据训练数据进行想象，给出一些“可能”且不在我们限定数据范围内的结果。
+这部分也是In-Context Learning中，需要GPT来进行学习的重要内容。
+CONSTRAINTS:
+
+1. ~4000 word limit for short term memory. Your short term memory is short。
+2. If you are unsure how you previously did something or want to recall past events, thinking about similar events will help you remember.
+3. No user assistance
+4. Exclusively use the categories listed in following json structure. each item presents is series of categorys.&#34;category&#34; means the first class of category. the array which named &#39;sub-category&#39; stands for the second class of category related to the first class of category
+5. 先判定category，再判定和category相对应的sub-category。不能反向判定。
+6. 如果category为Simulation时，体现了体育的内容，优先判定为Sports
+7. “躲避”障碍物是跑酷游戏中常见的一种操作，但有跑道、追求完赛速度的，category优先判定为Racing，sub-category优先判定为Parkour
+8. 射击泡泡→同色泡泡消除游戏，类似泡泡龙、祖玛，category优先判定为Puzzle，sub-category优先判定为Blast
+9. 画线救狗、拔出插销救动物or人、割断绳子救人/砸东西 等此类游戏均为解谜性质，category优先判定为Puzzle，sub-category优先判定为Puzzle
+10. category判定为Racing时，如果体现了驾驶操作，则sub-category为Driving，否则为Parkour
+11. category判定为Racing时，如果体现了多人同时在线游玩，sub-category优先判定为Party Game
+12.jump scare 是指恐怖片的贴脸杀，并非游戏分类的JUMP；有密室探索、密室逃脱特征的游戏，category优先判定为Adventure，sub-category优先判定为Escape
+13.培养鸭子属于培养动物，培养动物的游戏category优先判定为Simulation，sub-category优先判定为Pet
+14.连连看玩法category应为Puzzle，sub-category应为Match；当麻将只作为UI元素出现时，和游戏玩法无关，不应该判定为Board。
+15. 跳过障碍物属于操作性强的动作类游戏，category优先判定为Action，操作的行为是跳跃的，sub-category优先判定为Jump
+16.模拟经营的游戏属于模拟，category优先判定为Simulation，涉及到店铺经营管理的，sub-category优先判定为Sim Business
+17.给女孩们穿衣服的游戏，category优先判定为Casual，服饰搭配、穿搭时尚的游戏sub-category优先判定为Dressup，设计其他物品的游戏sub-category优先判定为Design
+参考数据
+当需要GPT的处理结果限定在一个具体的范围内时，可以通过在Prompt中传入具体数据的方式实现。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84%E5%A4%A7%E6%A8%A1%E5%9E%8B/prompt%E6%8C%87%E5%8C%97/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Prompt指北">
+<meta name="twitter:description" content="Prompt指北
+一个大模型(MiniCPM)Prompt示例:
+MiniCPM_system_prompt
+zhuanlan.zhihu.com/p/715868836
+
+
+Prompt结构
+
+1.角色设定
+2.目标设定
+3.业务规则
+4.参考数据
+5.表现评估
+6.输出约束
+
+
+
+角色设定
+先给GPT设定一个角色，让它尽量激活庞大数据里相关的一部分数据。
+‍
+目标设定
+描述自己的需求，使用此模型的目的
+GOALS:
+
+1. 根据描述，分析游戏的一级分类
+2. 根据描述，分析游戏的二级分类
+业务规则
+对GPT的结果和分析过程进行约束。
+Chain of Thought（CoT）：给GPT举例子应该怎么分析，来提升结果的准确性。
+根据所举的例子，约束GPT的分析行为，避免因为GPT根据训练数据进行想象，给出一些“可能”且不在我们限定数据范围内的结果。
+这部分也是In-Context Learning中，需要GPT来进行学习的重要内容。
+CONSTRAINTS:
+
+1. ~4000 word limit for short term memory. Your short term memory is short。
+2. If you are unsure how you previously did something or want to recall past events, thinking about similar events will help you remember.
+3. No user assistance
+4. Exclusively use the categories listed in following json structure. each item presents is series of categorys.&#34;category&#34; means the first class of category. the array which named &#39;sub-category&#39; stands for the second class of category related to the first class of category
+5. 先判定category，再判定和category相对应的sub-category。不能反向判定。
+6. 如果category为Simulation时，体现了体育的内容，优先判定为Sports
+7. “躲避”障碍物是跑酷游戏中常见的一种操作，但有跑道、追求完赛速度的，category优先判定为Racing，sub-category优先判定为Parkour
+8. 射击泡泡→同色泡泡消除游戏，类似泡泡龙、祖玛，category优先判定为Puzzle，sub-category优先判定为Blast
+9. 画线救狗、拔出插销救动物or人、割断绳子救人/砸东西 等此类游戏均为解谜性质，category优先判定为Puzzle，sub-category优先判定为Puzzle
+10. category判定为Racing时，如果体现了驾驶操作，则sub-category为Driving，否则为Parkour
+11. category判定为Racing时，如果体现了多人同时在线游玩，sub-category优先判定为Party Game
+12.jump scare 是指恐怖片的贴脸杀，并非游戏分类的JUMP；有密室探索、密室逃脱特征的游戏，category优先判定为Adventure，sub-category优先判定为Escape
+13.培养鸭子属于培养动物，培养动物的游戏category优先判定为Simulation，sub-category优先判定为Pet
+14.连连看玩法category应为Puzzle，sub-category应为Match；当麻将只作为UI元素出现时，和游戏玩法无关，不应该判定为Board。
+15. 跳过障碍物属于操作性强的动作类游戏，category优先判定为Action，操作的行为是跳跃的，sub-category优先判定为Jump
+16.模拟经营的游戏属于模拟，category优先判定为Simulation，涉及到店铺经营管理的，sub-category优先判定为Sim Business
+17.给女孩们穿衣服的游戏，category优先判定为Casual，服饰搭配、穿搭时尚的游戏sub-category优先判定为Dressup，设计其他物品的游戏sub-category优先判定为Design
+参考数据
+当需要GPT的处理结果限定在一个具体的范围内时，可以通过在Prompt中传入具体数据的方式实现。">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Prompt指北",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  3387 ,
+  "description": "Prompt指北 一个大模型(MiniCPM)Prompt示例: MiniCPM_system_prompt\nzhuanlan.zhihu.com/p/715868836\nPrompt结构\n1.角色设定 2.目标设定 3.业务规则 4.参考数据 5.表现评估 6.输出约束 角色设定 先给GPT设定一个角色，让它尽量激活庞大数据里相关的一部分数据。\n‍\n目标设定 描述自己的需求，使用此模型的目的\nGOALS: 1. 根据描述，分析游戏的一级分类 2. 根据描述，分析游戏的二级分类 业务规则 对GPT的结果和分析过程进行约束。\nChain of Thought（CoT）：给GPT举例子应该怎么分析，来提升结果的准确性。\n根据所举的例子，约束GPT的分析行为，避免因为GPT根据训练数据进行想象，给出一些“可能”且不在我们限定数据范围内的结果。\n这部分也是In-Context Learning中，需要GPT来进行学习的重要内容。\nCONSTRAINTS: 1. ~4000 word limit for short term memory. Your short term memory is short。 2. If you are unsure how you previously did something or want to recall past events, thinking about similar events will help you remember. 3. No user assistance 4. Exclusively use the categories listed in following json structure. each item presents is series of categorys.\u0026#34;category\u0026#34; means the first class of category. the array which named \u0026#39;sub-category\u0026#39; stands for the second class of category related to the first class of category 5. 先判定category，再判定和category相对应的sub-category。不能反向判定。 6. 如果category为Simulation时，体现了体育的内容，优先判定为Sports 7. “躲避”障碍物是跑酷游戏中常见的一种操作，但有跑道、追求完赛速度的，category优先判定为Racing，sub-category优先判定为Parkour 8. 射击泡泡→同色泡泡消除游戏，类似泡泡龙、祖玛，category优先判定为Puzzle，sub-category优先判定为Blast 9. 画线救狗、拔出插销救动物or人、割断绳子救人/砸东西 等此类游戏均为解谜性质，category优先判定为Puzzle，sub-category优先判定为Puzzle 10. category判定为Racing时，如果体现了驾驶操作，则sub-category为Driving，否则为Parkour 11. category判定为Racing时，如果体现了多人同时在线游玩，sub-category优先判定为Party Game 12.jump scare 是指恐怖片的贴脸杀，并非游戏分类的JUMP；有密室探索、密室逃脱特征的游戏，category优先判定为Adventure，sub-category优先判定为Escape 13.培养鸭子属于培养动物，培养动物的游戏category优先判定为Simulation，sub-category优先判定为Pet 14.连连看玩法category应为Puzzle，sub-category应为Match；当麻将只作为UI元素出现时，和游戏玩法无关，不应该判定为Board。 15. 跳过障碍物属于操作性强的动作类游戏，category优先判定为Action，操作的行为是跳跃的，sub-category优先判定为Jump 16.模拟经营的游戏属于模拟，category优先判定为Simulation，涉及到店铺经营管理的，sub-category优先判定为Sim Business 17.给女孩们穿衣服的游戏，category优先判定为Casual，服饰搭配、穿搭时尚的游戏sub-category优先判定为Dressup，设计其他物品的游戏sub-category优先判定为Design 参考数据 当需要GPT的处理结果限定在一个具体的范围内时，可以通过在Prompt中传入具体数据的方式实现。\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="prompt指北">Prompt指北</h1>
+<p>一个大模型(MiniCPM)Prompt示例:
+<a href="http://localhost:1313/notes/documents/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84%E5%A4%A7%E6%A8%A1%E5%9E%8B/minicpm_system_prompt/">MiniCPM_system_prompt</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/715868836" target="_blank" rel="noopener">zhuanlan.zhihu.com/p/715868836</a></p>
+<ul>
+<li>
+<p>Prompt结构</p>
+<ul>
+<li>1.角色设定</li>
+<li>2.目标设定</li>
+<li>3.业务规则</li>
+<li>4.参考数据</li>
+<li>5.表现评估</li>
+<li>6.输出约束</li>
+</ul>
+</li>
+</ul>
+<h2 id="角色设定">角色设定</h2>
+<p>先给GPT设定一个角色，让它尽量激活庞大数据里相关的一部分数据。</p>
+<p>‍</p>
+<h2 id="目标设定">目标设定</h2>
+<p>描述自己的需求，使用此模型的目的</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SQL" data-lang="SQL"><span style="display:flex;"><span>GOALS:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span>. <span style="color:#960050;background-color:#1e0010">根据描述，分析游戏的一级分类</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span>. <span style="color:#960050;background-color:#1e0010">根据描述，分析游戏的二级分类</span>
+</span></span></code></pre></div><h2 id="业务规则">业务规则</h2>
+<p>对GPT的结果和分析过程进行约束。</p>
+<p>Chain of Thought（CoT）：给GPT举例子应该怎么分析，来提升结果的准确性。</p>
+<p>根据所举的例子，约束GPT的分析行为，避免因为GPT根据训练数据进行想象，给出一些“可能”且不在我们限定数据范围内的结果。</p>
+<p>这部分也是In-Context Learning中，需要GPT来进行学习的重要内容。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>CONSTRAINTS:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>1. ~4000 word limit for short term memory. Your short term memory is short。
+</span></span><span style="display:flex;"><span>2. If you are unsure how you previously did something or want to recall past events, thinking about similar events will help you remember.
+</span></span><span style="display:flex;"><span>3. No user assistance
+</span></span><span style="display:flex;"><span>4. Exclusively use the categories listed in following json structure. each item presents is series of categorys.&#34;category&#34; means the first class of category. the array which named &#39;sub-category&#39; stands for the second class of category related to the first class of category
+</span></span><span style="display:flex;"><span>5. 先判定category，再判定和category相对应的sub-category。不能反向判定。
+</span></span><span style="display:flex;"><span>6. 如果category为Simulation时，体现了体育的内容，优先判定为Sports
+</span></span><span style="display:flex;"><span>7. “躲避”障碍物是跑酷游戏中常见的一种操作，但有跑道、追求完赛速度的，category优先判定为Racing，sub-category优先判定为Parkour
+</span></span><span style="display:flex;"><span>8. 射击泡泡→同色泡泡消除游戏，类似泡泡龙、祖玛，category优先判定为Puzzle，sub-category优先判定为Blast
+</span></span><span style="display:flex;"><span>9. 画线救狗、拔出插销救动物or人、割断绳子救人/砸东西 等此类游戏均为解谜性质，category优先判定为Puzzle，sub-category优先判定为Puzzle
+</span></span><span style="display:flex;"><span>10. category判定为Racing时，如果体现了驾驶操作，则sub-category为Driving，否则为Parkour
+</span></span><span style="display:flex;"><span>11. category判定为Racing时，如果体现了多人同时在线游玩，sub-category优先判定为Party Game
+</span></span><span style="display:flex;"><span>12.jump scare 是指恐怖片的贴脸杀，并非游戏分类的JUMP；有密室探索、密室逃脱特征的游戏，category优先判定为Adventure，sub-category优先判定为Escape
+</span></span><span style="display:flex;"><span>13.培养鸭子属于培养动物，培养动物的游戏category优先判定为Simulation，sub-category优先判定为Pet
+</span></span><span style="display:flex;"><span>14.连连看玩法category应为Puzzle，sub-category应为Match；当麻将只作为UI元素出现时，和游戏玩法无关，不应该判定为Board。
+</span></span><span style="display:flex;"><span>15. 跳过障碍物属于操作性强的动作类游戏，category优先判定为Action，操作的行为是跳跃的，sub-category优先判定为Jump
+</span></span><span style="display:flex;"><span>16.模拟经营的游戏属于模拟，category优先判定为Simulation，涉及到店铺经营管理的，sub-category优先判定为Sim Business
+</span></span><span style="display:flex;"><span>17.给女孩们穿衣服的游戏，category优先判定为Casual，服饰搭配、穿搭时尚的游戏sub-category优先判定为Dressup，设计其他物品的游戏sub-category优先判定为Design
+</span></span></code></pre></div><h2 id="参考数据">参考数据</h2>
+<p>当需要GPT的处理结果限定在一个具体的范围内时，可以通过在Prompt中传入具体数据的方式实现。</p>
+<p>GPT可以正确理解类似Json的结构化数据。</p>
+<p>并且，在测试中，GPT体现出了良好的语义理解能力。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-JSON" data-lang="JSON"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">Category:</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;Music&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;sub-category&#34;</span>:
+</span></span><span style="display:flex;"><span>        [
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Beats&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Instrument&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Music&#34;</span>
+</span></span><span style="display:flex;"><span>        ]
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">。。。</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;Adventure&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;sub-category&#34;</span>:
+</span></span><span style="display:flex;"><span>        [
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Role Playing&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Escape&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Survival&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Adventure&#34;</span>
+</span></span><span style="display:flex;"><span>        ]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>]
+</span></span></code></pre></div><h2 id="表现评估">表现评估</h2>
+<p>不同结果输出顺序，会影响GPT的整体输出结果。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>PERFORMANCE EVALUATION:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>1. Continuously review and analyze your actions to ensure you are performing to the best of your abilities.
+</span></span><span style="display:flex;"><span>2. Constructively self-criticize your big-picture behavior constantly.
+</span></span><span style="display:flex;"><span>3. Reflect on past decisions and strategies to refine your approach.
+</span></span></code></pre></div><h2 id="输出约束">输出约束</h2>
+<p>对处理结果进行格式化输出</p>
+<p>类似Json这种结构的数据，GPT能够很好地保证结构的完整性。</p>
+<p><strong>Ensure the response can be parsed by Python</strong> <strong>json.loads</strong></p>
+<p>可以让GPT用类似的程序化处理方式，对结果进行验证，进一步保证结果的格式正确。</p>
+<p>使用json_mode，可以更好约束结果的输出格式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>You should only respond in JSON format as described below
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RESPONSE FORMAT:
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    &#34;category&#34;:
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        &#34;name&#34;: &#34;Music&#34;,
+</span></span><span style="display:flex;"><span>        &#34;posibility&#34;: &#34;0.8&#34;
+</span></span><span style="display:flex;"><span>    }，
+</span></span><span style="display:flex;"><span>    &#34;sub&#34;:{
+</span></span><span style="display:flex;"><span>        &#34;name: &#34;Beats&#34;,
+</span></span><span style="display:flex;"><span>        &#34;posibility&#34;:&#34;1.0&#34;
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>&#34;reason&#34;:&#34;&#34;// show me the process of analytic in chinese.
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Ensure the response can be parsed by Python json.loads
+</span></span></code></pre></div><hr>
+<h2 id="lastmod-2025-03-11t094648z">title: Prompt指北
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="prompt指北-1">Prompt指北</h1>
+<p>一个大模型(MiniCPM)Prompt示例:
+<a href="http://localhost:1313/notes/documents/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84%E5%A4%A7%E6%A8%A1%E5%9E%8B/minicpm_system_prompt/">MiniCPM_system_prompt</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/715868836" target="_blank" rel="noopener">zhuanlan.zhihu.com/p/715868836</a></p>
+<ul>
+<li>
+<p>Prompt结构</p>
+<ul>
+<li>1.角色设定</li>
+<li>2.目标设定</li>
+<li>3.业务规则</li>
+<li>4.参考数据</li>
+<li>5.表现评估</li>
+<li>6.输出约束</li>
+</ul>
+</li>
+</ul>
+<h2 id="角色设定-1">角色设定</h2>
+<p>先给GPT设定一个角色，让它尽量激活庞大数据里相关的一部分数据。</p>
+<p>‍</p>
+<h2 id="目标设定-1">目标设定</h2>
+<p>描述自己的需求，使用此模型的目的</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SQL" data-lang="SQL"><span style="display:flex;"><span>GOALS:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span>. <span style="color:#960050;background-color:#1e0010">根据描述，分析游戏的一级分类</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span>. <span style="color:#960050;background-color:#1e0010">根据描述，分析游戏的二级分类</span>
+</span></span></code></pre></div><h2 id="业务规则-1">业务规则</h2>
+<p>对GPT的结果和分析过程进行约束。</p>
+<p>Chain of Thought（CoT）：给GPT举例子应该怎么分析，来提升结果的准确性。</p>
+<p>根据所举的例子，约束GPT的分析行为，避免因为GPT根据训练数据进行想象，给出一些“可能”且不在我们限定数据范围内的结果。</p>
+<p>这部分也是In-Context Learning中，需要GPT来进行学习的重要内容。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>CONSTRAINTS:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>1. ~4000 word limit for short term memory. Your short term memory is short。
+</span></span><span style="display:flex;"><span>2. If you are unsure how you previously did something or want to recall past events, thinking about similar events will help you remember.
+</span></span><span style="display:flex;"><span>3. No user assistance
+</span></span><span style="display:flex;"><span>4. Exclusively use the categories listed in following json structure. each item presents is series of categorys.&#34;category&#34; means the first class of category. the array which named &#39;sub-category&#39; stands for the second class of category related to the first class of category
+</span></span><span style="display:flex;"><span>5. 先判定category，再判定和category相对应的sub-category。不能反向判定。
+</span></span><span style="display:flex;"><span>6. 如果category为Simulation时，体现了体育的内容，优先判定为Sports
+</span></span><span style="display:flex;"><span>7. “躲避”障碍物是跑酷游戏中常见的一种操作，但有跑道、追求完赛速度的，category优先判定为Racing，sub-category优先判定为Parkour
+</span></span><span style="display:flex;"><span>8. 射击泡泡→同色泡泡消除游戏，类似泡泡龙、祖玛，category优先判定为Puzzle，sub-category优先判定为Blast
+</span></span><span style="display:flex;"><span>9. 画线救狗、拔出插销救动物or人、割断绳子救人/砸东西 等此类游戏均为解谜性质，category优先判定为Puzzle，sub-category优先判定为Puzzle
+</span></span><span style="display:flex;"><span>10. category判定为Racing时，如果体现了驾驶操作，则sub-category为Driving，否则为Parkour
+</span></span><span style="display:flex;"><span>11. category判定为Racing时，如果体现了多人同时在线游玩，sub-category优先判定为Party Game
+</span></span><span style="display:flex;"><span>12.jump scare 是指恐怖片的贴脸杀，并非游戏分类的JUMP；有密室探索、密室逃脱特征的游戏，category优先判定为Adventure，sub-category优先判定为Escape
+</span></span><span style="display:flex;"><span>13.培养鸭子属于培养动物，培养动物的游戏category优先判定为Simulation，sub-category优先判定为Pet
+</span></span><span style="display:flex;"><span>14.连连看玩法category应为Puzzle，sub-category应为Match；当麻将只作为UI元素出现时，和游戏玩法无关，不应该判定为Board。
+</span></span><span style="display:flex;"><span>15. 跳过障碍物属于操作性强的动作类游戏，category优先判定为Action，操作的行为是跳跃的，sub-category优先判定为Jump
+</span></span><span style="display:flex;"><span>16.模拟经营的游戏属于模拟，category优先判定为Simulation，涉及到店铺经营管理的，sub-category优先判定为Sim Business
+</span></span><span style="display:flex;"><span>17.给女孩们穿衣服的游戏，category优先判定为Casual，服饰搭配、穿搭时尚的游戏sub-category优先判定为Dressup，设计其他物品的游戏sub-category优先判定为Design
+</span></span></code></pre></div><h2 id="参考数据-1">参考数据</h2>
+<p>当需要GPT的处理结果限定在一个具体的范围内时，可以通过在Prompt中传入具体数据的方式实现。</p>
+<p>GPT可以正确理解类似Json的结构化数据。</p>
+<p>并且，在测试中，GPT体现出了良好的语义理解能力。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-JSON" data-lang="JSON"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">Category:</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;Music&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;sub-category&#34;</span>:
+</span></span><span style="display:flex;"><span>        [
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Beats&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Instrument&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Music&#34;</span>
+</span></span><span style="display:flex;"><span>        ]
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">。。。</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;Adventure&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;sub-category&#34;</span>:
+</span></span><span style="display:flex;"><span>        [
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Role Playing&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Escape&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Survival&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Adventure&#34;</span>
+</span></span><span style="display:flex;"><span>        ]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>]
+</span></span></code></pre></div><h2 id="表现评估-1">表现评估</h2>
+<p>不同结果输出顺序，会影响GPT的整体输出结果。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>PERFORMANCE EVALUATION:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>1. Continuously review and analyze your actions to ensure you are performing to the best of your abilities.
+</span></span><span style="display:flex;"><span>2. Constructively self-criticize your big-picture behavior constantly.
+</span></span><span style="display:flex;"><span>3. Reflect on past decisions and strategies to refine your approach.
+</span></span></code></pre></div><h2 id="输出约束-1">输出约束</h2>
+<p>对处理结果进行格式化输出</p>
+<p>类似Json这种结构的数据，GPT能够很好地保证结构的完整性。</p>
+<p><strong>Ensure the response can be parsed by Python</strong> <strong>json.loads</strong></p>
+<p>可以让GPT用类似的程序化处理方式，对结果进行验证，进一步保证结果的格式正确。</p>
+<p>使用json_mode，可以更好约束结果的输出格式</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>You should only respond in JSON format as described below
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RESPONSE FORMAT:
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    &#34;category&#34;:
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        &#34;name&#34;: &#34;Music&#34;,
+</span></span><span style="display:flex;"><span>        &#34;posibility&#34;: &#34;0.8&#34;
+</span></span><span style="display:flex;"><span>    }，
+</span></span><span style="display:flex;"><span>    &#34;sub&#34;:{
+</span></span><span style="display:flex;"><span>        &#34;name: &#34;Beats&#34;,
+</span></span><span style="display:flex;"><span>        &#34;posibility&#34;:&#34;1.0&#34;
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>&#34;reason&#34;:&#34;&#34;// show me the process of analytic in chinese.
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Ensure the response can be parsed by Python json.loads
+</span></span></code></pre></div>
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

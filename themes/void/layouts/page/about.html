@@ -1,0 +1,29 @@
+{{ define "main" }}
+  <article class="max-w-4xl mx-auto">
+    <!-- Clean page title -->
+    <div class="mb-12 text-center">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ .Title }}</h1>
+    </div>
+
+    <!-- Content area -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-12">
+      <div class="p-8 sm:p-10 prose prose-sm sm:prose lg:prose-lg max-w-none">
+        {{ .Content }}
+      </div>
+    </div>
+
+    <!-- Simple footer -->
+    <div class="flex justify-center mb-12">
+      <a href="{{ "/" | relLangURL }}" class="inline-flex items-center text-gray-600 hover:text-blue-600 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        {{ i18n "back_to_home" | default "Back to Home" }}
+      </a>
+    </div>
+  </article>
+  <!-- 使用懒加载Disqus评论 -->
+  <div class="max-w-4xl mx-auto mt-8 bg-white rounded-lg shadow-md overflow-hidden" style="--tw-prose-body: #374151; --tw-prose-headings: #111827; --tw-prose-links: #2563eb; --tw-prose-links-hover: #1d4ed8; --tw-prose-code-bg: #f3f4f6; color: #374151; background-color: #ffffff;">
+    {{ partial "disqus_lazy.html" . }}
+  </div>
+{{ end }} 

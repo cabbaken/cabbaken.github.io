@@ -1,0 +1,1031 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>shot_2_xx</title>
+
+<meta name="description" content="shot_2_xx 以N16U为例，分析其拍照产生的log。
+09-03 15:44:34.169 18351 27678 D CAM_SplashProvider: getSplashFile: drawableRes camera_preview_bottom_action_bar_cv // 打开相机 09-03 15:44:35.021 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onCreate start 173324289 09-03 15:44:35.022 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH start 09-03 15:44:35.023 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA E 09-03 15:44:35.029 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA X 09-03 15:44:35.030 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: cid: -1 -&gt; 0, mid: 163 -&gt; 163, fcc: true 09-03 15:44:35.032 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = [] 09-03 15:44:35.032 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = [] 09-03 15:44:35.032 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 1:createActivity2openCamera_163_0 takes 10 ms 09-03 15:44:35.033 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: retries = 0 09-03 15:44:35.033 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: E: cid = 0 09-03 15:44:35.033 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: switch_prefix_camera_setup_163_0 takes 4 ms 09-03 15:44:35.088 18351 18351 I CAM_Camera@173324289: [U_ACTION]: onModeSelected from 0xa0 to 0xa3, ScreenSlideOff = false, facing = 0 09-03 15:44:35.092 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: switch_prefix_data_setup_163_0 takes 3 ms 09-03 15:44:35.098 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: X: cid = 0 09-03 15:44:35.098 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onOpened: cid = 0 09-03 15:44:35.099 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 2:[HAL]openCamera@0_163_0 takes 66 ms 09-03 15:44:35.099 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A1:createActivity_163_0 takes 77 ms 09-03 15:44:35.100 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A2:switch_camera_prepare_163_0 takes 8 ms 09-03 15:44:35.101 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onCreate end 173324289 09-03 15:44:35.101 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: cid: 0 -&gt; 0, mid: 163 -&gt; 163, fcc: false 09-03 15:44:35.105 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A3:switch_camera_2_open_163_0 takes 4 ms 09-03 15:44:35.106 18351 18436 I CAM_CameraOpenObservable: [K_PROCESS]: onOpened: cid = 0, listener = 143587978 09-03 15:44:35.106 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: onOpened: cid = 0|android.hardware.camera2.impl.CameraDeviceImpl@29685ea 09-03 15:44:35.106 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = [0] 09-03 15:44:35.106 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = [0] 09-03 15:44:35.107 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onOpened: cid = 0 09-03 15:44:35.108 18351 18436 I CAM_CameraOpenObservable: [K_PROCESS]: onOpened: cid = 0, listener = 122189081 09-03 15:44:35.108 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: onOpened: cid = 0|android.hardware.camera2.impl.CameraDeviceImpl@29685ea 09-03 15:44:35.110 18351 18436 I CAM_BaseModule: [K_PROCESS]: onCreate: moduleIndex-&gt;163, cameraId-&gt;0@u@182152399: mid = 163, cid = 0, created = false, departed = false 09-03 15:44:35.111 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL 09-03 15:44:35.111 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL 09-03 15:44:35.113 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL 09-03 15:44:35.115 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA E 09-03 15:44:35.115 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA X 09-03 15:44:35.120 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL 09-03 15:44:35.128 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: not allow traceStart 09-03 15:44:35.128 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: resumeActivity@173324289_163_0 takes 13 ms 09-03 15:44:35.131 18351 18436 I CAM_Camera2Module: [K_PROCESS]: startPreview: set PictureSize with 4080x3060 09-03 15:44:35.149 18351 18436 I CAM_Camera2Module: [K_PROCESS]: startPreview: surfaceTexture = android.graphics.SurfaceTexture@22de842 09-03 15:44:35.152 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL 09-03 15:44:35.152 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: operatingMode=0x9005 previewCallback=2 rawCallbackType=32 09-03 15:44:35.153 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PhotoImageReader configuration: format=0x23 size=4080x3060 09-03 15:44:35.154 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add JpegImageReader configuration: format=0x100 size=4080x3060 09-03 15:44:35.158 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add TuningImageReader configuration: format=0x32315659 size=1280x720 09-03 15:44:35.164 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add QuickViewImageReader configuration: format=0x23 size=1440x1080 09-03 15:44:35.164 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PreviewImageReader configuration: format=0x23 size=1440x1080 09-03 15:44:35.165 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PreviewSurface configuration: format=0x22 size=1440x1080 09-03 15:44:35.165 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: 5.1:surfaceViewCreate_163_0 takes 124 ms 09-03 15:44:35.167 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: setup output configuration number: 6 09-03 15:44:35.168 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 3:cameraOpened2createCaptureSession@0_163_0 takes 69 ms 09-03 15:44:35.354 18351 18351 I CAM_ZoomRatioToggleView: [U_ACTION]: setZoomRatio(): a = ZOOMING_BY_UNKNOWN_SOURCE,i = 1,z = 1.0,ti =1,tz =1.0 09-03 15:44:35.356 18351 18351 I CAM_ZoomRatioToggleView: [U_ACTION]: setZoomRatio(): a = ZOOMING_BY_LAYOUT_CHANGE,i = 1,z = 1.0,ti =1,tz =1.0 09-03 15:44:35.457 18351 18459 I CAM_MiCamera2: [K_PROCESS]: onConfigured: id = 1, session = android.hardware.camera2.impl.CameraCaptureSessionImpl@e9be74d, Reprocessable = false 09-03 15:44:35.457 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 4:[HAL]createCaptureSession@0_163_0 takes 289 ms 09-03 15:44:35.457 18351 18459 I CAM_MiCamera2: [K_PROCESS]: onConfigured: is mDeferOutputConfigurations null: true 09-03 15:44:35.464 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A4:switch_module_setup_163_0 takes 356 ms 09-03 15:44:35.464 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A5:switch_data_setup_163_0 takes 0 ms 09-03 15:44:35.475 18351 18436 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false 09-03 15:44:35.479 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 5.2:applyPreviewSettings_163_0 takes 14 ms 09-03 15:44:35.479 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 5:captureSessionReady2startPreview_163_0 takes 22 ms 09-03 15:44:35.482 18351 18436 I CAM_MiCamera2: [K_PROCESS]: resumePreview: repeating sequenceId: 0 09-03 15:44:35.493 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A6:switch_preview_setup_163_0 takes 3 ms 09-03 15:44:35.509 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A7:switch_ui_setup_163_0 takes 16 ms 09-03 15:44:35.527 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A8:switch_setup_consumer_163_0 takes 18 ms 09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: COLD_LAUNCH has no start time, ignore this stop event as take 0 ms 09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH_163_0 takes 586 ms 09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH takes 586 is less than 1500 09-03 15:44:35.609 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Action: 6:[HAL]startPreview2firstFrame_163_0 takes 130 ms 09-03 15:44:35.610 18351 18456 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: com.android.camera.Camera.Jk(Unknown Source:143), com.android.camera.ActivityBase.Lk(Unknown Source:313), s8.z.onFrameAvailable(Unknown Source:15), 09-03 15:44:35.872 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onWindowFocusChanged: hasFocus: true, isFromKeyguard: true 09-03 15:44:35.876 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: camera2Proxy=com.android.camera2.i4@75c4fb7 - cid: 0; isCameraDisconnected=false 09-03 15:44:36.061 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false 09-03 15:44:37.978 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false 09-03 15:44:37.981 18351 18436 I CAM_MiCamera2: [K_PROCESS]: resumePreview: repeating sequenceId: 1 09-03 15:44:39.856 18351 18351 I CAM_BaseModuleStateManager: [U_ACTION]: setTriggerMode 140 // 用户点击拍照按钮 09-03 15:44:39.856 18351 18351 I CAM_ImageActionImpl: [U_ACTION]: onShutterButtonClick 1 09-03 15:44:39.856 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE start 09-03 15:44:39.856 18351 18351 V CAM_FocusManager: [K_PROCESS]: prepareCapture: false|2|continuous-picture 09-03 15:44:39.856 18351 18351 I CAM_FocusManager: [K_PROCESS]: doSnap mState = 0, fromWhat = 2 09-03 15:44:39.857 18351 18351 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: u2.u.H3(Unknown Source:1), p6.s.S(Unknown Source:10), p6.s.V(Unknown Source:91), 09-03 15:44:39.857 18351 18351 I CAM_Camera2Module: [K_PROCESS]: startNormalCapture mode -&gt; 140 09-03 15:44:39.858 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE start 09-03 15:44:39.859 18351 18351 I CAM_Camera2Module: [K_PROCESS]: prepareNormalCapture title = IMG_20240903_154439 09-03 15:44:39.860 18351 18351 D CAM_MiCamera2: [K_PROCESS]: capture:mMiCamera2QuickViewQueue.offer,size: 1 // 开始拍照（startShot） // Build Request 09-03 15:44:39.860 18351 18351 I CAM_OfflineSingleYuvShot: [K_PROCESS]: startShot: this=com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700 09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for pic 35_4080x3060 09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for quickview 35_1440x1080 09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for tuning 842094169_1280x720 09-03 15:44:39.867 18351 18351 I CAM_CaptureRequestBuilder: [K_PROCESS]: applyHDR:false 09-03 15:44:39.867 18351 18351 I CAM_CaptureRequestBuilder: [K_PROCESS]: applySuperResolution: false, applyType = 3 09-03 15:44:39.867 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: true 09-03 15:44:39.868 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyStreetShoot: false // capture基本配置信息 09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputFormat = JPEG 09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputSize = 4080x3060 09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputQuality = 96 09-03 15:44:39.869 18351 18351 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL 09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: isParallel = false, shotType = 101 09-03 15:44:39.869 18351 18351 I CAM_LiveShotManager: [K_PROCESS]: onCaptureStart: isLiveShot = false, hashcode = 54555436, savePath = /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg 09-03 15:44:39.870 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_prepare_capture_163_0 takes 14 ms // add listener to MIVICaptureManager 09-03 15:44:39.870 18351 18351 I CAM_OfflineCaptureManager: [K_PROCESS]: addListener: IMG_20240903_154439.jpg 09-03 15:44:39.871 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: sequenceId=2 09-03 15:44:39.871 18351 18351 I CAM_FragmentBottomAction: [U_ACTION]: MultiCaptureByRunningCondition // capture start 09-03 15:44:39.935 18351 18459 I CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureStarted: timestamp=5845378796665 frameNumber=133 09-03 15:44:39.936 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_on_shutter_163_0 takes 80 ms 09-03 15:44:39.936 18351 18459 D CAM_OfflineImageDataZipper: [K_PROCESS]: putParallelTaskData : timestamp = 5845378796665 ,parallelTaskData.timeStamp = 5845378796665 ,size = 1 09-03 15:44:39.936 18351 18459 I CAM_OfflineCaptureManager: [K_PROCESS]: addJpegListener: IMG_20240903_154439.jpg|133 09-03 15:44:39.948 18351 18574 D CAM_MIVIParallelService: [K_PROCESS]: onCaptureCompleted:frameNumber = 133;pictureName = IMG_20240903_154439.jpg 09-03 15:44:39.949 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyCaptureCompleted: ready pictureName = IMG_20240903_154439.jpg 09-03 15:44:39.949 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureCompleted: 1 mPictureName: IMG_20240903_154439.jpg, timestamp: 5845378796665 09-03 15:44:39.962 18351 18701 I CAM_OfflineSingleYuvShot: [K_PROCESS]: handleCaptureFinished: mPictureName: IMG_20240903_154439.jpg // 捕获图像进行算法处理配置，applySuperResolution,applyMfnrEnable,applyStreetShoot 09-03 15:44:39.967 18351 18701 I CAM_CaptureRequestBuilder: [K_PROCESS]: applySuperResolution: ignored for applyType = 1 09-03 15:44:39.967 18351 18701 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false 09-03 15:44:39.968 18351 18701 V CAM_MiCameraCompat: [K_PROCESS]: applyStreetShoot: false // quickview available 09-03 15:44:39.970 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: quickview shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700 09-03 15:44:39.970 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 1440*1080 resultType = 6 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700 09-03 15:44:39.971 18351 18351 I CAM_FragmentBottomAction: [U_ACTION]: onSnapClick 09-03 15:44:39.972 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImageIfNeed: start schedule: mPictureName: IMG_20240903_154439.jpg 09-03 15:44:39.973 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: mMiCamera2QuickViewQueue.poll, size:0 09-03 15:44:39.974 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImageIfNeed: mCurrentParallelTaskData timestamp:5845378796665 image timestamp:5845378796665 09-03 15:44:39.976 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImage: YUV E, frameNumber: 133,mPictureName: IMG_20240903_154439.jpg 09-03 15:44:39.987 18351 18701 I CAM_Camera2Module: [K_PROCESS]: onPictureTakenFinished: succeed = true 09-03 15:44:39.996 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE_163_0 takes 140 ms 09-03 15:44:39.996 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE takes 140 is less than 2000 09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE_163_0 takes 138 ms 09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE takes 138 is less than 2000 09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Ignore this stop event, there is no event in start status. 09-03 15:44:39.997 18351 18701 I CAM_Camera2Module: [P_PERFORM]: mCaptureStartTime(from onShutterButtonClick start to jpegCallback finished) = 129ms 09-03 15:44:39.998 18351 18701 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: d6.p2.Oq(Unknown Source:16), d6.p2.z7(Unknown Source:380), com.xiaomi.camera.mivi.mtk.OfflineBaseShot.handleCaptureFinished(Unknown Source:138), // shot_2_shot完成 09-03 15:44:39.999 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_shot_163_0 takes 142 ms // 存储quickview图像，生成缩略图 09-03 15:44:40.101 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImage: YUV X , mPictureName: IMG_20240903_154439.jpg, needIcc: true 09-03 15:44:40.101 18351 18459 I CAM_ImageSaver: [K_PROCESS]: onParallelProcessFinish: path: /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg 09-03 15:44:40.112 18351 28100 I CAM_PreviewSaveRequest: [K_PROCESS]: image save try to create thumbnail 09-03 15:44:40.156 18351 28100 V CAM_ImageSaver: [K_PROCESS]: postUpdateThumbnail true 09-03 15:44:40.156 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: SLOW_MOTION_SAVING has no start time, ignore this stop event as take 0 ms 09-03 15:44:40.157 18351 28100 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: com.android.camera.ActivityBase.R0(Unknown Source:19), a8.i.l(Unknown Source:49), a8.p.J(Unknown Source:275), // shot_2_gallery完成 09-03 15:44:40.340 18351 28126 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_gallery_163_0 takes 483 ms 09-03 15:44:41.291 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: tuning timestamp = 5845378796665 09-03 15:44:41.294 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: tuning shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700 09-03 15:44:41.295 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 1280*720 resultType = 5 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700 09-03 15:44:41.297 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setImage: timestamp = 5845378796665 resultType =5 imageName=IMG_20240903_154439.jpg // 结果图完成 09-03 15:44:41.297 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: main timestamp = 5845378796665 09-03 15:44:41.297 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: main shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700 09-03 15:44:41.298 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 4080*3060 resultType = 0 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700 09-03 15:44:41.300 18351 18459 I CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureCompleted: frameNumber=133 // 转换yuv为jpeg 09-03 15:44:41.303 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setImage: timestamp = 5845378796665 resultType =0 imageName=IMG_20240903_154439.jpg 09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf] 09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setResult: timestamp = 5845378796665 imageName=IMG_20240903_154439.jpg 09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: handleDataBeanIfReady: dataBean with timestamp 5845378796665 is ready 09-03 15:44:41.304 18351 18702 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_device_capture_163_0 takes 1434 ms 09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf] 09-03 15:44:41.305 18351 18702 D CAM_OfflineImageProcessor: [K_PROCESS]: process: E timestamp = 5845378796665 09-03 15:44:41.305 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf] 09-03 15:44:41.305 18351 18702 D CAM_OfflineImageProcessor: [K_PROCESS]: process: X 09-03 15:44:41.306 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: doJpeg: 5845378796665/0 09-03 15:44:41.307 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyDataReady: ready 09-03 15:44:41.307 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onDataReady: timestamp=5845378796665 09-03 15:44:41.311 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onDataReady:mMiCamera2QuickViewQueue.size = 0 ,mMiCamera2ShotQueue.size = 0 09-03 15:44:41.471 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: onJpegAvailable: 5845378796665 | 0 09-03 15:44:41.471 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf] // 转换完成后，存储主图 09-03 15:44:41.472 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: onJpegAvailable: save image start. dataLen=2630390 09-03 15:44:41.472 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyFinish: key = IMG_20240903_154439.jpg|133 09-03 15:44:41.473 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: Final picture onImageReceived: timestamp: 5845378796665,type:JPEG 09-03 15:44:41.473 18351 18701 I CAM_OfflineCaptureManager: [K_PROCESS]: removeJpegListener: IMG_20240903_154439.jpg|133; size: 0 09-03 15:44:41.473 18351 18701 I CAM_OfflineCaptureManager: [K_PROCESS]: removeListener: IMG_20240903_154439.jpg; size: 0 09-03 15:44:41.473 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onFinalImageReceived: dataLength =2630390 timestamp =5845378796665 type =JPEG 09-03 15:44:41.473 18351 18701 D CAM_OfflineImageDataZipper: [K_PROCESS]: removeParallelTaskData : timestamp =5845378796665 size =0 09-03 15:44:41.473 18351 18701 I CAM_ImageSaver: [K_PROCESS]: onParallelProcessFinish: path: /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg 09-03 15:44:41.503 18351 28251 I CAM_Storage: [K_PROCESS]: updateImage uri-&gt; content://media/external_primary/images/media/1000000050, tmpFile /data/user/0/com.android.camera/cache/IMG_20240903_154439.jpg // 图片存储完成 09-03 15:44:41.604 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: algo_capture_total_1725349479858_163_0 takes 1733 ms 09-03 15:44:41.605 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: algo_image_save_5845378796665_163_0 takes 131 ms 09-03 15:44:41.606 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_view_1725349479858_163_0 takes 1735 ms 09-03 15:44:41.606 18351 28251 I CAM_ParallelSaveRequest: [K_PROCESS]: image save onFinish 09-03 15:44:41.606 18351 28251 I CAM_ParallelSaveRequest: [K_PROCESS]: saved image finished, timestamp: 5845378796665 09-03 15:44:47.697 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: not allow traceStop // 关闭相机 09-03 15:44:47.771 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onWindowFocusChanged: hasFocus: false, isFromKeyguard: true 09-03 15:44:47.772 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: camera2Proxy=com.android.camera2.i4@75c4fb7 - cid: 0; isCameraDisconnected=false 09-03 15:44:48.942 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = [] 09-03 15:44:48.955 18351 18459 I CAM_MiCamera2: [K_PROCESS]: abortCaptures E 09-03 15:44:49.030 18351 18459 I CAM_MiCamera2: [K_PROCESS]: abortCaptures X 09-03 15:44:49.030 18351 18459 I CAM_MiCamera2: [K_PROCESS]: E: close: cameraId = 0, reason = 0 09-03 15:44:49.031 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE start 09-03 15:44:49.153 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE_163_0 takes 122 ms 09-03 15:44:49.153 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE takes 122 is less than 2000 09-03 15:44:49.154 18351 18459 I CAM_MiCamera2: [K_PROCESS]: X: close: cameraId = 0 09-03 15:44:49.154 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = [] 09-03 15:44:49.155 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onClosed: cid = 0, closing = true title: shot_2_xx date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z shot_2_xx 以N16U为例，分析其拍照产生的log。
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/shot_2_xx/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/shot_2_xx/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/shot_2_xx/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="shot_2_xx">
+<meta property="og:description" content="shot_2_xx
+以N16U为例，分析其拍照产生的log。
+09-03 15:44:34.169 18351 27678 D CAM_SplashProvider: getSplashFile: drawableRes camera_preview_bottom_action_bar_cv
+                                // 打开相机
+09-03 15:44:35.021 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onCreate start 173324289
+09-03 15:44:35.022 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH start
+09-03 15:44:35.023 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA E
+09-03 15:44:35.029 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA X
+09-03 15:44:35.030 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: cid: -1 -&gt; 0, mid: 163 -&gt; 163, fcc: true
+09-03 15:44:35.032 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = []
+09-03 15:44:35.032 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = []
+09-03 15:44:35.032 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 1:createActivity2openCamera_163_0 takes 10 ms
+09-03 15:44:35.033 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: retries = 0
+09-03 15:44:35.033 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: E: cid = 0
+09-03 15:44:35.033 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: switch_prefix_camera_setup_163_0 takes 4 ms
+09-03 15:44:35.088 18351 18351 I CAM_Camera@173324289: [U_ACTION]: onModeSelected from 0xa0 to 0xa3, ScreenSlideOff = false, facing = 0
+09-03 15:44:35.092 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: switch_prefix_data_setup_163_0 takes 3 ms
+09-03 15:44:35.098 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: X: cid = 0
+09-03 15:44:35.098 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onOpened: cid = 0
+09-03 15:44:35.099 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 2:[HAL]openCamera@0_163_0 takes 66 ms
+09-03 15:44:35.099 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A1:createActivity_163_0 takes 77 ms
+09-03 15:44:35.100 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A2:switch_camera_prepare_163_0 takes 8 ms
+09-03 15:44:35.101 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onCreate end 173324289
+09-03 15:44:35.101 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: cid: 0 -&gt; 0, mid: 163 -&gt; 163, fcc: false
+09-03 15:44:35.105 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A3:switch_camera_2_open_163_0 takes 4 ms
+09-03 15:44:35.106 18351 18436 I CAM_CameraOpenObservable: [K_PROCESS]: onOpened: cid = 0, listener = 143587978
+09-03 15:44:35.106 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: onOpened: cid = 0|android.hardware.camera2.impl.CameraDeviceImpl@29685ea
+09-03 15:44:35.106 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = [0]
+09-03 15:44:35.106 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = [0]
+09-03 15:44:35.107 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onOpened: cid = 0
+09-03 15:44:35.108 18351 18436 I CAM_CameraOpenObservable: [K_PROCESS]: onOpened: cid = 0, listener = 122189081
+09-03 15:44:35.108 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: onOpened: cid = 0|android.hardware.camera2.impl.CameraDeviceImpl@29685ea
+09-03 15:44:35.110 18351 18436 I CAM_BaseModule: [K_PROCESS]: onCreate: moduleIndex-&gt;163, cameraId-&gt;0@u@182152399: mid = 163, cid = 0, created = false, departed = false
+09-03 15:44:35.111 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+09-03 15:44:35.111 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+09-03 15:44:35.113 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+09-03 15:44:35.115 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA E
+09-03 15:44:35.115 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA X
+09-03 15:44:35.120 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+09-03 15:44:35.128 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: not allow traceStart
+09-03 15:44:35.128 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: resumeActivity@173324289_163_0 takes 13 ms
+09-03 15:44:35.131 18351 18436 I CAM_Camera2Module: [K_PROCESS]: startPreview: set PictureSize with 4080x3060
+09-03 15:44:35.149 18351 18436 I CAM_Camera2Module: [K_PROCESS]: startPreview: surfaceTexture = android.graphics.SurfaceTexture@22de842
+09-03 15:44:35.152 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+09-03 15:44:35.152 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: operatingMode=0x9005 previewCallback=2 rawCallbackType=32
+09-03 15:44:35.153 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PhotoImageReader configuration: format=0x23 size=4080x3060
+09-03 15:44:35.154 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add JpegImageReader configuration: format=0x100 size=4080x3060
+09-03 15:44:35.158 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add TuningImageReader configuration: format=0x32315659 size=1280x720
+09-03 15:44:35.164 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add QuickViewImageReader configuration: format=0x23 size=1440x1080
+09-03 15:44:35.164 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PreviewImageReader configuration: format=0x23 size=1440x1080
+09-03 15:44:35.165 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PreviewSurface configuration: format=0x22 size=1440x1080
+09-03 15:44:35.165 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: 5.1:surfaceViewCreate_163_0 takes 124 ms
+09-03 15:44:35.167 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: setup output configuration number: 6
+09-03 15:44:35.168 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 3:cameraOpened2createCaptureSession@0_163_0 takes 69 ms
+09-03 15:44:35.354 18351 18351 I CAM_ZoomRatioToggleView: [U_ACTION]: setZoomRatio(): a = ZOOMING_BY_UNKNOWN_SOURCE,i = 1,z = 1.0,ti =1,tz =1.0
+09-03 15:44:35.356 18351 18351 I CAM_ZoomRatioToggleView: [U_ACTION]: setZoomRatio(): a = ZOOMING_BY_LAYOUT_CHANGE,i = 1,z = 1.0,ti =1,tz =1.0
+09-03 15:44:35.457 18351 18459 I CAM_MiCamera2: [K_PROCESS]: onConfigured: id = 1, session = android.hardware.camera2.impl.CameraCaptureSessionImpl@e9be74d, Reprocessable = false
+09-03 15:44:35.457 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 4:[HAL]createCaptureSession@0_163_0 takes 289 ms
+09-03 15:44:35.457 18351 18459 I CAM_MiCamera2: [K_PROCESS]: onConfigured: is mDeferOutputConfigurations null: true
+09-03 15:44:35.464 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A4:switch_module_setup_163_0 takes 356 ms
+09-03 15:44:35.464 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A5:switch_data_setup_163_0 takes 0 ms
+09-03 15:44:35.475 18351 18436 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+09-03 15:44:35.479 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 5.2:applyPreviewSettings_163_0 takes 14 ms
+09-03 15:44:35.479 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 5:captureSessionReady2startPreview_163_0 takes 22 ms
+09-03 15:44:35.482 18351 18436 I CAM_MiCamera2: [K_PROCESS]: resumePreview: repeating sequenceId: 0
+09-03 15:44:35.493 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A6:switch_preview_setup_163_0 takes 3 ms
+09-03 15:44:35.509 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A7:switch_ui_setup_163_0 takes 16 ms
+09-03 15:44:35.527 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A8:switch_setup_consumer_163_0 takes 18 ms
+09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: COLD_LAUNCH has no start time, ignore this stop event as take 0 ms
+09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH_163_0 takes 586 ms
+09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH takes 586 is less than 1500
+09-03 15:44:35.609 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Action: 6:[HAL]startPreview2firstFrame_163_0 takes 130 ms
+09-03 15:44:35.610 18351 18456 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: com.android.camera.Camera.Jk(Unknown Source:143), com.android.camera.ActivityBase.Lk(Unknown Source:313), s8.z.onFrameAvailable(Unknown Source:15), 
+09-03 15:44:35.872 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onWindowFocusChanged: hasFocus: true, isFromKeyguard: true
+09-03 15:44:35.876 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: camera2Proxy=com.android.camera2.i4@75c4fb7 - cid: 0; isCameraDisconnected=false
+09-03 15:44:36.061 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+09-03 15:44:37.978 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+09-03 15:44:37.981 18351 18436 I CAM_MiCamera2: [K_PROCESS]: resumePreview: repeating sequenceId: 1
+09-03 15:44:39.856 18351 18351 I CAM_BaseModuleStateManager: [U_ACTION]: setTriggerMode 140
+                                // 用户点击拍照按钮
+09-03 15:44:39.856 18351 18351 I CAM_ImageActionImpl: [U_ACTION]: onShutterButtonClick 1
+09-03 15:44:39.856 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE start
+09-03 15:44:39.856 18351 18351 V CAM_FocusManager: [K_PROCESS]: prepareCapture: false|2|continuous-picture
+09-03 15:44:39.856 18351 18351 I CAM_FocusManager: [K_PROCESS]: doSnap mState = 0, fromWhat = 2
+09-03 15:44:39.857 18351 18351 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: u2.u.H3(Unknown Source:1), p6.s.S(Unknown Source:10), p6.s.V(Unknown Source:91), 
+09-03 15:44:39.857 18351 18351 I CAM_Camera2Module: [K_PROCESS]: startNormalCapture mode -&gt; 140
+09-03 15:44:39.858 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE start
+09-03 15:44:39.859 18351 18351 I CAM_Camera2Module: [K_PROCESS]: prepareNormalCapture title = IMG_20240903_154439
+09-03 15:44:39.860 18351 18351 D CAM_MiCamera2: [K_PROCESS]: capture:mMiCamera2QuickViewQueue.offer,size: 1
+                                // 开始拍照（startShot）
+                                // Build Request
+09-03 15:44:39.860 18351 18351 I CAM_OfflineSingleYuvShot: [K_PROCESS]: startShot: this=com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for pic 35_4080x3060
+09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for quickview 35_1440x1080
+09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for tuning 842094169_1280x720
+09-03 15:44:39.867 18351 18351 I CAM_CaptureRequestBuilder: [K_PROCESS]: applyHDR:false
+09-03 15:44:39.867 18351 18351 I CAM_CaptureRequestBuilder: [K_PROCESS]: applySuperResolution: false, applyType = 3
+09-03 15:44:39.867 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: true
+09-03 15:44:39.868 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyStreetShoot: false
+                                // capture基本配置信息
+09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputFormat = JPEG
+09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputSize = 4080x3060
+09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputQuality = 96
+09-03 15:44:39.869 18351 18351 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: isParallel = false, shotType = 101
+09-03 15:44:39.869 18351 18351 I CAM_LiveShotManager: [K_PROCESS]: onCaptureStart: isLiveShot = false, hashcode = 54555436, savePath = /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg
+09-03 15:44:39.870 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_prepare_capture_163_0 takes 14 ms
+                                // add listener to MIVICaptureManager
+09-03 15:44:39.870 18351 18351 I CAM_OfflineCaptureManager: [K_PROCESS]: addListener: IMG_20240903_154439.jpg
+09-03 15:44:39.871 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: sequenceId=2
+09-03 15:44:39.871 18351 18351 I CAM_FragmentBottomAction: [U_ACTION]: MultiCaptureByRunningCondition
+                                // capture start
+09-03 15:44:39.935 18351 18459 I CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureStarted: timestamp=5845378796665 frameNumber=133
+09-03 15:44:39.936 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_on_shutter_163_0 takes 80 ms
+09-03 15:44:39.936 18351 18459 D CAM_OfflineImageDataZipper: [K_PROCESS]: putParallelTaskData : timestamp = 5845378796665 ,parallelTaskData.timeStamp = 5845378796665 ,size = 1
+09-03 15:44:39.936 18351 18459 I CAM_OfflineCaptureManager: [K_PROCESS]: addJpegListener: IMG_20240903_154439.jpg|133
+09-03 15:44:39.948 18351 18574 D CAM_MIVIParallelService: [K_PROCESS]: onCaptureCompleted:frameNumber = 133;pictureName = IMG_20240903_154439.jpg
+09-03 15:44:39.949 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyCaptureCompleted: ready pictureName = IMG_20240903_154439.jpg
+09-03 15:44:39.949 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureCompleted: 1 mPictureName: IMG_20240903_154439.jpg, timestamp: 5845378796665
+09-03 15:44:39.962 18351 18701 I CAM_OfflineSingleYuvShot: [K_PROCESS]: handleCaptureFinished: mPictureName: IMG_20240903_154439.jpg
+                                // 捕获图像进行算法处理配置，applySuperResolution,applyMfnrEnable,applyStreetShoot
+09-03 15:44:39.967 18351 18701 I CAM_CaptureRequestBuilder: [K_PROCESS]: applySuperResolution: ignored for applyType = 1
+09-03 15:44:39.967 18351 18701 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+09-03 15:44:39.968 18351 18701 V CAM_MiCameraCompat: [K_PROCESS]: applyStreetShoot: false
+                                // quickview available
+09-03 15:44:39.970 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: quickview shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+09-03 15:44:39.970 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 1440*1080 resultType = 6 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+09-03 15:44:39.971 18351 18351 I CAM_FragmentBottomAction: [U_ACTION]: onSnapClick
+09-03 15:44:39.972 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImageIfNeed: start schedule: mPictureName: IMG_20240903_154439.jpg
+09-03 15:44:39.973 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: mMiCamera2QuickViewQueue.poll, size:0
+09-03 15:44:39.974 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImageIfNeed: mCurrentParallelTaskData timestamp:5845378796665 image timestamp:5845378796665
+09-03 15:44:39.976 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImage: YUV E, frameNumber: 133,mPictureName: IMG_20240903_154439.jpg
+09-03 15:44:39.987 18351 18701 I CAM_Camera2Module: [K_PROCESS]: onPictureTakenFinished: succeed = true
+09-03 15:44:39.996 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE_163_0 takes 140 ms
+09-03 15:44:39.996 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE takes 140 is less than 2000
+09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE_163_0 takes 138 ms
+09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE takes 138 is less than 2000
+09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Ignore this stop event, there is no event in start status.
+09-03 15:44:39.997 18351 18701 I CAM_Camera2Module: [P_PERFORM]: mCaptureStartTime(from onShutterButtonClick start to jpegCallback finished) = 129ms
+09-03 15:44:39.998 18351 18701 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: d6.p2.Oq(Unknown Source:16), d6.p2.z7(Unknown Source:380), com.xiaomi.camera.mivi.mtk.OfflineBaseShot.handleCaptureFinished(Unknown Source:138), 
+                                // shot_2_shot完成
+09-03 15:44:39.999 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_shot_163_0 takes 142 ms
+                                // 存储quickview图像，生成缩略图
+09-03 15:44:40.101 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImage: YUV X , mPictureName: IMG_20240903_154439.jpg, needIcc: true
+09-03 15:44:40.101 18351 18459 I CAM_ImageSaver: [K_PROCESS]: onParallelProcessFinish: path: /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg
+09-03 15:44:40.112 18351 28100 I CAM_PreviewSaveRequest: [K_PROCESS]: image save try to create thumbnail
+09-03 15:44:40.156 18351 28100 V CAM_ImageSaver: [K_PROCESS]: postUpdateThumbnail true
+09-03 15:44:40.156 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: SLOW_MOTION_SAVING has no start time, ignore this stop event as take 0 ms
+09-03 15:44:40.157 18351 28100 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: com.android.camera.ActivityBase.R0(Unknown Source:19), a8.i.l(Unknown Source:49), a8.p.J(Unknown Source:275), 
+                                // shot_2_gallery完成
+09-03 15:44:40.340 18351 28126 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_gallery_163_0 takes 483 ms
+09-03 15:44:41.291 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: tuning timestamp = 5845378796665
+09-03 15:44:41.294 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: tuning shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+09-03 15:44:41.295 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 1280*720 resultType = 5 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+09-03 15:44:41.297 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setImage: timestamp = 5845378796665 resultType =5 imageName=IMG_20240903_154439.jpg
+                                // 结果图完成
+09-03 15:44:41.297 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: main timestamp = 5845378796665
+09-03 15:44:41.297 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: main shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+09-03 15:44:41.298 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 4080*3060 resultType = 0 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+09-03 15:44:41.300 18351 18459 I CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureCompleted: frameNumber=133
+                                // 转换yuv为jpeg
+09-03 15:44:41.303 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setImage: timestamp = 5845378796665 resultType =0 imageName=IMG_20240903_154439.jpg
+09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setResult: timestamp = 5845378796665 imageName=IMG_20240903_154439.jpg
+09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: handleDataBeanIfReady: dataBean with timestamp 5845378796665 is ready
+09-03 15:44:41.304 18351 18702 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_device_capture_163_0 takes 1434 ms
+09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+09-03 15:44:41.305 18351 18702 D CAM_OfflineImageProcessor: [K_PROCESS]: process: E timestamp = 5845378796665
+09-03 15:44:41.305 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+09-03 15:44:41.305 18351 18702 D CAM_OfflineImageProcessor: [K_PROCESS]: process: X
+09-03 15:44:41.306 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: doJpeg: 5845378796665/0
+09-03 15:44:41.307 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyDataReady: ready
+09-03 15:44:41.307 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onDataReady: timestamp=5845378796665
+09-03 15:44:41.311 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onDataReady:mMiCamera2QuickViewQueue.size = 0 ,mMiCamera2ShotQueue.size = 0
+09-03 15:44:41.471 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: onJpegAvailable: 5845378796665 | 0
+09-03 15:44:41.471 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+                                // 转换完成后，存储主图
+09-03 15:44:41.472 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: onJpegAvailable: save image start. dataLen=2630390
+09-03 15:44:41.472 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyFinish: key = IMG_20240903_154439.jpg|133
+09-03 15:44:41.473 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: Final picture onImageReceived: timestamp: 5845378796665,type:JPEG
+09-03 15:44:41.473 18351 18701 I CAM_OfflineCaptureManager: [K_PROCESS]: removeJpegListener: IMG_20240903_154439.jpg|133; size: 0
+09-03 15:44:41.473 18351 18701 I CAM_OfflineCaptureManager: [K_PROCESS]: removeListener: IMG_20240903_154439.jpg; size: 0
+09-03 15:44:41.473 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onFinalImageReceived: dataLength =2630390 timestamp =5845378796665 type =JPEG
+09-03 15:44:41.473 18351 18701 D CAM_OfflineImageDataZipper: [K_PROCESS]: removeParallelTaskData : timestamp =5845378796665 size =0
+09-03 15:44:41.473 18351 18701 I CAM_ImageSaver: [K_PROCESS]: onParallelProcessFinish: path: /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg
+09-03 15:44:41.503 18351 28251 I CAM_Storage: [K_PROCESS]: updateImage uri-&gt; content://media/external_primary/images/media/1000000050, tmpFile /data/user/0/com.android.camera/cache/IMG_20240903_154439.jpg
+                                // 图片存储完成
+09-03 15:44:41.604 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: algo_capture_total_1725349479858_163_0 takes 1733 ms
+09-03 15:44:41.605 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: algo_image_save_5845378796665_163_0 takes 131 ms
+09-03 15:44:41.606 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_view_1725349479858_163_0 takes 1735 ms
+09-03 15:44:41.606 18351 28251 I CAM_ParallelSaveRequest: [K_PROCESS]: image save onFinish
+09-03 15:44:41.606 18351 28251 I CAM_ParallelSaveRequest: [K_PROCESS]: saved image finished, timestamp: 5845378796665
+09-03 15:44:47.697 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: not allow traceStop
+                                // 关闭相机
+09-03 15:44:47.771 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onWindowFocusChanged: hasFocus: false, isFromKeyguard: true
+09-03 15:44:47.772 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: camera2Proxy=com.android.camera2.i4@75c4fb7 - cid: 0; isCameraDisconnected=false
+09-03 15:44:48.942 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = []
+09-03 15:44:48.955 18351 18459 I CAM_MiCamera2: [K_PROCESS]: abortCaptures E
+09-03 15:44:49.030 18351 18459 I CAM_MiCamera2: [K_PROCESS]: abortCaptures X
+09-03 15:44:49.030 18351 18459 I CAM_MiCamera2: [K_PROCESS]: E: close: cameraId = 0, reason = 0
+09-03 15:44:49.031 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE start
+09-03 15:44:49.153 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE_163_0 takes 122 ms
+09-03 15:44:49.153 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE takes 122 is less than 2000
+09-03 15:44:49.154 18351 18459 I CAM_MiCamera2: [K_PROCESS]: X: close: cameraId = 0
+09-03 15:44:49.154 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = []
+09-03 15:44:49.155 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onClosed: cid = 0, closing = true
+
+title: shot_2_xx
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+shot_2_xx
+以N16U为例，分析其拍照产生的log。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/shot_2_xx/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="shot_2_xx">
+<meta name="twitter:description" content="shot_2_xx
+以N16U为例，分析其拍照产生的log。
+09-03 15:44:34.169 18351 27678 D CAM_SplashProvider: getSplashFile: drawableRes camera_preview_bottom_action_bar_cv
+                                // 打开相机
+09-03 15:44:35.021 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onCreate start 173324289
+09-03 15:44:35.022 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH start
+09-03 15:44:35.023 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA E
+09-03 15:44:35.029 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA X
+09-03 15:44:35.030 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: cid: -1 -&gt; 0, mid: 163 -&gt; 163, fcc: true
+09-03 15:44:35.032 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = []
+09-03 15:44:35.032 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = []
+09-03 15:44:35.032 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 1:createActivity2openCamera_163_0 takes 10 ms
+09-03 15:44:35.033 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: retries = 0
+09-03 15:44:35.033 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: E: cid = 0
+09-03 15:44:35.033 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: switch_prefix_camera_setup_163_0 takes 4 ms
+09-03 15:44:35.088 18351 18351 I CAM_Camera@173324289: [U_ACTION]: onModeSelected from 0xa0 to 0xa3, ScreenSlideOff = false, facing = 0
+09-03 15:44:35.092 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: switch_prefix_data_setup_163_0 takes 3 ms
+09-03 15:44:35.098 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: X: cid = 0
+09-03 15:44:35.098 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onOpened: cid = 0
+09-03 15:44:35.099 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 2:[HAL]openCamera@0_163_0 takes 66 ms
+09-03 15:44:35.099 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A1:createActivity_163_0 takes 77 ms
+09-03 15:44:35.100 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A2:switch_camera_prepare_163_0 takes 8 ms
+09-03 15:44:35.101 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onCreate end 173324289
+09-03 15:44:35.101 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: cid: 0 -&gt; 0, mid: 163 -&gt; 163, fcc: false
+09-03 15:44:35.105 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A3:switch_camera_2_open_163_0 takes 4 ms
+09-03 15:44:35.106 18351 18436 I CAM_CameraOpenObservable: [K_PROCESS]: onOpened: cid = 0, listener = 143587978
+09-03 15:44:35.106 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: onOpened: cid = 0|android.hardware.camera2.impl.CameraDeviceImpl@29685ea
+09-03 15:44:35.106 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = [0]
+09-03 15:44:35.106 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = [0]
+09-03 15:44:35.107 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onOpened: cid = 0
+09-03 15:44:35.108 18351 18436 I CAM_CameraOpenObservable: [K_PROCESS]: onOpened: cid = 0, listener = 122189081
+09-03 15:44:35.108 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: onOpened: cid = 0|android.hardware.camera2.impl.CameraDeviceImpl@29685ea
+09-03 15:44:35.110 18351 18436 I CAM_BaseModule: [K_PROCESS]: onCreate: moduleIndex-&gt;163, cameraId-&gt;0@u@182152399: mid = 163, cid = 0, created = false, departed = false
+09-03 15:44:35.111 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+09-03 15:44:35.111 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+09-03 15:44:35.113 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+09-03 15:44:35.115 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA E
+09-03 15:44:35.115 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA X
+09-03 15:44:35.120 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+09-03 15:44:35.128 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: not allow traceStart
+09-03 15:44:35.128 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: resumeActivity@173324289_163_0 takes 13 ms
+09-03 15:44:35.131 18351 18436 I CAM_Camera2Module: [K_PROCESS]: startPreview: set PictureSize with 4080x3060
+09-03 15:44:35.149 18351 18436 I CAM_Camera2Module: [K_PROCESS]: startPreview: surfaceTexture = android.graphics.SurfaceTexture@22de842
+09-03 15:44:35.152 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+09-03 15:44:35.152 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: operatingMode=0x9005 previewCallback=2 rawCallbackType=32
+09-03 15:44:35.153 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PhotoImageReader configuration: format=0x23 size=4080x3060
+09-03 15:44:35.154 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add JpegImageReader configuration: format=0x100 size=4080x3060
+09-03 15:44:35.158 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add TuningImageReader configuration: format=0x32315659 size=1280x720
+09-03 15:44:35.164 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add QuickViewImageReader configuration: format=0x23 size=1440x1080
+09-03 15:44:35.164 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PreviewImageReader configuration: format=0x23 size=1440x1080
+09-03 15:44:35.165 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PreviewSurface configuration: format=0x22 size=1440x1080
+09-03 15:44:35.165 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: 5.1:surfaceViewCreate_163_0 takes 124 ms
+09-03 15:44:35.167 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: setup output configuration number: 6
+09-03 15:44:35.168 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 3:cameraOpened2createCaptureSession@0_163_0 takes 69 ms
+09-03 15:44:35.354 18351 18351 I CAM_ZoomRatioToggleView: [U_ACTION]: setZoomRatio(): a = ZOOMING_BY_UNKNOWN_SOURCE,i = 1,z = 1.0,ti =1,tz =1.0
+09-03 15:44:35.356 18351 18351 I CAM_ZoomRatioToggleView: [U_ACTION]: setZoomRatio(): a = ZOOMING_BY_LAYOUT_CHANGE,i = 1,z = 1.0,ti =1,tz =1.0
+09-03 15:44:35.457 18351 18459 I CAM_MiCamera2: [K_PROCESS]: onConfigured: id = 1, session = android.hardware.camera2.impl.CameraCaptureSessionImpl@e9be74d, Reprocessable = false
+09-03 15:44:35.457 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 4:[HAL]createCaptureSession@0_163_0 takes 289 ms
+09-03 15:44:35.457 18351 18459 I CAM_MiCamera2: [K_PROCESS]: onConfigured: is mDeferOutputConfigurations null: true
+09-03 15:44:35.464 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A4:switch_module_setup_163_0 takes 356 ms
+09-03 15:44:35.464 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A5:switch_data_setup_163_0 takes 0 ms
+09-03 15:44:35.475 18351 18436 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+09-03 15:44:35.479 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 5.2:applyPreviewSettings_163_0 takes 14 ms
+09-03 15:44:35.479 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 5:captureSessionReady2startPreview_163_0 takes 22 ms
+09-03 15:44:35.482 18351 18436 I CAM_MiCamera2: [K_PROCESS]: resumePreview: repeating sequenceId: 0
+09-03 15:44:35.493 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A6:switch_preview_setup_163_0 takes 3 ms
+09-03 15:44:35.509 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A7:switch_ui_setup_163_0 takes 16 ms
+09-03 15:44:35.527 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A8:switch_setup_consumer_163_0 takes 18 ms
+09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: COLD_LAUNCH has no start time, ignore this stop event as take 0 ms
+09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH_163_0 takes 586 ms
+09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH takes 586 is less than 1500
+09-03 15:44:35.609 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Action: 6:[HAL]startPreview2firstFrame_163_0 takes 130 ms
+09-03 15:44:35.610 18351 18456 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: com.android.camera.Camera.Jk(Unknown Source:143), com.android.camera.ActivityBase.Lk(Unknown Source:313), s8.z.onFrameAvailable(Unknown Source:15), 
+09-03 15:44:35.872 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onWindowFocusChanged: hasFocus: true, isFromKeyguard: true
+09-03 15:44:35.876 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: camera2Proxy=com.android.camera2.i4@75c4fb7 - cid: 0; isCameraDisconnected=false
+09-03 15:44:36.061 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+09-03 15:44:37.978 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+09-03 15:44:37.981 18351 18436 I CAM_MiCamera2: [K_PROCESS]: resumePreview: repeating sequenceId: 1
+09-03 15:44:39.856 18351 18351 I CAM_BaseModuleStateManager: [U_ACTION]: setTriggerMode 140
+                                // 用户点击拍照按钮
+09-03 15:44:39.856 18351 18351 I CAM_ImageActionImpl: [U_ACTION]: onShutterButtonClick 1
+09-03 15:44:39.856 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE start
+09-03 15:44:39.856 18351 18351 V CAM_FocusManager: [K_PROCESS]: prepareCapture: false|2|continuous-picture
+09-03 15:44:39.856 18351 18351 I CAM_FocusManager: [K_PROCESS]: doSnap mState = 0, fromWhat = 2
+09-03 15:44:39.857 18351 18351 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: u2.u.H3(Unknown Source:1), p6.s.S(Unknown Source:10), p6.s.V(Unknown Source:91), 
+09-03 15:44:39.857 18351 18351 I CAM_Camera2Module: [K_PROCESS]: startNormalCapture mode -&gt; 140
+09-03 15:44:39.858 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE start
+09-03 15:44:39.859 18351 18351 I CAM_Camera2Module: [K_PROCESS]: prepareNormalCapture title = IMG_20240903_154439
+09-03 15:44:39.860 18351 18351 D CAM_MiCamera2: [K_PROCESS]: capture:mMiCamera2QuickViewQueue.offer,size: 1
+                                // 开始拍照（startShot）
+                                // Build Request
+09-03 15:44:39.860 18351 18351 I CAM_OfflineSingleYuvShot: [K_PROCESS]: startShot: this=com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for pic 35_4080x3060
+09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for quickview 35_1440x1080
+09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for tuning 842094169_1280x720
+09-03 15:44:39.867 18351 18351 I CAM_CaptureRequestBuilder: [K_PROCESS]: applyHDR:false
+09-03 15:44:39.867 18351 18351 I CAM_CaptureRequestBuilder: [K_PROCESS]: applySuperResolution: false, applyType = 3
+09-03 15:44:39.867 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: true
+09-03 15:44:39.868 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyStreetShoot: false
+                                // capture基本配置信息
+09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputFormat = JPEG
+09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputSize = 4080x3060
+09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputQuality = 96
+09-03 15:44:39.869 18351 18351 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: isParallel = false, shotType = 101
+09-03 15:44:39.869 18351 18351 I CAM_LiveShotManager: [K_PROCESS]: onCaptureStart: isLiveShot = false, hashcode = 54555436, savePath = /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg
+09-03 15:44:39.870 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_prepare_capture_163_0 takes 14 ms
+                                // add listener to MIVICaptureManager
+09-03 15:44:39.870 18351 18351 I CAM_OfflineCaptureManager: [K_PROCESS]: addListener: IMG_20240903_154439.jpg
+09-03 15:44:39.871 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: sequenceId=2
+09-03 15:44:39.871 18351 18351 I CAM_FragmentBottomAction: [U_ACTION]: MultiCaptureByRunningCondition
+                                // capture start
+09-03 15:44:39.935 18351 18459 I CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureStarted: timestamp=5845378796665 frameNumber=133
+09-03 15:44:39.936 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_on_shutter_163_0 takes 80 ms
+09-03 15:44:39.936 18351 18459 D CAM_OfflineImageDataZipper: [K_PROCESS]: putParallelTaskData : timestamp = 5845378796665 ,parallelTaskData.timeStamp = 5845378796665 ,size = 1
+09-03 15:44:39.936 18351 18459 I CAM_OfflineCaptureManager: [K_PROCESS]: addJpegListener: IMG_20240903_154439.jpg|133
+09-03 15:44:39.948 18351 18574 D CAM_MIVIParallelService: [K_PROCESS]: onCaptureCompleted:frameNumber = 133;pictureName = IMG_20240903_154439.jpg
+09-03 15:44:39.949 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyCaptureCompleted: ready pictureName = IMG_20240903_154439.jpg
+09-03 15:44:39.949 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureCompleted: 1 mPictureName: IMG_20240903_154439.jpg, timestamp: 5845378796665
+09-03 15:44:39.962 18351 18701 I CAM_OfflineSingleYuvShot: [K_PROCESS]: handleCaptureFinished: mPictureName: IMG_20240903_154439.jpg
+                                // 捕获图像进行算法处理配置，applySuperResolution,applyMfnrEnable,applyStreetShoot
+09-03 15:44:39.967 18351 18701 I CAM_CaptureRequestBuilder: [K_PROCESS]: applySuperResolution: ignored for applyType = 1
+09-03 15:44:39.967 18351 18701 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+09-03 15:44:39.968 18351 18701 V CAM_MiCameraCompat: [K_PROCESS]: applyStreetShoot: false
+                                // quickview available
+09-03 15:44:39.970 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: quickview shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+09-03 15:44:39.970 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 1440*1080 resultType = 6 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+09-03 15:44:39.971 18351 18351 I CAM_FragmentBottomAction: [U_ACTION]: onSnapClick
+09-03 15:44:39.972 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImageIfNeed: start schedule: mPictureName: IMG_20240903_154439.jpg
+09-03 15:44:39.973 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: mMiCamera2QuickViewQueue.poll, size:0
+09-03 15:44:39.974 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImageIfNeed: mCurrentParallelTaskData timestamp:5845378796665 image timestamp:5845378796665
+09-03 15:44:39.976 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImage: YUV E, frameNumber: 133,mPictureName: IMG_20240903_154439.jpg
+09-03 15:44:39.987 18351 18701 I CAM_Camera2Module: [K_PROCESS]: onPictureTakenFinished: succeed = true
+09-03 15:44:39.996 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE_163_0 takes 140 ms
+09-03 15:44:39.996 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE takes 140 is less than 2000
+09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE_163_0 takes 138 ms
+09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE takes 138 is less than 2000
+09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Ignore this stop event, there is no event in start status.
+09-03 15:44:39.997 18351 18701 I CAM_Camera2Module: [P_PERFORM]: mCaptureStartTime(from onShutterButtonClick start to jpegCallback finished) = 129ms
+09-03 15:44:39.998 18351 18701 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: d6.p2.Oq(Unknown Source:16), d6.p2.z7(Unknown Source:380), com.xiaomi.camera.mivi.mtk.OfflineBaseShot.handleCaptureFinished(Unknown Source:138), 
+                                // shot_2_shot完成
+09-03 15:44:39.999 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_shot_163_0 takes 142 ms
+                                // 存储quickview图像，生成缩略图
+09-03 15:44:40.101 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImage: YUV X , mPictureName: IMG_20240903_154439.jpg, needIcc: true
+09-03 15:44:40.101 18351 18459 I CAM_ImageSaver: [K_PROCESS]: onParallelProcessFinish: path: /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg
+09-03 15:44:40.112 18351 28100 I CAM_PreviewSaveRequest: [K_PROCESS]: image save try to create thumbnail
+09-03 15:44:40.156 18351 28100 V CAM_ImageSaver: [K_PROCESS]: postUpdateThumbnail true
+09-03 15:44:40.156 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: SLOW_MOTION_SAVING has no start time, ignore this stop event as take 0 ms
+09-03 15:44:40.157 18351 28100 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: com.android.camera.ActivityBase.R0(Unknown Source:19), a8.i.l(Unknown Source:49), a8.p.J(Unknown Source:275), 
+                                // shot_2_gallery完成
+09-03 15:44:40.340 18351 28126 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_gallery_163_0 takes 483 ms
+09-03 15:44:41.291 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: tuning timestamp = 5845378796665
+09-03 15:44:41.294 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: tuning shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+09-03 15:44:41.295 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 1280*720 resultType = 5 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+09-03 15:44:41.297 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setImage: timestamp = 5845378796665 resultType =5 imageName=IMG_20240903_154439.jpg
+                                // 结果图完成
+09-03 15:44:41.297 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: main timestamp = 5845378796665
+09-03 15:44:41.297 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: main shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+09-03 15:44:41.298 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 4080*3060 resultType = 0 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+09-03 15:44:41.300 18351 18459 I CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureCompleted: frameNumber=133
+                                // 转换yuv为jpeg
+09-03 15:44:41.303 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setImage: timestamp = 5845378796665 resultType =0 imageName=IMG_20240903_154439.jpg
+09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setResult: timestamp = 5845378796665 imageName=IMG_20240903_154439.jpg
+09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: handleDataBeanIfReady: dataBean with timestamp 5845378796665 is ready
+09-03 15:44:41.304 18351 18702 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_device_capture_163_0 takes 1434 ms
+09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+09-03 15:44:41.305 18351 18702 D CAM_OfflineImageProcessor: [K_PROCESS]: process: E timestamp = 5845378796665
+09-03 15:44:41.305 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+09-03 15:44:41.305 18351 18702 D CAM_OfflineImageProcessor: [K_PROCESS]: process: X
+09-03 15:44:41.306 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: doJpeg: 5845378796665/0
+09-03 15:44:41.307 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyDataReady: ready
+09-03 15:44:41.307 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onDataReady: timestamp=5845378796665
+09-03 15:44:41.311 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onDataReady:mMiCamera2QuickViewQueue.size = 0 ,mMiCamera2ShotQueue.size = 0
+09-03 15:44:41.471 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: onJpegAvailable: 5845378796665 | 0
+09-03 15:44:41.471 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+                                // 转换完成后，存储主图
+09-03 15:44:41.472 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: onJpegAvailable: save image start. dataLen=2630390
+09-03 15:44:41.472 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyFinish: key = IMG_20240903_154439.jpg|133
+09-03 15:44:41.473 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: Final picture onImageReceived: timestamp: 5845378796665,type:JPEG
+09-03 15:44:41.473 18351 18701 I CAM_OfflineCaptureManager: [K_PROCESS]: removeJpegListener: IMG_20240903_154439.jpg|133; size: 0
+09-03 15:44:41.473 18351 18701 I CAM_OfflineCaptureManager: [K_PROCESS]: removeListener: IMG_20240903_154439.jpg; size: 0
+09-03 15:44:41.473 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onFinalImageReceived: dataLength =2630390 timestamp =5845378796665 type =JPEG
+09-03 15:44:41.473 18351 18701 D CAM_OfflineImageDataZipper: [K_PROCESS]: removeParallelTaskData : timestamp =5845378796665 size =0
+09-03 15:44:41.473 18351 18701 I CAM_ImageSaver: [K_PROCESS]: onParallelProcessFinish: path: /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg
+09-03 15:44:41.503 18351 28251 I CAM_Storage: [K_PROCESS]: updateImage uri-&gt; content://media/external_primary/images/media/1000000050, tmpFile /data/user/0/com.android.camera/cache/IMG_20240903_154439.jpg
+                                // 图片存储完成
+09-03 15:44:41.604 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: algo_capture_total_1725349479858_163_0 takes 1733 ms
+09-03 15:44:41.605 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: algo_image_save_5845378796665_163_0 takes 131 ms
+09-03 15:44:41.606 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_view_1725349479858_163_0 takes 1735 ms
+09-03 15:44:41.606 18351 28251 I CAM_ParallelSaveRequest: [K_PROCESS]: image save onFinish
+09-03 15:44:41.606 18351 28251 I CAM_ParallelSaveRequest: [K_PROCESS]: saved image finished, timestamp: 5845378796665
+09-03 15:44:47.697 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: not allow traceStop
+                                // 关闭相机
+09-03 15:44:47.771 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onWindowFocusChanged: hasFocus: false, isFromKeyguard: true
+09-03 15:44:47.772 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: camera2Proxy=com.android.camera2.i4@75c4fb7 - cid: 0; isCameraDisconnected=false
+09-03 15:44:48.942 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = []
+09-03 15:44:48.955 18351 18459 I CAM_MiCamera2: [K_PROCESS]: abortCaptures E
+09-03 15:44:49.030 18351 18459 I CAM_MiCamera2: [K_PROCESS]: abortCaptures X
+09-03 15:44:49.030 18351 18459 I CAM_MiCamera2: [K_PROCESS]: E: close: cameraId = 0, reason = 0
+09-03 15:44:49.031 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE start
+09-03 15:44:49.153 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE_163_0 takes 122 ms
+09-03 15:44:49.153 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE takes 122 is less than 2000
+09-03 15:44:49.154 18351 18459 I CAM_MiCamera2: [K_PROCESS]: X: close: cameraId = 0
+09-03 15:44:49.154 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = []
+09-03 15:44:49.155 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onClosed: cid = 0, closing = true
+
+title: shot_2_xx
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+shot_2_xx
+以N16U为例，分析其拍照产生的log。">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "shot_2_xx",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  5088 ,
+  "description": "shot_2_xx 以N16U为例，分析其拍照产生的log。\n09-03 15:44:34.169 18351 27678 D CAM_SplashProvider: getSplashFile: drawableRes camera_preview_bottom_action_bar_cv // 打开相机 09-03 15:44:35.021 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onCreate start 173324289 09-03 15:44:35.022 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH start 09-03 15:44:35.023 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA E 09-03 15:44:35.029 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA X 09-03 15:44:35.030 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: cid: -1 -\u0026gt; 0, mid: 163 -\u0026gt; 163, fcc: true 09-03 15:44:35.032 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = [] 09-03 15:44:35.032 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = [] 09-03 15:44:35.032 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 1:createActivity2openCamera_163_0 takes 10 ms 09-03 15:44:35.033 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: retries = 0 09-03 15:44:35.033 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: E: cid = 0 09-03 15:44:35.033 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: switch_prefix_camera_setup_163_0 takes 4 ms 09-03 15:44:35.088 18351 18351 I CAM_Camera@173324289: [U_ACTION]: onModeSelected from 0xa0 to 0xa3, ScreenSlideOff = false, facing = 0 09-03 15:44:35.092 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: switch_prefix_data_setup_163_0 takes 3 ms 09-03 15:44:35.098 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: X: cid = 0 09-03 15:44:35.098 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onOpened: cid = 0 09-03 15:44:35.099 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 2:[HAL]openCamera@0_163_0 takes 66 ms 09-03 15:44:35.099 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A1:createActivity_163_0 takes 77 ms 09-03 15:44:35.100 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A2:switch_camera_prepare_163_0 takes 8 ms 09-03 15:44:35.101 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onCreate end 173324289 09-03 15:44:35.101 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: cid: 0 -\u0026gt; 0, mid: 163 -\u0026gt; 163, fcc: false 09-03 15:44:35.105 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A3:switch_camera_2_open_163_0 takes 4 ms 09-03 15:44:35.106 18351 18436 I CAM_CameraOpenObservable: [K_PROCESS]: onOpened: cid = 0, listener = 143587978 09-03 15:44:35.106 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: onOpened: cid = 0|android.hardware.camera2.impl.CameraDeviceImpl@29685ea 09-03 15:44:35.106 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = [0] 09-03 15:44:35.106 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = [0] 09-03 15:44:35.107 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onOpened: cid = 0 09-03 15:44:35.108 18351 18436 I CAM_CameraOpenObservable: [K_PROCESS]: onOpened: cid = 0, listener = 122189081 09-03 15:44:35.108 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: onOpened: cid = 0|android.hardware.camera2.impl.CameraDeviceImpl@29685ea 09-03 15:44:35.110 18351 18436 I CAM_BaseModule: [K_PROCESS]: onCreate: moduleIndex-\u0026gt;163, cameraId-\u0026gt;0@u@182152399: mid = 163, cid = 0, created = false, departed = false 09-03 15:44:35.111 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL 09-03 15:44:35.111 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL 09-03 15:44:35.113 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL 09-03 15:44:35.115 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA E 09-03 15:44:35.115 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA X 09-03 15:44:35.120 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL 09-03 15:44:35.128 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: not allow traceStart 09-03 15:44:35.128 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: resumeActivity@173324289_163_0 takes 13 ms 09-03 15:44:35.131 18351 18436 I CAM_Camera2Module: [K_PROCESS]: startPreview: set PictureSize with 4080x3060 09-03 15:44:35.149 18351 18436 I CAM_Camera2Module: [K_PROCESS]: startPreview: surfaceTexture = android.graphics.SurfaceTexture@22de842 09-03 15:44:35.152 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL 09-03 15:44:35.152 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: operatingMode=0x9005 previewCallback=2 rawCallbackType=32 09-03 15:44:35.153 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PhotoImageReader configuration: format=0x23 size=4080x3060 09-03 15:44:35.154 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add JpegImageReader configuration: format=0x100 size=4080x3060 09-03 15:44:35.158 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add TuningImageReader configuration: format=0x32315659 size=1280x720 09-03 15:44:35.164 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add QuickViewImageReader configuration: format=0x23 size=1440x1080 09-03 15:44:35.164 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PreviewImageReader configuration: format=0x23 size=1440x1080 09-03 15:44:35.165 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PreviewSurface configuration: format=0x22 size=1440x1080 09-03 15:44:35.165 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: 5.1:surfaceViewCreate_163_0 takes 124 ms 09-03 15:44:35.167 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: setup output configuration number: 6 09-03 15:44:35.168 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 3:cameraOpened2createCaptureSession@0_163_0 takes 69 ms 09-03 15:44:35.354 18351 18351 I CAM_ZoomRatioToggleView: [U_ACTION]: setZoomRatio(): a = ZOOMING_BY_UNKNOWN_SOURCE,i = 1,z = 1.0,ti =1,tz =1.0 09-03 15:44:35.356 18351 18351 I CAM_ZoomRatioToggleView: [U_ACTION]: setZoomRatio(): a = ZOOMING_BY_LAYOUT_CHANGE,i = 1,z = 1.0,ti =1,tz =1.0 09-03 15:44:35.457 18351 18459 I CAM_MiCamera2: [K_PROCESS]: onConfigured: id = 1, session = android.hardware.camera2.impl.CameraCaptureSessionImpl@e9be74d, Reprocessable = false 09-03 15:44:35.457 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 4:[HAL]createCaptureSession@0_163_0 takes 289 ms 09-03 15:44:35.457 18351 18459 I CAM_MiCamera2: [K_PROCESS]: onConfigured: is mDeferOutputConfigurations null: true 09-03 15:44:35.464 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A4:switch_module_setup_163_0 takes 356 ms 09-03 15:44:35.464 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A5:switch_data_setup_163_0 takes 0 ms 09-03 15:44:35.475 18351 18436 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false 09-03 15:44:35.479 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 5.2:applyPreviewSettings_163_0 takes 14 ms 09-03 15:44:35.479 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 5:captureSessionReady2startPreview_163_0 takes 22 ms 09-03 15:44:35.482 18351 18436 I CAM_MiCamera2: [K_PROCESS]: resumePreview: repeating sequenceId: 0 09-03 15:44:35.493 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A6:switch_preview_setup_163_0 takes 3 ms 09-03 15:44:35.509 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A7:switch_ui_setup_163_0 takes 16 ms 09-03 15:44:35.527 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A8:switch_setup_consumer_163_0 takes 18 ms 09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: COLD_LAUNCH has no start time, ignore this stop event as take 0 ms 09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH_163_0 takes 586 ms 09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH takes 586 is less than 1500 09-03 15:44:35.609 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Action: 6:[HAL]startPreview2firstFrame_163_0 takes 130 ms 09-03 15:44:35.610 18351 18456 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: com.android.camera.Camera.Jk(Unknown Source:143), com.android.camera.ActivityBase.Lk(Unknown Source:313), s8.z.onFrameAvailable(Unknown Source:15), 09-03 15:44:35.872 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onWindowFocusChanged: hasFocus: true, isFromKeyguard: true 09-03 15:44:35.876 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: camera2Proxy=com.android.camera2.i4@75c4fb7 - cid: 0; isCameraDisconnected=false 09-03 15:44:36.061 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false 09-03 15:44:37.978 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false 09-03 15:44:37.981 18351 18436 I CAM_MiCamera2: [K_PROCESS]: resumePreview: repeating sequenceId: 1 09-03 15:44:39.856 18351 18351 I CAM_BaseModuleStateManager: [U_ACTION]: setTriggerMode 140 // 用户点击拍照按钮 09-03 15:44:39.856 18351 18351 I CAM_ImageActionImpl: [U_ACTION]: onShutterButtonClick 1 09-03 15:44:39.856 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE start 09-03 15:44:39.856 18351 18351 V CAM_FocusManager: [K_PROCESS]: prepareCapture: false|2|continuous-picture 09-03 15:44:39.856 18351 18351 I CAM_FocusManager: [K_PROCESS]: doSnap mState = 0, fromWhat = 2 09-03 15:44:39.857 18351 18351 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: u2.u.H3(Unknown Source:1), p6.s.S(Unknown Source:10), p6.s.V(Unknown Source:91), 09-03 15:44:39.857 18351 18351 I CAM_Camera2Module: [K_PROCESS]: startNormalCapture mode -\u0026gt; 140 09-03 15:44:39.858 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE start 09-03 15:44:39.859 18351 18351 I CAM_Camera2Module: [K_PROCESS]: prepareNormalCapture title = IMG_20240903_154439 09-03 15:44:39.860 18351 18351 D CAM_MiCamera2: [K_PROCESS]: capture:mMiCamera2QuickViewQueue.offer,size: 1 // 开始拍照（startShot） // Build Request 09-03 15:44:39.860 18351 18351 I CAM_OfflineSingleYuvShot: [K_PROCESS]: startShot: this=com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700 09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for pic 35_4080x3060 09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for quickview 35_1440x1080 09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for tuning 842094169_1280x720 09-03 15:44:39.867 18351 18351 I CAM_CaptureRequestBuilder: [K_PROCESS]: applyHDR:false 09-03 15:44:39.867 18351 18351 I CAM_CaptureRequestBuilder: [K_PROCESS]: applySuperResolution: false, applyType = 3 09-03 15:44:39.867 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: true 09-03 15:44:39.868 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyStreetShoot: false // capture基本配置信息 09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputFormat = JPEG 09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputSize = 4080x3060 09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputQuality = 96 09-03 15:44:39.869 18351 18351 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL 09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: isParallel = false, shotType = 101 09-03 15:44:39.869 18351 18351 I CAM_LiveShotManager: [K_PROCESS]: onCaptureStart: isLiveShot = false, hashcode = 54555436, savePath = /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg 09-03 15:44:39.870 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_prepare_capture_163_0 takes 14 ms // add listener to MIVICaptureManager 09-03 15:44:39.870 18351 18351 I CAM_OfflineCaptureManager: [K_PROCESS]: addListener: IMG_20240903_154439.jpg 09-03 15:44:39.871 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: sequenceId=2 09-03 15:44:39.871 18351 18351 I CAM_FragmentBottomAction: [U_ACTION]: MultiCaptureByRunningCondition // capture start 09-03 15:44:39.935 18351 18459 I CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureStarted: timestamp=5845378796665 frameNumber=133 09-03 15:44:39.936 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_on_shutter_163_0 takes 80 ms 09-03 15:44:39.936 18351 18459 D CAM_OfflineImageDataZipper: [K_PROCESS]: putParallelTaskData : timestamp = 5845378796665 ,parallelTaskData.timeStamp = 5845378796665 ,size = 1 09-03 15:44:39.936 18351 18459 I CAM_OfflineCaptureManager: [K_PROCESS]: addJpegListener: IMG_20240903_154439.jpg|133 09-03 15:44:39.948 18351 18574 D CAM_MIVIParallelService: [K_PROCESS]: onCaptureCompleted:frameNumber = 133;pictureName = IMG_20240903_154439.jpg 09-03 15:44:39.949 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyCaptureCompleted: ready pictureName = IMG_20240903_154439.jpg 09-03 15:44:39.949 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureCompleted: 1 mPictureName: IMG_20240903_154439.jpg, timestamp: 5845378796665 09-03 15:44:39.962 18351 18701 I CAM_OfflineSingleYuvShot: [K_PROCESS]: handleCaptureFinished: mPictureName: IMG_20240903_154439.jpg // 捕获图像进行算法处理配置，applySuperResolution,applyMfnrEnable,applyStreetShoot 09-03 15:44:39.967 18351 18701 I CAM_CaptureRequestBuilder: [K_PROCESS]: applySuperResolution: ignored for applyType = 1 09-03 15:44:39.967 18351 18701 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false 09-03 15:44:39.968 18351 18701 V CAM_MiCameraCompat: [K_PROCESS]: applyStreetShoot: false // quickview available 09-03 15:44:39.970 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: quickview shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700 09-03 15:44:39.970 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 1440*1080 resultType = 6 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700 09-03 15:44:39.971 18351 18351 I CAM_FragmentBottomAction: [U_ACTION]: onSnapClick 09-03 15:44:39.972 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImageIfNeed: start schedule: mPictureName: IMG_20240903_154439.jpg 09-03 15:44:39.973 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: mMiCamera2QuickViewQueue.poll, size:0 09-03 15:44:39.974 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImageIfNeed: mCurrentParallelTaskData timestamp:5845378796665 image timestamp:5845378796665 09-03 15:44:39.976 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImage: YUV E, frameNumber: 133,mPictureName: IMG_20240903_154439.jpg 09-03 15:44:39.987 18351 18701 I CAM_Camera2Module: [K_PROCESS]: onPictureTakenFinished: succeed = true 09-03 15:44:39.996 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE_163_0 takes 140 ms 09-03 15:44:39.996 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE takes 140 is less than 2000 09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE_163_0 takes 138 ms 09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE takes 138 is less than 2000 09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Ignore this stop event, there is no event in start status. 09-03 15:44:39.997 18351 18701 I CAM_Camera2Module: [P_PERFORM]: mCaptureStartTime(from onShutterButtonClick start to jpegCallback finished) = 129ms 09-03 15:44:39.998 18351 18701 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: d6.p2.Oq(Unknown Source:16), d6.p2.z7(Unknown Source:380), com.xiaomi.camera.mivi.mtk.OfflineBaseShot.handleCaptureFinished(Unknown Source:138), // shot_2_shot完成 09-03 15:44:39.999 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_shot_163_0 takes 142 ms // 存储quickview图像，生成缩略图 09-03 15:44:40.101 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImage: YUV X , mPictureName: IMG_20240903_154439.jpg, needIcc: true 09-03 15:44:40.101 18351 18459 I CAM_ImageSaver: [K_PROCESS]: onParallelProcessFinish: path: /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg 09-03 15:44:40.112 18351 28100 I CAM_PreviewSaveRequest: [K_PROCESS]: image save try to create thumbnail 09-03 15:44:40.156 18351 28100 V CAM_ImageSaver: [K_PROCESS]: postUpdateThumbnail true 09-03 15:44:40.156 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: SLOW_MOTION_SAVING has no start time, ignore this stop event as take 0 ms 09-03 15:44:40.157 18351 28100 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: com.android.camera.ActivityBase.R0(Unknown Source:19), a8.i.l(Unknown Source:49), a8.p.J(Unknown Source:275), // shot_2_gallery完成 09-03 15:44:40.340 18351 28126 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_gallery_163_0 takes 483 ms 09-03 15:44:41.291 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: tuning timestamp = 5845378796665 09-03 15:44:41.294 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: tuning shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700 09-03 15:44:41.295 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 1280*720 resultType = 5 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700 09-03 15:44:41.297 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setImage: timestamp = 5845378796665 resultType =5 imageName=IMG_20240903_154439.jpg // 结果图完成 09-03 15:44:41.297 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: main timestamp = 5845378796665 09-03 15:44:41.297 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: main shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700 09-03 15:44:41.298 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 4080*3060 resultType = 0 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700 09-03 15:44:41.300 18351 18459 I CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureCompleted: frameNumber=133 // 转换yuv为jpeg 09-03 15:44:41.303 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setImage: timestamp = 5845378796665 resultType =0 imageName=IMG_20240903_154439.jpg 09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=\u0026#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg\u0026#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf] 09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setResult: timestamp = 5845378796665 imageName=IMG_20240903_154439.jpg 09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: handleDataBeanIfReady: dataBean with timestamp 5845378796665 is ready 09-03 15:44:41.304 18351 18702 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_device_capture_163_0 takes 1434 ms 09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=\u0026#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg\u0026#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf] 09-03 15:44:41.305 18351 18702 D CAM_OfflineImageProcessor: [K_PROCESS]: process: E timestamp = 5845378796665 09-03 15:44:41.305 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=\u0026#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg\u0026#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf] 09-03 15:44:41.305 18351 18702 D CAM_OfflineImageProcessor: [K_PROCESS]: process: X 09-03 15:44:41.306 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: doJpeg: 5845378796665/0 09-03 15:44:41.307 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyDataReady: ready 09-03 15:44:41.307 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onDataReady: timestamp=5845378796665 09-03 15:44:41.311 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onDataReady:mMiCamera2QuickViewQueue.size = 0 ,mMiCamera2ShotQueue.size = 0 09-03 15:44:41.471 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: onJpegAvailable: 5845378796665 | 0 09-03 15:44:41.471 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=\u0026#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg\u0026#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf] // 转换完成后，存储主图 09-03 15:44:41.472 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: onJpegAvailable: save image start. dataLen=2630390 09-03 15:44:41.472 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyFinish: key = IMG_20240903_154439.jpg|133 09-03 15:44:41.473 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: Final picture onImageReceived: timestamp: 5845378796665,type:JPEG 09-03 15:44:41.473 18351 18701 I CAM_OfflineCaptureManager: [K_PROCESS]: removeJpegListener: IMG_20240903_154439.jpg|133; size: 0 09-03 15:44:41.473 18351 18701 I CAM_OfflineCaptureManager: [K_PROCESS]: removeListener: IMG_20240903_154439.jpg; size: 0 09-03 15:44:41.473 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onFinalImageReceived: dataLength =2630390 timestamp =5845378796665 type =JPEG 09-03 15:44:41.473 18351 18701 D CAM_OfflineImageDataZipper: [K_PROCESS]: removeParallelTaskData : timestamp =5845378796665 size =0 09-03 15:44:41.473 18351 18701 I CAM_ImageSaver: [K_PROCESS]: onParallelProcessFinish: path: /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg 09-03 15:44:41.503 18351 28251 I CAM_Storage: [K_PROCESS]: updateImage uri-\u0026gt; content://media/external_primary/images/media/1000000050, tmpFile /data/user/0/com.android.camera/cache/IMG_20240903_154439.jpg // 图片存储完成 09-03 15:44:41.604 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: algo_capture_total_1725349479858_163_0 takes 1733 ms 09-03 15:44:41.605 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: algo_image_save_5845378796665_163_0 takes 131 ms 09-03 15:44:41.606 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_view_1725349479858_163_0 takes 1735 ms 09-03 15:44:41.606 18351 28251 I CAM_ParallelSaveRequest: [K_PROCESS]: image save onFinish 09-03 15:44:41.606 18351 28251 I CAM_ParallelSaveRequest: [K_PROCESS]: saved image finished, timestamp: 5845378796665 09-03 15:44:47.697 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: not allow traceStop // 关闭相机 09-03 15:44:47.771 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onWindowFocusChanged: hasFocus: false, isFromKeyguard: true 09-03 15:44:47.772 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: camera2Proxy=com.android.camera2.i4@75c4fb7 - cid: 0; isCameraDisconnected=false 09-03 15:44:48.942 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = [] 09-03 15:44:48.955 18351 18459 I CAM_MiCamera2: [K_PROCESS]: abortCaptures E 09-03 15:44:49.030 18351 18459 I CAM_MiCamera2: [K_PROCESS]: abortCaptures X 09-03 15:44:49.030 18351 18459 I CAM_MiCamera2: [K_PROCESS]: E: close: cameraId = 0, reason = 0 09-03 15:44:49.031 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE start 09-03 15:44:49.153 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE_163_0 takes 122 ms 09-03 15:44:49.153 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE takes 122 is less than 2000 09-03 15:44:49.154 18351 18459 I CAM_MiCamera2: [K_PROCESS]: X: close: cameraId = 0 09-03 15:44:49.154 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = [] 09-03 15:44:49.155 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onClosed: cid = 0, closing = true title: shot_2_xx date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z shot_2_xx 以N16U为例，分析其拍照产生的log。\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="shot_2_xx">shot_2_xx</h1>
+<p>以N16U为例，分析其拍照产生的log。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>09-03 15:44:34.169 18351 27678 D CAM_SplashProvider: getSplashFile: drawableRes camera_preview_bottom_action_bar_cv
+</span></span><span style="display:flex;"><span>                                // 打开相机
+</span></span><span style="display:flex;"><span>09-03 15:44:35.021 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onCreate start 173324289
+</span></span><span style="display:flex;"><span>09-03 15:44:35.022 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH start
+</span></span><span style="display:flex;"><span>09-03 15:44:35.023 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA E
+</span></span><span style="display:flex;"><span>09-03 15:44:35.029 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA X
+</span></span><span style="display:flex;"><span>09-03 15:44:35.030 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: cid: -1 -&gt; 0, mid: 163 -&gt; 163, fcc: true
+</span></span><span style="display:flex;"><span>09-03 15:44:35.032 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = []
+</span></span><span style="display:flex;"><span>09-03 15:44:35.032 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = []
+</span></span><span style="display:flex;"><span>09-03 15:44:35.032 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 1:createActivity2openCamera_163_0 takes 10 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.033 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: retries = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.033 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: E: cid = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.033 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: switch_prefix_camera_setup_163_0 takes 4 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.088 18351 18351 I CAM_Camera@173324289: [U_ACTION]: onModeSelected from 0xa0 to 0xa3, ScreenSlideOff = false, facing = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.092 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: switch_prefix_data_setup_163_0 takes 3 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.098 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: X: cid = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.098 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onOpened: cid = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.099 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 2:[HAL]openCamera@0_163_0 takes 66 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.099 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A1:createActivity_163_0 takes 77 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.100 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A2:switch_camera_prepare_163_0 takes 8 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.101 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onCreate end 173324289
+</span></span><span style="display:flex;"><span>09-03 15:44:35.101 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: cid: 0 -&gt; 0, mid: 163 -&gt; 163, fcc: false
+</span></span><span style="display:flex;"><span>09-03 15:44:35.105 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A3:switch_camera_2_open_163_0 takes 4 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.106 18351 18436 I CAM_CameraOpenObservable: [K_PROCESS]: onOpened: cid = 0, listener = 143587978
+</span></span><span style="display:flex;"><span>09-03 15:44:35.106 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: onOpened: cid = 0|android.hardware.camera2.impl.CameraDeviceImpl@29685ea
+</span></span><span style="display:flex;"><span>09-03 15:44:35.106 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = [0]
+</span></span><span style="display:flex;"><span>09-03 15:44:35.106 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = [0]
+</span></span><span style="display:flex;"><span>09-03 15:44:35.107 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onOpened: cid = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.108 18351 18436 I CAM_CameraOpenObservable: [K_PROCESS]: onOpened: cid = 0, listener = 122189081
+</span></span><span style="display:flex;"><span>09-03 15:44:35.108 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: onOpened: cid = 0|android.hardware.camera2.impl.CameraDeviceImpl@29685ea
+</span></span><span style="display:flex;"><span>09-03 15:44:35.110 18351 18436 I CAM_BaseModule: [K_PROCESS]: onCreate: moduleIndex-&gt;163, cameraId-&gt;0@u@182152399: mid = 163, cid = 0, created = false, departed = false
+</span></span><span style="display:flex;"><span>09-03 15:44:35.111 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+</span></span><span style="display:flex;"><span>09-03 15:44:35.111 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+</span></span><span style="display:flex;"><span>09-03 15:44:35.113 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+</span></span><span style="display:flex;"><span>09-03 15:44:35.115 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA E
+</span></span><span style="display:flex;"><span>09-03 15:44:35.115 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA X
+</span></span><span style="display:flex;"><span>09-03 15:44:35.120 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+</span></span><span style="display:flex;"><span>09-03 15:44:35.128 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: not allow traceStart
+</span></span><span style="display:flex;"><span>09-03 15:44:35.128 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: resumeActivity@173324289_163_0 takes 13 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.131 18351 18436 I CAM_Camera2Module: [K_PROCESS]: startPreview: set PictureSize with 4080x3060
+</span></span><span style="display:flex;"><span>09-03 15:44:35.149 18351 18436 I CAM_Camera2Module: [K_PROCESS]: startPreview: surfaceTexture = android.graphics.SurfaceTexture@22de842
+</span></span><span style="display:flex;"><span>09-03 15:44:35.152 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+</span></span><span style="display:flex;"><span>09-03 15:44:35.152 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: operatingMode=0x9005 previewCallback=2 rawCallbackType=32
+</span></span><span style="display:flex;"><span>09-03 15:44:35.153 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PhotoImageReader configuration: format=0x23 size=4080x3060
+</span></span><span style="display:flex;"><span>09-03 15:44:35.154 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add JpegImageReader configuration: format=0x100 size=4080x3060
+</span></span><span style="display:flex;"><span>09-03 15:44:35.158 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add TuningImageReader configuration: format=0x32315659 size=1280x720
+</span></span><span style="display:flex;"><span>09-03 15:44:35.164 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add QuickViewImageReader configuration: format=0x23 size=1440x1080
+</span></span><span style="display:flex;"><span>09-03 15:44:35.164 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PreviewImageReader configuration: format=0x23 size=1440x1080
+</span></span><span style="display:flex;"><span>09-03 15:44:35.165 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PreviewSurface configuration: format=0x22 size=1440x1080
+</span></span><span style="display:flex;"><span>09-03 15:44:35.165 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: 5.1:surfaceViewCreate_163_0 takes 124 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.167 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: setup output configuration number: 6
+</span></span><span style="display:flex;"><span>09-03 15:44:35.168 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 3:cameraOpened2createCaptureSession@0_163_0 takes 69 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.354 18351 18351 I CAM_ZoomRatioToggleView: [U_ACTION]: setZoomRatio(): a = ZOOMING_BY_UNKNOWN_SOURCE,i = 1,z = 1.0,ti =1,tz =1.0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.356 18351 18351 I CAM_ZoomRatioToggleView: [U_ACTION]: setZoomRatio(): a = ZOOMING_BY_LAYOUT_CHANGE,i = 1,z = 1.0,ti =1,tz =1.0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.457 18351 18459 I CAM_MiCamera2: [K_PROCESS]: onConfigured: id = 1, session = android.hardware.camera2.impl.CameraCaptureSessionImpl@e9be74d, Reprocessable = false
+</span></span><span style="display:flex;"><span>09-03 15:44:35.457 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 4:[HAL]createCaptureSession@0_163_0 takes 289 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.457 18351 18459 I CAM_MiCamera2: [K_PROCESS]: onConfigured: is mDeferOutputConfigurations null: true
+</span></span><span style="display:flex;"><span>09-03 15:44:35.464 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A4:switch_module_setup_163_0 takes 356 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.464 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A5:switch_data_setup_163_0 takes 0 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.475 18351 18436 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+</span></span><span style="display:flex;"><span>09-03 15:44:35.479 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 5.2:applyPreviewSettings_163_0 takes 14 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.479 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 5:captureSessionReady2startPreview_163_0 takes 22 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.482 18351 18436 I CAM_MiCamera2: [K_PROCESS]: resumePreview: repeating sequenceId: 0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.493 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A6:switch_preview_setup_163_0 takes 3 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.509 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A7:switch_ui_setup_163_0 takes 16 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.527 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A8:switch_setup_consumer_163_0 takes 18 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: COLD_LAUNCH has no start time, ignore this stop event as take 0 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH_163_0 takes 586 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH takes 586 is less than 1500
+</span></span><span style="display:flex;"><span>09-03 15:44:35.609 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Action: 6:[HAL]startPreview2firstFrame_163_0 takes 130 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.610 18351 18456 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: com.android.camera.Camera.Jk(Unknown Source:143), com.android.camera.ActivityBase.Lk(Unknown Source:313), s8.z.onFrameAvailable(Unknown Source:15), 
+</span></span><span style="display:flex;"><span>09-03 15:44:35.872 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onWindowFocusChanged: hasFocus: true, isFromKeyguard: true
+</span></span><span style="display:flex;"><span>09-03 15:44:35.876 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: camera2Proxy=com.android.camera2.i4@75c4fb7 - cid: 0; isCameraDisconnected=false
+</span></span><span style="display:flex;"><span>09-03 15:44:36.061 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+</span></span><span style="display:flex;"><span>09-03 15:44:37.978 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+</span></span><span style="display:flex;"><span>09-03 15:44:37.981 18351 18436 I CAM_MiCamera2: [K_PROCESS]: resumePreview: repeating sequenceId: 1
+</span></span><span style="display:flex;"><span>09-03 15:44:39.856 18351 18351 I CAM_BaseModuleStateManager: [U_ACTION]: setTriggerMode 140
+</span></span><span style="display:flex;"><span>                                // 用户点击拍照按钮
+</span></span><span style="display:flex;"><span>09-03 15:44:39.856 18351 18351 I CAM_ImageActionImpl: [U_ACTION]: onShutterButtonClick 1
+</span></span><span style="display:flex;"><span>09-03 15:44:39.856 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE start
+</span></span><span style="display:flex;"><span>09-03 15:44:39.856 18351 18351 V CAM_FocusManager: [K_PROCESS]: prepareCapture: false|2|continuous-picture
+</span></span><span style="display:flex;"><span>09-03 15:44:39.856 18351 18351 I CAM_FocusManager: [K_PROCESS]: doSnap mState = 0, fromWhat = 2
+</span></span><span style="display:flex;"><span>09-03 15:44:39.857 18351 18351 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: u2.u.H3(Unknown Source:1), p6.s.S(Unknown Source:10), p6.s.V(Unknown Source:91), 
+</span></span><span style="display:flex;"><span>09-03 15:44:39.857 18351 18351 I CAM_Camera2Module: [K_PROCESS]: startNormalCapture mode -&gt; 140
+</span></span><span style="display:flex;"><span>09-03 15:44:39.858 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE start
+</span></span><span style="display:flex;"><span>09-03 15:44:39.859 18351 18351 I CAM_Camera2Module: [K_PROCESS]: prepareNormalCapture title = IMG_20240903_154439
+</span></span><span style="display:flex;"><span>09-03 15:44:39.860 18351 18351 D CAM_MiCamera2: [K_PROCESS]: capture:mMiCamera2QuickViewQueue.offer,size: 1
+</span></span><span style="display:flex;"><span>                                // 开始拍照（startShot）
+</span></span><span style="display:flex;"><span>                                // Build Request
+</span></span><span style="display:flex;"><span>09-03 15:44:39.860 18351 18351 I CAM_OfflineSingleYuvShot: [K_PROCESS]: startShot: this=com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+</span></span><span style="display:flex;"><span>09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for pic 35_4080x3060
+</span></span><span style="display:flex;"><span>09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for quickview 35_1440x1080
+</span></span><span style="display:flex;"><span>09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for tuning 842094169_1280x720
+</span></span><span style="display:flex;"><span>09-03 15:44:39.867 18351 18351 I CAM_CaptureRequestBuilder: [K_PROCESS]: applyHDR:false
+</span></span><span style="display:flex;"><span>09-03 15:44:39.867 18351 18351 I CAM_CaptureRequestBuilder: [K_PROCESS]: applySuperResolution: false, applyType = 3
+</span></span><span style="display:flex;"><span>09-03 15:44:39.867 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: true
+</span></span><span style="display:flex;"><span>09-03 15:44:39.868 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyStreetShoot: false
+</span></span><span style="display:flex;"><span>                                // capture基本配置信息
+</span></span><span style="display:flex;"><span>09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputFormat = JPEG
+</span></span><span style="display:flex;"><span>09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputSize = 4080x3060
+</span></span><span style="display:flex;"><span>09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputQuality = 96
+</span></span><span style="display:flex;"><span>09-03 15:44:39.869 18351 18351 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+</span></span><span style="display:flex;"><span>09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: isParallel = false, shotType = 101
+</span></span><span style="display:flex;"><span>09-03 15:44:39.869 18351 18351 I CAM_LiveShotManager: [K_PROCESS]: onCaptureStart: isLiveShot = false, hashcode = 54555436, savePath = /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:39.870 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_prepare_capture_163_0 takes 14 ms
+</span></span><span style="display:flex;"><span>                                // add listener to MIVICaptureManager
+</span></span><span style="display:flex;"><span>09-03 15:44:39.870 18351 18351 I CAM_OfflineCaptureManager: [K_PROCESS]: addListener: IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:39.871 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: sequenceId=2
+</span></span><span style="display:flex;"><span>09-03 15:44:39.871 18351 18351 I CAM_FragmentBottomAction: [U_ACTION]: MultiCaptureByRunningCondition
+</span></span><span style="display:flex;"><span>                                // capture start
+</span></span><span style="display:flex;"><span>09-03 15:44:39.935 18351 18459 I CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureStarted: timestamp=5845378796665 frameNumber=133
+</span></span><span style="display:flex;"><span>09-03 15:44:39.936 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_on_shutter_163_0 takes 80 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:39.936 18351 18459 D CAM_OfflineImageDataZipper: [K_PROCESS]: putParallelTaskData : timestamp = 5845378796665 ,parallelTaskData.timeStamp = 5845378796665 ,size = 1
+</span></span><span style="display:flex;"><span>09-03 15:44:39.936 18351 18459 I CAM_OfflineCaptureManager: [K_PROCESS]: addJpegListener: IMG_20240903_154439.jpg|133
+</span></span><span style="display:flex;"><span>09-03 15:44:39.948 18351 18574 D CAM_MIVIParallelService: [K_PROCESS]: onCaptureCompleted:frameNumber = 133;pictureName = IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:39.949 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyCaptureCompleted: ready pictureName = IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:39.949 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureCompleted: 1 mPictureName: IMG_20240903_154439.jpg, timestamp: 5845378796665
+</span></span><span style="display:flex;"><span>09-03 15:44:39.962 18351 18701 I CAM_OfflineSingleYuvShot: [K_PROCESS]: handleCaptureFinished: mPictureName: IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>                                // 捕获图像进行算法处理配置，applySuperResolution,applyMfnrEnable,applyStreetShoot
+</span></span><span style="display:flex;"><span>09-03 15:44:39.967 18351 18701 I CAM_CaptureRequestBuilder: [K_PROCESS]: applySuperResolution: ignored for applyType = 1
+</span></span><span style="display:flex;"><span>09-03 15:44:39.967 18351 18701 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+</span></span><span style="display:flex;"><span>09-03 15:44:39.968 18351 18701 V CAM_MiCameraCompat: [K_PROCESS]: applyStreetShoot: false
+</span></span><span style="display:flex;"><span>                                // quickview available
+</span></span><span style="display:flex;"><span>09-03 15:44:39.970 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: quickview shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+</span></span><span style="display:flex;"><span>09-03 15:44:39.970 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 1440*1080 resultType = 6 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+</span></span><span style="display:flex;"><span>09-03 15:44:39.971 18351 18351 I CAM_FragmentBottomAction: [U_ACTION]: onSnapClick
+</span></span><span style="display:flex;"><span>09-03 15:44:39.972 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImageIfNeed: start schedule: mPictureName: IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:39.973 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: mMiCamera2QuickViewQueue.poll, size:0
+</span></span><span style="display:flex;"><span>09-03 15:44:39.974 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImageIfNeed: mCurrentParallelTaskData timestamp:5845378796665 image timestamp:5845378796665
+</span></span><span style="display:flex;"><span>09-03 15:44:39.976 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImage: YUV E, frameNumber: 133,mPictureName: IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:39.987 18351 18701 I CAM_Camera2Module: [K_PROCESS]: onPictureTakenFinished: succeed = true
+</span></span><span style="display:flex;"><span>09-03 15:44:39.996 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE_163_0 takes 140 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:39.996 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE takes 140 is less than 2000
+</span></span><span style="display:flex;"><span>09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE_163_0 takes 138 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE takes 138 is less than 2000
+</span></span><span style="display:flex;"><span>09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Ignore this stop event, there is no event in start status.
+</span></span><span style="display:flex;"><span>09-03 15:44:39.997 18351 18701 I CAM_Camera2Module: [P_PERFORM]: mCaptureStartTime(from onShutterButtonClick start to jpegCallback finished) = 129ms
+</span></span><span style="display:flex;"><span>09-03 15:44:39.998 18351 18701 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: d6.p2.Oq(Unknown Source:16), d6.p2.z7(Unknown Source:380), com.xiaomi.camera.mivi.mtk.OfflineBaseShot.handleCaptureFinished(Unknown Source:138), 
+</span></span><span style="display:flex;"><span>                                // shot_2_shot完成
+</span></span><span style="display:flex;"><span>09-03 15:44:39.999 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_shot_163_0 takes 142 ms
+</span></span><span style="display:flex;"><span>                                // 存储quickview图像，生成缩略图
+</span></span><span style="display:flex;"><span>09-03 15:44:40.101 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImage: YUV X , mPictureName: IMG_20240903_154439.jpg, needIcc: true
+</span></span><span style="display:flex;"><span>09-03 15:44:40.101 18351 18459 I CAM_ImageSaver: [K_PROCESS]: onParallelProcessFinish: path: /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:40.112 18351 28100 I CAM_PreviewSaveRequest: [K_PROCESS]: image save try to create thumbnail
+</span></span><span style="display:flex;"><span>09-03 15:44:40.156 18351 28100 V CAM_ImageSaver: [K_PROCESS]: postUpdateThumbnail true
+</span></span><span style="display:flex;"><span>09-03 15:44:40.156 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: SLOW_MOTION_SAVING has no start time, ignore this stop event as take 0 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:40.157 18351 28100 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: com.android.camera.ActivityBase.R0(Unknown Source:19), a8.i.l(Unknown Source:49), a8.p.J(Unknown Source:275), 
+</span></span><span style="display:flex;"><span>                                // shot_2_gallery完成
+</span></span><span style="display:flex;"><span>09-03 15:44:40.340 18351 28126 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_gallery_163_0 takes 483 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:41.291 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: tuning timestamp = 5845378796665
+</span></span><span style="display:flex;"><span>09-03 15:44:41.294 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: tuning shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+</span></span><span style="display:flex;"><span>09-03 15:44:41.295 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 1280*720 resultType = 5 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+</span></span><span style="display:flex;"><span>09-03 15:44:41.297 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setImage: timestamp = 5845378796665 resultType =5 imageName=IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>                                // 结果图完成
+</span></span><span style="display:flex;"><span>09-03 15:44:41.297 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: main timestamp = 5845378796665
+</span></span><span style="display:flex;"><span>09-03 15:44:41.297 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: main shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+</span></span><span style="display:flex;"><span>09-03 15:44:41.298 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 4080*3060 resultType = 0 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+</span></span><span style="display:flex;"><span>09-03 15:44:41.300 18351 18459 I CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureCompleted: frameNumber=133
+</span></span><span style="display:flex;"><span>                                // 转换yuv为jpeg
+</span></span><span style="display:flex;"><span>09-03 15:44:41.303 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setImage: timestamp = 5845378796665 resultType =0 imageName=IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+</span></span><span style="display:flex;"><span>09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setResult: timestamp = 5845378796665 imageName=IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: handleDataBeanIfReady: dataBean with timestamp 5845378796665 is ready
+</span></span><span style="display:flex;"><span>09-03 15:44:41.304 18351 18702 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_device_capture_163_0 takes 1434 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+</span></span><span style="display:flex;"><span>09-03 15:44:41.305 18351 18702 D CAM_OfflineImageProcessor: [K_PROCESS]: process: E timestamp = 5845378796665
+</span></span><span style="display:flex;"><span>09-03 15:44:41.305 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+</span></span><span style="display:flex;"><span>09-03 15:44:41.305 18351 18702 D CAM_OfflineImageProcessor: [K_PROCESS]: process: X
+</span></span><span style="display:flex;"><span>09-03 15:44:41.306 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: doJpeg: 5845378796665/0
+</span></span><span style="display:flex;"><span>09-03 15:44:41.307 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyDataReady: ready
+</span></span><span style="display:flex;"><span>09-03 15:44:41.307 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onDataReady: timestamp=5845378796665
+</span></span><span style="display:flex;"><span>09-03 15:44:41.311 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onDataReady:mMiCamera2QuickViewQueue.size = 0 ,mMiCamera2ShotQueue.size = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:41.471 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: onJpegAvailable: 5845378796665 | 0
+</span></span><span style="display:flex;"><span>09-03 15:44:41.471 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+</span></span><span style="display:flex;"><span>                                // 转换完成后，存储主图
+</span></span><span style="display:flex;"><span>09-03 15:44:41.472 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: onJpegAvailable: save image start. dataLen=2630390
+</span></span><span style="display:flex;"><span>09-03 15:44:41.472 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyFinish: key = IMG_20240903_154439.jpg|133
+</span></span><span style="display:flex;"><span>09-03 15:44:41.473 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: Final picture onImageReceived: timestamp: 5845378796665,type:JPEG
+</span></span><span style="display:flex;"><span>09-03 15:44:41.473 18351 18701 I CAM_OfflineCaptureManager: [K_PROCESS]: removeJpegListener: IMG_20240903_154439.jpg|133; size: 0
+</span></span><span style="display:flex;"><span>09-03 15:44:41.473 18351 18701 I CAM_OfflineCaptureManager: [K_PROCESS]: removeListener: IMG_20240903_154439.jpg; size: 0
+</span></span><span style="display:flex;"><span>09-03 15:44:41.473 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onFinalImageReceived: dataLength =2630390 timestamp =5845378796665 type =JPEG
+</span></span><span style="display:flex;"><span>09-03 15:44:41.473 18351 18701 D CAM_OfflineImageDataZipper: [K_PROCESS]: removeParallelTaskData : timestamp =5845378796665 size =0
+</span></span><span style="display:flex;"><span>09-03 15:44:41.473 18351 18701 I CAM_ImageSaver: [K_PROCESS]: onParallelProcessFinish: path: /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:41.503 18351 28251 I CAM_Storage: [K_PROCESS]: updateImage uri-&gt; content://media/external_primary/images/media/1000000050, tmpFile /data/user/0/com.android.camera/cache/IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>                                // 图片存储完成
+</span></span><span style="display:flex;"><span>09-03 15:44:41.604 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: algo_capture_total_1725349479858_163_0 takes 1733 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:41.605 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: algo_image_save_5845378796665_163_0 takes 131 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:41.606 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_view_1725349479858_163_0 takes 1735 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:41.606 18351 28251 I CAM_ParallelSaveRequest: [K_PROCESS]: image save onFinish
+</span></span><span style="display:flex;"><span>09-03 15:44:41.606 18351 28251 I CAM_ParallelSaveRequest: [K_PROCESS]: saved image finished, timestamp: 5845378796665
+</span></span><span style="display:flex;"><span>09-03 15:44:47.697 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: not allow traceStop
+</span></span><span style="display:flex;"><span>                                // 关闭相机
+</span></span><span style="display:flex;"><span>09-03 15:44:47.771 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onWindowFocusChanged: hasFocus: false, isFromKeyguard: true
+</span></span><span style="display:flex;"><span>09-03 15:44:47.772 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: camera2Proxy=com.android.camera2.i4@75c4fb7 - cid: 0; isCameraDisconnected=false
+</span></span><span style="display:flex;"><span>09-03 15:44:48.942 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = []
+</span></span><span style="display:flex;"><span>09-03 15:44:48.955 18351 18459 I CAM_MiCamera2: [K_PROCESS]: abortCaptures E
+</span></span><span style="display:flex;"><span>09-03 15:44:49.030 18351 18459 I CAM_MiCamera2: [K_PROCESS]: abortCaptures X
+</span></span><span style="display:flex;"><span>09-03 15:44:49.030 18351 18459 I CAM_MiCamera2: [K_PROCESS]: E: close: cameraId = 0, reason = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:49.031 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE start
+</span></span><span style="display:flex;"><span>09-03 15:44:49.153 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE_163_0 takes 122 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:49.153 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE takes 122 is less than 2000
+</span></span><span style="display:flex;"><span>09-03 15:44:49.154 18351 18459 I CAM_MiCamera2: [K_PROCESS]: X: close: cameraId = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:49.154 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = []
+</span></span><span style="display:flex;"><span>09-03 15:44:49.155 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onClosed: cid = 0, closing = true
+</span></span></code></pre></div><hr>
+<h2 id="lastmod-2025-03-11t094648z">title: shot_2_xx
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="shot_2_xx-1">shot_2_xx</h1>
+<p>以N16U为例，分析其拍照产生的log。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>09-03 15:44:34.169 18351 27678 D CAM_SplashProvider: getSplashFile: drawableRes camera_preview_bottom_action_bar_cv
+</span></span><span style="display:flex;"><span>                                // 打开相机
+</span></span><span style="display:flex;"><span>09-03 15:44:35.021 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onCreate start 173324289
+</span></span><span style="display:flex;"><span>09-03 15:44:35.022 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH start
+</span></span><span style="display:flex;"><span>09-03 15:44:35.023 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA E
+</span></span><span style="display:flex;"><span>09-03 15:44:35.029 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA X
+</span></span><span style="display:flex;"><span>09-03 15:44:35.030 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: cid: -1 -&gt; 0, mid: 163 -&gt; 163, fcc: true
+</span></span><span style="display:flex;"><span>09-03 15:44:35.032 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = []
+</span></span><span style="display:flex;"><span>09-03 15:44:35.032 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = []
+</span></span><span style="display:flex;"><span>09-03 15:44:35.032 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 1:createActivity2openCamera_163_0 takes 10 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.033 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: retries = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.033 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: E: cid = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.033 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: switch_prefix_camera_setup_163_0 takes 4 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.088 18351 18351 I CAM_Camera@173324289: [U_ACTION]: onModeSelected from 0xa0 to 0xa3, ScreenSlideOff = false, facing = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.092 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: switch_prefix_data_setup_163_0 takes 3 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.098 18351 18459 I CAM_OpenCameraCallable: [K_PROCESS]: openCamera: X: cid = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.098 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onOpened: cid = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.099 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 2:[HAL]openCamera@0_163_0 takes 66 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.099 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A1:createActivity_163_0 takes 77 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.100 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A2:switch_camera_prepare_163_0 takes 8 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.101 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onCreate end 173324289
+</span></span><span style="display:flex;"><span>09-03 15:44:35.101 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: cid: 0 -&gt; 0, mid: 163 -&gt; 163, fcc: false
+</span></span><span style="display:flex;"><span>09-03 15:44:35.105 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A3:switch_camera_2_open_163_0 takes 4 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.106 18351 18436 I CAM_CameraOpenObservable: [K_PROCESS]: onOpened: cid = 0, listener = 143587978
+</span></span><span style="display:flex;"><span>09-03 15:44:35.106 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: onOpened: cid = 0|android.hardware.camera2.impl.CameraDeviceImpl@29685ea
+</span></span><span style="display:flex;"><span>09-03 15:44:35.106 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = [0]
+</span></span><span style="display:flex;"><span>09-03 15:44:35.106 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = [0]
+</span></span><span style="display:flex;"><span>09-03 15:44:35.107 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onOpened: cid = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.108 18351 18436 I CAM_CameraOpenObservable: [K_PROCESS]: onOpened: cid = 0, listener = 122189081
+</span></span><span style="display:flex;"><span>09-03 15:44:35.108 18351 18436 I CAM_Camera2OpenManager: [K_PROCESS]: onOpened: cid = 0|android.hardware.camera2.impl.CameraDeviceImpl@29685ea
+</span></span><span style="display:flex;"><span>09-03 15:44:35.110 18351 18436 I CAM_BaseModule: [K_PROCESS]: onCreate: moduleIndex-&gt;163, cameraId-&gt;0@u@182152399: mid = 163, cid = 0, created = false, departed = false
+</span></span><span style="display:flex;"><span>09-03 15:44:35.111 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+</span></span><span style="display:flex;"><span>09-03 15:44:35.111 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+</span></span><span style="display:flex;"><span>09-03 15:44:35.113 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+</span></span><span style="display:flex;"><span>09-03 15:44:35.115 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA E
+</span></span><span style="display:flex;"><span>09-03 15:44:35.115 18351 18351 I CAM_Camera@173324289: [P_PERFORM]: checkPermissionAndCTA X
+</span></span><span style="display:flex;"><span>09-03 15:44:35.120 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+</span></span><span style="display:flex;"><span>09-03 15:44:35.128 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: not allow traceStart
+</span></span><span style="display:flex;"><span>09-03 15:44:35.128 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: resumeActivity@173324289_163_0 takes 13 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.131 18351 18436 I CAM_Camera2Module: [K_PROCESS]: startPreview: set PictureSize with 4080x3060
+</span></span><span style="display:flex;"><span>09-03 15:44:35.149 18351 18436 I CAM_Camera2Module: [K_PROCESS]: startPreview: surfaceTexture = android.graphics.SurfaceTexture@22de842
+</span></span><span style="display:flex;"><span>09-03 15:44:35.152 18351 18436 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+</span></span><span style="display:flex;"><span>09-03 15:44:35.152 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: operatingMode=0x9005 previewCallback=2 rawCallbackType=32
+</span></span><span style="display:flex;"><span>09-03 15:44:35.153 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PhotoImageReader configuration: format=0x23 size=4080x3060
+</span></span><span style="display:flex;"><span>09-03 15:44:35.154 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add JpegImageReader configuration: format=0x100 size=4080x3060
+</span></span><span style="display:flex;"><span>09-03 15:44:35.158 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add TuningImageReader configuration: format=0x32315659 size=1280x720
+</span></span><span style="display:flex;"><span>09-03 15:44:35.164 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add QuickViewImageReader configuration: format=0x23 size=1440x1080
+</span></span><span style="display:flex;"><span>09-03 15:44:35.164 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PreviewImageReader configuration: format=0x23 size=1440x1080
+</span></span><span style="display:flex;"><span>09-03 15:44:35.165 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: add PreviewSurface configuration: format=0x22 size=1440x1080
+</span></span><span style="display:flex;"><span>09-03 15:44:35.165 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: 5.1:surfaceViewCreate_163_0 takes 124 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.167 18351 18436 I CAM_MiCamera2: [K_PROCESS]: startPreviewSession: setup output configuration number: 6
+</span></span><span style="display:flex;"><span>09-03 15:44:35.168 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 3:cameraOpened2createCaptureSession@0_163_0 takes 69 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.354 18351 18351 I CAM_ZoomRatioToggleView: [U_ACTION]: setZoomRatio(): a = ZOOMING_BY_UNKNOWN_SOURCE,i = 1,z = 1.0,ti =1,tz =1.0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.356 18351 18351 I CAM_ZoomRatioToggleView: [U_ACTION]: setZoomRatio(): a = ZOOMING_BY_LAYOUT_CHANGE,i = 1,z = 1.0,ti =1,tz =1.0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.457 18351 18459 I CAM_MiCamera2: [K_PROCESS]: onConfigured: id = 1, session = android.hardware.camera2.impl.CameraCaptureSessionImpl@e9be74d, Reprocessable = false
+</span></span><span style="display:flex;"><span>09-03 15:44:35.457 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: 4:[HAL]createCaptureSession@0_163_0 takes 289 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.457 18351 18459 I CAM_MiCamera2: [K_PROCESS]: onConfigured: is mDeferOutputConfigurations null: true
+</span></span><span style="display:flex;"><span>09-03 15:44:35.464 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A4:switch_module_setup_163_0 takes 356 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.464 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: A5:switch_data_setup_163_0 takes 0 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.475 18351 18436 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+</span></span><span style="display:flex;"><span>09-03 15:44:35.479 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 5.2:applyPreviewSettings_163_0 takes 14 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.479 18351 18436 I CAM_PerformanceManager: [P_PERFORM]: Action: 5:captureSessionReady2startPreview_163_0 takes 22 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.482 18351 18436 I CAM_MiCamera2: [K_PROCESS]: resumePreview: repeating sequenceId: 0
+</span></span><span style="display:flex;"><span>09-03 15:44:35.493 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A6:switch_preview_setup_163_0 takes 3 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.509 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A7:switch_ui_setup_163_0 takes 16 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.527 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: A8:switch_setup_consumer_163_0 takes 18 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: COLD_LAUNCH has no start time, ignore this stop event as take 0 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH_163_0 takes 586 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.608 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Event: HOT_LAUNCH takes 586 is less than 1500
+</span></span><span style="display:flex;"><span>09-03 15:44:35.609 18351 18456 I CAM_PerformanceManager: [P_PERFORM]: Action: 6:[HAL]startPreview2firstFrame_163_0 takes 130 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:35.610 18351 18456 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: com.android.camera.Camera.Jk(Unknown Source:143), com.android.camera.ActivityBase.Lk(Unknown Source:313), s8.z.onFrameAvailable(Unknown Source:15), 
+</span></span><span style="display:flex;"><span>09-03 15:44:35.872 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onWindowFocusChanged: hasFocus: true, isFromKeyguard: true
+</span></span><span style="display:flex;"><span>09-03 15:44:35.876 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: camera2Proxy=com.android.camera2.i4@75c4fb7 - cid: 0; isCameraDisconnected=false
+</span></span><span style="display:flex;"><span>09-03 15:44:36.061 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+</span></span><span style="display:flex;"><span>09-03 15:44:37.978 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+</span></span><span style="display:flex;"><span>09-03 15:44:37.981 18351 18436 I CAM_MiCamera2: [K_PROCESS]: resumePreview: repeating sequenceId: 1
+</span></span><span style="display:flex;"><span>09-03 15:44:39.856 18351 18351 I CAM_BaseModuleStateManager: [U_ACTION]: setTriggerMode 140
+</span></span><span style="display:flex;"><span>                                // 用户点击拍照按钮
+</span></span><span style="display:flex;"><span>09-03 15:44:39.856 18351 18351 I CAM_ImageActionImpl: [U_ACTION]: onShutterButtonClick 1
+</span></span><span style="display:flex;"><span>09-03 15:44:39.856 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE start
+</span></span><span style="display:flex;"><span>09-03 15:44:39.856 18351 18351 V CAM_FocusManager: [K_PROCESS]: prepareCapture: false|2|continuous-picture
+</span></span><span style="display:flex;"><span>09-03 15:44:39.856 18351 18351 I CAM_FocusManager: [K_PROCESS]: doSnap mState = 0, fromWhat = 2
+</span></span><span style="display:flex;"><span>09-03 15:44:39.857 18351 18351 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: u2.u.H3(Unknown Source:1), p6.s.S(Unknown Source:10), p6.s.V(Unknown Source:91), 
+</span></span><span style="display:flex;"><span>09-03 15:44:39.857 18351 18351 I CAM_Camera2Module: [K_PROCESS]: startNormalCapture mode -&gt; 140
+</span></span><span style="display:flex;"><span>09-03 15:44:39.858 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE start
+</span></span><span style="display:flex;"><span>09-03 15:44:39.859 18351 18351 I CAM_Camera2Module: [K_PROCESS]: prepareNormalCapture title = IMG_20240903_154439
+</span></span><span style="display:flex;"><span>09-03 15:44:39.860 18351 18351 D CAM_MiCamera2: [K_PROCESS]: capture:mMiCamera2QuickViewQueue.offer,size: 1
+</span></span><span style="display:flex;"><span>                                // 开始拍照（startShot）
+</span></span><span style="display:flex;"><span>                                // Build Request
+</span></span><span style="display:flex;"><span>09-03 15:44:39.860 18351 18351 I CAM_OfflineSingleYuvShot: [K_PROCESS]: startShot: this=com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+</span></span><span style="display:flex;"><span>09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for pic 35_4080x3060
+</span></span><span style="display:flex;"><span>09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for quickview 35_1440x1080
+</span></span><span style="display:flex;"><span>09-03 15:44:39.863 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: add target for tuning 842094169_1280x720
+</span></span><span style="display:flex;"><span>09-03 15:44:39.867 18351 18351 I CAM_CaptureRequestBuilder: [K_PROCESS]: applyHDR:false
+</span></span><span style="display:flex;"><span>09-03 15:44:39.867 18351 18351 I CAM_CaptureRequestBuilder: [K_PROCESS]: applySuperResolution: false, applyType = 3
+</span></span><span style="display:flex;"><span>09-03 15:44:39.867 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: true
+</span></span><span style="display:flex;"><span>09-03 15:44:39.868 18351 18351 V CAM_MiCameraCompat: [K_PROCESS]: applyStreetShoot: false
+</span></span><span style="display:flex;"><span>                                // capture基本配置信息
+</span></span><span style="display:flex;"><span>09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputFormat = JPEG
+</span></span><span style="display:flex;"><span>09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputSize = 4080x3060
+</span></span><span style="display:flex;"><span>09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: outputQuality = 96
+</span></span><span style="display:flex;"><span>09-03 15:44:39.869 18351 18351 I CAM_ModuleDevice: [K_PROCESS]: getOperatingMode: SESSION_OPERATION_MODE_ALGO_UP_NORMAL
+</span></span><span style="display:flex;"><span>09-03 15:44:39.869 18351 18351 I CAM_Camera2Module: [K_PROCESS]: onCaptureStart: isParallel = false, shotType = 101
+</span></span><span style="display:flex;"><span>09-03 15:44:39.869 18351 18351 I CAM_LiveShotManager: [K_PROCESS]: onCaptureStart: isLiveShot = false, hashcode = 54555436, savePath = /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:39.870 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_prepare_capture_163_0 takes 14 ms
+</span></span><span style="display:flex;"><span>                                // add listener to MIVICaptureManager
+</span></span><span style="display:flex;"><span>09-03 15:44:39.870 18351 18351 I CAM_OfflineCaptureManager: [K_PROCESS]: addListener: IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:39.871 18351 18351 D CAM_OfflineSingleYuvShot: [K_PROCESS]: capture: sequenceId=2
+</span></span><span style="display:flex;"><span>09-03 15:44:39.871 18351 18351 I CAM_FragmentBottomAction: [U_ACTION]: MultiCaptureByRunningCondition
+</span></span><span style="display:flex;"><span>                                // capture start
+</span></span><span style="display:flex;"><span>09-03 15:44:39.935 18351 18459 I CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureStarted: timestamp=5845378796665 frameNumber=133
+</span></span><span style="display:flex;"><span>09-03 15:44:39.936 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_on_shutter_163_0 takes 80 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:39.936 18351 18459 D CAM_OfflineImageDataZipper: [K_PROCESS]: putParallelTaskData : timestamp = 5845378796665 ,parallelTaskData.timeStamp = 5845378796665 ,size = 1
+</span></span><span style="display:flex;"><span>09-03 15:44:39.936 18351 18459 I CAM_OfflineCaptureManager: [K_PROCESS]: addJpegListener: IMG_20240903_154439.jpg|133
+</span></span><span style="display:flex;"><span>09-03 15:44:39.948 18351 18574 D CAM_MIVIParallelService: [K_PROCESS]: onCaptureCompleted:frameNumber = 133;pictureName = IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:39.949 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyCaptureCompleted: ready pictureName = IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:39.949 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureCompleted: 1 mPictureName: IMG_20240903_154439.jpg, timestamp: 5845378796665
+</span></span><span style="display:flex;"><span>09-03 15:44:39.962 18351 18701 I CAM_OfflineSingleYuvShot: [K_PROCESS]: handleCaptureFinished: mPictureName: IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>                                // 捕获图像进行算法处理配置，applySuperResolution,applyMfnrEnable,applyStreetShoot
+</span></span><span style="display:flex;"><span>09-03 15:44:39.967 18351 18701 I CAM_CaptureRequestBuilder: [K_PROCESS]: applySuperResolution: ignored for applyType = 1
+</span></span><span style="display:flex;"><span>09-03 15:44:39.967 18351 18701 V CAM_MiCameraCompat: [K_PROCESS]: applyMfnrEnable: false
+</span></span><span style="display:flex;"><span>09-03 15:44:39.968 18351 18701 V CAM_MiCameraCompat: [K_PROCESS]: applyStreetShoot: false
+</span></span><span style="display:flex;"><span>                                // quickview available
+</span></span><span style="display:flex;"><span>09-03 15:44:39.970 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: quickview shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+</span></span><span style="display:flex;"><span>09-03 15:44:39.970 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 1440*1080 resultType = 6 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+</span></span><span style="display:flex;"><span>09-03 15:44:39.971 18351 18351 I CAM_FragmentBottomAction: [U_ACTION]: onSnapClick
+</span></span><span style="display:flex;"><span>09-03 15:44:39.972 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImageIfNeed: start schedule: mPictureName: IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:39.973 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: mMiCamera2QuickViewQueue.poll, size:0
+</span></span><span style="display:flex;"><span>09-03 15:44:39.974 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImageIfNeed: mCurrentParallelTaskData timestamp:5845378796665 image timestamp:5845378796665
+</span></span><span style="display:flex;"><span>09-03 15:44:39.976 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImage: YUV E, frameNumber: 133,mPictureName: IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:39.987 18351 18701 I CAM_Camera2Module: [K_PROCESS]: onPictureTakenFinished: succeed = true
+</span></span><span style="display:flex;"><span>09-03 15:44:39.996 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE_163_0 takes 140 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:39.996 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: DO_CAPTURE takes 140 is less than 2000
+</span></span><span style="display:flex;"><span>09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE_163_0 takes 138 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Event: REAR_NORMAL_CAPTURE takes 138 is less than 2000
+</span></span><span style="display:flex;"><span>09-03 15:44:39.997 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Ignore this stop event, there is no event in start status.
+</span></span><span style="display:flex;"><span>09-03 15:44:39.997 18351 18701 I CAM_Camera2Module: [P_PERFORM]: mCaptureStartTime(from onShutterButtonClick start to jpegCallback finished) = 129ms
+</span></span><span style="display:flex;"><span>09-03 15:44:39.998 18351 18701 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: d6.p2.Oq(Unknown Source:16), d6.p2.z7(Unknown Source:380), com.xiaomi.camera.mivi.mtk.OfflineBaseShot.handleCaptureFinished(Unknown Source:138), 
+</span></span><span style="display:flex;"><span>                                // shot_2_shot完成
+</span></span><span style="display:flex;"><span>09-03 15:44:39.999 18351 18701 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_shot_163_0 takes 142 ms
+</span></span><span style="display:flex;"><span>                                // 存储quickview图像，生成缩略图
+</span></span><span style="display:flex;"><span>09-03 15:44:40.101 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: handleQuickViewImage: YUV X , mPictureName: IMG_20240903_154439.jpg, needIcc: true
+</span></span><span style="display:flex;"><span>09-03 15:44:40.101 18351 18459 I CAM_ImageSaver: [K_PROCESS]: onParallelProcessFinish: path: /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:40.112 18351 28100 I CAM_PreviewSaveRequest: [K_PROCESS]: image save try to create thumbnail
+</span></span><span style="display:flex;"><span>09-03 15:44:40.156 18351 28100 V CAM_ImageSaver: [K_PROCESS]: postUpdateThumbnail true
+</span></span><span style="display:flex;"><span>09-03 15:44:40.156 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: Event: SLOW_MOTION_SAVING has no start time, ignore this stop event as take 0 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:40.157 18351 28100 I CAM_BaseModule: [K_PROCESS]: enableCameraControls: enable = true, caller: com.android.camera.ActivityBase.R0(Unknown Source:19), a8.i.l(Unknown Source:49), a8.p.J(Unknown Source:275), 
+</span></span><span style="display:flex;"><span>                                // shot_2_gallery完成
+</span></span><span style="display:flex;"><span>09-03 15:44:40.340 18351 28126 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_gallery_163_0 takes 483 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:41.291 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: tuning timestamp = 5845378796665
+</span></span><span style="display:flex;"><span>09-03 15:44:41.294 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: tuning shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+</span></span><span style="display:flex;"><span>09-03 15:44:41.295 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 1280*720 resultType = 5 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+</span></span><span style="display:flex;"><span>09-03 15:44:41.297 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setImage: timestamp = 5845378796665 resultType =5 imageName=IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>                                // 结果图完成
+</span></span><span style="display:flex;"><span>09-03 15:44:41.297 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: main timestamp = 5845378796665
+</span></span><span style="display:flex;"><span>09-03 15:44:41.297 18351 18459 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: main shot:com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+</span></span><span style="display:flex;"><span>09-03 15:44:41.298 18351 18459 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onImageReceived = 4080*3060 resultType = 0 timestamp = 5845378796665 task.imageStamp = 5845378796665 shot = com.xiaomi.camera.mivi.mtk.OfflineSingleYuvShot@303e700
+</span></span><span style="display:flex;"><span>09-03 15:44:41.300 18351 18459 I CAM_OfflineSingleYuvShot: [K_PROCESS]: onCaptureCompleted: frameNumber=133
+</span></span><span style="display:flex;"><span>                                // 转换yuv为jpeg
+</span></span><span style="display:flex;"><span>09-03 15:44:41.303 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setImage: timestamp = 5845378796665 resultType =0 imageName=IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+</span></span><span style="display:flex;"><span>09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: setResult: timestamp = 5845378796665 imageName=IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: handleDataBeanIfReady: dataBean with timestamp 5845378796665 is ready
+</span></span><span style="display:flex;"><span>09-03 15:44:41.304 18351 18702 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_device_capture_163_0 takes 1434 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:41.304 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+</span></span><span style="display:flex;"><span>09-03 15:44:41.305 18351 18702 D CAM_OfflineImageProcessor: [K_PROCESS]: process: E timestamp = 5845378796665
+</span></span><span style="display:flex;"><span>09-03 15:44:41.305 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+</span></span><span style="display:flex;"><span>09-03 15:44:41.305 18351 18702 D CAM_OfflineImageProcessor: [K_PROCESS]: process: X
+</span></span><span style="display:flex;"><span>09-03 15:44:41.306 18351 18702 D CAM_OfflineImageDataZipper: [K_PROCESS]: doJpeg: 5845378796665/0
+</span></span><span style="display:flex;"><span>09-03 15:44:41.307 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyDataReady: ready
+</span></span><span style="display:flex;"><span>09-03 15:44:41.307 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onDataReady: timestamp=5845378796665
+</span></span><span style="display:flex;"><span>09-03 15:44:41.311 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onDataReady:mMiCamera2QuickViewQueue.size = 0 ,mMiCamera2ShotQueue.size = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:41.471 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: onJpegAvailable: 5845378796665 | 0
+</span></span><span style="display:flex;"><span>09-03 15:44:41.471 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: getParallelTaskData : timestamp = 5845378796665 ,parallelTaskData = ParallelTaskData[mTimestamp=5845378796665, mSavePath=&#39;/storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg&#39;, isAbandoned=false, mDataParameter=ed.a0@16a7adf]
+</span></span><span style="display:flex;"><span>                                // 转换完成后，存储主图
+</span></span><span style="display:flex;"><span>09-03 15:44:41.472 18351 18383 D CAM_OfflineImageDataZipper: [K_PROCESS]: onJpegAvailable: save image start. dataLen=2630390
+</span></span><span style="display:flex;"><span>09-03 15:44:41.472 18351 18701 D CAM_OfflineCaptureManager: [K_PROCESS]: notifyFinish: key = IMG_20240903_154439.jpg|133
+</span></span><span style="display:flex;"><span>09-03 15:44:41.473 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: Final picture onImageReceived: timestamp: 5845378796665,type:JPEG
+</span></span><span style="display:flex;"><span>09-03 15:44:41.473 18351 18701 I CAM_OfflineCaptureManager: [K_PROCESS]: removeJpegListener: IMG_20240903_154439.jpg|133; size: 0
+</span></span><span style="display:flex;"><span>09-03 15:44:41.473 18351 18701 I CAM_OfflineCaptureManager: [K_PROCESS]: removeListener: IMG_20240903_154439.jpg; size: 0
+</span></span><span style="display:flex;"><span>09-03 15:44:41.473 18351 18701 D CAM_OfflineSingleYuvShot: [K_PROCESS]: onFinalImageReceived: dataLength =2630390 timestamp =5845378796665 type =JPEG
+</span></span><span style="display:flex;"><span>09-03 15:44:41.473 18351 18701 D CAM_OfflineImageDataZipper: [K_PROCESS]: removeParallelTaskData : timestamp =5845378796665 size =0
+</span></span><span style="display:flex;"><span>09-03 15:44:41.473 18351 18701 I CAM_ImageSaver: [K_PROCESS]: onParallelProcessFinish: path: /storage/emulated/0/DCIM/Camera/IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>09-03 15:44:41.503 18351 28251 I CAM_Storage: [K_PROCESS]: updateImage uri-&gt; content://media/external_primary/images/media/1000000050, tmpFile /data/user/0/com.android.camera/cache/IMG_20240903_154439.jpg
+</span></span><span style="display:flex;"><span>                                // 图片存储完成
+</span></span><span style="display:flex;"><span>09-03 15:44:41.604 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: algo_capture_total_1725349479858_163_0 takes 1733 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:41.605 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: algo_image_save_5845378796665_163_0 takes 131 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:41.606 18351 28251 I CAM_PerformanceManager: [P_PERFORM]: Action: shot_2_view_1725349479858_163_0 takes 1735 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:41.606 18351 28251 I CAM_ParallelSaveRequest: [K_PROCESS]: image save onFinish
+</span></span><span style="display:flex;"><span>09-03 15:44:41.606 18351 28251 I CAM_ParallelSaveRequest: [K_PROCESS]: saved image finished, timestamp: 5845378796665
+</span></span><span style="display:flex;"><span>09-03 15:44:47.697 18351 18351 I CAM_PerformanceManager: [P_PERFORM]: not allow traceStop
+</span></span><span style="display:flex;"><span>                                // 关闭相机
+</span></span><span style="display:flex;"><span>09-03 15:44:47.771 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: onWindowFocusChanged: hasFocus: false, isFromKeyguard: true
+</span></span><span style="display:flex;"><span>09-03 15:44:47.772 18351 18351 I CAM_Camera@173324289: [K_PROCESS]: camera2Proxy=com.android.camera2.i4@75c4fb7 - cid: 0; isCameraDisconnected=false
+</span></span><span style="display:flex;"><span>09-03 15:44:48.942 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: E: closeCamera: cid = null, excludes = []
+</span></span><span style="display:flex;"><span>09-03 15:44:48.955 18351 18459 I CAM_MiCamera2: [K_PROCESS]: abortCaptures E
+</span></span><span style="display:flex;"><span>09-03 15:44:49.030 18351 18459 I CAM_MiCamera2: [K_PROCESS]: abortCaptures X
+</span></span><span style="display:flex;"><span>09-03 15:44:49.030 18351 18459 I CAM_MiCamera2: [K_PROCESS]: E: close: cameraId = 0, reason = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:49.031 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE start
+</span></span><span style="display:flex;"><span>09-03 15:44:49.153 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE_163_0 takes 122 ms
+</span></span><span style="display:flex;"><span>09-03 15:44:49.153 18351 18459 I CAM_PerformanceManager: [P_PERFORM]: Event: CAMERA_CLOSE takes 122 is less than 2000
+</span></span><span style="display:flex;"><span>09-03 15:44:49.154 18351 18459 I CAM_MiCamera2: [K_PROCESS]: X: close: cameraId = 0
+</span></span><span style="display:flex;"><span>09-03 15:44:49.154 18351 18459 I CAM_CloseCameraCallable: [K_PROCESS]: X: closeCamera: cid = null, excludes = []
+</span></span><span style="display:flex;"><span>09-03 15:44:49.155 18351 18459 I CAM_CameraStateCallback: [K_PROCESS]: onClosed: cid = 0, closing = true
+</span></span></code></pre></div>
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

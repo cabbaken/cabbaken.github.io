@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>20241112</title>
+
+<meta name="description" content="2024_11_12 复测APP killed问题和内存问题 ![](assets/Pasted image 20241112151418-20250311094935-3s1paoq.png ) https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1021 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1022 用这版系统 http://corgi.pt.miui.com/next/pangu/rom/list?id=3959712 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1008 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1007 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1004 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-947 用这版 http://corgi.pt.miui.com/next/pangu/rom/list?id=3959802 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-29 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-27 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-26 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-15 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-9 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-121 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-284 用最新版本测一下
+丢帧预测 做ppt Backlinks 20241115 ">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/daily-note/2024/11/2024_11_12/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/daily-note/2024/11/2024_11_12/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/daily-note/2024/11/2024_11_12/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="20241112">
+<meta property="og:description" content="2024_11_12
+复测APP killed问题和内存问题
+![](assets/Pasted image 20241112151418-20250311094935-3s1paoq.png )
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1021
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1022
+用这版系统 http://corgi.pt.miui.com/next/pangu/rom/list?id=3959712
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1008
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1007
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1004
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-947
+用这版 http://corgi.pt.miui.com/next/pangu/rom/list?id=3959802
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-29
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-27
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-26
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-15
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-9
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-121
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-284
+用最新版本测一下
+丢帧预测
+做ppt
+Backlinks
+
+20241115
+">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/daily-note/2024/11/2024_11_12/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:49:35+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-04-10T19:05:24+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="20241112">
+<meta name="twitter:description" content="2024_11_12
+复测APP killed问题和内存问题
+![](assets/Pasted image 20241112151418-20250311094935-3s1paoq.png )
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1021
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1022
+用这版系统 http://corgi.pt.miui.com/next/pangu/rom/list?id=3959712
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1008
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1007
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1004
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-947
+用这版 http://corgi.pt.miui.com/next/pangu/rom/list?id=3959802
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-29
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-27
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-26
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-15
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-9
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-121
+https://jira-phone.mioffice.cn/browse/BUGN16UUPV-284
+用最新版本测一下
+丢帧预测
+做ppt
+Backlinks
+
+20241115
+">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "20241112",
+  "datePublished": "2025-03-11T09:49:35+00:00",
+  "dateModified": "2025-04-10T19:05:24+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  64 ,
+  "description": "2024_11_12 复测APP killed问题和内存问题 ![](assets/Pasted image 20241112151418-20250311094935-3s1paoq.png ) https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1021 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1022 用这版系统 http://corgi.pt.miui.com/next/pangu/rom/list?id=3959712 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1008 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1007 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1004 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-947 用这版 http://corgi.pt.miui.com/next/pangu/rom/list?id=3959802 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-29 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-27 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-26 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-15 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-9 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-121 https://jira-phone.mioffice.cn/browse/BUGN16UUPV-284 用最新版本测一下\n丢帧预测 做ppt Backlinks 20241115 ",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="2024_11_12">2024_11_12</h1>
+<h1 id="复测app-killed问题和内存问题">复测APP killed问题和内存问题</h1>
+<p>![](assets/Pasted image 20241112151418-20250311094935-3s1paoq.png )
+<a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1021" target="_blank" rel="noopener">https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1021</a>
+<a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1022" target="_blank" rel="noopener">https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1022</a>
+用这版系统 <a href="http://corgi.pt.miui.com/next/pangu/rom/list?id=3959712" target="_blank" rel="noopener">http://corgi.pt.miui.com/next/pangu/rom/list?id=3959712</a>
+<a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1008" target="_blank" rel="noopener">https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1008</a>
+<a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1007" target="_blank" rel="noopener">https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1007</a>
+<a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1004" target="_blank" rel="noopener">https://jira-phone.mioffice.cn/browse/BUGN16UUPV-1004</a>
+<a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-947" target="_blank" rel="noopener">https://jira-phone.mioffice.cn/browse/BUGN16UUPV-947</a>
+用这版 <a href="http://corgi.pt.miui.com/next/pangu/rom/list?id=3959802" target="_blank" rel="noopener">http://corgi.pt.miui.com/next/pangu/rom/list?id=3959802</a>
+<a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-29" target="_blank" rel="noopener">https://jira-phone.mioffice.cn/browse/BUGN16UUPV-29</a>
+<a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-27" target="_blank" rel="noopener">https://jira-phone.mioffice.cn/browse/BUGN16UUPV-27</a>
+<a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-26" target="_blank" rel="noopener">https://jira-phone.mioffice.cn/browse/BUGN16UUPV-26</a>
+<a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-15" target="_blank" rel="noopener">https://jira-phone.mioffice.cn/browse/BUGN16UUPV-15</a>
+<a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-9" target="_blank" rel="noopener">https://jira-phone.mioffice.cn/browse/BUGN16UUPV-9</a>
+<a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-121" target="_blank" rel="noopener">https://jira-phone.mioffice.cn/browse/BUGN16UUPV-121</a>
+<a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-284" target="_blank" rel="noopener">https://jira-phone.mioffice.cn/browse/BUGN16UUPV-284</a>
+用最新版本测一下</p>
+<h2 id="丢帧预测"><a href="">丢帧预测</a></h2>
+<h2 id="做ppt">做ppt</h2>
+<h2 id="backlinks">Backlinks</h2>
+<ul>
+<li><a href="">20241115</a></li>
+</ul>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

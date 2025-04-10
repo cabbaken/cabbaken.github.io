@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>Camera问题分析</title>
+
+<meta name="description" content="Camera问题分析 ‍ title: Camera问题分析 date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z Camera问题分析 ‍
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/">
+
+
+
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/index.xml">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Camera问题分析">
+<meta property="og:description" content="">
+<meta property="og:type" content="website">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/">
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Camera问题分析">
+<meta name="twitter:description" content="">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs list d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+
+    
+
+    
+
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">App in background is killed问题分析</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T16:27:54Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="app-in-background-is-killed问题分析">App in background is killed问题分析</h1>
+<h2 id="bugn16uupv-858"><a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-858" target="_blank" rel="noopener">BUGN16UUPV-858</a></h2>
+<p>寻找log中的<code>App in background is killed</code>。
+![](assets/Pasted image 20241104153741-20250311094648-oc5vlz1.png )</p>
+<h4 id="prev">prev</h4>
+<p>This is the process of the previous application that the user was in. This process is kept above other things, because it is very common to switch back to the previous app. This is important both for recent task switch (toggling between the two …</p>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/app-in-background-is-killed%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">MiuiHome is killed澄清</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="miuihome-is-killed澄清">MiuiHome is killed澄清</h1>
+<h1 id="miuihome-is-killed澄清-1">MiuiHome is killed澄清</h1>
+<p>出现场景 gms里面的measurement.dynamite模块更新时。</p>
+<h1 id="问题原因">问题原因</h1>
+<p>此题不是因为低内存导致home被杀.</p>
+<p>原因是因为gms里面的measurement.dynamite模块更新发送了signal信号使得一系列使用GMS的应用重启包括home。即gms更新后重启了使用到此服务的应用，其中包含miui.home。</p>
+<p>正常现象,非问题</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>08-09 15:32:15.748  8832   698 I DynamiteLoaderV2Impl: Module config changed, forcing restart due to module measurement.dynamite
+</span></span><span style="display:flex;"><span>08-09 15:32:15.757 25461   706 I DynamiteLoaderV2Impl: …</span></span></span></span></code></pre></div>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/miuihome-is-killed%E6%BE%84%E6%B8%85/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">Perfetto各线程功能分析</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="perfetto各线程功能分析">Perfetto各线程功能分析</h1>
+<p>system_server进程中名为<code>iq</code>的线程指的是InputQueue线程。此线程负责处理输入事件，例如触摸、按键和其他用户交互。可以利用trace中的这个线程的动向锚定用户动作，如点击拍照，点击图库等。</p>
+<p>camerahalserver中的</p>
+<ul>
+<li>AlgoFwk*表示算法处理线程</li>
+<li>CAM_P1表示轮询sensor线程（*P1*表示P1 node中的处理）</li>
+</ul>
+<p>cameraserver中的</p>
+<ul>
+<li>PreviewSpacer负责通过维护queuebuffer来管理帧缓冲区</li>
+<li>帧之间的处理延迟可能会有所不同。此帧处理延迟会导致向用户呈现的帧有所不同。</li>
+<li>FrameProc负责抓取底层返帧信号（早于此帧被算法处理）</li>
+</ul>
+<p>cameraAPP中有shot_2_view, shot_2_shot等性能标记, 方便.</p>
+<p>gallery中的decodeFileDescriptor也会影 …</p>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/perfetto%E5%90%84%E7%BA%BF%E7%A8%8B%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%90/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">shot_2_view性能问题</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="shot_2_view性能问题">shot_2_view性能问题</h1>
+<h2 id="shot_2_view性能分析方法">Shot_2_view性能分析方法</h2>
+<ol>
+<li>在cameraapp中会有各种性能耗时的时间统计
+<img src="assets/image-20241019110550-8f6jazo.png" alt=""></li>
+<li>根据shot_2_view的时间去看当时的cpu占用, 调度, 内存情况, 图库问题, 首先不用去看log</li>
+<li>在此问题中
+<img src="assets/image-20241019110812-pzinkb1.png" alt="">可以看到log的占用有些过于高了, user版本系统的logd不应该占这么多(一般小于5%? 待确认)</li>
+<li>等待周一问测试</li>
+</ol>
+<p>‍</p>
+<h2 id="示例">示例</h2>
+<h3 id="bugn16uupv-147"><a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-147" target="_blank" rel="noopener">BUGN16UUPV-147</a></h3>
+<p>N16U升V后, shot_2_view耗时明显比u增加, 现分析log.</p>
+<ol>
+<li>抓log, 观察P_PERFORM.
+U:<img src="assets/image-20241011213557-i2btze8.png" alt="">
+V:<img src="assets/image-20241011213626-atu80ck.png" alt=""></li>
+<li>看到性能差异主要的点是shot_device_capture, 去查一下这个用于计算的内容.
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">序号</th>
+          <th style="text-align: left">性能action …</th></tr></thead></table></li></ol>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/shot_2_view%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">TotalDiff</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="totaldiff">TotalDiff</h1>
+<h1 id="totaldiff-1">TotalDiff</h1>
+<p><a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-67" target="_blank" rel="noopener">BUGN16UUPV-67</a></p>
+<p>totaldiff=case结束后camera所有进程占用总内存 - case开始前camera所有进程占用总内存</p>
+<h2 id="log分析">Log分析</h2>
+<p>此jira中有多个case，以test_Pro_Capture_100_Times_0为例，下载对应case的log，对比BSPTESTREPORT/memoryResult中的result文件。</p>
+<p><img src="assets/image-20241024140359-hvj6rtd.png" alt=""></p>
+<p>Totaldiff是用最后一行的Total-min(前五行的total)得到的，即2576-929=1647。</p>
+<p>然后观察log中这段时间发生的事，发现最后一次按下拍照是晚于result文件中的最后一行的时间的</p>
+<p><img src="assets/image-20241024140343-nwq93si.png" alt=""></p>
+<p><img src="assets/image-20241024140348-cvq91j7.png" alt=""></p>
+<p>可以看出此时仍然在处理图片</p>
+<p>这种情况就需要问测试：</p>
+<ol>
+<li>这种情况是否正常</li>
+<li>查看jekins参数是否异常</li>
+</ol>
+<p><img src="assets/image-20241024140354-6ceil2a.png" alt=""></p>
+<p>得知result文件中所取的时间点不正确。</p>
+<p>查看新的测试结果已通过。</p>
+<p><a href="https://xiaomi.f.mioffice.cn/docx/doxk46Rj2LVuWlnop9f3YNT58fg" target="_blank" rel="noopener">内存报告分析工 …</a></p>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/totaldiff/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">前后镜头切换耗时回退</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="前后镜头切换耗时回退">前后镜头切换耗时回退</h1>
+<h2>可以参考
+<a href="https://wiki.n.miui.com/pages/viewpage.action?pageId=132819051" target="_blank" rel="noopener">https://wiki.n.miui.com/pages/viewpage.action?pageId=132819051</a>
+<a href="https://jira.n.xiaomi.com/browse/HTH-37717" target="_blank" rel="noopener">https://jira.n.xiaomi.com/browse/HTH-37717</a></h2>
+<h2 id="lastmod-2025-03-11t094648z">title: 前后镜头切换耗时回退
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="前后镜头切换耗时回退-1">前后镜头切换耗时回退</h1>
+<p>可以参考
+<a href="https://wiki.n.miui.com/pages/viewpage.action?pageId=132819051" target="_blank" rel="noopener">https://wiki.n.miui.com/pages/viewpage.action?pageId=132819051</a>
+<a href="https://jira.n.xiaomi.com/browse/HTH-37717" target="_blank" rel="noopener">https://jira.n.xiaomi.com/browse/HTH-37717</a></p>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E5%89%8D%E5%90%8E%E9%95%9C%E5%A4%B4%E5%88%87%E6%8D%A2%E8%80%97%E6%97%B6%E5%9B%9E%E9%80%80/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">前置录像卡顿</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="前置录像卡顿">前置录像卡顿</h1>
+<h2 id="bugm9upv-335"><a href="https://jira-phone.mioffice.cn/browse/BUGM9UPV-335" target="_blank" rel="noopener">BUGM9UPV-335</a></h2>
+<hr>
+<h2 id="lastmod-2025-03-11t094648z">title: 前置录像卡顿
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="前置录像卡顿-1">前置录像卡顿</h1>
+<h2 id="bugm9upv-335-1"><a href="https://jira-phone.mioffice.cn/browse/BUGM9UPV-335" target="_blank" rel="noopener">BUGM9UPV-335</a></h2>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E5%89%8D%E7%BD%AE%E5%BD%95%E5%83%8F%E5%8D%A1%E9%A1%BF/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">录像丢帧问题分析</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="录像丢帧问题分析">录像丢帧问题分析</h1>
+<h1 id="录像丢帧问题分析-1">录像丢帧问题分析</h1>
+<p>查看帧间隔：logcat | grep &ldquo;cameraServer send preview frame&rdquo;</p>
+<p><a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-267" target="_blank" rel="noopener">BUGN16UUPV-267</a></p>
+<ol>
+<li>
+<p>看trace, cameraserver中的PreviewSpacer, 下图中没有明显可以看到丢帧的地方.
+V:<img src="assets/image-20241012105930-xhg4fg0.png" alt="">
+U:<img src="assets/image-20241012105941-e5wbvmv.png" alt=""></p>
+<p>‍</p>
+</li>
+<li>
+<p>观察到两者CPU频率似乎不同
+V:</p>
+<p>U:</p>
+</li>
+</ol>
+<p>‍</p>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E5%BD%95%E5%83%8F%E4%B8%A2%E5%B8%A7%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">暗光丢帧不恢复分析</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="暗光丢帧不恢复分析">暗光丢帧不恢复分析</h1>
+<p>CN的N12相机的UW模式开启自动ISO后在暗光环境下： 预览（此时为30fps）-&gt;进图库-&gt;退出图库-&gt;预览（此时为低帧数）</p>
+<p><a href="https://jira-phone.mioffice.cn/browse/BUGN12UPV-1426" target="_blank" rel="noopener">BUGN12UPV-1426</a></p>
+<p>经过排查，暗光环境下快门速度变慢，导致帧率变低，进入图库时保存了慢的快门速度（如1/14），出图库时会有一个做曝光时间的重新收敛，有个热启动的过程。</p>
+<p>目前看来，帧数是固定在进相册之前的快门速度关联的帧数上，按照常理来说帧数应该会根据快门速度的变化而变化，但是实际上并没有。</p>
+<p>观察到P1出帧时间异常</p>
+<p>进入图库再返回后的sensor取帧速度变慢，从这里入手，看看具体代码。</p>
+<p>观察到P1Node中有参数SensorParams._fps似乎相关。</p>
+<p>跟踪metadata的设置, 目前知道request会配置fps range, 引起fps设置变化.</p>
+<p>根据查看Camera Service中的fps range …</p>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E6%9A%97%E5%85%89%E4%B8%A2%E5%B8%A7%E4%B8%8D%E6%81%A2%E5%A4%8D%E5%88%86%E6%9E%90/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">查看Camera Service中的fps range变化</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="查看camera-service中的fps-range变化">查看Camera Service中的fps range变化</h1>
+<p><a href="https://gerrit.pt.mioffice.cn/c/platform/frameworks/av/&#43;/4180649" target="_blank" rel="noopener">gerrit.pt.mioffice.cn/c/platform/frameworks/av/+/4180649</a></p>
+<p>此patch可以跟踪fps range在CameraService中的变化.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-diff" data-lang="diff"><span style="display:flex;"><span>From 91fe6b8ab1c36bc68d4d05983488663585e7ff04 Mon Sep 17 00:00:00 2001
+</span></span><span style="display:flex;"><span>From: tangzhiying &lt;tangzhiying@xiaomi.com&gt;
+</span></span><span style="display:flex;"><span>Date: Wed, 03 Jul 2024 16:55:27 +0800
+</span></span><span style="display:flex;"><span>Subject: [PATCH] [cameraperf][fpsdetect]for test
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>MIUIROM-2211540
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Test
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Change-Id: …</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></code></pre></div>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E6%9F%A5%E7%9C%8Bcamera-service%E4%B8%AD%E7%9A%84fps-range%E5%8F%98%E5%8C%96/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">解决问题优先策略</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="解决问题优先策略">解决问题优先策略</h1>
+<h2 id="解决问题优先策略-1">解决问题优先策略</h2>
+<p>后台应用, CPU占用 频率是否正常</p>
+<p>杀后台多时可以看看杀的都是哪些后台(三方/系统)</p>
+<ul>
+<li>三方: 可以找测试重新测(非多后台场景)</li>
+<li>系统: 需要看一下</li>
+</ul>
+<p>看P1, P2出帧, 算法堆积
+P1出帧有问题: 可以看看是否是request下发问题.</p>
+<h2 id="方法">方法</h2>
+<h3 id="提优先级">提优先级</h3>
+<h2>算法:
+<a href="https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/&#43;/4818058" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/+/4818058</a>
+P2Node:
+<a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-core/&#43;/4970783" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-core/+/4970783</a></h2>
+<h2 id="lastmod-2025-03-11t094648z">title: 解决问题优先策略
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="解决问题优先策略-2">解决问题优先策略</h1>
+<h2 id="解决问题优先策略-3">解决问题优先策略</h2>
+<p>后台应 …</p>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E4%BC%98%E5%85%88%E7%AD%96%E7%95%A5/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">连拍相关</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="连拍相关">连拍相关</h1>
+<h2 id="bugm12upv-900"><a href="https://jira-phone.mioffice.cn/browse/BUGM12UPV-900" target="_blank" rel="noopener">BUGM12UPV-900</a></h2>
+<p><img src="assets/img_v3_02ic_c726c21a-98c1-4a28-8230-58f0f50e23el-20250311094648-vw9jj8d.jpg" alt=""></p>
+<p>M12相机0.6x连拍到16张时，预览会卡1S左右</p>
+<p>CPU Memory占用正常, 在切换后第一次复现, 似乎是app那边的request没有下</p>
+<p>异常:
+<img src="assets/img_v3_02ic_35b8b7d9-6a0c-4626-98c6-33478f52d6cl-20250311094648-27jdqmm.jpg" alt=""></p>
+<p>正常:
+<img src="assets/img_v3_02ic_cc54341b-81a7-4ad2-b707-0f8e2186620l-20250311094648-hqxqxrq.jpg" alt=""></p>
+<p>看到这边异常情况的putParallelTaskData()到setImage()用了800ms, 正常的只用300ms
+暂时先转给APP看看
+回复:
+本地复现率不高，且没有发现卡顿时间过长的情况。</p>
+<p>从流程上看，app下发的是一次性连续拍照：
+![](assets/Pasted image 20250109202714-20250311094648-lt7f34k.png )</p>
+<p>从测试日志上看，16帧到17帧之间，MiAlgo突然出现了forwardNotifyToFwk上的时间波动
+![](assets/Pasted image …</p>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E8%BF%9E%E6%8B%8D%E7%9B%B8%E5%85%B3/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">配流问题</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="配流问题">配流问题</h1>
+<h2 id="bugm9upv-673"><a href="https://jira-phone.mioffice.cn/browse/BUGM9UPV-673" target="_blank" rel="noopener">BUGM9UPV-673</a></h2>
+<p>录像切换拍照超标准150+ms
+U:
+![](assets/Pasted image 20250114205425-20250311094648-y4dk318.png )
+V:
+![](assets/Pasted image 20250114205412-20250311094648-jrrmy4b.png )
+看trace发现mtkcam中的evaluateConfiguration多了100ms. 主要关注这里.
+U:
+![](assets/Pasted image 20250114205145-20250311094648-mfallti.png )
+V:
+![](assets/Pasted image 20250114205211-20250311094648-y3t5xfg.png )
+检查发现流程没什么问题, 考虑CPU使用问题.
+U: …</p>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E9%85%8D%E6%B5%81%E9%97%AE%E9%A2%98/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">问题分析总结</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="问题分析总结">问题分析总结</h1>
+<h1 id="问题分析总结-1">问题分析总结</h1>
+<ol>
+<li>先联系测试，看看能不能单测测试出问题，并让其提供内存数据（目的是确定问题是否还存在，不存在就直接关jira。因为如果有内存泄漏问题，很容易就可以复现出来，而概率出现的问题可能是因为测试流程出了问题）</li>
+<li>使用<a href="https://xiaomi.f.mioffice.cn/docx/doxk4oY3GWjUu1VcK1pjTiGK40e" target="_blank" rel="noopener">相机自动化测试工具能力扩展</a> 中提供的工具进行分析和定位（能复现问题就好解决）</li>
+<li>如果问题不包含在文档中，则自己抓函数调用栈分析</li>
+</ol>
+<p>相机专项测试安装：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>wget http:<span style="color:#75715e">//cnbj1-fds.api.xiaomi.net/camera-devtest/00/apks/install_apk.sh -O install_apk.sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>chmod <span style="color:#f92672">+</span>x install_apk.sh
+</span></span><span style="display:flex;"><span> .<span style="color:#f92672">/</span>install_apk.sh <span style="color:#960050;background-color:#1e0010">设备号</span>
+</span></span></code></pre></div><h1 id="先找资料看看前人遇到的类似问题和解决方法">先找资料，看看前人遇到的类似问题和解决方法</h1>
+<h1 id="perfetto-trace">Perfetto trace</h1>
+<h2 id="系统跟踪">系统跟踪</h2>
+<p>开启开发者模式-&gt;系统跟踪-&gt;录制跟踪记录</p>
+<p> …</p>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90%E6%80%BB%E7%BB%93/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+
+    
+
+</div>
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

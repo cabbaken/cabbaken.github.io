@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>LLVM</title>
+
+<meta name="description" content="LLVM ‍ title: LLVM date: 2025-03-31T10:10:38Z lastmod: 2025-03-31T10:10:41Z LLVM ‍
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/llvm/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/llvm/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/llvm/">
+
+
+
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/llvm/index.xml">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="LLVM">
+<meta property="og:description" content="">
+<meta property="og:type" content="website">
+<meta property="og:url" content="http://localhost:1313/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/llvm/">
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="LLVM">
+<meta name="twitter:description" content="">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs list d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+
+    
+
+    
+
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">MJ</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-31T10:32:35Z">March 31, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="mj">MJ</h1>
+<p>ptrace原理</p>
+<p>‍</p>
+<h2 id="对编译器的了解">对编译器的了解</h2>
+<p><strong>定义与目的</strong></p>
+<p>编译器是一种计算机程序，它将用一种编程语言（源语言）编写的代码翻译成另一种语言（目标语言），通常是机器码或字节码。编译器的主要目的是将人类可读的高级语言代码转换为计算机能够理解和执行的低级指令。</p>
+<p><strong>编译过程的关键阶段</strong></p>
+<p>正如我们之前讨论过的，一个典型的编译器通常包含以下几个主要阶段：</p>
+<ol>
+<li>
+<p><strong>预处理（Preprocessing）：</strong>  处理源代码中的宏、包含指令和条件编译等。</p>
+</li>
+<li>
+<p><strong>编译（Compilation）：</strong>  这是核心阶段，包括：</p>
+<ul>
+<li><strong>词法分析（Lexical Analysis）：</strong>  将源代码分解成词法单元（tokens）。</li>
+<li><strong>语法分析（Syntax Analysis）：</strong>  根据语言的语法规则构建抽象语法树（AST）。</li>
+<li><strong>语义分析（Semantic Analysis）：</strong>  检查程序的语义正确性，例如类型检查。</li>
+<li><strong>中间代码生 …</strong></li></ul></li></ol>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/llvm/mj/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+
+    
+
+</div>
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

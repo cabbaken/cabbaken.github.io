@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>Symbol</title>
+
+<meta name="description" content="Symbol Linker and Loder中大量提到了symbol的概念, 这里做简要介绍
+我们在linker和loader语境下的symbol一般都是指identifier, 也就是占位符.
+一般一个object包含三种symbol:
+defined external symbol: 可被其他模块调用 undefined external symbol: 引用定义此symbol的其他模块 local symbol: 在当前object文件中使用 用于表示变量, 类型, label, 模块, 函数等.
+variables, data types, labels, subroutines, and modules.
+‍ title: Symbol date: 2025-03-24T21:17:47Z lastmod: 2025-04-01T16:43:52Z Symbol Linker and Loder中大量提到了symbol的概念, 这里做简要介绍
+我们在linker和loader语境下的symbol一般都是指identifier, 也就是占位符.
+一般一个object包含三种symbol:
+defined external symbol: 可被其他模块调用 undefined external symbol: 引用定义此symbol的其他模块 local symbol: 在当前object文件中使用 用于表示变量, 类型, label, 模块, 函数等.
+variables, data types, labels, subroutines, and modules.
+‍
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/linux-related/linker-and-loder/symbol/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/linux-related/linker-and-loder/symbol/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/linux-related/linker-and-loder/symbol/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Symbol">
+<meta property="og:description" content="Symbol
+Linker and Loder中大量提到了symbol的概念, 这里做简要介绍
+我们在linker和loader语境下的symbol一般都是指identifier, 也就是占位符.
+一般一个object包含三种symbol:
+
+defined external symbol: 可被其他模块调用
+undefined external symbol: 引用定义此symbol的其他模块
+local symbol: 在当前object文件中使用
+
+用于表示变量, 类型, label, 模块, 函数等.
+variables, data types, labels, subroutines, and modules.
+‍
+title: Symbol
+date: 2025-03-24T21:17:47Z
+lastmod: 2025-04-01T16:43:52Z
+Symbol
+Linker and Loder中大量提到了symbol的概念, 这里做简要介绍
+我们在linker和loader语境下的symbol一般都是指identifier, 也就是占位符.
+一般一个object包含三种symbol:
+
+defined external symbol: 可被其他模块调用
+undefined external symbol: 引用定义此symbol的其他模块
+local symbol: 在当前object文件中使用
+
+用于表示变量, 类型, label, 模块, 函数等.
+variables, data types, labels, subroutines, and modules.
+‍">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/linux-related/linker-and-loder/symbol/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-24T21:17:47+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-04-01T16:43:52+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Symbol">
+<meta name="twitter:description" content="Symbol
+Linker and Loder中大量提到了symbol的概念, 这里做简要介绍
+我们在linker和loader语境下的symbol一般都是指identifier, 也就是占位符.
+一般一个object包含三种symbol:
+
+defined external symbol: 可被其他模块调用
+undefined external symbol: 引用定义此symbol的其他模块
+local symbol: 在当前object文件中使用
+
+用于表示变量, 类型, label, 模块, 函数等.
+variables, data types, labels, subroutines, and modules.
+‍
+title: Symbol
+date: 2025-03-24T21:17:47Z
+lastmod: 2025-04-01T16:43:52Z
+Symbol
+Linker and Loder中大量提到了symbol的概念, 这里做简要介绍
+我们在linker和loader语境下的symbol一般都是指identifier, 也就是占位符.
+一般一个object包含三种symbol:
+
+defined external symbol: 可被其他模块调用
+undefined external symbol: 引用定义此symbol的其他模块
+local symbol: 在当前object文件中使用
+
+用于表示变量, 类型, label, 模块, 函数等.
+variables, data types, labels, subroutines, and modules.
+‍">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Symbol",
+  "datePublished": "2025-03-24T21:17:47+00:00",
+  "dateModified": "2025-04-01T16:43:52+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  352 ,
+  "description": "Symbol Linker and Loder中大量提到了symbol的概念, 这里做简要介绍\n我们在linker和loader语境下的symbol一般都是指identifier, 也就是占位符.\n一般一个object包含三种symbol:\ndefined external symbol: 可被其他模块调用 undefined external symbol: 引用定义此symbol的其他模块 local symbol: 在当前object文件中使用 用于表示变量, 类型, label, 模块, 函数等.\nvariables, data types, labels, subroutines, and modules.\n‍ title: Symbol date: 2025-03-24T21:17:47Z lastmod: 2025-04-01T16:43:52Z Symbol Linker and Loder中大量提到了symbol的概念, 这里做简要介绍\n我们在linker和loader语境下的symbol一般都是指identifier, 也就是占位符.\n一般一个object包含三种symbol:\ndefined external symbol: 可被其他模块调用 undefined external symbol: 引用定义此symbol的其他模块 local symbol: 在当前object文件中使用 用于表示变量, 类型, label, 模块, 函数等.\nvariables, data types, labels, subroutines, and modules.\n‍\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="symbol">Symbol</h1>
+<p><a href="http://localhost:1313/notes/documents/linux-related/linker-and-loder/">Linker and Loder</a>中大量提到了symbol的概念, 这里做简要介绍</p>
+<p>我们在linker和loader语境下的symbol一般都是指identifier, 也就是占位符.</p>
+<p>一般一个object包含三种symbol:</p>
+<ul>
+<li>defined external symbol: 可被其他模块调用</li>
+<li>undefined external symbol: 引用定义此symbol的其他模块</li>
+<li>local symbol: 在当前object文件中使用</li>
+</ul>
+<p>用于表示变量, 类型, label, 模块, 函数等.</p>
+<p>variables, data types, labels, subroutines, and modules.</p>
+<h2 id="heading">‍</h2>
+<h2 id="lastmod-2025-04-01t164352z">title: Symbol
+date: 2025-03-24T21:17:47Z
+lastmod: 2025-04-01T16:43:52Z</h2>
+<h1 id="symbol-1">Symbol</h1>
+<p><a href="http://localhost:1313/notes/documents/linux-related/linker-and-loder/">Linker and Loder</a>中大量提到了symbol的概念, 这里做简要介绍</p>
+<p>我们在linker和loader语境下的symbol一般都是指identifier, 也就是占位符.</p>
+<p>一般一个object包含三种symbol:</p>
+<ul>
+<li>defined external symbol: 可被其他模块调用</li>
+<li>undefined external symbol: 引用定义此symbol的其他模块</li>
+<li>local symbol: 在当前object文件中使用</li>
+</ul>
+<p>用于表示变量, 类型, label, 模块, 函数等.</p>
+<p>variables, data types, labels, subroutines, and modules.</p>
+<p>‍</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

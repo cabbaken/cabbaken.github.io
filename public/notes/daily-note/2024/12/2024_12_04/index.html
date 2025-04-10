@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>20241204</title>
+
+<meta name="description" content="2024_12_04 BUGM9UPV-314 [[前后镜头切换耗时回退]] 可以参考 https://wiki.n.miui.com/pages/viewpage.action?pageId=132819051 https://jira.n.xiaomi.com/browse/HTH-37717 最新版本暂时不复现
+BUGOS2-267508 优先处理
+![](assets/Pasted image 20241203221052-20250311094935-di4a7s3.png ) 根据log, shot_2_gallery耗时不超过1000ms, algo_capture_total是保存图片耗时, 不是小图耗时.
+回复如下 algo_capture_total是成大图的时间, 小图的生成时间应该用quickview的时间-onsnapclick的时间, 这一点U版本和V版本差别不大.
+这里的成图慢具体是指拍摄完成后进入相册查看照片,照片加载慢,会有那种白的时间长的,U上不会那么长时间
+成小图时占用如下: V: ![](assets/Pasted image 20241204134008-20250311094935-2h0gizq.png )
+U: ![](assets/Pasted image 20241204134017-20250311094935-ki36hob.png )
+V版本成小图阶段mediaserver的CPU占用较U版本高很多
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/daily-note/2024/12/2024_12_04/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/daily-note/2024/12/2024_12_04/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/daily-note/2024/12/2024_12_04/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="20241204">
+<meta property="og:description" content="2024_12_04
+BUGM9UPV-314
+[[前后镜头切换耗时回退]]
+可以参考
+https://wiki.n.miui.com/pages/viewpage.action?pageId=132819051
+https://jira.n.xiaomi.com/browse/HTH-37717
+最新版本暂时不复现
+BUGOS2-267508
+优先处理
+![](assets/Pasted image 20241203221052-20250311094935-di4a7s3.png )
+根据log, shot_2_gallery耗时不超过1000ms, algo_capture_total是保存图片耗时, 不是小图耗时.
+回复如下
+algo_capture_total是成大图的时间, 小图的生成时间应该用quickview的时间-onsnapclick的时间, 这一点U版本和V版本差别不大.
+这里的成图慢具体是指拍摄完成后进入相册查看照片,照片加载慢,会有那种白的时间长的,U上不会那么长时间
+成小图时占用如下:
+V:
+![](assets/Pasted image 20241204134008-20250311094935-2h0gizq.png )
+U:
+![](assets/Pasted image 20241204134017-20250311094935-ki36hob.png )
+V版本成小图阶段mediaserver的CPU占用较U版本高很多">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/daily-note/2024/12/2024_12_04/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:49:35+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:49:35+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="20241204">
+<meta name="twitter:description" content="2024_12_04
+BUGM9UPV-314
+[[前后镜头切换耗时回退]]
+可以参考
+https://wiki.n.miui.com/pages/viewpage.action?pageId=132819051
+https://jira.n.xiaomi.com/browse/HTH-37717
+最新版本暂时不复现
+BUGOS2-267508
+优先处理
+![](assets/Pasted image 20241203221052-20250311094935-di4a7s3.png )
+根据log, shot_2_gallery耗时不超过1000ms, algo_capture_total是保存图片耗时, 不是小图耗时.
+回复如下
+algo_capture_total是成大图的时间, 小图的生成时间应该用quickview的时间-onsnapclick的时间, 这一点U版本和V版本差别不大.
+这里的成图慢具体是指拍摄完成后进入相册查看照片,照片加载慢,会有那种白的时间长的,U上不会那么长时间
+成小图时占用如下:
+V:
+![](assets/Pasted image 20241204134008-20250311094935-2h0gizq.png )
+U:
+![](assets/Pasted image 20241204134017-20250311094935-ki36hob.png )
+V版本成小图阶段mediaserver的CPU占用较U版本高很多">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "20241204",
+  "datePublished": "2025-03-11T09:49:35+00:00",
+  "dateModified": "2025-03-11T09:49:35+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  289 ,
+  "description": "2024_12_04 BUGM9UPV-314 [[前后镜头切换耗时回退]] 可以参考 https://wiki.n.miui.com/pages/viewpage.action?pageId=132819051 https://jira.n.xiaomi.com/browse/HTH-37717 最新版本暂时不复现\nBUGOS2-267508 优先处理\n![](assets/Pasted image 20241203221052-20250311094935-di4a7s3.png ) 根据log, shot_2_gallery耗时不超过1000ms, algo_capture_total是保存图片耗时, 不是小图耗时.\n回复如下 algo_capture_total是成大图的时间, 小图的生成时间应该用quickview的时间-onsnapclick的时间, 这一点U版本和V版本差别不大.\n这里的成图慢具体是指拍摄完成后进入相册查看照片,照片加载慢,会有那种白的时间长的,U上不会那么长时间\n成小图时占用如下: V: ![](assets/Pasted image 20241204134008-20250311094935-2h0gizq.png )\nU: ![](assets/Pasted image 20241204134017-20250311094935-ki36hob.png )\nV版本成小图阶段mediaserver的CPU占用较U版本高很多\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="2024_12_04">2024_12_04</h1>
+<h2 id="bugm9upv-314"><a href="https://jira-phone.mioffice.cn/browse/BUGM9UPV-314" target="_blank" rel="noopener">BUGM9UPV-314</a></h2>
+<p>[[前后镜头切换耗时回退]]
+可以参考
+<a href="https://wiki.n.miui.com/pages/viewpage.action?pageId=132819051" target="_blank" rel="noopener">https://wiki.n.miui.com/pages/viewpage.action?pageId=132819051</a>
+<a href="https://jira.n.xiaomi.com/browse/HTH-37717" target="_blank" rel="noopener">https://jira.n.xiaomi.com/browse/HTH-37717</a>
+最新版本暂时不复现</p>
+<h2 id="bugos2-267508"><a href="https://jira-phone.mioffice.cn/browse/BUGOS2-267508" target="_blank" rel="noopener">BUGOS2-267508</a></h2>
+<p>优先处理</p>
+<p>![](assets/Pasted image 20241203221052-20250311094935-di4a7s3.png )
+根据log, shot_2_gallery耗时不超过1000ms, algo_capture_total是保存图片耗时, 不是小图耗时.</p>
+<p>回复如下
+algo_capture_total是成大图的时间, 小图的生成时间应该用quickview的时间-onsnapclick的时间, 这一点U版本和V版本差别不大.</p>
+<p>这里的成图慢具体是指拍摄完成后进入相册查看照片,照片加载慢,会有那种白的时间长的,U上不会那么长时间</p>
+<p>成小图时占用如下:
+V:
+![](assets/Pasted image 20241204134008-20250311094935-2h0gizq.png )</p>
+<p>U:
+![](assets/Pasted image 20241204134017-20250311094935-ki36hob.png )</p>
+<p>V版本成小图阶段mediaserver的CPU占用较U版本高很多</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

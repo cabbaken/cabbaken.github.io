@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr" class="h-full">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Notes | My New Hugo Site</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+<link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+<link rel="shortcut icon" href="/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+<link rel="manifest" href="/favicon/site.webmanifest" />
+
+
+
+  
+    
+    
+      
+        <link rel="stylesheet" href="/css/main.css">
+      
+    
+  
+
+
+
+
+
+<link rel="stylesheet" href="/css/style.min.c0b1279bd3ff241300a0a72d7cf323755ff10f617308e0dc05bbf05cc66f7bdc.css" media="screen" integrity="sha256-wLEnm9P/JBMAoKctfPMjdV/xD2FzCODcBbvwXMZve9w=">
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('pre code').forEach((el) => {
+      hljs.highlightElement(el);
+      
+      setTimeout(() => {
+        el.style.backgroundColor = 'transparent';
+        el.parentElement.style.backgroundColor = '#ffffff';
+      }, 10);
+    });
+  });
+</script>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+      <script src="/js/main.js"></script>
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+      ],
+      throwOnError: false
+    });
+    
+    
+    document.querySelectorAll('pre code').forEach(function(codeBlock) {
+      
+      let language = '';
+      codeBlock.className.split(' ').forEach(function(cls) {
+        if (cls.startsWith('language-')) {
+          language = cls.substring(9);
+        }
+      });
+      
+      
+      const pre = codeBlock.parentNode;
+      const wrapper = pre.parentNode;
+      
+      
+      const container = document.createElement('div');
+      container.className = 'code-block-container';
+      container.style.backgroundColor = '#ffffff';
+      
+      
+      const header = document.createElement('div');
+      header.className = 'code-block-header';
+      
+      
+      if (language) {
+        const langLabel = document.createElement('span');
+        langLabel.className = 'code-language-label';
+        langLabel.textContent = language.toUpperCase();
+        header.appendChild(langLabel);
+      }
+      
+      
+      const copyButton = document.createElement('button');
+      copyButton.className = 'copy-button';
+      copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg> Copy';
+      
+      copyButton.addEventListener('click', function() {
+        
+        const code = codeBlock.textContent;
+        
+        
+        navigator.clipboard.writeText(code).then(function() {
+          
+          copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Copied!';
+          
+          
+          setTimeout(function() {
+            copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg> Copy';
+          }, 2000);
+        });
+      });
+      
+      header.appendChild(copyButton);
+      
+      
+      if (pre.parentNode) {
+        pre.parentNode.removeChild(pre);
+      }
+      
+      
+      pre.style.backgroundColor = '#ffffff';
+      codeBlock.style.backgroundColor = '#ffffff';
+      
+      
+      container.appendChild(header);
+      container.appendChild(pre);
+      
+      
+      wrapper.appendChild(container);
+      
+      
+      hljs.highlightElement(codeBlock);
+      
+      
+      setTimeout(() => {
+        pre.style.backgroundColor = '#ffffff';
+        codeBlock.style.backgroundColor = '#ffffff';
+      }, 50);
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    const footnoteBacklinks = document.querySelectorAll('.footnote-backref');
+    
+    footnoteBacklinks.forEach(function(backlink) {
+      backlink.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        
+        const href = backlink.getAttribute('href');
+        
+        if (href) {
+          
+          const target = document.querySelector(href);
+          
+          if (target) {
+            
+            target.scrollIntoView({ behavior: 'smooth' });
+            
+            
+            target.classList.add('footnote-highlight');
+            setTimeout(function() {
+              target.classList.remove('footnote-highlight');
+            }, 2000);
+          }
+        }
+      });
+    });
+  });
+</script>
+
+
+</head>
+<body class="flex flex-col bg-gray-50 font-bilingual">
+  <header class="fixed top-0 left-0 z-30 w-full bg-white shadow-sm">
+    <div class="w-full max-w-4xl mx-auto px-6 overflow-x-auto sm:overflow-visible">
+      <div class="flex items-center justify-between py-3">
+  <div class="text-lg sm:text-xl font-bold flex-shrink-0 max-w-[40%] sm:max-w-md truncate">
+    <a href="/" class="text-current hover:text-blue-600 transition-colors no-underline">
+      My New Hugo Site
+    </a>
+  </div>
+  
+  <nav class="flex justify-end w-full whitespace-nowrap">
+    <ul class="flex flex-row items-center space-x-2 sm:space-x-4 md:space-x-6 py-2">
+    <li class="text-gray-600 hover:text-gray-900 text-base sm:text-lg">
+      <a
+        class="px-2 py-1 sm:px-3 sm:py-2 rounded hover:bg-gray-100 transition-colors" href="/">Home</a>
+    </li>
+    <li class="text-gray-600 hover:text-gray-900 text-base sm:text-lg">
+      <a
+        class="px-2 py-1 sm:px-3 sm:py-2 rounded hover:bg-gray-100 transition-colors">Posts</a>
+    </li>
+    <li class="text-gray-600 hover:text-gray-900 text-base sm:text-lg">
+      <a
+        class="px-2 py-1 sm:px-3 sm:py-2 rounded hover:bg-gray-100 transition-colors" href="/tags/">Tags</a>
+    </li>
+    <li class="text-gray-600 hover:text-gray-900 text-base sm:text-lg">
+      <a
+        class="px-2 py-1 sm:px-3 sm:py-2 rounded hover:bg-gray-100 transition-colors">About</a>
+    </li>
+    </ul>
+  </nav>
+
+</div>
+    </div>
+  </header>
+  
+  <div class="flex-1 flex flex-col min-h-screen pt-24">
+    <main class="flex-1 w-full max-w-4xl mx-auto px-6 overflow-x-auto sm:overflow-visible">
+      
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Notes</h1>
+    
+    <div class="space-y-16">
+      
+      <div class="relative">
+        
+        <div class="mb-6 flex items-center">
+          <div class="flex-shrink-0 w-16 h-16 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center text-blue-700 font-bold text-xl shadow-sm">
+            0001
+          </div>
+          <div class="ml-4 h-px bg-gradient-to-r from-blue-200 to-transparent flex-grow"></div>
+        </div>
+        
+        
+        <div class="ml-8 space-y-6">
+          
+          <div class="relative">
+            <a href="/notes/daily-note/2024/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  2024 ‍
+
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/daily-note/2024/10/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  10 ‍
+
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/daily-note/2024/10/2024-10-14/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  2024-10-14 2024-10-14 BUGN16UUPV-147 看log, 得到主要性能点(log分析). 过程中MtkCam/IspTuningDataPackNode耗时长
+BUGN12UPV-1426 沟通MTK, 需要找sensor owner分析log.
+‍ …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/daily-note/2024/11/2024_11_05/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  2024_11_05 [[App in background is killed问题分析]] 尝试将模型转换为ONNX格式然后用ONNX Runtime在手机上跑 
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/daily-note/2024/12/2024_12_03/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  2024_12_03 trace埋点适配sm8650
+JIRA_Analyzer未来方向 https://xiaomi.f.mioffice.cn/docx/doxk4JlJf4fWUs8zwDA2aewHPwg
+BUGM9UPV-335 BUGM9UPV-314 [[前后镜头切 …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/daily-note/2025/01/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  01 ‍
+
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/daily-note/2025/01/2025_01_02/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  2025_01_02 AI预测丢帧接入camerabooster, 进行中[[丢帧预测#接入camerabooster]]
+BUGM12UPV-3054 不复现 BUGM12UPV-3493 后台内存占用高, 大量的杀后台任务, 导致期间kswap0占用CPU增加.
+
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/daily-note/2025/02/2025_02_05/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  2025_02_05 N12暗光问题 遗留问题, 稳定版没有合入, 合入一下.
+Aiseg问题 本地的没找到有对应的线程, 但是可以看到:
+本地没问题的sttr_event会wake up sensor_worker-0
+有问题的trace的sensor_worker是 …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/daily-note/2025/03/2025-03-11/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  2025-03-11 ‍
+N12 scudo 优化 Doing
+N12 Memory Checker Done
+N12 LivePhoto Doing
+
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/daily-note/2025/04/2025-04-01/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  2025-04-01 https://codeforces.com/contest/2091
+‍
+Cameraopt 失效, @沈旭 正在处理
+‍
+用户反馈 N12 111626966 丢日志, 无有效信息, 看现象像是陀螺仪问题
+‍
+111645581 111624131 小图 …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  Documents ‍
+
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/aosp-related/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  AOSP related ‍
+
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/aosp-related/aidl%E9%87%8D%E6%96%B0%E7%94%9F%E6%88%90/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  AIDL重新生成 命令参考 https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt/+/4638759
+out/host/linux-x86/bin/aidl --lang=ndk …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/bufferqueue%E6%A6%82%E8%BF%B0/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  BufferQueue概述 BufferQueue概述 BufferQueue概览 BufferQueue可以将可生成图形数据buffer的组件 (生产方) 连接到接受数据以便进行显示或进一步处理的组件 (使用方) . 几乎所有在系统中移动图形数据buffer的内容都依赖 …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/aosp-related/binder/binder%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  Binder初步认识 Binder初步认识 对Binder的一些理解 Binder通信是一种client-server的通信结构
+从表面上来看, 是client通过获得一个server的代理接口, 对server进行直接调用 代理接口中定义的方法与server …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/camera%E7%9B%B8%E5%85%B3/ae%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  AE基础知识 基础概念 帧 一帧就是一幅图像 pclk 是控制像素输出的时钟，即pixel采样时钟，一个clk采集一个像素点 , 单位MHz。表示是每个单位时间内(每秒)采样的pixel数量。 帧率(fps) line_length = pclk * line_time fps …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/app-in-background-is-killed%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  App in background is killed问题分析 BUGN16UUPV-858 寻找log中的App in background is killed。 prev This is the process of the previous application that …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/camera%E7%9B%B8%E5%85%B3/dsac/dsac-io%E4%BC%98%E5%8C%96/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  DSAC IO优化 DSAC IO 此trace通过岩哥做的工具获取.
+此段逻辑对应代码, 可以通过这里的节点来调试DSAC
+perflock似乎是没什么问题的, 此时的perflock对应的binder线程没有阻塞, 但这些DSAC线程启动的的确有时间差异.
+DSAC IO可能 …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/camera%E7%9B%B8%E5%85%B3/%E5%BC%82%E6%AD%A5ois%E7%A8%B3%E5%AE%9A%E6%80%A7%E9%97%AE%E9%A2%98/gdb%E8%B0%83%E8%AF%95/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  gdb调试 利用adb进行端口映射, 远程运行需要运行gdbserver.
+例如:
+adb push gdbserver64 /vendor/bin/ adb shell /vendor/bin/gdbserver64 :$port --attach $target_pid 本地 …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/linux-related/cpu-cache%E5%8F%8A%E5%85%B6%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  CPU Cache及其一致性问题 Cache简介 Cache作为CPU高速缓存, 用于减少处理器访问内存所需平均时间. 在远古时期, CPU并没有Cache, 但随着CPU的快速发展, CPU访问其registers与访问内存速度差距越来越大, 所以就需要Cache这一中间层来提 …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/linux-related/linker-and-loder/symbol/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  Symbol Linker and Loder中大量提到了symbol的概念, 这里做简要介绍
+我们在linker和loader语境下的symbol一般都是指identifier, 也就是占位符.
+一般一个object包含三种symbol:
+defined external …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/tools/linux-middle-click-paste-disable/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  Linux Middle Click paste disable Linux Middle Click paste disable 当你在Linux使用鼠标中键关闭标签页时, 有时会粘贴剪切板中的内容. 以下XMousePasteBlock解决这个问题.
+‍
+
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/tools/synctools/%E4%BA%91%E7%AB%AF%E5%90%8C%E6%AD%A5/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  云端同步 云端同步 ZeroTier 多端互连的基础
+LocalSend LocalSend支持多端, 缺点是只能识别一个网络. 建议与ZeroTier搭配使用.
+clipboard-online clipboard-online支持多端, 可以自己写一个接受器和发送器, 接口简 …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84%E5%A4%A7%E6%A8%A1%E5%9E%8B/minicpm_system_prompt/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  MiniCPM_system_prompt 角色设定 你是一个盲人助手, 帮助盲人识别周围的物体, 辅助视障人士识别并理解他们周围的物理环境.
+目标设定 你的职责是辅助盲人识别周围的路况和路上的物体, 根据盲人的问题作出简短回答. 在识别的过程中, 你需要保持客观性, 不加入主观 …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/%E6%9D%82%E9%A1%B9/before-you-ask-question/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  Before you ask question http://www.catb.org/~esr/faqs/smart-questions.html
+
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/-pg-and--finstrument-functions/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  -pg and -finstrument-functions 两者皆可用于debug/profiling, 其原理:
+-pg: 在函数开头插入_mcount()​. -finstrument-functions: 在函数开头插 …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <a href="/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/llvm/mj/" class="absolute inset-0 z-10" aria-label=""></a>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+              <div class="p-5">
+                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between mb-3">
+                  <h3 class="text-xl font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    
+                  </h3>
+                  <time class="text-sm text-gray-500 mt-1 sm:mt-0 sm:ml-4 flex-shrink-0 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Jan 01
+                  </time>
+                </div>
+                
+                
+                <div class="text-gray-600 text-sm line-clamp-2">
+                  MJ ptrace原理
+‍
+对编译器的了解 定义与目的
+编译器是一种计算机程序，它将用一种编程语言（源语言）编写的代码翻译成另一种语言（目标语言），通常是机器码或字节码。编译器的主要目的是将人类可读的高级语言代码转换为计算机能够理解和执行的低级指令。
+编译过程的关键阶段
+正如我们 …
+                </div>
+                
+                
+                
+                
+                <div class="mt-4">
+                  <span class="inline-flex items-center text-blue-600 text-sm group-hover:translate-x-1 transition-transform duration-300">
+                    Read more
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+    </div>
+    
+    
+    <div class="mt-12 flex justify-between">
+      
+      <a href="/notes/" class="px-4 py-2 bg-white shadow-sm rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+        &larr; Previous
+      </a>
+      
+      
+      
+      <a href="/notes/page/3/" class="px-4 py-2 bg-white shadow-sm rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
+        Next &rarr;
+      </a>
+      
+    </div>
+    
+  </div>
+
+    </main>
+  </div>
+  
+  <footer class="w-full max-w-4xl mx-auto px-6 overflow-x-auto sm:overflow-visible">
+    <div class="py-8 border-t border-gray-200 bg-gray-50 shadow-inner mt-10">
+  <div class="container mx-auto px-4 max-w-4xl">
+    
+     
+     
+       
+         
+       
+     
+       
+         
+       
+     
+       
+         
+       
+    
+
+    
+    <div class="flex justify-center space-x-8">
+      
+      
+      <div class="transform transition duration-200 hover:scale-110">
+        <a
+          href="https://github.com/yourusername"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-gray-600 hover:text-gray-900"
+          aria-label="GitHub"
+        >
+          <svg
+            class="h-7 w-7"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+      </div>
+      
+
+      
+      
+
+      
+      
+      <div class="transform transition duration-200 hover:scale-110">
+        <a
+          href="mailto:your.email@example.com"
+          rel="noopener noreferrer"
+          class="text-gray-600 hover:text-gray-900"
+          aria-label="邮箱"
+        >
+          <svg
+            class="h-7 w-7"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"
+            />
+            <path
+              d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z"
+            />
+          </svg>
+        </a>
+      </div>
+      
+    </div>
+
+    <div class="text-center mt-6 text-sm text-gray-500">
+      &copy; 2025 My New Hugo Site | Powered by <a href="https://github.com/Daucloud/hugo-theme-void" class="text-gray-600 hover:text-gray-900 hover:underline">hugo-theme-void</a> | <span id="busuanzi_container_site_pv" style="display: none;">Total visits: <span id="busuanzi_value_site_pv" class="text-gray-600"></span></span>
+    </div>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  </div>
+</div>
+
+  </footer>
+</body>
+</html>

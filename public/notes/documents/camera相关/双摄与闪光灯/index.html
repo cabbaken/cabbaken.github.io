@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>双摄与闪光灯</title>
+
+<meta name="description" content="双摄与闪光灯 双摄 彩色&#43;彩色(RGB&#43;RGB) 用于计算景深，实现背景虚化重对焦 彩色&#43;黑白(RGB&#43;Mono) 提升暗光/夜景影像拍摄质量 广角镜头&#43;长焦(Wide&#43;Tele) 用于长焦 彩色&#43;深度(RGB&#43;Depth) 三维重建 基线10mm左右，人类双眼基线均值64mm，基线短，只能计算较近物体的景深(浅景深) 闪光灯 控制方式
+GPIO PMIC IIC title: 双摄与闪光灯 date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z 双摄与闪光灯 双摄 彩色&#43;彩色(RGB&#43;RGB) 用于计算景深，实现背景虚化重对焦 彩色&#43;黑白(RGB&#43;Mono) 提升暗光/夜景影像拍摄质量 广角镜头&#43;长焦(Wide&#43;Tele) 用于长焦 彩色&#43;深度(RGB&#43;Depth) 三维重建 基线10mm左右，人类双眼基线均值64mm，基线短，只能计算较近物体的景深(浅景深) 闪光灯 控制方式
+GPIO PMIC IIC ">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E5%8F%8C%E6%91%84%E4%B8%8E%E9%97%AA%E5%85%89%E7%81%AF/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E5%8F%8C%E6%91%84%E4%B8%8E%E9%97%AA%E5%85%89%E7%81%AF/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E5%8F%8C%E6%91%84%E4%B8%8E%E9%97%AA%E5%85%89%E7%81%AF/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="双摄与闪光灯">
+<meta property="og:description" content="双摄与闪光灯
+双摄
+
+彩色&#43;彩色(RGB&#43;RGB)
+
+用于计算景深，实现背景虚化重对焦
+
+
+彩色&#43;黑白(RGB&#43;Mono)
+
+提升暗光/夜景影像拍摄质量
+
+
+广角镜头&#43;长焦(Wide&#43;Tele)
+
+用于长焦
+
+
+彩色&#43;深度(RGB&#43;Depth)
+
+三维重建
+
+
+
+基线10mm左右，人类双眼基线均值64mm，基线短，只能计算较近物体的景深(浅景深)
+闪光灯
+控制方式
+
+GPIO
+PMIC
+IIC
+
+
+title: 双摄与闪光灯
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+双摄与闪光灯
+双摄
+
+彩色&#43;彩色(RGB&#43;RGB)
+
+用于计算景深，实现背景虚化重对焦
+
+
+彩色&#43;黑白(RGB&#43;Mono)
+
+提升暗光/夜景影像拍摄质量
+
+
+广角镜头&#43;长焦(Wide&#43;Tele)
+
+用于长焦
+
+
+彩色&#43;深度(RGB&#43;Depth)
+
+三维重建
+
+
+
+基线10mm左右，人类双眼基线均值64mm，基线短，只能计算较近物体的景深(浅景深)
+闪光灯
+控制方式
+
+GPIO
+PMIC
+IIC
+">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E5%8F%8C%E6%91%84%E4%B8%8E%E9%97%AA%E5%85%89%E7%81%AF/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="双摄与闪光灯">
+<meta name="twitter:description" content="双摄与闪光灯
+双摄
+
+彩色&#43;彩色(RGB&#43;RGB)
+
+用于计算景深，实现背景虚化重对焦
+
+
+彩色&#43;黑白(RGB&#43;Mono)
+
+提升暗光/夜景影像拍摄质量
+
+
+广角镜头&#43;长焦(Wide&#43;Tele)
+
+用于长焦
+
+
+彩色&#43;深度(RGB&#43;Depth)
+
+三维重建
+
+
+
+基线10mm左右，人类双眼基线均值64mm，基线短，只能计算较近物体的景深(浅景深)
+闪光灯
+控制方式
+
+GPIO
+PMIC
+IIC
+
+
+title: 双摄与闪光灯
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+双摄与闪光灯
+双摄
+
+彩色&#43;彩色(RGB&#43;RGB)
+
+用于计算景深，实现背景虚化重对焦
+
+
+彩色&#43;黑白(RGB&#43;Mono)
+
+提升暗光/夜景影像拍摄质量
+
+
+广角镜头&#43;长焦(Wide&#43;Tele)
+
+用于长焦
+
+
+彩色&#43;深度(RGB&#43;Depth)
+
+三维重建
+
+
+
+基线10mm左右，人类双眼基线均值64mm，基线短，只能计算较近物体的景深(浅景深)
+闪光灯
+控制方式
+
+GPIO
+PMIC
+IIC
+">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "双摄与闪光灯",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  331 ,
+  "description": "双摄与闪光灯 双摄 彩色+彩色(RGB+RGB) 用于计算景深，实现背景虚化重对焦 彩色+黑白(RGB+Mono) 提升暗光/夜景影像拍摄质量 广角镜头+长焦(Wide+Tele) 用于长焦 彩色+深度(RGB+Depth) 三维重建 基线10mm左右，人类双眼基线均值64mm，基线短，只能计算较近物体的景深(浅景深) 闪光灯 控制方式\nGPIO PMIC IIC title: 双摄与闪光灯 date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z 双摄与闪光灯 双摄 彩色+彩色(RGB+RGB) 用于计算景深，实现背景虚化重对焦 彩色+黑白(RGB+Mono) 提升暗光/夜景影像拍摄质量 广角镜头+长焦(Wide+Tele) 用于长焦 彩色+深度(RGB+Depth) 三维重建 基线10mm左右，人类双眼基线均值64mm，基线短，只能计算较近物体的景深(浅景深) 闪光灯 控制方式\nGPIO PMIC IIC ",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="双摄与闪光灯">双摄与闪光灯</h1>
+<h2 id="双摄">双摄</h2>
+<ul>
+<li>彩色+彩色(RGB+RGB)
+<ul>
+<li>用于计算景深，实现背景虚化重对焦</li>
+</ul>
+</li>
+<li>彩色+黑白(RGB+Mono)
+<ul>
+<li>提升暗光/夜景影像拍摄质量</li>
+</ul>
+</li>
+<li>广角镜头+长焦(Wide+Tele)
+<ul>
+<li>用于长焦</li>
+</ul>
+</li>
+<li>彩色+深度(RGB+Depth)
+<ul>
+<li>三维重建</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>基线10mm左右，人类双眼基线均值64mm，基线短，只能计算较近物体的景深(浅景深)
+</span></span></code></pre></div><h2 id="闪光灯">闪光灯</h2>
+<p>控制方式</p>
+<ul>
+<li>GPIO</li>
+<li>PMIC</li>
+<li>IIC</li>
+</ul>
+<hr>
+<h2 id="lastmod-2025-03-11t094648z">title: 双摄与闪光灯
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="双摄与闪光灯-1">双摄与闪光灯</h1>
+<h2 id="双摄-1">双摄</h2>
+<ul>
+<li>彩色+彩色(RGB+RGB)
+<ul>
+<li>用于计算景深，实现背景虚化重对焦</li>
+</ul>
+</li>
+<li>彩色+黑白(RGB+Mono)
+<ul>
+<li>提升暗光/夜景影像拍摄质量</li>
+</ul>
+</li>
+<li>广角镜头+长焦(Wide+Tele)
+<ul>
+<li>用于长焦</li>
+</ul>
+</li>
+<li>彩色+深度(RGB+Depth)
+<ul>
+<li>三维重建</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>基线10mm左右，人类双眼基线均值64mm，基线短，只能计算较近物体的景深(浅景深)
+</span></span></code></pre></div><h2 id="闪光灯-1">闪光灯</h2>
+<p>控制方式</p>
+<ul>
+<li>GPIO</li>
+<li>PMIC</li>
+<li>IIC</li>
+</ul>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

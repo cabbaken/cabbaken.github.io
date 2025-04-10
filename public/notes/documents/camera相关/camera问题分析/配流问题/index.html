@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>配流问题</title>
+
+<meta name="description" content="配流问题 BUGM9UPV-673 录像切换拍照超标准150&#43;ms U: ![](assets/Pasted image 20250114205425-20250311094648-y4dk318.png ) V: ![](assets/Pasted image 20250114205412-20250311094648-jrrmy4b.png ) 看trace发现mtkcam中的evaluateConfiguration多了100ms. 主要关注这里. U: ![](assets/Pasted image 20250114205145-20250311094648-mfallti.png ) V: ![](assets/Pasted image 20250114205211-20250311094648-y3t5xfg.png ) 检查发现流程没什么问题, 考虑CPU使用问题. U: ![](assets/Pasted image 20250115110017-20250311094648-zlgx3cn.png ) V: ![](assets/Pasted image 20250115105938-20250311094648-m5ungh8.png ) U版本大核使用多, V版本小核使用多, 时间差了1倍. 查看是否有绑核
+cat /proc/${pid}/status # check Cpus_allowed_list 发现并没有, 尝试绑大核.
+void setCpuMask(int32_t cpuMask) { cpu_set_t cpuset; CPU_ZERO(&amp;cpuset); for (int i = 0; i &lt; sizeof(cpuset); &#43;&#43;i) { if (cpuMask &amp; 0x01) { CPU_SET(i, &amp;cpuset); } cpuMask &gt;&gt;= 1; } sched_setaffinity(0, sizeof(cpuset), &amp;cpuset); } https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/&#43;/4999224 解决
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E9%85%8D%E6%B5%81%E9%97%AE%E9%A2%98/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E9%85%8D%E6%B5%81%E9%97%AE%E9%A2%98/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E9%85%8D%E6%B5%81%E9%97%AE%E9%A2%98/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="配流问题">
+<meta property="og:description" content="配流问题
+BUGM9UPV-673
+录像切换拍照超标准150&#43;ms
+U:
+![](assets/Pasted image 20250114205425-20250311094648-y4dk318.png )
+V:
+![](assets/Pasted image 20250114205412-20250311094648-jrrmy4b.png )
+看trace发现mtkcam中的evaluateConfiguration多了100ms. 主要关注这里.
+U:
+![](assets/Pasted image 20250114205145-20250311094648-mfallti.png )
+V:
+![](assets/Pasted image 20250114205211-20250311094648-y3t5xfg.png )
+检查发现流程没什么问题, 考虑CPU使用问题.
+U:
+![](assets/Pasted image 20250115110017-20250311094648-zlgx3cn.png )
+V:
+![](assets/Pasted image 20250115105938-20250311094648-m5ungh8.png )
+U版本大核使用多, V版本小核使用多, 时间差了1倍.
+查看是否有绑核
+cat /proc/${pid}/status
+# check Cpus_allowed_list
+发现并没有, 尝试绑大核.
+void setCpuMask(int32_t cpuMask)
+{
+    cpu_set_t cpuset;
+    CPU_ZERO(&amp;cpuset);
+    for (int i = 0; i &lt; sizeof(cpuset); &#43;&#43;i) {
+        if (cpuMask &amp; 0x01) {
+            CPU_SET(i, &amp;cpuset);
+        }
+        cpuMask &gt;&gt;= 1;
+    }
+    sched_setaffinity(0, sizeof(cpuset), &amp;cpuset);
+}
+https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/&#43;/4999224
+解决">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E9%85%8D%E6%B5%81%E9%97%AE%E9%A2%98/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="配流问题">
+<meta name="twitter:description" content="配流问题
+BUGM9UPV-673
+录像切换拍照超标准150&#43;ms
+U:
+![](assets/Pasted image 20250114205425-20250311094648-y4dk318.png )
+V:
+![](assets/Pasted image 20250114205412-20250311094648-jrrmy4b.png )
+看trace发现mtkcam中的evaluateConfiguration多了100ms. 主要关注这里.
+U:
+![](assets/Pasted image 20250114205145-20250311094648-mfallti.png )
+V:
+![](assets/Pasted image 20250114205211-20250311094648-y3t5xfg.png )
+检查发现流程没什么问题, 考虑CPU使用问题.
+U:
+![](assets/Pasted image 20250115110017-20250311094648-zlgx3cn.png )
+V:
+![](assets/Pasted image 20250115105938-20250311094648-m5ungh8.png )
+U版本大核使用多, V版本小核使用多, 时间差了1倍.
+查看是否有绑核
+cat /proc/${pid}/status
+# check Cpus_allowed_list
+发现并没有, 尝试绑大核.
+void setCpuMask(int32_t cpuMask)
+{
+    cpu_set_t cpuset;
+    CPU_ZERO(&amp;cpuset);
+    for (int i = 0; i &lt; sizeof(cpuset); &#43;&#43;i) {
+        if (cpuMask &amp; 0x01) {
+            CPU_SET(i, &amp;cpuset);
+        }
+        cpuMask &gt;&gt;= 1;
+    }
+    sched_setaffinity(0, sizeof(cpuset), &amp;cpuset);
+}
+https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/&#43;/4999224
+解决">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "配流问题",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  209 ,
+  "description": "配流问题 BUGM9UPV-673 录像切换拍照超标准150+ms U: ![](assets/Pasted image 20250114205425-20250311094648-y4dk318.png ) V: ![](assets/Pasted image 20250114205412-20250311094648-jrrmy4b.png ) 看trace发现mtkcam中的evaluateConfiguration多了100ms. 主要关注这里. U: ![](assets/Pasted image 20250114205145-20250311094648-mfallti.png ) V: ![](assets/Pasted image 20250114205211-20250311094648-y3t5xfg.png ) 检查发现流程没什么问题, 考虑CPU使用问题. U: ![](assets/Pasted image 20250115110017-20250311094648-zlgx3cn.png ) V: ![](assets/Pasted image 20250115105938-20250311094648-m5ungh8.png ) U版本大核使用多, V版本小核使用多, 时间差了1倍. 查看是否有绑核\ncat /proc/${pid}/status # check Cpus_allowed_list 发现并没有, 尝试绑大核.\nvoid setCpuMask(int32_t cpuMask) { cpu_set_t cpuset; CPU_ZERO(\u0026amp;cpuset); for (int i = 0; i \u0026lt; sizeof(cpuset); ++i) { if (cpuMask \u0026amp; 0x01) { CPU_SET(i, \u0026amp;cpuset); } cpuMask \u0026gt;\u0026gt;= 1; } sched_setaffinity(0, sizeof(cpuset), \u0026amp;cpuset); } https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/+/4999224 解决\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="配流问题">配流问题</h1>
+<h2 id="bugm9upv-673"><a href="https://jira-phone.mioffice.cn/browse/BUGM9UPV-673" target="_blank" rel="noopener">BUGM9UPV-673</a></h2>
+<p>录像切换拍照超标准150+ms
+U:
+![](assets/Pasted image 20250114205425-20250311094648-y4dk318.png )
+V:
+![](assets/Pasted image 20250114205412-20250311094648-jrrmy4b.png )
+看trace发现mtkcam中的evaluateConfiguration多了100ms. 主要关注这里.
+U:
+![](assets/Pasted image 20250114205145-20250311094648-mfallti.png )
+V:
+![](assets/Pasted image 20250114205211-20250311094648-y3t5xfg.png )
+检查发现流程没什么问题, 考虑CPU使用问题.
+U:
+![](assets/Pasted image 20250115110017-20250311094648-zlgx3cn.png )
+V:
+![](assets/Pasted image 20250115105938-20250311094648-m5ungh8.png )
+U版本大核使用多, V版本小核使用多, 时间差了1倍.
+查看是否有绑核</p>
+<pre tabindex="0"><code>cat /proc/${pid}/status
+# check Cpus_allowed_list
+</code></pre><p>发现并没有, 尝试绑大核.</p>
+<pre tabindex="0"><code>void setCpuMask(int32_t cpuMask)
+{
+    cpu_set_t cpuset;
+    CPU_ZERO(&amp;cpuset);
+    for (int i = 0; i &lt; sizeof(cpuset); ++i) {
+        if (cpuMask &amp; 0x01) {
+            CPU_SET(i, &amp;cpuset);
+        }
+        cpuMask &gt;&gt;= 1;
+    }
+    sched_setaffinity(0, sizeof(cpuset), &amp;cpuset);
+}
+</code></pre><p><a href="https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/&#43;/4999224" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/+/4999224</a>
+解决</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

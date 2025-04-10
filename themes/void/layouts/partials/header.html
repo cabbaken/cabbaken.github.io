@@ -1,0 +1,8 @@
+<div class="flex items-center justify-between py-3">
+  <div class="text-lg sm:text-xl font-bold flex-shrink-0 max-w-[40%] sm:max-w-md truncate">
+    <a href="{{ "/" | relLangURL }}" class="text-current hover:text-blue-600 transition-colors no-underline">
+      {{.Site.Title}}
+    </a>
+  </div>
+  {{ partial "menu.html" (dict "menuID" "main" "page" .) }}
+</div>

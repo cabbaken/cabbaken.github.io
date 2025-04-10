@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>BufferQueue概述</title>
+
+<meta name="description" content="BufferQueue概述 BufferQueue概述 BufferQueue概览 BufferQueue可以将可生成图形数据buffer的组件 (生产方) 连接到接受数据以便进行显示或进一步处理的组件 (使用方) . 几乎所有在系统中移动图形数据buffer的内容都依赖于BufferQueue. BufferQueue是Android显示系统的核心, 实际上Surface, ImageReader, ImageWriter是对BufferQueue的生产者消费者的封装, 而BufferQueue是一个生产者消费者模型又是GraphicBuffer管理者, 它和显示系统以及Camera流媒体紧密关系着.
+定义在frameworks/native/libs/gui/
+BufferQueue中的生产者与消费者框架 BufferQueue的核心逻辑是生产者消费者逻辑. 在BufferQueue这个生产者消费者框架中, BufferQueueCore可以理解为buffer的管理者, 它的消费者是BufferQueueConsumer, 它的生产者是BufferQueueProducer.
+上图描述了BufferQueue中的生产者与消费者的工作流程, 根据个人理解, 可以做一个比喻:
+大厨在做菜, 顾客在吃菜, 菜用盘子装, 服务员送盘子.
+Producer就是大厨, consumer是顾客, 盘子是buffer, 而服务员是binder.
+大厨在做菜需要盘子装就是dequeue的过程, 装好菜后服务员上菜是queue的过程.
+菜端给顾客吃是acquire的过程, 顾客吃完菜然后服务员把盘子送回去是release的过程.
+在此过程中, buffer有5种状态, 分别为: free, dequeued, queue, acquired, shared.
+状态变化如下图:
+FREE: 表示缓冲区可供生产者出队. 该slot由BufferQueue拥有. 当调用dequeueBuffer()​时, 它会转换为 DEQUEUED. DEQUEUED: 表示缓冲区已由生产者出队, 但尚未排队或取消. 生产者可以在相关释放栅栏发出信号后立即修改缓冲区的内容. 该槽位由生产者拥有. 它可以转换为QUEUED (通过queueBuffer()​或attachBuffer()​) 或返回FREE (通过cancelBuffer()​或detachBuffer()​) . QUEUED: 表示缓冲区已被生产者填充并排队供消费者使用. 缓冲区内容可能会在有限的时间内继续被修改, 因此在相关栅栏发出信号之前, 不得访问内容. 该slot(buffer, 下同)由BufferQueue拥有. 它可以转换为ACQUIRED (通过acquireBuffer()​) 或FREE (如果另一个缓冲区以异步模式排队) . ACQUIRED: 表示缓冲区已被消费者获取. 与QUEUED一样, 在获取栅栏信号发出之前, 消费者不得访问内容. 该slot由消费者拥有. 当调用releaseBuffer()​或detachBuffer()​时, 它会转换为FREE. 分离的缓冲区也可以通过attachBuffer()​进入ACQUIRED状态. SHARED: 表示此缓冲区正在共享缓冲区模式下使用. 它可以同时处于其他状态的任意组合 (FREE 除外, 因为这排除了处于任何其他状态) . 它也可以多次被出队、排队或获取. ">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/bufferqueue%E6%A6%82%E8%BF%B0/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/bufferqueue%E6%A6%82%E8%BF%B0/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/bufferqueue%E6%A6%82%E8%BF%B0/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="BufferQueue概述">
+<meta property="og:description" content="BufferQueue概述
+BufferQueue概述
+BufferQueue概览
+BufferQueue可以将可生成图形数据buffer的组件 (生产方) 连接到接受数据以便进行显示或进一步处理的组件 (使用方) . 几乎所有在系统中移动图形数据buffer的内容都依赖于BufferQueue. BufferQueue是Android显示系统的核心, 实际上Surface, ImageReader, ImageWriter是对BufferQueue的生产者消费者的封装, 而BufferQueue是一个生产者消费者模型又是GraphicBuffer管理者, 它和显示系统以及Camera流媒体紧密关系着.
+定义在frameworks/native/libs/gui/
+BufferQueue中的生产者与消费者框架
+BufferQueue的核心逻辑是生产者消费者逻辑. 在BufferQueue这个生产者消费者框架中,  BufferQueueCore可以理解为buffer的管理者, 它的消费者是BufferQueueConsumer, 它的生产者是BufferQueueProducer.
+
+上图描述了BufferQueue中的生产者与消费者的工作流程, 根据个人理解, 可以做一个比喻:
+大厨在做菜, 顾客在吃菜, 菜用盘子装, 服务员送盘子.
+Producer就是大厨, consumer是顾客, 盘子是buffer, 而服务员是binder.
+大厨在做菜需要盘子装就是dequeue的过程, 装好菜后服务员上菜是queue的过程.
+菜端给顾客吃是acquire的过程, 顾客吃完菜然后服务员把盘子送回去是release的过程.
+在此过程中, buffer有5种状态, 分别为: free, dequeued, queue, acquired, shared.
+状态变化如下图:
+
+
+FREE: 表示缓冲区可供生产者出队. 该slot由BufferQueue拥有. 当调用dequeueBuffer()​时, 它会转换为 DEQUEUED.
+DEQUEUED: 表示缓冲区已由生产者出队, 但尚未排队或取消. 生产者可以在相关释放栅栏发出信号后立即修改缓冲区的内容. 该槽位由生产者拥有. 它可以转换为QUEUED (通过queueBuffer()​或attachBuffer()​) 或返回FREE (通过cancelBuffer()​或detachBuffer()​) .
+QUEUED: 表示缓冲区已被生产者填充并排队供消费者使用. 缓冲区内容可能会在有限的时间内继续被修改, 因此在相关栅栏发出信号之前, 不得访问内容. 该slot(buffer, 下同)由BufferQueue拥有. 它可以转换为ACQUIRED (通过acquireBuffer()​) 或FREE (如果另一个缓冲区以异步模式排队) .
+ACQUIRED: 表示缓冲区已被消费者获取. 与QUEUED一样, 在获取栅栏信号发出之前, 消费者不得访问内容. 该slot由消费者拥有. 当调用releaseBuffer()​或detachBuffer()​时, 它会转换为FREE. 分离的缓冲区也可以通过attachBuffer()​进入ACQUIRED状态.
+SHARED: 表示此缓冲区正在共享缓冲区模式下使用. 它可以同时处于其他状态的任意组合 (FREE 除外, 因为这排除了处于任何其他状态) . 它也可以多次被出队、排队或获取.
+
+">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/bufferqueue%E6%A6%82%E8%BF%B0/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="BufferQueue概述">
+<meta name="twitter:description" content="BufferQueue概述
+BufferQueue概述
+BufferQueue概览
+BufferQueue可以将可生成图形数据buffer的组件 (生产方) 连接到接受数据以便进行显示或进一步处理的组件 (使用方) . 几乎所有在系统中移动图形数据buffer的内容都依赖于BufferQueue. BufferQueue是Android显示系统的核心, 实际上Surface, ImageReader, ImageWriter是对BufferQueue的生产者消费者的封装, 而BufferQueue是一个生产者消费者模型又是GraphicBuffer管理者, 它和显示系统以及Camera流媒体紧密关系着.
+定义在frameworks/native/libs/gui/
+BufferQueue中的生产者与消费者框架
+BufferQueue的核心逻辑是生产者消费者逻辑. 在BufferQueue这个生产者消费者框架中,  BufferQueueCore可以理解为buffer的管理者, 它的消费者是BufferQueueConsumer, 它的生产者是BufferQueueProducer.
+
+上图描述了BufferQueue中的生产者与消费者的工作流程, 根据个人理解, 可以做一个比喻:
+大厨在做菜, 顾客在吃菜, 菜用盘子装, 服务员送盘子.
+Producer就是大厨, consumer是顾客, 盘子是buffer, 而服务员是binder.
+大厨在做菜需要盘子装就是dequeue的过程, 装好菜后服务员上菜是queue的过程.
+菜端给顾客吃是acquire的过程, 顾客吃完菜然后服务员把盘子送回去是release的过程.
+在此过程中, buffer有5种状态, 分别为: free, dequeued, queue, acquired, shared.
+状态变化如下图:
+
+
+FREE: 表示缓冲区可供生产者出队. 该slot由BufferQueue拥有. 当调用dequeueBuffer()​时, 它会转换为 DEQUEUED.
+DEQUEUED: 表示缓冲区已由生产者出队, 但尚未排队或取消. 生产者可以在相关释放栅栏发出信号后立即修改缓冲区的内容. 该槽位由生产者拥有. 它可以转换为QUEUED (通过queueBuffer()​或attachBuffer()​) 或返回FREE (通过cancelBuffer()​或detachBuffer()​) .
+QUEUED: 表示缓冲区已被生产者填充并排队供消费者使用. 缓冲区内容可能会在有限的时间内继续被修改, 因此在相关栅栏发出信号之前, 不得访问内容. 该slot(buffer, 下同)由BufferQueue拥有. 它可以转换为ACQUIRED (通过acquireBuffer()​) 或FREE (如果另一个缓冲区以异步模式排队) .
+ACQUIRED: 表示缓冲区已被消费者获取. 与QUEUED一样, 在获取栅栏信号发出之前, 消费者不得访问内容. 该slot由消费者拥有. 当调用releaseBuffer()​或detachBuffer()​时, 它会转换为FREE. 分离的缓冲区也可以通过attachBuffer()​进入ACQUIRED状态.
+SHARED: 表示此缓冲区正在共享缓冲区模式下使用. 它可以同时处于其他状态的任意组合 (FREE 除外, 因为这排除了处于任何其他状态) . 它也可以多次被出队、排队或获取.
+
+">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "BufferQueue概述",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  5145 ,
+  "description": "BufferQueue概述 BufferQueue概述 BufferQueue概览 BufferQueue可以将可生成图形数据buffer的组件 (生产方) 连接到接受数据以便进行显示或进一步处理的组件 (使用方) . 几乎所有在系统中移动图形数据buffer的内容都依赖于BufferQueue. BufferQueue是Android显示系统的核心, 实际上Surface, ImageReader, ImageWriter是对BufferQueue的生产者消费者的封装, 而BufferQueue是一个生产者消费者模型又是GraphicBuffer管理者, 它和显示系统以及Camera流媒体紧密关系着.\n定义在frameworks/native/libs/gui/\nBufferQueue中的生产者与消费者框架 BufferQueue的核心逻辑是生产者消费者逻辑. 在BufferQueue这个生产者消费者框架中, BufferQueueCore可以理解为buffer的管理者, 它的消费者是BufferQueueConsumer, 它的生产者是BufferQueueProducer.\n上图描述了BufferQueue中的生产者与消费者的工作流程, 根据个人理解, 可以做一个比喻:\n大厨在做菜, 顾客在吃菜, 菜用盘子装, 服务员送盘子.\nProducer就是大厨, consumer是顾客, 盘子是buffer, 而服务员是binder.\n大厨在做菜需要盘子装就是dequeue的过程, 装好菜后服务员上菜是queue的过程.\n菜端给顾客吃是acquire的过程, 顾客吃完菜然后服务员把盘子送回去是release的过程.\n在此过程中, buffer有5种状态, 分别为: free, dequeued, queue, acquired, shared.\n状态变化如下图:\nFREE: 表示缓冲区可供生产者出队. 该slot由BufferQueue拥有. 当调用dequeueBuffer()​时, 它会转换为 DEQUEUED. DEQUEUED: 表示缓冲区已由生产者出队, 但尚未排队或取消. 生产者可以在相关释放栅栏发出信号后立即修改缓冲区的内容. 该槽位由生产者拥有. 它可以转换为QUEUED (通过queueBuffer()​或attachBuffer()​) 或返回FREE (通过cancelBuffer()​或detachBuffer()​) . QUEUED: 表示缓冲区已被生产者填充并排队供消费者使用. 缓冲区内容可能会在有限的时间内继续被修改, 因此在相关栅栏发出信号之前, 不得访问内容. 该slot(buffer, 下同)由BufferQueue拥有. 它可以转换为ACQUIRED (通过acquireBuffer()​) 或FREE (如果另一个缓冲区以异步模式排队) . ACQUIRED: 表示缓冲区已被消费者获取. 与QUEUED一样, 在获取栅栏信号发出之前, 消费者不得访问内容. 该slot由消费者拥有. 当调用releaseBuffer()​或detachBuffer()​时, 它会转换为FREE. 分离的缓冲区也可以通过attachBuffer()​进入ACQUIRED状态. SHARED: 表示此缓冲区正在共享缓冲区模式下使用. 它可以同时处于其他状态的任意组合 (FREE 除外, 因为这排除了处于任何其他状态) . 它也可以多次被出队、排队或获取. ",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="bufferqueue概述">BufferQueue概述</h1>
+<h1 id="bufferqueue概述-1">BufferQueue概述</h1>
+<h1 id="bufferqueue概览">BufferQueue概览</h1>
+<p>BufferQueue可以将可生成图形数据buffer的组件 (生产方) 连接到接受数据以便进行显示或进一步处理的组件 (使用方) . 几乎所有在系统中移动图形数据buffer的内容都依赖于BufferQueue. BufferQueue是Android显示系统的核心, 实际上Surface, ImageReader, ImageWriter是对BufferQueue的生产者消费者的封装, 而BufferQueue是一个生产者消费者模型又是GraphicBuffer管理者, 它和显示系统以及Camera流媒体紧密关系着.</p>
+<p>定义在frameworks/native/libs/gui/</p>
+<h2 id="bufferqueue中的生产者与消费者框架">BufferQueue中的生产者与消费者框架</h2>
+<p>BufferQueue的核心逻辑是生产者消费者逻辑. 在BufferQueue这个生产者消费者框架中,  BufferQueueCore可以理解为buffer的管理者, 它的消费者是BufferQueueConsumer, 它的生产者是BufferQueueProducer.</p>
+<p><img src="assets/image-20241023192453-dunqqph.png" alt=""></p>
+<p>上图描述了BufferQueue中的生产者与消费者的工作流程, 根据个人理解, 可以做一个比喻:</p>
+<p>大厨在做菜, 顾客在吃菜, 菜用盘子装, 服务员送盘子.</p>
+<p>Producer就是大厨, consumer是顾客, 盘子是buffer, 而服务员是binder.</p>
+<p>大厨在做菜需要盘子装就是dequeue的过程, 装好菜后服务员上菜是queue的过程.</p>
+<p>菜端给顾客吃是acquire的过程, 顾客吃完菜然后服务员把盘子送回去是release的过程.</p>
+<p>在此过程中, buffer有5种状态, 分别为: free, dequeued, queue, acquired, shared.</p>
+<p>状态变化如下图:</p>
+<p><img src="assets/image-20241023192501-eap8xsz.png" alt=""></p>
+<ul>
+<li>FREE: 表示缓冲区可供生产者出队. 该slot由BufferQueue拥有. 当调用<code>dequeueBuffer()</code>​时, 它会转换为 DEQUEUED.</li>
+<li>DEQUEUED: 表示缓冲区已由生产者出队, 但尚未排队或取消. 生产者可以在相关释放栅栏发出信号后立即修改缓冲区的内容. 该槽位由生产者拥有. 它可以转换为QUEUED (通过<code>queueBuffer()</code>​或<code>attachBuffer()</code>​) 或返回FREE (通过<code>cancelBuffer()</code>​或<code>detachBuffer()</code>​) .</li>
+<li>QUEUED: 表示缓冲区已被生产者填充并排队供消费者使用. 缓冲区内容可能会在有限的时间内继续被修改, 因此在相关栅栏发出信号之前, 不得访问内容. 该slot(buffer, 下同)由BufferQueue拥有. 它可以转换为ACQUIRED (通过<code>acquireBuffer()</code>​) 或FREE (如果另一个缓冲区以异步模式排队) .</li>
+<li>ACQUIRED: 表示缓冲区已被消费者获取. 与QUEUED一样, 在获取栅栏信号发出之前, 消费者不得访问内容. 该slot由消费者拥有. 当调用<code>releaseBuffer()</code>​或<code>detachBuffer()</code>​时, 它会转换为FREE. 分离的缓冲区也可以通过<code>attachBuffer()</code>​进入ACQUIRED状态.</li>
+<li>SHARED: 表示此缓冲区正在共享缓冲区模式下使用. 它可以同时处于其他状态的任意组合 (FREE 除外, 因为这排除了处于任何其他状态) . 它也可以多次被出队、排队或获取.</li>
+</ul>
+<p><img src="assets/image-20241023192508-xtndc76.png" alt=""></p>
+<h2 id="bufferqueue的构成">BufferQueue的构成</h2>
+<p>BufferQueueCore是由BufferQueue调用<code>BufferQueue::createBufferQueue()</code>​创建的. BufferQueue中主要定义了<code>BufferQueue::createBufferQueue()</code>​和ProxyConsumerListener. 封装的消费者调用<code>BufferQueue::createBufferQueue()</code>​创建BufferQueueCore, 然后根据BufferQueueCore创建原始消费者生产者BufferQueueConsumer和BufferQueueProducer. BufferQueueCore负责维护BufferQueue的基本数据结构, 而BufferQueueProducer和BufferQueueConsumer则负责提供操作BufferQueue的基本接口.</p>
+<p>消费者BufferQueueConsumer在调用<code>BufferQueueConsumer::connect()</code>​的时候把ConsumerListener相关的回调接口注册进BufferQueueCore供ProxyConsumerListener回调使用.</p>
+<p>生产者BufferQueueProducer也有一个<code>BufferQueueProducer::connect()</code>​接口, 其注册IProducerListener到BufferQueueCore中, 在消费者使用完GraphicBuffer释放的时候通过IProducerListener通知生产者.</p>
+<p>同时这个IProducerListener会注册Binder死亡通知函数, 在死亡的时候回调BufferQueueProducer的<code>binderDied()</code>​, 取消链接. 至此由BufferQueue, BufferQueueCore, BufferQueueConsumer,  BufferQueueProducer组成的核心的生产者消费者模型就建立起来了.</p>
+<h3 id="bufferqueue">BufferQueue</h3>
+<p>在BufferQueue中首先定义了ProxyConsumerListener. ProxyConsumerListener类是ConsumerListener类的实现, 主要用来保存一个指向真正的consumer object的weak pointer. ProxyConsumerListener的主要目的是避免BufferQueue对象和consumer对象的循环引用. ProxyConsumerListener的使用在ConsumerBase中. ProxyConsumerListener的实现比较简单, 几个函数的功能主要是监听一些动作, 当这些对应的事件发生后, 及时通知另一端, 做数据同步 (producer和consumer两端的关系) .</p>
+<p>然后定义了<code>createBufferQueue()</code>​, 前文中提到过此函数用于创建BufferQueueCore等BufferQueue的基本组成.</p>
+<h3 id="bufferqueuecore">BufferQueueCore</h3>
+<ul>
+<li>slots相关, 用于关联数据核心GraphicBuffer, 包括mSlots mQueue mFreeSlots mfreeBuffers mUnusedSlots,mActiveBuffers</li>
+<li>listener相关, 用于通知和回调, 包括mConsumerListener mLinkedToDeath mConnectedProducerListener</li>
+<li>Buffercount相关, 用于定BufferQuue中的Buffer数量, 包括mMaxBufferCount mMaxAcquiredBufferCount mMaxDequeuedBufferCount</li>
+<li>一些设置项, 包括 mConsumerName mDefaultWidth mDefaultHeight mDefaultBufferFormat mDefaultBufferDataSpace. 主要是name, 宽高信息, format信息, dataspace信息等.</li>
+</ul>
+<p>BufferQueueCore正常会放在消费者中去创建,两点原因:</p>
+<ol>
+<li>出于consumer准备好消费了再去生产的思想考虑, 因为生产的目的为了消费.</li>
+<li>以consumer作为核心端去管理, consumer创建方便统一管理.</li>
+</ol>
+<h3 id="bufferslot与bufferitem">BufferSlot与BufferItem</h3>
+<p>BufferQueueCore管理buffer, 而其核心GraphicBuffer关联在BufferSlot中. BufferQueueCore定义了<code>BufferQueueDefs::SlotsType mSlots</code>​, 其本质是一个BufferSlot数组, 而BufferSlot定义如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">BufferSlot</span> {
+</span></span><span style="display:flex;"><span>    sp<span style="color:#f92672">&lt;</span>GraphicBuffer<span style="color:#f92672">&gt;</span> mGraphicBuffer;
+</span></span><span style="display:flex;"><span>    EGLDisplay mEglDisplay;
+</span></span><span style="display:flex;"><span>    BufferState mBufferState;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> mRequestBufferCalled;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint64_t</span> mFrameNumber;
+</span></span><span style="display:flex;"><span>    EGLSyncKHR mEglFence;
+</span></span><span style="display:flex;"><span>    sp<span style="color:#f92672">&lt;</span>Fence<span style="color:#f92672">&gt;</span> mFence;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> mAcquireCalled;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> mNeedsReallocation;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>其中重点是<code>sp&lt;GraphicBuffer&gt; mGraphicBuffer</code>​, 也就是实际使用的buffer. BufferQueue框架中, 消费者和生产者对buffer操作的单元核心就是一个BufferSlot, 也就是说所有对GraphicBuffer的操作都是针对BufferSlot来完成的.</p>
+<p>具体的BufferQueueCore对BufferSlot的操作是通过BufferQueueCore中的<code>Fifo mQueue</code>​. 其实际类型是<code>typedef Vector&lt;BufferItem&gt; Fifo</code>​. 所以Fifo中存的是BufferItem, BufferItem中定义了mslots, 表示此BufferItem中的buffer的slot序号, 以此找到对应的BufferSlot.</p>
+<p>可以简单理解成BufferQueueCore, 生产者从mQueue上获取BufferItem从而找到了对应的BufferSlot, 并对它完成一系列的操作, 之后, 放回到mQueue中供消费者使用, 消费者也是从mQueue上获取BufferItem从而找到对应的BufferSlot来消费, 消费完成之后放回mQueue.</p>
+<p>注: 实际上不是真正的把BufferSlot取出放回mQueue, 而是mSlots索引值的传递过程.</p>
+<h3 id="surface与bufferitemconsumer">Surface与BufferItemConsumer</h3>
+<p>Surface是ANativeWindow的实现, 作用是将buffer送到BufferQueue. ANativeWindow 表示图像队列的生产者端. 它是Java中android.view.Surface对象的C对应物, 并且可以双向转换.</p>
+<p>根据消费者的不同, 提交给ANativeWindow的图像可以显示在显示屏上或发送给其他消费者, 例如视频编码器.</p>
+<p>Surface将buffer送到BufferQueue, 通常通过某种方式 (可能是OpenGL、软件渲染器或硬件解码器) 渲染帧并将其创建的帧转发到SurfaceFlinger进行合成的程序使用. 例如, 视频解码器可以渲染帧并调用<code>eglSwapBuffers()</code>​, 这会调用在Surface中实现的ANativeWindow回调. 然后, Surface通过Binder将buffer转发到BufferQueue的生产者接口, 将新帧提供给消费者 (例如GLConsumer) .</p>
+<p>BufferItemConsumer是一个BufferQueue消费者端点, 允许客户端访问BufferQueue中的整个BufferItem. 可以一次获取多个buffer供客户端同时使用. 此消费者可以采用同步或异步模式运行.</p>
+<p>其中, BufferItemConsumer封装并简化了BufferQueueConsumer的操作, Surface封装并简化了BufferQueueProducer的操作 (两者都与BufferQueue相连) .</p>
+<h3 id="imagewriter与imagereader">ImageWriter与ImageReader</h3>
+<p><img src="assets/image-20241023192515-n18x8e9.png" alt=""></p>
+<p>ImageReader (frameworks/base/media/java/android/media/ImageReader.java) 是消费者, 消费者承担创建BufferQueue的责任. 所以在ImageReader初始化的时候创建了BufferQueue以及最原始的生产者BufferQueueProducer和消费者BufferItemConsumer. ImageReader是java层的概念, 其调用JNI接口<code>ImageReader_init()</code>​ (frameworks/base/media/jni/android_media_ImageReader.cpp) 来初始化.</p>
+<p>ImageReader工作的时候调用<code>acquirenextImage()</code>​经过层层调用获取到BufferQueue中的buffer来使用, 并将状态改成acquired状态. 使用完成之后调用release接口放回到freeBuffers队列中并通知生产者释放Buffer.</p>
+<p>ImageReader的基本操作流程如下:</p>
+<p><img src="assets/image-20241023192522-onbxqrw.png" alt=""></p>
+<p>ImageWriter (frameworks/base/media/java/android/media/ImageWriter.java ) 是生产者, 根据消费者的创建的原始生产者封装并创建自己, 然后link到消费者进程. 然后调用<code>dequeueInputImage()</code>​最终调用<code>BufferQueueProducer:dequeueBuffer()</code>​拿到buffer进行处理. 处理完成之后调用<code>queueInputImage()</code>​最终调用<code>BufferQueueProducer:queueBuffer()</code>​把buffer放回队列供消费者使用.</p>
+<p>ImageReader的基本操作流程如下:</p>
+<p><img src="assets/image-20241023192526-5hbc56w.png" alt=""></p>
+<h2 id="bufferqueue中类关系总结">BufferQueue中类关系总结</h2>
+<p><img src="assets/image-20241023192533-d0gg913.png" alt=""></p>
+<p><img src="assets/image-20241023192538-nu4ovat.png" alt=""></p>
+<p>具体说明待补充 (TODO)</p>
+<h2 id="bufferqueue在相机中的应用">BufferQueue在相机中的应用</h2>
+<p><img src="assets/image-20241023192542-seo7rar.png" alt=""></p>
+<p><img src="assets/image-20241023192547-gog5vso.png" alt=""></p>
+<p>TODO</p>
+<h3 id="补充">补充</h3>
+<p>OpenGL能进行高效得渲染图形图像, 并支持各种复杂的特效和动画. 在Android当中, 运用的是OpenGL ES, 是OpenGL的一个轻量级版本, 其工作流程基本如下:</p>
+<p><img src="assets/image-20241023192555-yzvcsim.png" alt=""></p>
+<p>首先Camera把摄像头收集到的数据传给SurfaceTexture, SurfaceTexture将数据转换为OpenGL ES可用的纹理, 并将其更新到绑定的纹理对象中, OpenGL ES根据纹理ID获取到纹理对象后, 渲染成帧数据, 再通过EGL显示在 Surface上.</p>
+<ul>
+<li>纹理: 是一种可以被OpenGL识别和使用的渲染数据源.</li>
+<li>纹理对象: 是一个用于存储和处理纹理数据的对象.</li>
+<li>纹理ID: 用于标识和操作这个纹理对象的唯一编号.</li>
+<li>SurfaceTexture: 将数据转换为OpenGL ES可用的纹理, 并将其更新到绑定的纹理对象中, 以供OpenGL ES进行渲染和显示.</li>
+<li>EGL: OpenGL ES与底层窗口系统 (如Android、Linux等) 之间的中间层, 用于管理与窗口系统的交互以及OpenGL ES渲染表面的创建、绑定和显示等操作.</li>
+</ul>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

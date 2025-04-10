@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>AE基础知识</title>
+
+<meta name="description" content="AE基础知识 基础概念 帧 一帧就是一幅图像 pclk 是控制像素输出的时钟，即pixel采样时钟，一个clk采集一个像素点 , 单位MHz。表示是每个单位时间内(每秒)采样的pixel数量。 帧率(fps) line_length = pclk * line_time fps = pclk / (VTS * HTS) = pclk / (frame_length * line_length) = 1 / (frame_length * line_time) fps = 1 / (time_per_line[sec] * (frame_length)) fps即表示1秒内帧数，此公式中line_time单位是秒 line_time一组setting只有一个值， 一般是不变的，可看做做常数，调节帧率一般都会通过调整VTS来完成(也就是调整V_Blank，增加帧与帧间隔的时长，自然每秒内能处理的帧数就少)，写frame_length寄存器， H_Blank 行消隐或称水平消隐，假定曝光起始位置在图像的左上角，对于逐行曝光的 sensor 来说，曝光从第一个像素开始，依次曝光直至这行的最后一个像素曝光结束，这时曝光位置要从此行的尾部快速移动到下一行的头部，开始下一行的曝光，这段行与行之间的返回过程称为H_Blank。 dummy pixels V_Blank 场消隐或称垂直消隐，假定曝光起始位置在图像的左上角，曝光完成一帧图像后，曝光位置要从图像的右下角返回左上角，开始新一帧的曝光，这一段时间间隔称为V_Blank。 dummy line ![](assets/Pasted image 20241106165153-20250311094648-z9mwn3q.png ) dummy line 虚拟行，用来填充V_blank的行，一般最大曝光行数是要大于有效像素的长度，原因就是dummy line的存在 frame_offset 指最小的dummy_line, 指一帧曝光结束到下次准备好重新开始曝光的时间 最大曝光行= VTS - frame_offset(最小曝光行不是frame_offset (datasheet中定义一个最小曝光行，有的低端sensor没有说明) line length 行长(HTS): 一行的长度，包含H_blank line_length = width_number_of_effective_cloumns &#43; H_blank dvp：Hsync hts = pclk/fps/vts = line_time * pclk frame length 帧长(VTS)：一帧的行数，包含V_blank VTS = frame_length = height_number_of_effective_rows &#43; V_blank(dummy_line) = expouse_line &#43; dummy_line VTS &gt;= height_number_of_effective_rows &#43; frame_offset(expouse_line &#43; frame_offset) min_integration_time(min_shutter) &lt;= integration_time(shutter) &lt;= VTS - frame_offset 曝光行小于帧长(vblank导致) dvp: Vsync line(row) time 曝光一行的时间 line_time = line_length / pclk (单位：us) 曝光一行所用的时间，等于一行的长度除以1秒时间内采样的像素数 (路程/速度 = 时间) SC/GC:	一行时间 = 1/（帧率*帧长）---&gt; fps = 1000000us/(row_time*vts) //15fps --&gt; 66.67ms 1帧的时间 / 行时间 = 行长 integration time 积分时间，单位为行(H), 通常也称为曝光行，对于逐行曝光(一次曝光一行)的sensor，积分时间是指这一帧曝光了多少行，这是一个相对时间。 最大曝光行：最大曝光行= VTS - frame_offset(最小的dummy line) texp = (一帧的曝光用时)exp_time_us * PCLK / LINE_LENGTH_CLK exposure time 曝光时间，指一帧曝光了多长时间，这里是绝对时间 ，单位为(s, ms, us) 积分时间是指曝光一帧所用的行数，那么一帧的绝对曝光时间就等于曝光所用行数乘以曝光一行所用的时间 exposue_time = integration_time * line_time exposue_time = integration_time * line_length / pclk exposue_time = exposure_line * line_time line_time一般是常数，调节exposure_time曝光时间是通过写exposure_line寄存器实现的(写曝光); 曝光时间以行长为单位 一般要求曝光时间是10ms的整数倍，不然会有flicker现象。原因交流电的频率是50Hz, 完整的正弦波周期时间20ms, 所以曝光时间是10ms的整数倍 曝光方式 a. 滚动快门(电子卷帘快门 electronic rolling shutter)：逐行曝光
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/ae%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/ae%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/ae%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="AE基础知识">
+<meta property="og:description" content="AE基础知识
+基础概念
+帧
+
+一帧就是一幅图像
+
+pclk
+
+是控制像素输出的时钟，即pixel采样时钟，一个clk采集一个像素点 , 单位MHz。表示是每个单位时间内(每秒)采样的pixel数量。
+
+帧率(fps)
+
+line_length = pclk * line_time
+fps = pclk / (VTS * HTS) = pclk / (frame_length * line_length) = 1 / (frame_length * line_time)
+fps = 1 / (time_per_line[sec] * (frame_length))
+
+fps即表示1秒内帧数，此公式中line_time单位是秒
+line_time一组setting只有一个值， 一般是不变的，可看做做常数，调节帧率一般都会通过调整VTS来完成(也就是调整V_Blank，增加帧与帧间隔的时长，自然每秒内能处理的帧数就少)，写frame_length寄存器，
+
+
+
+H_Blank
+
+行消隐或称水平消隐，假定曝光起始位置在图像的左上角，对于逐行曝光的 sensor 来说，曝光从第一个像素开始，依次曝光直至这行的最后一个像素曝光结束，这时曝光位置要从此行的尾部快速移动到下一行的头部，开始下一行的曝光，这段行与行之间的返回过程称为H_Blank。
+dummy pixels
+
+V_Blank
+
+场消隐或称垂直消隐，假定曝光起始位置在图像的左上角，曝光完成一帧图像后，曝光位置要从图像的右下角返回左上角，开始新一帧的曝光，这一段时间间隔称为V_Blank。
+dummy line
+![](assets/Pasted image 20241106165153-20250311094648-z9mwn3q.png )
+
+dummy line
+
+虚拟行，用来填充V_blank的行，一般最大曝光行数是要大于有效像素的长度，原因就是dummy line的存在
+
+frame_offset
+
+指最小的dummy_line, 指一帧曝光结束到下次准备好重新开始曝光的时间
+最大曝光行= VTS - frame_offset(最小曝光行不是frame_offset (datasheet中定义一个最小曝光行，有的低端sensor没有说明)
+
+line length
+
+行长(HTS): 一行的长度，包含H_blank
+line_length = width_number_of_effective_cloumns &#43; H_blank
+dvp：Hsync
+hts = pclk/fps/vts = line_time * pclk
+
+frame length
+
+帧长(VTS)：一帧的行数，包含V_blank
+VTS = frame_length = height_number_of_effective_rows &#43; V_blank(dummy_line) = expouse_line &#43; dummy_line
+VTS &gt;= height_number_of_effective_rows &#43; frame_offset(expouse_line &#43; frame_offset)
+min_integration_time(min_shutter) &lt;= integration_time(shutter) &lt;= VTS - frame_offset
+曝光行小于帧长(vblank导致)
+dvp: Vsync
+
+line(row) time
+
+曝光一行的时间
+line_time = line_length / pclk (单位：us)
+曝光一行所用的时间，等于一行的长度除以1秒时间内采样的像素数 (路程/速度 = 时间)
+
+SC/GC:	一行时间 = 1/（帧率*帧长）---&gt; fps = 1000000us/(row_time*vts)
+
+//15fps --&gt; 66.67ms
+1帧的时间 / 行时间 = 行长
+integration time
+
+积分时间，单位为行(H), 通常也称为曝光行，对于逐行曝光(一次曝光一行)的sensor，积分时间是指这一帧曝光了多少行，这是一个相对时间。
+最大曝光行：最大曝光行= VTS - frame_offset(最小的dummy line)
+texp = (一帧的曝光用时)exp_time_us * PCLK / LINE_LENGTH_CLK
+
+exposure time
+
+曝光时间，指一帧曝光了多长时间，这里是绝对时间 ，单位为(s, ms, us)
+积分时间是指曝光一帧所用的行数，那么一帧的绝对曝光时间就等于曝光所用行数乘以曝光一行所用的时间
+exposue_time = integration_time * line_time
+exposue_time = integration_time * line_length / pclk
+exposue_time = exposure_line * line_time
+
+line_time一般是常数，调节exposure_time曝光时间是通过写exposure_line寄存器实现的(写曝光);
+曝光时间以行长为单位
+一般要求曝光时间是10ms的整数倍，不然会有flicker现象。原因交流电的频率是50Hz, 完整的正弦波周期时间20ms, 所以曝光时间是10ms的整数倍
+
+
+
+曝光方式
+
+
+a. 滚动快门(电子卷帘快门 electronic rolling shutter)：逐行曝光">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/ae%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="AE基础知识">
+<meta name="twitter:description" content="AE基础知识
+基础概念
+帧
+
+一帧就是一幅图像
+
+pclk
+
+是控制像素输出的时钟，即pixel采样时钟，一个clk采集一个像素点 , 单位MHz。表示是每个单位时间内(每秒)采样的pixel数量。
+
+帧率(fps)
+
+line_length = pclk * line_time
+fps = pclk / (VTS * HTS) = pclk / (frame_length * line_length) = 1 / (frame_length * line_time)
+fps = 1 / (time_per_line[sec] * (frame_length))
+
+fps即表示1秒内帧数，此公式中line_time单位是秒
+line_time一组setting只有一个值， 一般是不变的，可看做做常数，调节帧率一般都会通过调整VTS来完成(也就是调整V_Blank，增加帧与帧间隔的时长，自然每秒内能处理的帧数就少)，写frame_length寄存器，
+
+
+
+H_Blank
+
+行消隐或称水平消隐，假定曝光起始位置在图像的左上角，对于逐行曝光的 sensor 来说，曝光从第一个像素开始，依次曝光直至这行的最后一个像素曝光结束，这时曝光位置要从此行的尾部快速移动到下一行的头部，开始下一行的曝光，这段行与行之间的返回过程称为H_Blank。
+dummy pixels
+
+V_Blank
+
+场消隐或称垂直消隐，假定曝光起始位置在图像的左上角，曝光完成一帧图像后，曝光位置要从图像的右下角返回左上角，开始新一帧的曝光，这一段时间间隔称为V_Blank。
+dummy line
+![](assets/Pasted image 20241106165153-20250311094648-z9mwn3q.png )
+
+dummy line
+
+虚拟行，用来填充V_blank的行，一般最大曝光行数是要大于有效像素的长度，原因就是dummy line的存在
+
+frame_offset
+
+指最小的dummy_line, 指一帧曝光结束到下次准备好重新开始曝光的时间
+最大曝光行= VTS - frame_offset(最小曝光行不是frame_offset (datasheet中定义一个最小曝光行，有的低端sensor没有说明)
+
+line length
+
+行长(HTS): 一行的长度，包含H_blank
+line_length = width_number_of_effective_cloumns &#43; H_blank
+dvp：Hsync
+hts = pclk/fps/vts = line_time * pclk
+
+frame length
+
+帧长(VTS)：一帧的行数，包含V_blank
+VTS = frame_length = height_number_of_effective_rows &#43; V_blank(dummy_line) = expouse_line &#43; dummy_line
+VTS &gt;= height_number_of_effective_rows &#43; frame_offset(expouse_line &#43; frame_offset)
+min_integration_time(min_shutter) &lt;= integration_time(shutter) &lt;= VTS - frame_offset
+曝光行小于帧长(vblank导致)
+dvp: Vsync
+
+line(row) time
+
+曝光一行的时间
+line_time = line_length / pclk (单位：us)
+曝光一行所用的时间，等于一行的长度除以1秒时间内采样的像素数 (路程/速度 = 时间)
+
+SC/GC:	一行时间 = 1/（帧率*帧长）---&gt; fps = 1000000us/(row_time*vts)
+
+//15fps --&gt; 66.67ms
+1帧的时间 / 行时间 = 行长
+integration time
+
+积分时间，单位为行(H), 通常也称为曝光行，对于逐行曝光(一次曝光一行)的sensor，积分时间是指这一帧曝光了多少行，这是一个相对时间。
+最大曝光行：最大曝光行= VTS - frame_offset(最小的dummy line)
+texp = (一帧的曝光用时)exp_time_us * PCLK / LINE_LENGTH_CLK
+
+exposure time
+
+曝光时间，指一帧曝光了多长时间，这里是绝对时间 ，单位为(s, ms, us)
+积分时间是指曝光一帧所用的行数，那么一帧的绝对曝光时间就等于曝光所用行数乘以曝光一行所用的时间
+exposue_time = integration_time * line_time
+exposue_time = integration_time * line_length / pclk
+exposue_time = exposure_line * line_time
+
+line_time一般是常数，调节exposure_time曝光时间是通过写exposure_line寄存器实现的(写曝光);
+曝光时间以行长为单位
+一般要求曝光时间是10ms的整数倍，不然会有flicker现象。原因交流电的频率是50Hz, 完整的正弦波周期时间20ms, 所以曝光时间是10ms的整数倍
+
+
+
+曝光方式
+
+
+a. 滚动快门(电子卷帘快门 electronic rolling shutter)：逐行曝光">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "AE基础知识",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  1934 ,
+  "description": "AE基础知识 基础概念 帧 一帧就是一幅图像 pclk 是控制像素输出的时钟，即pixel采样时钟，一个clk采集一个像素点 , 单位MHz。表示是每个单位时间内(每秒)采样的pixel数量。 帧率(fps) line_length = pclk * line_time fps = pclk / (VTS * HTS) = pclk / (frame_length * line_length) = 1 / (frame_length * line_time) fps = 1 / (time_per_line[sec] * (frame_length)) fps即表示1秒内帧数，此公式中line_time单位是秒 line_time一组setting只有一个值， 一般是不变的，可看做做常数，调节帧率一般都会通过调整VTS来完成(也就是调整V_Blank，增加帧与帧间隔的时长，自然每秒内能处理的帧数就少)，写frame_length寄存器， H_Blank 行消隐或称水平消隐，假定曝光起始位置在图像的左上角，对于逐行曝光的 sensor 来说，曝光从第一个像素开始，依次曝光直至这行的最后一个像素曝光结束，这时曝光位置要从此行的尾部快速移动到下一行的头部，开始下一行的曝光，这段行与行之间的返回过程称为H_Blank。 dummy pixels V_Blank 场消隐或称垂直消隐，假定曝光起始位置在图像的左上角，曝光完成一帧图像后，曝光位置要从图像的右下角返回左上角，开始新一帧的曝光，这一段时间间隔称为V_Blank。 dummy line ![](assets/Pasted image 20241106165153-20250311094648-z9mwn3q.png ) dummy line 虚拟行，用来填充V_blank的行，一般最大曝光行数是要大于有效像素的长度，原因就是dummy line的存在 frame_offset 指最小的dummy_line, 指一帧曝光结束到下次准备好重新开始曝光的时间 最大曝光行= VTS - frame_offset(最小曝光行不是frame_offset (datasheet中定义一个最小曝光行，有的低端sensor没有说明) line length 行长(HTS): 一行的长度，包含H_blank line_length = width_number_of_effective_cloumns + H_blank dvp：Hsync hts = pclk/fps/vts = line_time * pclk frame length 帧长(VTS)：一帧的行数，包含V_blank VTS = frame_length = height_number_of_effective_rows + V_blank(dummy_line) = expouse_line + dummy_line VTS \u0026gt;= height_number_of_effective_rows + frame_offset(expouse_line + frame_offset) min_integration_time(min_shutter) \u0026lt;= integration_time(shutter) \u0026lt;= VTS - frame_offset 曝光行小于帧长(vblank导致) dvp: Vsync line(row) time 曝光一行的时间 line_time = line_length / pclk (单位：us) 曝光一行所用的时间，等于一行的长度除以1秒时间内采样的像素数 (路程/速度 = 时间) SC/GC:\t一行时间 = 1/（帧率*帧长）---\u0026gt; fps = 1000000us/(row_time*vts) //15fps --\u0026gt; 66.67ms 1帧的时间 / 行时间 = 行长 integration time 积分时间，单位为行(H), 通常也称为曝光行，对于逐行曝光(一次曝光一行)的sensor，积分时间是指这一帧曝光了多少行，这是一个相对时间。 最大曝光行：最大曝光行= VTS - frame_offset(最小的dummy line) texp = (一帧的曝光用时)exp_time_us * PCLK / LINE_LENGTH_CLK exposure time 曝光时间，指一帧曝光了多长时间，这里是绝对时间 ，单位为(s, ms, us) 积分时间是指曝光一帧所用的行数，那么一帧的绝对曝光时间就等于曝光所用行数乘以曝光一行所用的时间 exposue_time = integration_time * line_time exposue_time = integration_time * line_length / pclk exposue_time = exposure_line * line_time line_time一般是常数，调节exposure_time曝光时间是通过写exposure_line寄存器实现的(写曝光); 曝光时间以行长为单位 一般要求曝光时间是10ms的整数倍，不然会有flicker现象。原因交流电的频率是50Hz, 完整的正弦波周期时间20ms, 所以曝光时间是10ms的整数倍 曝光方式 a. 滚动快门(电子卷帘快门 electronic rolling shutter)：逐行曝光\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="ae基础知识">AE基础知识</h1>
+<h2 id="基础概念">基础概念</h2>
+<h3 id="帧">帧</h3>
+<ul>
+<li>一帧就是一幅图像</li>
+</ul>
+<h3 id="pclk">pclk</h3>
+<ul>
+<li>是控制像素输出的时钟，即pixel采样时钟，一个clk采集一个像素点 , 单位MHz。表示是每个单位时间内(每秒)采样的pixel数量。</li>
+</ul>
+<h3 id="帧率fps">帧率(fps)</h3>
+<ul>
+<li>line_length = pclk * line_time</li>
+<li>fps = pclk / (VTS * HTS) = pclk / (frame_length * line_length) = 1 / (frame_length * line_time)</li>
+<li>fps = 1 / (time_per_line[sec] * (frame_length))
+<ul>
+<li>fps即表示1秒内帧数，此公式中line_time单位是秒</li>
+<li>line_time一组setting只有一个值， 一般是不变的，可看做做常数，调节帧率一般都会通过调整VTS来完成(也就是调整V_Blank，增加帧与帧间隔的时长，自然每秒内能处理的帧数就少)，写frame_length寄存器，</li>
+</ul>
+</li>
+</ul>
+<h3 id="h_blank">H_Blank</h3>
+<ul>
+<li>行消隐或称水平消隐，假定曝光起始位置在图像的左上角，对于逐行曝光的 sensor 来说，曝光从第一个像素开始，依次曝光直至这行的最后一个像素曝光结束，这时曝光位置要从此行的尾部快速移动到下一行的头部，开始下一行的曝光，这段行与行之间的返回过程称为H_Blank。</li>
+<li>dummy pixels</li>
+</ul>
+<h3 id="v_blank">V_Blank</h3>
+<ul>
+<li>场消隐或称垂直消隐，假定曝光起始位置在图像的左上角，曝光完成一帧图像后，曝光位置要从图像的右下角返回左上角，开始新一帧的曝光，这一段时间间隔称为V_Blank。</li>
+<li>dummy line
+![](assets/Pasted image 20241106165153-20250311094648-z9mwn3q.png )</li>
+</ul>
+<h3 id="dummy-line">dummy line</h3>
+<ul>
+<li>虚拟行，用来填充V_blank的行，一般最大曝光行数是要大于有效像素的长度，原因就是dummy line的存在</li>
+</ul>
+<h3 id="frame_offset">frame_offset</h3>
+<ul>
+<li>指最小的dummy_line, 指一帧曝光结束到下次准备好重新开始曝光的时间</li>
+<li>最大曝光行= VTS - frame_offset(最小曝光行不是frame_offset (datasheet中定义一个最小曝光行，有的低端sensor没有说明)</li>
+</ul>
+<h3 id="line-length">line length</h3>
+<ul>
+<li>行长(HTS): 一行的长度，包含H_blank</li>
+<li>line_length = width_number_of_effective_cloumns + H_blank</li>
+<li>dvp：Hsync</li>
+<li>hts = pclk/fps/vts = line_time * pclk</li>
+</ul>
+<h3 id="frame-length">frame length</h3>
+<ul>
+<li>帧长(VTS)：一帧的行数，包含V_blank</li>
+<li>VTS = frame_length = height_number_of_effective_rows + V_blank(dummy_line) = expouse_line + dummy_line</li>
+<li>VTS &gt;= height_number_of_effective_rows + frame_offset(expouse_line + frame_offset)</li>
+<li>min_integration_time(min_shutter) &lt;= integration_time(shutter) &lt;= VTS - frame_offset</li>
+<li>曝光行小于帧长(vblank导致)</li>
+<li>dvp: Vsync</li>
+</ul>
+<h3 id="linerow-time">line(row) time</h3>
+<ul>
+<li>曝光一行的时间</li>
+<li>line_time = line_length / pclk (单位：us)</li>
+<li>曝光一行所用的时间，等于一行的长度除以1秒时间内采样的像素数 (路程/速度 = 时间)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>SC/GC:	一行时间 = 1/（帧率*帧长）---&gt; fps = 1000000us/(row_time*vts)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>//15fps --&gt; 66.67ms
+</span></span><span style="display:flex;"><span>1帧的时间 / 行时间 = 行长
+</span></span></code></pre></div><h3 id="integration-time">integration time</h3>
+<ul>
+<li>积分时间，单位为行(H), 通常也称为曝光行，对于逐行曝光(一次曝光一行)的sensor，积分时间是指这一帧曝光了多少行，这是一个相对时间。</li>
+<li>最大曝光行：最大曝光行= VTS - frame_offset(最小的dummy line)</li>
+<li>texp = (一帧的曝光用时)exp_time_us * PCLK / LINE_LENGTH_CLK</li>
+</ul>
+<h3 id="exposure-time">exposure time</h3>
+<ul>
+<li>曝光时间，指一帧曝光了多长时间，这里是绝对时间 ，单位为(s, ms, us)</li>
+<li>积分时间是指曝光一帧所用的行数，那么一帧的绝对曝光时间就等于曝光所用行数乘以曝光一行所用的时间</li>
+<li>exposue_time = integration_time * line_time</li>
+<li>exposue_time = integration_time * line_length / pclk</li>
+<li>exposue_time = exposure_line * line_time
+<ul>
+<li>line_time一般是常数，调节exposure_time曝光时间是通过写exposure_line寄存器实现的(写曝光);</li>
+<li>曝光时间以行长为单位</li>
+<li>一般要求曝光时间是10ms的整数倍，不然会有flicker现象。原因交流电的频率是50Hz, 完整的正弦波周期时间20ms, 所以曝光时间是10ms的整数倍</li>
+</ul>
+</li>
+</ul>
+<h3 id="曝光方式">曝光方式</h3>
+<ul>
+<li>
+<p>a. 滚动快门(电子卷帘快门 electronic rolling shutter)：逐行曝光</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>一帧图像曝光时间是11ms
+</span></span><span style="display:flex;"><span>一帧图像用积分时间11行完成了11ms的曝光，假设1H曝光时间是1ms
+</span></span><span style="display:flex;"><span>一帧图像曝光11ms，一帧内所有的像素曝光了11ms
+</span></span></code></pre></div></li>
+</ul>
+<p>![](assets/Pasted image 20241106165346-20250311094648-qsl08ta.png )
+sensor逐行曝光从第一行开始曝光，一个行周期结束之后第二行才开始曝光。依次类推，经过N-1行后第N行开始曝光，第一行曝光结束后开始读出数据，读出一行需要一行周期时间(含行消隐时间，即H_Blank)至第一行完全读出后，第二行刚好开始读出，依次类推，当第N-1 行读完后，第N 行开始读出，直到整幅图像完全读出。</p>
+<ul>
+<li>b.全局快门(global shutter/snapshot shutter): 全局曝光
+全局曝光Sensor的所有行同时开始曝光，并同时结束曝光，在曝光结束后，
+Sensor将所有电子从感光区转到存储区，之后逐行地读出像素数据。
+这样曝光的好处是获得图像每一行的曝光时间比较一致, 并且在拍摄运动物体时图像不会出现偏移和歪斜。</li>
+</ul>
+<h3 id="hdrhigh-dynamic-range">HDR(High Dynamic Range)</h3>
+<ul>
+<li>
+<p>DOL(digital overlap)模式的HDR的工作原理</p>
+<ul>
+<li>DOL2： sensor完成一帧曝光，sensor生成2幅图像，图像传输到ISP，ISP再将两幅图像合成为一帧图像</li>
+<li>DOL3： sensor完成一帧曝光，sensor生成3幅图像，图像传输到ISP，ISP再将三幅图像合成为一帧图像</li>
+</ul>
+</li>
+</ul>
+<p>![](assets/Pasted image 20241106165730-20250311094648-14itc24.png )</p>
+<h3 id="曝光行影响">曝光行影响</h3>
+<p>一行的时间有没有影响，看环境和相机，在高亮环境，照度超级高的场景，会局部过曝
+但是如果短曝的情况，差一行，可能亮度也差很多
+如果实际下的曝光行是7行，但是最终写入shutter 的时候只有6行了，这个时候就不对了，少的那一行曝光，就是通过Dgain_ratio补偿的
+exposure_time = exp_line * line_length/pclk</p>
+<h2 id="backlinks">Backlinks</h2>
+<ul>
+<li><a href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E6%9A%97%E5%85%89%E4%B8%A2%E5%B8%A7%E4%B8%8D%E6%81%A2%E5%A4%8D%E5%88%86%E6%9E%90/">暗光丢帧不恢复分析</a></li>
+</ul>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

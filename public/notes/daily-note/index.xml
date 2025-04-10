@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>daily note on My New Hugo Site</title>
+    <link>http://localhost:1313/notes/daily-note/</link>
+    <description>Recent content in daily note on My New Hugo Site</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 31 Mar 2025 10:39:54 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/notes/daily-note/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Task &amp;&amp; Object</title>
+      <link>http://localhost:1313/notes/daily-note/task--object/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/task--object/</guid>
+      <description>&lt;h1 id=&#34;task--object&#34;&gt;Task &amp;amp;&amp;amp; Object&lt;/h1&gt;&#xA;&lt;h1 id=&#34;优先用户反馈&#34;&gt;优先用户反馈&lt;/h1&gt;&#xA;&lt;table&gt;&#xA;  &lt;thead&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;th&gt;N12&lt;/th&gt;&#xA;          &lt;th&gt;1. 拿不到陀螺仪数据&lt;!-- raw HTML omitted --&gt;3A数据拿不到.  &lt;!-- raw HTML omitted --&gt;AISeg Do_Cal  &lt;!-- raw HTML omitted --&gt;3A依赖  &lt;!-- raw HTML omitted --&gt;Bypass EIS&lt;!-- raw HTML omitted --&gt;2. 专业暗光切回普通模式预览Fps设置错误  &lt;!-- raw HTML omitted --&gt;可能驱动问题  &lt;!-- raw HTML omitted --&gt;3. 侧边栏问题  &lt;!-- raw HTML omitted --&gt;安全中心修复方案待验证  &lt;!-- raw HTML omitted --&gt;相机测试可复现&lt;/th&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/thead&gt;&#xA;  &lt;tbody&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;M12&lt;/td&gt;&#xA;          &lt;td&gt;1. cameraopt间隔压制  &lt;!-- raw HTML omitted --&gt;使用epbf方案  &lt;!-- raw HTML omitted --&gt;2. miui搜狗输入法CPU占用大  &lt;!-- raw HTML omitted --&gt;考虑查杀，防止自启动（需评估）&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;      &lt;tr&gt;&#xA;          &lt;td&gt;M9&lt;/td&gt;&#xA;          &lt;td&gt;1. 抖音+相机场景卡顿反馈量大  &lt;!-- raw HTML omitted --&gt;  1.抖音子进程数量  &lt;!-- raw HTML omitted --&gt;  2.softlimit 限制三方内存使用量  &lt;!-- raw HTML omitted --&gt;  3.perf 优化&lt;!-- raw HTML omitted --&gt;2. 系统占用大  &lt;!-- raw HTML omitted --&gt;3. 部分系统进程systemUI+相机hal进程泄露&lt;/td&gt;&#xA;      &lt;/tr&gt;&#xA;  &lt;/tbody&gt;&#xA;&lt;/table&gt;&#xA;&lt;h1 id=&#34;linux内存&#34;&gt;Linux内存&lt;/h1&gt;&#xA;&lt;h2 id=&#34;linux-kernel-mmu&#34;&gt;Linux kernel MMU&lt;/h2&gt;&#xA;&lt;h2 id=&#34;mivi中的buffer流转整理&#34;&gt;MIVI中的buffer流转整理&lt;/h2&gt;&#xA;&lt;h1 id=&#34;丢帧预测模型完善&#34;&gt;丢帧预测模型完善&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://onedrive.live.com/edit.aspx?resid=B0AE6DDB96CCDD7A!1517&amp;amp;migratedtospo=true&amp;amp;wd=target%28Quick%20notes.one%7c3b71887e-dda3-48c7-8ccd-f08c37dd7f85/Untitled%20Page%7c776f21c8-4037-4343-9d26-0668f5fe961d/%29&amp;amp;wdorigin=703&amp;amp;wdpreservelink=1&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;目标&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

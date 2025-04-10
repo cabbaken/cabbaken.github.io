@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>20241120</title>
+
+<meta name="description" content="2024_11_20 BUGN11AUPV-1657 初看trace发现decode耗时如下, 和shot_2_view很相似. ![](assets/Pasted image 20241122104100-20250311094935-0j640n6.png ) 需要抓U版本的trace排查一下相关的问题
+log上看是这个原因
+trace上看似乎是mediaserver的framedecoder线程耗时长, 这个不确定. 相机的流程耗时都在正常范围内 找相册端同事帮助分析
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/daily-note/2024/11/2024_11_20/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/daily-note/2024/11/2024_11_20/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/daily-note/2024/11/2024_11_20/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="20241120">
+<meta property="og:description" content="2024_11_20
+BUGN11AUPV-1657
+初看trace发现decode耗时如下, 和shot_2_view很相似.
+![](assets/Pasted image 20241122104100-20250311094935-0j640n6.png )
+需要抓U版本的trace排查一下相关的问题
+
+log上看是这个原因
+
+trace上看似乎是mediaserver的framedecoder线程耗时长, 这个不确定.
+
+相机的流程耗时都在正常范围内
+找相册端同事帮助分析">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/daily-note/2024/11/2024_11_20/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:49:35+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:49:35+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="20241120">
+<meta name="twitter:description" content="2024_11_20
+BUGN11AUPV-1657
+初看trace发现decode耗时如下, 和shot_2_view很相似.
+![](assets/Pasted image 20241122104100-20250311094935-0j640n6.png )
+需要抓U版本的trace排查一下相关的问题
+
+log上看是这个原因
+
+trace上看似乎是mediaserver的framedecoder线程耗时长, 这个不确定.
+
+相机的流程耗时都在正常范围内
+找相册端同事帮助分析">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "20241120",
+  "datePublished": "2025-03-11T09:49:35+00:00",
+  "dateModified": "2025-03-11T09:49:35+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  143 ,
+  "description": "2024_11_20 BUGN11AUPV-1657 初看trace发现decode耗时如下, 和shot_2_view很相似. ![](assets/Pasted image 20241122104100-20250311094935-0j640n6.png ) 需要抓U版本的trace排查一下相关的问题\nlog上看是这个原因\ntrace上看似乎是mediaserver的framedecoder线程耗时长, 这个不确定. 相机的流程耗时都在正常范围内 找相册端同事帮助分析\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="2024_11_20">2024_11_20</h1>
+<p><a href="https://jira-phone.mioffice.cn/browse/BUGN11AUPV-1657" target="_blank" rel="noopener">BUGN11AUPV-1657</a>
+初看trace发现decode耗时如下, 和shot_2_view很相似.
+![](assets/Pasted image 20241122104100-20250311094935-0j640n6.png )
+需要抓U版本的trace排查一下相关的问题</p>
+<p><img src="assets/ed4b737a-404f-406f-9e33-a74c5820cd22-20250311094935-p1up56p.jpeg" alt="">
+log上看是这个原因</p>
+<p><img src="assets/12b38abf-34ec-403d-982d-85827e0e4bcf-20250311094935-yl8sebm.jpeg" alt="">
+trace上看似乎是mediaserver的framedecoder线程耗时长, 这个不确定.
+<img src="assets/b6ba1850-289a-4c95-adc6-dae80d443d49-20250311094935-515j820.jpeg" alt="">
+相机的流程耗时都在正常范围内
+找相册端同事帮助分析</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>20250205</title>
+
+<meta name="description" content="2025_02_05 N12暗光问题 遗留问题, 稳定版没有合入, 合入一下.
+Aiseg问题 本地的没找到有对应的线程, 但是可以看到:
+本地没问题的sttr_event会wake up sensor_worker-0
+有问题的trace的sensor_worker是由irq/566-1a13000唤醒的.
+没问题: 有问题: 这里可以看到sensor_worker的running的时机也不一样, 会不会是超时拿不到数据导致流程不太一样? 具体需要看一下代码. 找到了sttrr_event对应代码处: https://source-v.dun.mi.com/opengrok-v/xref/mivendor_v_mt6899/vendor/mediatek/proprietary/hardware/mtkcam-core/hw/camsys/request_regulator/v2/ContSttRegulator.cpp#340 log可以对的上 (https://source-v.dun.mi.com/opengrok-v/xref/mivendor_v_mt6899/vendor/mediatek/proprietary/hardware/mtkcam-core/hw/camsys/request_regulator/v2/ContSttRegulator.cpp#711):
+12-13 12:00:24.384 1047 1462 6168 I RequestRegulator: Cam::6 [signal] VSirq : SofIdx(4163), getSofIdx(4162/1), processed(135&lt;-&gt;134), CamsysFrameSequence(134) ">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/daily-note/2025/02/2025_02_05/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/daily-note/2025/02/2025_02_05/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/daily-note/2025/02/2025_02_05/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="20250205">
+<meta property="og:description" content="2025_02_05
+N12暗光问题
+遗留问题, 稳定版没有合入, 合入一下.
+Aiseg问题
+本地的没找到有对应的线程, 但是可以看到:
+本地没问题的sttr_event会wake up sensor_worker-0
+有问题的trace的sensor_worker是由irq/566-1a13000唤醒的.
+没问题:
+
+有问题:
+
+这里可以看到sensor_worker的running的时机也不一样, 会不会是超时拿不到数据导致流程不太一样? 具体需要看一下代码.
+找到了sttrr_event对应代码处:
+https://source-v.dun.mi.com/opengrok-v/xref/mivendor_v_mt6899/vendor/mediatek/proprietary/hardware/mtkcam-core/hw/camsys/request_regulator/v2/ContSttRegulator.cpp#340 log可以对的上 (https://source-v.dun.mi.com/opengrok-v/xref/mivendor_v_mt6899/vendor/mediatek/proprietary/hardware/mtkcam-core/hw/camsys/request_regulator/v2/ContSttRegulator.cpp#711):
+12-13 12:00:24.384 1047 1462 6168 I RequestRegulator: Cam::6 [signal] VSirq : SofIdx(4163), getSofIdx(4162/1), processed(135&lt;-&gt;134), CamsysFrameSequence(134)
+">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/daily-note/2025/02/2025_02_05/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:49:35+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:49:35+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="20250205">
+<meta name="twitter:description" content="2025_02_05
+N12暗光问题
+遗留问题, 稳定版没有合入, 合入一下.
+Aiseg问题
+本地的没找到有对应的线程, 但是可以看到:
+本地没问题的sttr_event会wake up sensor_worker-0
+有问题的trace的sensor_worker是由irq/566-1a13000唤醒的.
+没问题:
+
+有问题:
+
+这里可以看到sensor_worker的running的时机也不一样, 会不会是超时拿不到数据导致流程不太一样? 具体需要看一下代码.
+找到了sttrr_event对应代码处:
+https://source-v.dun.mi.com/opengrok-v/xref/mivendor_v_mt6899/vendor/mediatek/proprietary/hardware/mtkcam-core/hw/camsys/request_regulator/v2/ContSttRegulator.cpp#340 log可以对的上 (https://source-v.dun.mi.com/opengrok-v/xref/mivendor_v_mt6899/vendor/mediatek/proprietary/hardware/mtkcam-core/hw/camsys/request_regulator/v2/ContSttRegulator.cpp#711):
+12-13 12:00:24.384 1047 1462 6168 I RequestRegulator: Cam::6 [signal] VSirq : SofIdx(4163), getSofIdx(4162/1), processed(135&lt;-&gt;134), CamsysFrameSequence(134)
+">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "20250205",
+  "datePublished": "2025-03-11T09:49:35+00:00",
+  "dateModified": "2025-03-11T09:49:35+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  238 ,
+  "description": "2025_02_05 N12暗光问题 遗留问题, 稳定版没有合入, 合入一下.\nAiseg问题 本地的没找到有对应的线程, 但是可以看到:\n本地没问题的sttr_event会wake up sensor_worker-0\n有问题的trace的sensor_worker是由irq/566-1a13000唤醒的.\n没问题: 有问题: 这里可以看到sensor_worker的running的时机也不一样, 会不会是超时拿不到数据导致流程不太一样? 具体需要看一下代码. 找到了sttrr_event对应代码处: https://source-v.dun.mi.com/opengrok-v/xref/mivendor_v_mt6899/vendor/mediatek/proprietary/hardware/mtkcam-core/hw/camsys/request_regulator/v2/ContSttRegulator.cpp#340 log可以对的上 (https://source-v.dun.mi.com/opengrok-v/xref/mivendor_v_mt6899/vendor/mediatek/proprietary/hardware/mtkcam-core/hw/camsys/request_regulator/v2/ContSttRegulator.cpp#711):\n12-13 12:00:24.384 1047 1462 6168 I RequestRegulator: Cam::6 [signal] VSirq : SofIdx(4163), getSofIdx(4162/1), processed(135\u0026lt;-\u0026gt;134), CamsysFrameSequence(134) ",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="2025_02_05">2025_02_05</h1>
+<h2 id="n12暗光问题">N12暗光问题</h2>
+<p>遗留问题, 稳定版没有合入, 合入一下.</p>
+<h2 id="aiseg问题">Aiseg问题</h2>
+<p>本地的没找到有对应的线程, 但是可以看到:</p>
+<p>本地没问题的sttr_event会wake up sensor_worker-0</p>
+<p>有问题的trace的sensor_worker是由irq/566-1a13000唤醒的.</p>
+<p>没问题:
+<img src="assets/img_v3_02j7_32397e25-0d29-44cc-a1c8-abd32edb92dl-20250311094935-4kr0nhx.jpg" alt="">
+有问题:
+<img src="assets/img_v3_02j7_14e2f364-36ef-41f7-8dd0-e389187e9d5l-20250311094935-bxby34z.jpg" alt="">
+这里可以看到sensor_worker的running的时机也不一样, 会不会是超时拿不到数据导致流程不太一样? 具体需要看一下代码.
+找到了sttrr_event对应代码处:
+<a href="https://source-v.dun.mi.com/opengrok-v/xref/mivendor_v_mt6899/vendor/mediatek/proprietary/hardware/mtkcam-core/hw/camsys/request_regulator/v2/ContSttRegulator.cpp#340" target="_blank" rel="noopener">https://source-v.dun.mi.com/opengrok-v/xref/mivendor_v_mt6899/vendor/mediatek/proprietary/hardware/mtkcam-core/hw/camsys/request_regulator/v2/ContSttRegulator.cpp#340</a> log可以对的上 (<a href="https://source-v.dun.mi.com/opengrok-v/xref/mivendor_v_mt6899/vendor/mediatek/proprietary/hardware/mtkcam-core/hw/camsys/request_regulator/v2/ContSttRegulator.cpp#711" target="_blank" rel="noopener">https://source-v.dun.mi.com/opengrok-v/xref/mivendor_v_mt6899/vendor/mediatek/proprietary/hardware/mtkcam-core/hw/camsys/request_regulator/v2/ContSttRegulator.cpp#711</a>):</p>
+<pre tabindex="0"><code>12-13 12:00:24.384 1047 1462 6168 I RequestRegulator: Cam::6 [signal] VSirq : SofIdx(4163), getSofIdx(4162/1), processed(135&lt;-&gt;134), CamsysFrameSequence(134)
+</code></pre>
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

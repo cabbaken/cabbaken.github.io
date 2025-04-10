@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>12 on My New Hugo Site</title>
+    <link>http://localhost:1313/notes/daily-note/2024/12/</link>
+    <description>Recent content in 12 on My New Hugo Site</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 11 Mar 2025 09:49:35 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/notes/daily-note/2024/12/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20241203</title>
+      <link>http://localhost:1313/notes/daily-note/2024/12/2024_12_03/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/12/2024_12_03/</guid>
+      <description>&lt;h1 id=&#34;2024_12_03&#34;&gt;2024_12_03&lt;/h1&gt;&#xA;&lt;p&gt;trace埋点适配sm8650&lt;/p&gt;&#xA;&lt;h2 id=&#34;jira_analyzer未来方向&#34;&gt;JIRA_Analyzer未来方向&lt;/h2&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://xiaomi.f.mioffice.cn/docx/doxk4JlJf4fWUs8zwDA2aewHPwg&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://xiaomi.f.mioffice.cn/docx/doxk4JlJf4fWUs8zwDA2aewHPwg&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugm9upv-335&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM9UPV-335&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM9UPV-335&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;h2 id=&#34;bugm9upv-314&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM9UPV-314&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM9UPV-314&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;[[前后镜头切换耗时回退]]&#xA;可以参考&#xA;&lt;a href=&#34;https://wiki.n.miui.com/pages/viewpage.action?pageId=132819051&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://wiki.n.miui.com/pages/viewpage.action?pageId=132819051&lt;/a&gt;&#xA;&lt;a href=&#34;https://jira.n.xiaomi.com/browse/HTH-37717&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://jira.n.xiaomi.com/browse/HTH-37717&lt;/a&gt;&#xA;最新版本暂时不复现&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugos2-267508&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGOS2-267508&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGOS2-267508&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;优先处理&lt;/p&gt;&#xA;&lt;p&gt;![](assets/Pasted image 20241203221052-20250311094935-di4a7s3.png )&#xA;根据log, shot_2_gallery耗时不超过1000ms, algo_capture_total是保存图片耗时, 不是小图耗时.&lt;/p&gt;&#xA;&lt;p&gt;回复如下&#xA;algo_capture_total是成大图的时间, 小图的生成时间应该用quickview的时间-onsnapclick的时间, 这一点U版本和V版本差别不大.&lt;/p&gt;&#xA;&lt;p&gt;这里的成图慢具体是指拍摄完成后进入相册查看照片,照片加载慢,会有那种白的时间长的,U上不会那么长时间&lt;/p&gt;&#xA;&lt;p&gt;成小图时占用如下:&#xA;V:&#xA;![](assets/Pasted image 20241204134008-20250311094935-2h0gizq.png )&lt;/p&gt;&#xA;&lt;p&gt;U:&#xA;![](assets/Pasted image 20241204134017-20250311094935-ki36hob.png )&lt;/p&gt;&#xA;&lt;p&gt;V版本成小图阶段mediaserver的CPU占用较U版本高很多&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20241204</title>
+      <link>http://localhost:1313/notes/daily-note/2024/12/2024_12_04/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/12/2024_12_04/</guid>
+      <description>&lt;h1 id=&#34;2024_12_04&#34;&gt;2024_12_04&lt;/h1&gt;&#xA;&lt;h2 id=&#34;bugm9upv-314&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM9UPV-314&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM9UPV-314&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;[[前后镜头切换耗时回退]]&#xA;可以参考&#xA;&lt;a href=&#34;https://wiki.n.miui.com/pages/viewpage.action?pageId=132819051&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://wiki.n.miui.com/pages/viewpage.action?pageId=132819051&lt;/a&gt;&#xA;&lt;a href=&#34;https://jira.n.xiaomi.com/browse/HTH-37717&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://jira.n.xiaomi.com/browse/HTH-37717&lt;/a&gt;&#xA;最新版本暂时不复现&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugos2-267508&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGOS2-267508&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGOS2-267508&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;优先处理&lt;/p&gt;&#xA;&lt;p&gt;![](assets/Pasted image 20241203221052-20250311094935-di4a7s3.png )&#xA;根据log, shot_2_gallery耗时不超过1000ms, algo_capture_total是保存图片耗时, 不是小图耗时.&lt;/p&gt;&#xA;&lt;p&gt;回复如下&#xA;algo_capture_total是成大图的时间, 小图的生成时间应该用quickview的时间-onsnapclick的时间, 这一点U版本和V版本差别不大.&lt;/p&gt;&#xA;&lt;p&gt;这里的成图慢具体是指拍摄完成后进入相册查看照片,照片加载慢,会有那种白的时间长的,U上不会那么长时间&lt;/p&gt;&#xA;&lt;p&gt;成小图时占用如下:&#xA;V:&#xA;![](assets/Pasted image 20241204134008-20250311094935-2h0gizq.png )&lt;/p&gt;&#xA;&lt;p&gt;U:&#xA;![](assets/Pasted image 20241204134017-20250311094935-ki36hob.png )&lt;/p&gt;&#xA;&lt;p&gt;V版本成小图阶段mediaserver的CPU占用较U版本高很多&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20241205</title>
+      <link>http://localhost:1313/notes/daily-note/2024/12/2024_12_05/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/12/2024_12_05/</guid>
+      <description>&lt;h1 id=&#34;2024_12_05&#34;&gt;2024_12_05&lt;/h1&gt;&#xA;&lt;p&gt;guochuang: 你可以本地测一下，看下相机左下角小图的生成时间，耗时很长，请从logcat 拆分下具体耗时是在哪（哪个函数，哪个调用），从trace看mediaserver camerahalserver 都耗时长，不能说明问题&lt;/p&gt;&#xA;&lt;p&gt;实测U和V版本表现相同, 都没有使用快速缩略图.&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugm9upv-335&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM9UPV-335&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM9UPV-335&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;h2 id=&#34;最新版本不复现&#34;&gt;[[前置录像卡顿]]&#xA;等待trace和log中&#xA;最新版本不复现&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_12_05&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_12_05-1&#34;&gt;2024_12_05&lt;/h1&gt;&#xA;&lt;p&gt;guochuang: 你可以本地测一下，看下相机左下角小图的生成时间，耗时很长，请从logcat 拆分下具体耗时是在哪（哪个函数，哪个调用），从trace看mediaserver camerahalserver 都耗时长，不能说明问题&lt;/p&gt;&#xA;&lt;p&gt;实测U和V版本表现相同, 都没有使用快速缩略图.&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugm9upv-335-1&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM9UPV-335&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM9UPV-335&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;[[前置录像卡顿]]&#xA;等待trace和log中&#xA;最新版本不复现&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20241209</title>
+      <link>http://localhost:1313/notes/daily-note/2024/12/2024_12_09/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/12/2024_12_09/</guid>
+      <description>&lt;h1 id=&#34;2024_12_09&#34;&gt;2024_12_09&lt;/h1&gt;&#xA;&lt;h2 id=&#34;完成trace适配sm8650&#34;&gt;完成trace适配sm8650&lt;/h2&gt;&#xA;&lt;h2&gt;&lt;a href=&#34;https://gerrit.pt.mioffice.cn/c/platform/vendor/qcom-proprietary/camx/&amp;#43;/4865493&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gerrit.pt.mioffice.cn/c/platform/vendor/qcom-proprietary/camx/+/4865493&lt;/a&gt;&#xA;&lt;a href=&#34;https://gerrit.pt.mioffice.cn/c/platform/vendor/qcom-proprietary/camx/&amp;#43;/4865422&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gerrit.pt.mioffice.cn/c/platform/vendor/qcom-proprietary/camx/+/4865422&lt;/a&gt;&#xA;&lt;a href=&#34;https://gerrit.pt.mioffice.cn/c/platform/vendor/qcom-proprietary/camx/&amp;#43;/4865464&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gerrit.pt.mioffice.cn/c/platform/vendor/qcom-proprietary/camx/+/4865464&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_12_09&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_12_09-1&#34;&gt;2024_12_09&lt;/h1&gt;&#xA;&lt;h2 id=&#34;完成trace适配sm8650-1&#34;&gt;完成trace适配sm8650&lt;/h2&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://gerrit.pt.mioffice.cn/c/platform/vendor/qcom-proprietary/camx/&amp;#43;/4865493&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gerrit.pt.mioffice.cn/c/platform/vendor/qcom-proprietary/camx/+/4865493&lt;/a&gt;&#xA;&lt;a href=&#34;https://gerrit.pt.mioffice.cn/c/platform/vendor/qcom-proprietary/camx/&amp;#43;/4865422&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gerrit.pt.mioffice.cn/c/platform/vendor/qcom-proprietary/camx/+/4865422&lt;/a&gt;&#xA;&lt;a href=&#34;https://gerrit.pt.mioffice.cn/c/platform/vendor/qcom-proprietary/camx/&amp;#43;/4865464&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gerrit.pt.mioffice.cn/c/platform/vendor/qcom-proprietary/camx/+/4865464&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20241210</title>
+      <link>http://localhost:1313/notes/daily-note/2024/12/2024_12_10/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/12/2024_12_10/</guid>
+      <description>&lt;h1 id=&#34;2024_12_10&#34;&gt;2024_12_10&lt;/h1&gt;&#xA;&lt;p&gt;学习Cameraopt相关知识, 并整理常用修改位置文档[[cameraopt常识]]&#xA;看camerabooster源码, 尝试接入预测丢帧模型&lt;/p&gt;&#xA;&lt;h2 id=&#34;jira-analyzer支持feedback链接下载&#34;&gt;jira-analyzer支持feedback链接下载&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_12_10&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_12_10-1&#34;&gt;2024_12_10&lt;/h1&gt;&#xA;&lt;p&gt;学习Cameraopt相关知识, 并整理常用修改位置文档[[cameraopt常识]]&#xA;看camerabooster源码, 尝试接入预测丢帧模型&lt;/p&gt;&#xA;&lt;p&gt;jira-analyzer支持feedback链接下载&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20241212</title>
+      <link>http://localhost:1313/notes/daily-note/2024/12/2024_12_12/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/12/2024_12_12/</guid>
+      <description>&lt;h1 id=&#34;2024_12_12&#34;&gt;2024_12_12&lt;/h1&gt;&#xA;&lt;h2 id=&#34;jira-analyzer&#34;&gt;JIRA-Analyzer&lt;/h2&gt;&#xA;&lt;p&gt;jira-analyzer支持批量处理分析feedback链接&#xA;代码仓移动到gerrit&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugn12aupv-1077&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGN12AUPV-1077&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN12AUPV-1077&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;h2 id=&#34;修改cameraboosterjson解决-不复现&#34;&gt;修改camerabooster.json解决, 不复现&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_12_12&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_12_12-1&#34;&gt;2024_12_12&lt;/h1&gt;&#xA;&lt;h2 id=&#34;jira-analyzer-1&#34;&gt;JIRA-Analyzer&lt;/h2&gt;&#xA;&lt;p&gt;jira-analyzer支持批量处理分析feedback链接&#xA;代码仓移动到gerrit&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugn12aupv-1077-1&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGN12AUPV-1077&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN12AUPV-1077&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;修改camerabooster.json解决, 不复现&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20241217</title>
+      <link>http://localhost:1313/notes/daily-note/2024/12/2024_12_17/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/12/2024_12_17/</guid>
+      <description>&lt;h1 id=&#34;2024_12_17&#34;&gt;2024_12_17&lt;/h1&gt;&#xA;&lt;h2 id=&#34;整理cgroup文档&#34;&gt;整理cgroup文档&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_12_17&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_12_17-1&#34;&gt;2024_12_17&lt;/h1&gt;&#xA;&lt;p&gt;整理cgroup文档&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20241218</title>
+      <link>http://localhost:1313/notes/daily-note/2024/12/2024_12_18/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/12/2024_12_18/</guid>
+      <description>&lt;h1 id=&#34;2024_12_18&#34;&gt;2024_12_18&lt;/h1&gt;&#xA;&lt;p&gt;了解arm64汇编及编译器选项相关&lt;/p&gt;&#xA;&lt;h2 id=&#34;jira-analyzer适配orion&#34;&gt;JIRA-ANALYZER适配orion&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_12_18&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_12_18-1&#34;&gt;2024_12_18&lt;/h1&gt;&#xA;&lt;p&gt;了解arm64汇编及编译器选项相关&lt;/p&gt;&#xA;&lt;p&gt;JIRA-ANALYZER适配orion&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

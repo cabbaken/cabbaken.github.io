@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>编译一个native程序</title>
+
+<meta name="description" content="编译一个native程序 在Android Studio中编译 创建一个Native C&#43;&#43; Project 寻找到Android Studio自动创建的CMakeLists.txt(一般在项目的build.gradle.kts中会指定此CMakeLists.txt) 编辑源码与CMakeLists.txt 使用Android Studio编译即可, 最后的产物会在app/build文件夹下 单独使用NDK编译 另一种比较直观的方法就是使用NDK单独编译, 其实上文中描述的在Android Studio中编译也是利用了NDK.
+NDK中包含了跨平台工具链, 在ndk/toolchains/llvm/prebuilt/linux-x86_64中, 使用此工具链可以完成编译.
+cmake -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=$ABI 具体编译过程可见丢帧预测 注: 有些项目提供的aar包解压后就是头文件, 动态库. title: 编译一个native程序 date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z 编译一个native程序 在Android Studio中编译 创建一个Native C&#43;&#43; Project 寻找到Android Studio自动创建的CMakeLists.txt(一般在项目的build.gradle.kts中会指定此CMakeLists.txt) 编辑源码与CMakeLists.txt 使用Android Studio编译即可, 最后的产物会在app/build文件夹下 单独使用NDK编译 另一种比较直观的方法就是使用NDK单独编译, 其实上文中描述的在Android Studio中编译也是利用了NDK.
+NDK中包含了跨平台工具链, 在ndk/toolchains/llvm/prebuilt/linux-x86_64中, 使用此工具链可以完成编译.
+cmake -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=$ABI 具体编译过程可见丢帧预测 注: 有些项目提供的aar包解压后就是头文件, 动态库.
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/aosp-related/%E7%BC%96%E8%AF%91%E4%B8%80%E4%B8%AAnative%E7%A8%8B%E5%BA%8F/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/aosp-related/%E7%BC%96%E8%AF%91%E4%B8%80%E4%B8%AAnative%E7%A8%8B%E5%BA%8F/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/aosp-related/%E7%BC%96%E8%AF%91%E4%B8%80%E4%B8%AAnative%E7%A8%8B%E5%BA%8F/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="编译一个native程序">
+<meta property="og:description" content="编译一个native程序
+在Android Studio中编译
+
+创建一个Native C&#43;&#43; Project
+寻找到Android Studio自动创建的CMakeLists.txt(一般在项目的build.gradle.kts中会指定此CMakeLists.txt)
+编辑源码与CMakeLists.txt
+使用Android Studio编译即可, 最后的产物会在app/build文件夹下
+
+单独使用NDK编译
+另一种比较直观的方法就是使用NDK单独编译, 其实上文中描述的在Android Studio中编译也是利用了NDK.
+NDK中包含了跨平台工具链, 在ndk/toolchains/llvm/prebuilt/linux-x86_64中, 使用此工具链可以完成编译.
+cmake -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=$ABI
+具体编译过程可见丢帧预测
+注: 有些项目提供的aar包解压后就是头文件, 动态库.
+title: 编译一个native程序
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+编译一个native程序
+在Android Studio中编译
+
+创建一个Native C&#43;&#43; Project
+寻找到Android Studio自动创建的CMakeLists.txt(一般在项目的build.gradle.kts中会指定此CMakeLists.txt)
+编辑源码与CMakeLists.txt
+使用Android Studio编译即可, 最后的产物会在app/build文件夹下
+
+单独使用NDK编译
+另一种比较直观的方法就是使用NDK单独编译, 其实上文中描述的在Android Studio中编译也是利用了NDK.
+NDK中包含了跨平台工具链, 在ndk/toolchains/llvm/prebuilt/linux-x86_64中, 使用此工具链可以完成编译.
+cmake -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=$ABI
+具体编译过程可见丢帧预测
+注: 有些项目提供的aar包解压后就是头文件, 动态库.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/aosp-related/%E7%BC%96%E8%AF%91%E4%B8%80%E4%B8%AAnative%E7%A8%8B%E5%BA%8F/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="编译一个native程序">
+<meta name="twitter:description" content="编译一个native程序
+在Android Studio中编译
+
+创建一个Native C&#43;&#43; Project
+寻找到Android Studio自动创建的CMakeLists.txt(一般在项目的build.gradle.kts中会指定此CMakeLists.txt)
+编辑源码与CMakeLists.txt
+使用Android Studio编译即可, 最后的产物会在app/build文件夹下
+
+单独使用NDK编译
+另一种比较直观的方法就是使用NDK单独编译, 其实上文中描述的在Android Studio中编译也是利用了NDK.
+NDK中包含了跨平台工具链, 在ndk/toolchains/llvm/prebuilt/linux-x86_64中, 使用此工具链可以完成编译.
+cmake -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=$ABI
+具体编译过程可见丢帧预测
+注: 有些项目提供的aar包解压后就是头文件, 动态库.
+title: 编译一个native程序
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+编译一个native程序
+在Android Studio中编译
+
+创建一个Native C&#43;&#43; Project
+寻找到Android Studio自动创建的CMakeLists.txt(一般在项目的build.gradle.kts中会指定此CMakeLists.txt)
+编辑源码与CMakeLists.txt
+使用Android Studio编译即可, 最后的产物会在app/build文件夹下
+
+单独使用NDK编译
+另一种比较直观的方法就是使用NDK单独编译, 其实上文中描述的在Android Studio中编译也是利用了NDK.
+NDK中包含了跨平台工具链, 在ndk/toolchains/llvm/prebuilt/linux-x86_64中, 使用此工具链可以完成编译.
+cmake -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=$ABI
+具体编译过程可见丢帧预测
+注: 有些项目提供的aar包解压后就是头文件, 动态库.">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "编译一个native程序",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  727 ,
+  "description": "编译一个native程序 在Android Studio中编译 创建一个Native C++ Project 寻找到Android Studio自动创建的CMakeLists.txt(一般在项目的build.gradle.kts中会指定此CMakeLists.txt) 编辑源码与CMakeLists.txt 使用Android Studio编译即可, 最后的产物会在app/build文件夹下 单独使用NDK编译 另一种比较直观的方法就是使用NDK单独编译, 其实上文中描述的在Android Studio中编译也是利用了NDK.\nNDK中包含了跨平台工具链, 在ndk/toolchains/llvm/prebuilt/linux-x86_64中, 使用此工具链可以完成编译.\ncmake -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=$ABI 具体编译过程可见丢帧预测 注: 有些项目提供的aar包解压后就是头文件, 动态库. title: 编译一个native程序 date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z 编译一个native程序 在Android Studio中编译 创建一个Native C++ Project 寻找到Android Studio自动创建的CMakeLists.txt(一般在项目的build.gradle.kts中会指定此CMakeLists.txt) 编辑源码与CMakeLists.txt 使用Android Studio编译即可, 最后的产物会在app/build文件夹下 单独使用NDK编译 另一种比较直观的方法就是使用NDK单独编译, 其实上文中描述的在Android Studio中编译也是利用了NDK.\nNDK中包含了跨平台工具链, 在ndk/toolchains/llvm/prebuilt/linux-x86_64中, 使用此工具链可以完成编译.\ncmake -DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=$ABI 具体编译过程可见丢帧预测 注: 有些项目提供的aar包解压后就是头文件, 动态库.\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="编译一个native程序">编译一个native程序</h1>
+<h2 id="在android-studio中编译">在Android Studio中编译</h2>
+<ol>
+<li>创建一个Native C++ Project</li>
+<li>寻找到Android Studio自动创建的CMakeLists.txt(一般在项目的build.gradle.kts中会指定此CMakeLists.txt)</li>
+<li>编辑源码与CMakeLists.txt</li>
+<li>使用Android Studio编译即可, 最后的产物会在app/build文件夹下</li>
+</ol>
+<h2 id="单独使用ndk编译">单独使用NDK编译</h2>
+<p>另一种比较直观的方法就是使用NDK单独编译, 其实上文中描述的在Android Studio中编译也是利用了NDK.</p>
+<p>NDK中包含了跨平台工具链, 在ndk/toolchains/llvm/prebuilt/linux-x86_64中, 使用此工具链可以完成编译.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmake" data-lang="cmake"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">cmake</span> <span style="color:#960050;background-color:#1e0010">-DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake</span> <span style="color:#960050;background-color:#1e0010">-DANDROID_ABI=$ABI
+</span></span></span></code></pre></div><h2 id="注-有些项目提供的aar包解压后就是头文件-动态库">具体编译过程可见<a href="http://localhost:1313/notes/documents/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84%E5%A4%A7%E6%A8%A1%E5%9E%8B/%E4%B8%A2%E5%B8%A7%E9%A2%84%E6%B5%8B/">丢帧预测</a>
+注: 有些项目提供的aar包解压后就是头文件, 动态库.</h2>
+<h2 id="lastmod-2025-03-11t094648z">title: 编译一个native程序
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="编译一个native程序-1">编译一个native程序</h1>
+<h2 id="在android-studio中编译-1">在Android Studio中编译</h2>
+<ol>
+<li>创建一个Native C++ Project</li>
+<li>寻找到Android Studio自动创建的CMakeLists.txt(一般在项目的build.gradle.kts中会指定此CMakeLists.txt)</li>
+<li>编辑源码与CMakeLists.txt</li>
+<li>使用Android Studio编译即可, 最后的产物会在app/build文件夹下</li>
+</ol>
+<h2 id="单独使用ndk编译-1">单独使用NDK编译</h2>
+<p>另一种比较直观的方法就是使用NDK单独编译, 其实上文中描述的在Android Studio中编译也是利用了NDK.</p>
+<p>NDK中包含了跨平台工具链, 在ndk/toolchains/llvm/prebuilt/linux-x86_64中, 使用此工具链可以完成编译.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmake" data-lang="cmake"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">cmake</span> <span style="color:#960050;background-color:#1e0010">-DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake</span> <span style="color:#960050;background-color:#1e0010">-DANDROID_ABI=$ABI
+</span></span></span></code></pre></div><p>具体编译过程可见<a href="http://localhost:1313/notes/documents/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84%E5%A4%A7%E6%A8%A1%E5%9E%8B/%E4%B8%A2%E5%B8%A7%E9%A2%84%E6%B5%8B/">丢帧预测</a>
+注: 有些项目提供的aar包解压后就是头文件, 动态库.</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

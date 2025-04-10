@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>MTK Camera Memory Structure</title>
+
+<meta name="description" content="MTK Camera Memory Structure MTK Camera Memory Structure MTK Camera Memory组成 Camera APP：相机APP本身占用的内存空间
+cameraserver：Google AOSP 原生代码, 同样Android 版本的用量应该差不多，它的內存用量与APP当前的行为强相关。目前观察到cameraserver比较大的用量都是ImageReader建立的buffer, 用来传输给camerahalserver作为最后的图像输出。
+camerahalserver：MTK 实现的部分，分为non-ion和ion两部分
+Non-ION：CPU 可存取, 没特別要求, 通常会是这一类。此类对系统负担较轻, 因为各种技术成熟(virtual address space，CPU L1/L2/L3 cache，zram swap&hellip;..)。常常放一般 software process 该放的东西, Heap / global variable / stack /&hellip; ION：可给硬体存取 (GPU / ISP &hellip;) , 可跨进程，跨kernel进行內容分享 (zero copy)，因为相机占用内存量大，ION用量会是Camera memory footprint的关注焦点。此类对系统的负担较重，因为往往需要一大块，存放一堆camera frame buffers以及需要跨kernel的大型working buffer(如3A tunning data from userspace to kernel driver)。 DMA-buf与ION ION() ‍
+DMA-buf DMA-buf子系统为系统与硬件提供共享内存, 可以让多个设备驱动和子系统异步或同步访问内存.
+一个常用到dma-buf的地方是DRM(Direct Rendering Manager)子系统. DRM可以使用dma-buf可以在不同进程, 内核, 设备或是其他子系统(如V4L2)间交换内存.
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/mtk-camera-memory-structure/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/mtk-camera-memory-structure/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/mtk-camera-memory-structure/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="MTK Camera Memory Structure">
+<meta property="og:description" content="MTK Camera Memory Structure
+MTK Camera Memory Structure
+MTK Camera Memory组成
+
+
+Camera APP：相机APP本身占用的内存空间
+
+
+cameraserver：Google AOSP 原生代码, 同样Android 版本的用量应该差不多，它的內存用量与APP当前的行为强相关。目前观察到cameraserver比较大的用量都是ImageReader建立的buffer, 用来传输给camerahalserver作为最后的图像输出。
+
+
+camerahalserver：MTK 实现的部分，分为non-ion和ion两部分
+
+Non-ION：CPU 可存取, 没特別要求, 通常会是这一类。此类对系统负担较轻, 因为各种技术成熟(virtual address space，CPU L1/L2/L3 cache，zram swap&hellip;..)。常常放一般 software process 该放的东西, Heap / global variable / stack /&hellip;
+ION：可给硬体存取 (GPU / ISP &hellip;) , 可跨进程，跨kernel进行內容分享 (zero copy)，因为相机占用内存量大，ION用量会是Camera memory footprint的关注焦点。此类对系统的负担较重，因为往往需要一大块，存放一堆camera frame buffers以及需要跨kernel的大型working buffer(如3A tunning data from userspace to kernel driver)。
+
+
+
+DMA-buf与ION
+ION()
+‍
+DMA-buf
+DMA-buf子系统为系统与硬件提供共享内存, 可以让多个设备驱动和子系统异步或同步访问内存.
+一个常用到dma-buf的地方是DRM(Direct Rendering Manager)子系统. DRM可以使用dma-buf可以在不同进程, 内核, 设备或是其他子系统(如V4L2)间交换内存.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/mtk-camera-memory-structure/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="MTK Camera Memory Structure">
+<meta name="twitter:description" content="MTK Camera Memory Structure
+MTK Camera Memory Structure
+MTK Camera Memory组成
+
+
+Camera APP：相机APP本身占用的内存空间
+
+
+cameraserver：Google AOSP 原生代码, 同样Android 版本的用量应该差不多，它的內存用量与APP当前的行为强相关。目前观察到cameraserver比较大的用量都是ImageReader建立的buffer, 用来传输给camerahalserver作为最后的图像输出。
+
+
+camerahalserver：MTK 实现的部分，分为non-ion和ion两部分
+
+Non-ION：CPU 可存取, 没特別要求, 通常会是这一类。此类对系统负担较轻, 因为各种技术成熟(virtual address space，CPU L1/L2/L3 cache，zram swap&hellip;..)。常常放一般 software process 该放的东西, Heap / global variable / stack /&hellip;
+ION：可给硬体存取 (GPU / ISP &hellip;) , 可跨进程，跨kernel进行內容分享 (zero copy)，因为相机占用内存量大，ION用量会是Camera memory footprint的关注焦点。此类对系统的负担较重，因为往往需要一大块，存放一堆camera frame buffers以及需要跨kernel的大型working buffer(如3A tunning data from userspace to kernel driver)。
+
+
+
+DMA-buf与ION
+ION()
+‍
+DMA-buf
+DMA-buf子系统为系统与硬件提供共享内存, 可以让多个设备驱动和子系统异步或同步访问内存.
+一个常用到dma-buf的地方是DRM(Direct Rendering Manager)子系统. DRM可以使用dma-buf可以在不同进程, 内核, 设备或是其他子系统(如V4L2)间交换内存.">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "MTK Camera Memory Structure",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  3237 ,
+  "description": "MTK Camera Memory Structure MTK Camera Memory Structure MTK Camera Memory组成 Camera APP：相机APP本身占用的内存空间\ncameraserver：Google AOSP 原生代码, 同样Android 版本的用量应该差不多，它的內存用量与APP当前的行为强相关。目前观察到cameraserver比较大的用量都是ImageReader建立的buffer, 用来传输给camerahalserver作为最后的图像输出。\ncamerahalserver：MTK 实现的部分，分为non-ion和ion两部分\nNon-ION：CPU 可存取, 没特別要求, 通常会是这一类。此类对系统负担较轻, 因为各种技术成熟(virtual address space，CPU L1/L2/L3 cache，zram swap\u0026hellip;..)。常常放一般 software process 该放的东西, Heap / global variable / stack /\u0026hellip; ION：可给硬体存取 (GPU / ISP \u0026hellip;) , 可跨进程，跨kernel进行內容分享 (zero copy)，因为相机占用内存量大，ION用量会是Camera memory footprint的关注焦点。此类对系统的负担较重，因为往往需要一大块，存放一堆camera frame buffers以及需要跨kernel的大型working buffer(如3A tunning data from userspace to kernel driver)。 DMA-buf与ION ION() ‍\nDMA-buf DMA-buf子系统为系统与硬件提供共享内存, 可以让多个设备驱动和子系统异步或同步访问内存.\n一个常用到dma-buf的地方是DRM(Direct Rendering Manager)子系统. DRM可以使用dma-buf可以在不同进程, 内核, 设备或是其他子系统(如V4L2)间交换内存.\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="mtk-camera-memory-structure">MTK Camera Memory Structure</h1>
+<h1 id="mtk-camera-memory-structure-1">MTK Camera Memory Structure</h1>
+<h2 id="mtk-camera-memory组成">MTK Camera Memory组成</h2>
+<ul>
+<li>
+<p>Camera APP：相机APP本身占用的内存空间</p>
+</li>
+<li>
+<p>cameraserver：Google AOSP 原生代码, 同样Android 版本的用量应该差不多，它的內存用量与APP当前的行为强相关。目前观察到cameraserver比较大的用量都是ImageReader建立的buffer, 用来传输给camerahalserver作为最后的图像输出。</p>
+</li>
+<li>
+<p>camerahalserver：MTK 实现的部分，分为non-ion和ion两部分</p>
+<ul>
+<li>Non-ION：CPU 可存取, 没特別要求, 通常会是这一类。此类对系统负担较轻, 因为各种技术成熟(virtual address space，CPU L1/L2/L3 cache，zram swap&hellip;..)。常常放一般 software process 该放的东西, Heap / global variable / stack /&hellip;</li>
+<li>ION：可给硬体存取 (GPU / ISP &hellip;) , 可跨进程，跨kernel进行內容分享 (zero copy)，因为相机占用内存量大，ION用量会是Camera memory footprint的关注焦点。此类对系统的负担较重，因为往往需要一大块，存放一堆camera frame buffers以及需要跨kernel的大型working buffer(如3A tunning data from userspace to kernel driver)。</li>
+</ul>
+</li>
+</ul>
+<h2 id="dma-buf与ion">DMA-buf与ION</h2>
+<h3 id="ion">ION()</h3>
+<p>‍</p>
+<h3 id="dma-buf">DMA-buf</h3>
+<p>DMA-buf子系统为系统与硬件提供共享内存, 可以让多个设备驱动和子系统异步或同步访问内存.</p>
+<p>一个常用到dma-buf的地方是DRM(Direct Rendering Manager)子系统. DRM可以使用dma-buf可以在不同进程, 内核, 设备或是其他子系统(如V4L2)间交换内存.</p>
+<p>一个具体的例子是Wayland compositor. Wayland compositor在GPU上进行渲染, 许多Wayland clients也在GPU上渲染.
+Wayland clients需要与Wayland compositor共享内存, 如果使用Linux提供的寻常的共享内存方法, 则需要clients将内存先将数据从GPU复制到CPU, compositor再从CPU将数据复制到GPU.
+有了DMA-buf, compositor与clients可以互换DMA-buf的地址, 直接渲染, 避免复制内存带来的性能损耗.</p>
+<p>DMA-buf接口使用一个文件描述符对应一块抽象内存, 易于共享.</p>
+<p>所有共享DMA buffer的驱动都被称为&quot;exporter&quot;, 其他所有使用此DMA buffer的驱动被称为&quot;importer&quot;.
+也就是说驱动A如果想使用驱动B创建的buffer, 那么A就是&quot;importer&quot;, 而B是&quot;exporter&quot;.</p>
+<p>exporter有如下职责:</p>
+<ul>
+<li>exporter需要实现<a href="https://docs.kernel.org/driver-api/dma-buf.html#c.dma_buf_ops" target="_blank" rel="noopener"><code>struct dma\_buf\_ops</code></a>中定义的方法.</li>
+<li>exporter允许importers通过dma_buf共享API共享buffer.</li>
+<li>exporter通过<a href="https://docs.kernel.org/driver-api/dma-buf.html#c.dma_buf" target="_blank" rel="noopener"><code>struct dma\_buf</code></a>管理buffer的分配.</li>
+<li>exporter决定实际的内存存量.</li>
+<li>exporter负责处理所有importer的分散内存块(scatterlist)的迁移.</li>
+</ul>
+<p>scatterlist是</p>
+<p>而importer的职责如下:</p>
+<ul>
+<li>importer是这块DMA-buf的使用者之一.</li>
+<li>importer不需要在意这块内存如何/在哪儿被分配.</li>
+<li>importer需要机制访问scatterlist, 并将组成这块buffer的这些scatterlist映射到自身的地址, 以便访问这块内存. 这个机制就是<a href="https://docs.kernel.org/driver-api/dma-buf.html#c.dma_buf_attachment" target="_blank" rel="noopener"><code>struct dma\\\_buf\\\_attachment</code></a>​.</li>
+</ul>
+<p>‍</p>
+<h2 id="imagebuffer">ImageBuffer</h2>
+<p>为了更好的适配camera各模块, MTK对Google原生的DMABuf进行封装, 得到了IImageBuffer(vendor/mediatek/proprietary/hardware/mtkcam3/include/mtkcam3/main/mtkhal/core/utils/imgbuf/1.x/IImageBuffer.h).</p>
+<h2 id="heading">‍</h2>
+<h2 id="lastmod-2025-03-11t094648z">title: MTK Camera Memory Structure
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="mtk-camera-memory-structure-2">MTK Camera Memory Structure</h1>
+<h1 id="mtk-camera-memory-structure-3">MTK Camera Memory Structure</h1>
+<h2 id="mtk-camera-memory组成-1">MTK Camera Memory组成</h2>
+<ul>
+<li>
+<p>Camera APP：相机APP本身占用的内存空间</p>
+</li>
+<li>
+<p>cameraserver：Google AOSP 原生代码, 同样Android 版本的用量应该差不多，它的內存用量与APP当前的行为强相关。目前观察到cameraserver比较大的用量都是ImageReader建立的buffer, 用来传输给camerahalserver作为最后的图像输出。</p>
+</li>
+<li>
+<p>camerahalserver：MTK 实现的部分，分为non-ion和ion两部分</p>
+<ul>
+<li>Non-ION：CPU 可存取, 没特別要求, 通常会是这一类。此类对系统负担较轻, 因为各种技术成熟(virtual address space，CPU L1/L2/L3 cache，zram swap&hellip;..)。常常放一般 software process 该放的东西, Heap / global variable / stack /&hellip;</li>
+<li>ION：可给硬体存取 (GPU / ISP &hellip;) , 可跨进程，跨kernel进行內容分享 (zero copy)，因为相机占用内存量大，ION用量会是Camera memory footprint的关注焦点。此类对系统的负担较重，因为往往需要一大块，存放一堆camera frame buffers以及需要跨kernel的大型working buffer(如3A tunning data from userspace to kernel driver)。</li>
+</ul>
+</li>
+</ul>
+<h2 id="dma-buf与ion-1">DMA-buf与ION</h2>
+<h3 id="ion-1">ION()</h3>
+<p>‍</p>
+<h3 id="dma-buf-1">DMA-buf</h3>
+<p>DMA-buf子系统为系统与硬件提供共享内存, 可以让多个设备驱动和子系统异步或同步访问内存.</p>
+<p>一个常用到dma-buf的地方是DRM(Direct Rendering Manager)子系统. DRM可以使用dma-buf可以在不同进程, 内核, 设备或是其他子系统(如V4L2)间交换内存.</p>
+<p>一个具体的例子是Wayland compositor. Wayland compositor在GPU上进行渲染, 许多Wayland clients也在GPU上渲染.
+Wayland clients需要与Wayland compositor共享内存, 如果使用Linux提供的寻常的共享内存方法, 则需要clients将内存先将数据从GPU复制到CPU, compositor再从CPU将数据复制到GPU.
+有了DMA-buf, compositor与clients可以互换DMA-buf的地址, 直接渲染, 避免复制内存带来的性能损耗.</p>
+<p>DMA-buf接口使用一个文件描述符对应一块抽象内存, 易于共享.</p>
+<p>所有共享DMA buffer的驱动都被称为&quot;exporter&quot;, 其他所有使用此DMA buffer的驱动被称为&quot;importer&quot;.
+也就是说驱动A如果想使用驱动B创建的buffer, 那么A就是&quot;importer&quot;, 而B是&quot;exporter&quot;.</p>
+<p>exporter有如下职责:</p>
+<ul>
+<li>exporter需要实现<a href="https://docs.kernel.org/driver-api/dma-buf.html#c.dma_buf_ops" target="_blank" rel="noopener"><code>struct dma\_buf\_ops</code></a>中定义的方法.</li>
+<li>exporter允许importers通过dma_buf共享API共享buffer.</li>
+<li>exporter通过<a href="https://docs.kernel.org/driver-api/dma-buf.html#c.dma_buf" target="_blank" rel="noopener"><code>struct dma\_buf</code></a>管理buffer的分配.</li>
+<li>exporter决定实际的内存存量.</li>
+<li>exporter负责处理所有importer的分散内存块(scatterlist)的迁移.</li>
+</ul>
+<p>scatterlist是</p>
+<p>而importer的职责如下:</p>
+<ul>
+<li>importer是这块DMA-buf的使用者之一.</li>
+<li>importer不需要在意这块内存如何/在哪儿被分配.</li>
+<li>importer需要机制访问scatterlist, 并将组成这块buffer的这些scatterlist映射到自身的地址, 以便访问这块内存. 这个机制就是<a href="https://docs.kernel.org/driver-api/dma-buf.html#c.dma_buf_attachment" target="_blank" rel="noopener"><code>struct dma\\\_buf\\\_attachment</code></a>​.</li>
+</ul>
+<p>‍</p>
+<h2 id="imagebuffer-1">ImageBuffer</h2>
+<p>为了更好的适配camera各模块, MTK对Google原生的DMABuf进行封装, 得到了IImageBuffer(vendor/mediatek/proprietary/hardware/mtkcam3/include/mtkcam3/main/mtkhal/core/utils/imgbuf/1.x/IImageBuffer.h).</p>
+<p>‍</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

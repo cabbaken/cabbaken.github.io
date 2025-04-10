@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>eBPF Intro</title>
+
+<meta name="description" content="eBPF Intro 初探eBPF 使用clang编译最小eBPF程序.
+/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */ #define BPF_NO_GLOBAL_DATA #include &lt;linux/bpf.h&gt; #include &lt;bpf/bpf_helpers.h&gt; #include &lt;bpf/bpf_tracing.h&gt; typedef unsigned int u32; typedef int pid_t; const pid_t pid_filter = 0; char LICENSE[] SEC(&#34;license&#34;) = &#34;Dual BSD/GPL&#34;; SEC(&#34;tp/syscalls/sys_enter_write&#34;) int handle_tp(void *ctx) { pid_t pid = bpf_get_current_pid_tgid() &gt;&gt; 32; if (pid_filter &amp;&amp; pid != pid_filter) return 0; bpf_printk(&#34;BPF triggered sys_enter_write from PID %d.\n&#34;, pid); return 0; } clang -target bpf minimal.bpf.c -c -o minimal.bpf.o ‍ title: eBPF Intro date: 2025-03-11T09:46:48Z lastmod: 2025-03-31T16:13:18Z eBPF Intro 初探eBPF 使用clang编译最小eBPF程序.
+/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */ #define BPF_NO_GLOBAL_DATA #include &lt;linux/bpf.h&gt; #include &lt;bpf/bpf_helpers.h&gt; #include &lt;bpf/bpf_tracing.h&gt; typedef unsigned int u32; typedef int pid_t; const pid_t pid_filter = 0; char LICENSE[] SEC(&#34;license&#34;) = &#34;Dual BSD/GPL&#34;; SEC(&#34;tp/syscalls/sys_enter_write&#34;) int handle_tp(void *ctx) { pid_t pid = bpf_get_current_pid_tgid() &gt;&gt; 32; if (pid_filter &amp;&amp; pid != pid_filter) return 0; bpf_printk(&#34;BPF triggered sys_enter_write from PID %d.\n&#34;, pid); return 0; } clang -target bpf minimal.bpf.c -c -o minimal.bpf.o ‍
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/linux-related/ebpf-intro/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/linux-related/ebpf-intro/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/linux-related/ebpf-intro/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="eBPF Intro">
+<meta property="og:description" content="eBPF Intro
+初探eBPF
+使用clang编译最小eBPF程序.
+/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+#define BPF_NO_GLOBAL_DATA
+#include &lt;linux/bpf.h&gt;
+#include &lt;bpf/bpf_helpers.h&gt;
+#include &lt;bpf/bpf_tracing.h&gt;
+
+typedef unsigned int u32;
+typedef int pid_t;
+const pid_t pid_filter = 0;
+
+char LICENSE[] SEC(&#34;license&#34;) = &#34;Dual BSD/GPL&#34;;
+
+SEC(&#34;tp/syscalls/sys_enter_write&#34;)
+int handle_tp(void *ctx)
+{
+	pid_t pid = bpf_get_current_pid_tgid() &gt;&gt; 32;
+	if (pid_filter &amp;&amp; pid != pid_filter)
+		return 0;
+	bpf_printk(&#34;BPF triggered sys_enter_write from PID %d.\n&#34;, pid);
+	return 0;
+}
+clang -target bpf minimal.bpf.c -c -o minimal.bpf.o
+‍
+title: eBPF Intro
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-31T16:13:18Z
+eBPF Intro
+初探eBPF
+使用clang编译最小eBPF程序.
+/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+#define BPF_NO_GLOBAL_DATA
+#include &lt;linux/bpf.h&gt;
+#include &lt;bpf/bpf_helpers.h&gt;
+#include &lt;bpf/bpf_tracing.h&gt;
+
+typedef unsigned int u32;
+typedef int pid_t;
+const pid_t pid_filter = 0;
+
+char LICENSE[] SEC(&#34;license&#34;) = &#34;Dual BSD/GPL&#34;;
+
+SEC(&#34;tp/syscalls/sys_enter_write&#34;)
+int handle_tp(void *ctx)
+{
+	pid_t pid = bpf_get_current_pid_tgid() &gt;&gt; 32;
+	if (pid_filter &amp;&amp; pid != pid_filter)
+		return 0;
+	bpf_printk(&#34;BPF triggered sys_enter_write from PID %d.\n&#34;, pid);
+	return 0;
+}
+clang -target bpf minimal.bpf.c -c -o minimal.bpf.o
+‍">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/linux-related/ebpf-intro/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-31T16:13:18+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="eBPF Intro">
+<meta name="twitter:description" content="eBPF Intro
+初探eBPF
+使用clang编译最小eBPF程序.
+/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+#define BPF_NO_GLOBAL_DATA
+#include &lt;linux/bpf.h&gt;
+#include &lt;bpf/bpf_helpers.h&gt;
+#include &lt;bpf/bpf_tracing.h&gt;
+
+typedef unsigned int u32;
+typedef int pid_t;
+const pid_t pid_filter = 0;
+
+char LICENSE[] SEC(&#34;license&#34;) = &#34;Dual BSD/GPL&#34;;
+
+SEC(&#34;tp/syscalls/sys_enter_write&#34;)
+int handle_tp(void *ctx)
+{
+	pid_t pid = bpf_get_current_pid_tgid() &gt;&gt; 32;
+	if (pid_filter &amp;&amp; pid != pid_filter)
+		return 0;
+	bpf_printk(&#34;BPF triggered sys_enter_write from PID %d.\n&#34;, pid);
+	return 0;
+}
+clang -target bpf minimal.bpf.c -c -o minimal.bpf.o
+‍
+title: eBPF Intro
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-31T16:13:18Z
+eBPF Intro
+初探eBPF
+使用clang编译最小eBPF程序.
+/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+#define BPF_NO_GLOBAL_DATA
+#include &lt;linux/bpf.h&gt;
+#include &lt;bpf/bpf_helpers.h&gt;
+#include &lt;bpf/bpf_tracing.h&gt;
+
+typedef unsigned int u32;
+typedef int pid_t;
+const pid_t pid_filter = 0;
+
+char LICENSE[] SEC(&#34;license&#34;) = &#34;Dual BSD/GPL&#34;;
+
+SEC(&#34;tp/syscalls/sys_enter_write&#34;)
+int handle_tp(void *ctx)
+{
+	pid_t pid = bpf_get_current_pid_tgid() &gt;&gt; 32;
+	if (pid_filter &amp;&amp; pid != pid_filter)
+		return 0;
+	bpf_printk(&#34;BPF triggered sys_enter_write from PID %d.\n&#34;, pid);
+	return 0;
+}
+clang -target bpf minimal.bpf.c -c -o minimal.bpf.o
+‍">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "eBPF Intro",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-31T16:13:18+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  197 ,
+  "description": "eBPF Intro 初探eBPF 使用clang编译最小eBPF程序.\n/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */ #define BPF_NO_GLOBAL_DATA #include \u0026lt;linux/bpf.h\u0026gt; #include \u0026lt;bpf/bpf_helpers.h\u0026gt; #include \u0026lt;bpf/bpf_tracing.h\u0026gt; typedef unsigned int u32; typedef int pid_t; const pid_t pid_filter = 0; char LICENSE[] SEC(\u0026#34;license\u0026#34;) = \u0026#34;Dual BSD/GPL\u0026#34;; SEC(\u0026#34;tp/syscalls/sys_enter_write\u0026#34;) int handle_tp(void *ctx) { pid_t pid = bpf_get_current_pid_tgid() \u0026gt;\u0026gt; 32; if (pid_filter \u0026amp;\u0026amp; pid != pid_filter) return 0; bpf_printk(\u0026#34;BPF triggered sys_enter_write from PID %d.\\n\u0026#34;, pid); return 0; } clang -target bpf minimal.bpf.c -c -o minimal.bpf.o ‍ title: eBPF Intro date: 2025-03-11T09:46:48Z lastmod: 2025-03-31T16:13:18Z eBPF Intro 初探eBPF 使用clang编译最小eBPF程序.\n/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */ #define BPF_NO_GLOBAL_DATA #include \u0026lt;linux/bpf.h\u0026gt; #include \u0026lt;bpf/bpf_helpers.h\u0026gt; #include \u0026lt;bpf/bpf_tracing.h\u0026gt; typedef unsigned int u32; typedef int pid_t; const pid_t pid_filter = 0; char LICENSE[] SEC(\u0026#34;license\u0026#34;) = \u0026#34;Dual BSD/GPL\u0026#34;; SEC(\u0026#34;tp/syscalls/sys_enter_write\u0026#34;) int handle_tp(void *ctx) { pid_t pid = bpf_get_current_pid_tgid() \u0026gt;\u0026gt; 32; if (pid_filter \u0026amp;\u0026amp; pid != pid_filter) return 0; bpf_printk(\u0026#34;BPF triggered sys_enter_write from PID %d.\\n\u0026#34;, pid); return 0; } clang -target bpf minimal.bpf.c -c -o minimal.bpf.o ‍\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="ebpf-intro">eBPF Intro</h1>
+<h2 id="初探ebpf">初探eBPF</h2>
+<p>使用clang编译最小eBPF程序.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define BPF_NO_GLOBAL_DATA
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/bpf.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;bpf/bpf_helpers.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;bpf/bpf_tracing.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> u32;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">int</span> <span style="color:#66d9ef">pid_t</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">pid_t</span> pid_filter <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">char</span> LICENSE[] <span style="color:#a6e22e">SEC</span>(<span style="color:#e6db74">&#34;license&#34;</span>) <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Dual BSD/GPL&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">SEC</span>(<span style="color:#e6db74">&#34;tp/syscalls/sys_enter_write&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">handle_tp</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>ctx)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">pid_t</span> pid <span style="color:#f92672">=</span> <span style="color:#a6e22e">bpf_get_current_pid_tgid</span>() <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">32</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (pid_filter <span style="color:#f92672">&amp;&amp;</span> pid <span style="color:#f92672">!=</span> pid_filter)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">bpf_printk</span>(<span style="color:#e6db74">&#34;BPF triggered sys_enter_write from PID %d.</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, pid);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>clang -target bpf minimal.bpf.c -c -o minimal.bpf.o
+</span></span></code></pre></div><h2 id="heading">‍</h2>
+<h2 id="lastmod-2025-03-31t161318z">title: eBPF Intro
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-31T16:13:18Z</h2>
+<h1 id="ebpf-intro-1">eBPF Intro</h1>
+<h2 id="初探ebpf-1">初探eBPF</h2>
+<p>使用clang编译最小eBPF程序.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define BPF_NO_GLOBAL_DATA
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;linux/bpf.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;bpf/bpf_helpers.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;bpf/bpf_tracing.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> u32;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">int</span> <span style="color:#66d9ef">pid_t</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">pid_t</span> pid_filter <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">char</span> LICENSE[] <span style="color:#a6e22e">SEC</span>(<span style="color:#e6db74">&#34;license&#34;</span>) <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Dual BSD/GPL&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">SEC</span>(<span style="color:#e6db74">&#34;tp/syscalls/sys_enter_write&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">handle_tp</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>ctx)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">pid_t</span> pid <span style="color:#f92672">=</span> <span style="color:#a6e22e">bpf_get_current_pid_tgid</span>() <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">32</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (pid_filter <span style="color:#f92672">&amp;&amp;</span> pid <span style="color:#f92672">!=</span> pid_filter)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">bpf_printk</span>(<span style="color:#e6db74">&#34;BPF triggered sys_enter_write from PID %d.</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, pid);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>clang -target bpf minimal.bpf.c -c -o minimal.bpf.o
+</span></span></code></pre></div><p>‍</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

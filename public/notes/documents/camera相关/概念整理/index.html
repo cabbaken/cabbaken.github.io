@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>概念整理</title>
+
+<meta name="description" content="概念整理 AA：自动校准工艺
+ABCC(Assisted Bad Cluster Correction)：辅助坏点族校正
+ABF(Adaptive Bayer Filter)：自适应拜尔滤波器，Raw域单帧降噪。先经过Bilateral Filter去除噪声和边缘，再软阈值处理，在ISP流程前面，如果力度大会影响图像清晰度，力度较小
+Accelerate Meter：重力加速感应器
+ACF(Auto Correlation Function)：自相关系数，描述噪声的空间特性
+ADC(Analog-Digital Convert)：模数转换
+AEC(Automatic Exposure Control)：自动曝光控制
+AF：自动对焦，CDAF(Contrast Detection AF)反差对焦、PDAF(Phase Detection AF)相位对焦
+AFD(Automatic Flicker Detection)：频闪自动检测
+AGW(Advanced Grey World)：灰度世界，基本思想是认为若场景包含足够多的颜色，那么平均值为灰色，用来计算白平衡
+ANR(Advanced Noise Reduction)：单帧降噪，通过多种滤波器组合将高频噪声涂抹或强度减弱，先下采样，同时降chroma noise和luma noise。Edge preserving filter &#43; (1 - α)×Low pass image = Result
+Anti-banding = defilicker：去条纹，通过调整曝光时间实现
+AOI(Angle of Incidence)：入射角
+ASF(Adaptive Spatial Filter)：自适应空间域滤波，看做边缘增强，通过高通滤波增强细节
+BCC(Bad Cluster Correction)：坏点对校正
+BG(Bayer Grid)：Bayer网格
+BLC(Black Level Calibration)：黑电平校正。①AD芯片无法将很小的电压值转换，加偏差；②sensor暗电流
+Bokeh：人像虚化
+BPC(Bad Pixel Correction)：坏点校正，成因sensor工艺（静态坏点）和噪声（动态坏点）
+BPS(Bayer Processing Segment)：硬件模块，主要用于拍照图像数据的坏点去除、相位对焦、 去马赛克，下采样、HDR处理以及Bayer的混合降噪处理。
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E6%A6%82%E5%BF%B5%E6%95%B4%E7%90%86/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E6%A6%82%E5%BF%B5%E6%95%B4%E7%90%86/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E6%A6%82%E5%BF%B5%E6%95%B4%E7%90%86/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="概念整理">
+<meta property="og:description" content="概念整理
+AA：自动校准工艺
+ABCC(Assisted Bad Cluster Correction)：辅助坏点族校正
+ABF(Adaptive Bayer Filter)：自适应拜尔滤波器，Raw域单帧降噪。先经过Bilateral Filter去除噪声和边缘，再软阈值处理，在ISP流程前面，如果力度大会影响图像清晰度，力度较小
+Accelerate Meter：重力加速感应器
+ACF(Auto Correlation Function)：自相关系数，描述噪声的空间特性
+ADC(Analog-Digital Convert)：模数转换
+AEC(Automatic Exposure Control)：自动曝光控制
+AF：自动对焦，CDAF(Contrast Detection AF)反差对焦、PDAF(Phase Detection AF)相位对焦
+AFD(Automatic Flicker Detection)：频闪自动检测
+AGW(Advanced Grey World)：灰度世界，基本思想是认为若场景包含足够多的颜色，那么平均值为灰色，用来计算白平衡
+ANR(Advanced Noise Reduction)：单帧降噪，通过多种滤波器组合将高频噪声涂抹或强度减弱，先下采样，同时降chroma noise和luma noise。Edge preserving filter &#43; (1 - α)×Low pass image = Result
+Anti-banding = defilicker：去条纹，通过调整曝光时间实现
+AOI(Angle of Incidence)：入射角
+ASF(Adaptive Spatial Filter)：自适应空间域滤波，看做边缘增强，通过高通滤波增强细节
+BCC(Bad Cluster Correction)：坏点对校正
+BG(Bayer Grid)：Bayer网格
+BLC(Black Level Calibration)：黑电平校正。①AD芯片无法将很小的电压值转换，加偏差；②sensor暗电流
+Bokeh：人像虚化
+BPC(Bad Pixel Correction)：坏点校正，成因sensor工艺（静态坏点）和噪声（动态坏点）
+BPS(Bayer Processing Segment)：硬件模块，主要用于拍照图像数据的坏点去除、相位对焦、 去马赛克，下采样、HDR处理以及Bayer的混合降噪处理。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E6%A6%82%E5%BF%B5%E6%95%B4%E7%90%86/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="概念整理">
+<meta name="twitter:description" content="概念整理
+AA：自动校准工艺
+ABCC(Assisted Bad Cluster Correction)：辅助坏点族校正
+ABF(Adaptive Bayer Filter)：自适应拜尔滤波器，Raw域单帧降噪。先经过Bilateral Filter去除噪声和边缘，再软阈值处理，在ISP流程前面，如果力度大会影响图像清晰度，力度较小
+Accelerate Meter：重力加速感应器
+ACF(Auto Correlation Function)：自相关系数，描述噪声的空间特性
+ADC(Analog-Digital Convert)：模数转换
+AEC(Automatic Exposure Control)：自动曝光控制
+AF：自动对焦，CDAF(Contrast Detection AF)反差对焦、PDAF(Phase Detection AF)相位对焦
+AFD(Automatic Flicker Detection)：频闪自动检测
+AGW(Advanced Grey World)：灰度世界，基本思想是认为若场景包含足够多的颜色，那么平均值为灰色，用来计算白平衡
+ANR(Advanced Noise Reduction)：单帧降噪，通过多种滤波器组合将高频噪声涂抹或强度减弱，先下采样，同时降chroma noise和luma noise。Edge preserving filter &#43; (1 - α)×Low pass image = Result
+Anti-banding = defilicker：去条纹，通过调整曝光时间实现
+AOI(Angle of Incidence)：入射角
+ASF(Adaptive Spatial Filter)：自适应空间域滤波，看做边缘增强，通过高通滤波增强细节
+BCC(Bad Cluster Correction)：坏点对校正
+BG(Bayer Grid)：Bayer网格
+BLC(Black Level Calibration)：黑电平校正。①AD芯片无法将很小的电压值转换，加偏差；②sensor暗电流
+Bokeh：人像虚化
+BPC(Bad Pixel Correction)：坏点校正，成因sensor工艺（静态坏点）和噪声（动态坏点）
+BPS(Bayer Processing Segment)：硬件模块，主要用于拍照图像数据的坏点去除、相位对焦、 去马赛克，下采样、HDR处理以及Bayer的混合降噪处理。">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "概念整理",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  7829 ,
+  "description": "概念整理 AA：自动校准工艺\nABCC(Assisted Bad Cluster Correction)：辅助坏点族校正\nABF(Adaptive Bayer Filter)：自适应拜尔滤波器，Raw域单帧降噪。先经过Bilateral Filter去除噪声和边缘，再软阈值处理，在ISP流程前面，如果力度大会影响图像清晰度，力度较小\nAccelerate Meter：重力加速感应器\nACF(Auto Correlation Function)：自相关系数，描述噪声的空间特性\nADC(Analog-Digital Convert)：模数转换\nAEC(Automatic Exposure Control)：自动曝光控制\nAF：自动对焦，CDAF(Contrast Detection AF)反差对焦、PDAF(Phase Detection AF)相位对焦\nAFD(Automatic Flicker Detection)：频闪自动检测\nAGW(Advanced Grey World)：灰度世界，基本思想是认为若场景包含足够多的颜色，那么平均值为灰色，用来计算白平衡\nANR(Advanced Noise Reduction)：单帧降噪，通过多种滤波器组合将高频噪声涂抹或强度减弱，先下采样，同时降chroma noise和luma noise。Edge preserving filter + (1 - α)×Low pass image = Result\nAnti-banding = defilicker：去条纹，通过调整曝光时间实现\nAOI(Angle of Incidence)：入射角\nASF(Adaptive Spatial Filter)：自适应空间域滤波，看做边缘增强，通过高通滤波增强细节\nBCC(Bad Cluster Correction)：坏点对校正\nBG(Bayer Grid)：Bayer网格\nBLC(Black Level Calibration)：黑电平校正。①AD芯片无法将很小的电压值转换，加偏差；②sensor暗电流\nBokeh：人像虚化\nBPC(Bad Pixel Correction)：坏点校正，成因sensor工艺（静态坏点）和噪声（动态坏点）\nBPS(Bayer Processing Segment)：硬件模块，主要用于拍照图像数据的坏点去除、相位对焦、 去马赛克，下采样、HDR处理以及Bayer的混合降噪处理。\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="概念整理">概念整理</h1>
+<p>AA：自动校准工艺</p>
+<p>ABCC(Assisted Bad Cluster Correction)：辅助坏点族校正</p>
+<p>ABF(Adaptive Bayer Filter)：自适应拜尔滤波器，Raw域单帧降噪。先经过Bilateral Filter去除噪声和边缘，再软阈值处理，在ISP流程前面，如果力度大会影响图像清晰度，力度较小</p>
+<p>Accelerate Meter：重力加速感应器</p>
+<p>ACF(Auto Correlation Function)：自相关系数，描述噪声的空间特性</p>
+<p>ADC(Analog-Digital Convert)：模数转换</p>
+<p>AEC(Automatic Exposure Control)：自动曝光控制</p>
+<p>AF：自动对焦，CDAF(Contrast Detection AF)反差对焦、PDAF(Phase Detection AF)相位对焦</p>
+<p>AFD(Automatic Flicker Detection)：频闪自动检测</p>
+<p>AGW(Advanced Grey World)：灰度世界，基本思想是认为若场景包含足够多的颜色，那么平均值为灰色，用来计算白平衡</p>
+<p>ANR(Advanced Noise Reduction)：单帧降噪，通过多种滤波器组合将高频噪声涂抹或强度减弱，先下采样，同时降chroma noise和luma noise。Edge preserving filter + (1 - α)×Low pass image = Result</p>
+<p>Anti-banding = defilicker：去条纹，通过调整曝光时间实现</p>
+<p>AOI(Angle of Incidence)：入射角</p>
+<p>ASF(Adaptive Spatial Filter)：自适应空间域滤波，看做边缘增强，通过高通滤波增强细节</p>
+<p>BCC(Bad Cluster Correction)：坏点对校正</p>
+<p>BG(Bayer Grid)：Bayer网格</p>
+<p>BLC(Black Level Calibration)：黑电平校正。①AD芯片无法将很小的电压值转换，加偏差；②sensor暗电流</p>
+<p>Bokeh：人像虚化</p>
+<p>BPC(Bad Pixel Correction)：坏点校正，成因sensor工艺（静态坏点）和噪声（动态坏点）</p>
+<p>BPS(Bayer Processing Segment)：硬件模块，主要用于拍照图像数据的坏点去除、相位对焦、 去马赛克，下采样、HDR处理以及Bayer的混合降噪处理。</p>
+<p>BPS比IFE多了GIC、HNR、多帧等模块</p>
+<p>BSI(Back Side Illumination)：背照式传感器，金属布线层后置，解决了crosstalk。对应的FSI(Front Side Illumination)为前照式传感器。</p>
+<p>BSP(Board Support Package)：板级支持包，开发包</p>
+<p>CAC(Chromatic Abberation Correction, Color Aliasing Correction, Color Artifact Correction)：色差校正，depurple，产生原因：垂轴色差和轴向色差</p>
+<p>CAF(Contrast AF)：对比度检测法</p>
+<p>CAF(Continuous Auto Focus)：持续自动对焦</p>
+<p>CC(Color Correction)：颜色校正</p>
+<p>CCM(Color Correction Matrix)：颜色校正矩阵</p>
+<p>CCM(CMOS Camera Module)：CMOS照相模组</p>
+<p>CCT(Correlated Color Temperature)：色温</p>
+<p>CDAF(Contrast Detection AF)：反差对焦</p>
+<p>CE(Chroma Enhancement)：色度增强</p>
+<p>CIS(CMOS Image Sensor)：CMOS图像传感器</p>
+<p>COB(Chip On Board)：板上芯片封装</p>
+<p>CPP(Camera Post Processor)：相机后处理</p>
+<p>CRA(Chief Ray Angle)：主光线角度。CRA过大会导致颜色反转</p>
+<p>CSC(Color Space Convert)：颜色空间转换</p>
+<p>CSM(Color Space Matrix)：颜色空间矩阵</p>
+<p>CST(Color Space Transform)：颜色空间转换</p>
+<p>CV(Color Conversion)：颜色空间转换，如RGB→YCrCb</p>
+<p>Depurple：去紫边，通过标定+校正，修正纵向色差和横向色差</p>
+<p>DOF(Depth of Field)：景深</p>
+<p>DPC(Defect Pixel Correction)：坏点校正。坏点分类：静态坏点（工艺）、动态坏点（增益、温度）、hot pixel（亮坏点）、dead pixel（暗坏点）、weak pixel（没有特别亮或暗的坏点）</p>
+<p>DR(Dymatic Range)：动态范围，20log(最大不饱和电流/底电流)，反应显示设备能呈现的最大最小亮度，DR越大，图像明暗细节越丰富。</p>
+<p>EE(Edge Enhancement)：边缘增强</p>
+<p>EEPROM：以独立IC形式存在于模组内部，可重复擦写</p>
+<p>EIS(Electric Image Stabilization)：电子防抖技术，用重力传感器、陀螺仪侦测抖动幅度，动态调节ISO、快门和成像算法，通过软件实现运动补偿</p>
+<p>Encoder：压缩编码</p>
+<p>EOL(End of Line)：产品测试、检验、包装</p>
+<p>EV(Exposure Value)：曝光补偿</p>
+<p>ESF(Edge Spread Function)：边缘扩散函数，微分得到LSF(Line Spread Function)线扩散函数</p>
+<p>EXIF(Exchangeable Image File)：可改变图像文件</p>
+<p>FD(Face Detection)：人脸检测</p>
+<p>FR(Face Recognition)：人脸识别</p>
+<p>FIR(Finite Impulse Response) filter：有限脉冲响应滤波器，用于时域多帧去噪</p>
+<p>FOV：视场角</p>
+<p>FSI：前照式传感器</p>
+<p>FWC(Full Well Capacity)：最大阱容，每个像素的光电二极管电容能够积累的最大电荷量</p>
+<p>GIC(Green Imbalance Correction)：半导体、microlens等原因导致Gr和Gb失衡</p>
+<p>GM(Golden Module)：Golden模组</p>
+<p>GTM(Global Tone Mapping)：全局色调映射</p>
+<p>Gyro：陀螺仪</p>
+<p>HAF(Hybrid Auto Focus)：混合对焦</p>
+<p>HDR(High Dymatic Range)：高动态范围。流程：提取灰度图像→图像配准→灰度融合→图像色彩恢复。HDR常见问题：鬼影、曝光时间选择、颜色效果不自然</p>
+<p>Staggered HDR：单帧逐行HDR，每一行都由三组读出电路分别处理短中长三次曝光</p>
+<p>3HDR：像素级分级曝光</p>
+<p>HNR(Hybrid Noise Reduction)：混合噪声去除模块，是由离散余弦变换（DCT变换）的频域降噪、梯度平滑和空间域降噪共同组成，只用来降luma noise，不能降chroma noise。</p>
+<p>ICA(Image Correction and Ajustment)：帧内畸变校正，在IPE模块</p>
+<p>ICL(Imaging Codec Layer)：图像编解码层</p>
+<p>IIR(Infinite Impulse Response) filter：无限脉冲响应滤波器，用于时域多帧去噪</p>
+<p>IFE(Image Front End)：Sensor输出的数据首先会到达IFE，该硬件模块会针对preview以及video去做一些颜色校正、下采样、去马赛克统计3A数据的处理</p>
+<p>IMU(Inertial Measurement Unit)：惯性传感器，检测和测量加速度与旋转运动的传感器</p>
+<p>IPE(Image Processing Engine)：该硬件模块主要由NPS、PPS两部分组成，承担诸如硬件降噪（MFNR、MFSR）、图像的裁剪、降噪、颜色处理、细节增强等图像处理工作。ICA-帧内畸变校正，ANR-噪声去除</p>
+<p>IS(Image Stabilization)：图像稳定</p>
+<p>2D-Lut：HSL空间算法，将H/S划分形成二维查找表，H-24个区间(15°)，S-16个区间(0.0625)</p>
+<p>LA(Luma Adaptation)：亮度调整</p>
+<p>LCA(Lateral Chromatic Abberation)：横向色差</p>
+<p>LDC(Lens Distortion Correction)：镜头畸变校正</p>
+<p>LHA：镜头镜座封装</p>
+<p>Light Meter：测光仪</p>
+<p>Logarithmic Sensor：HDR中将图像从线性压缩到log域，在isp端用反函数恢复到线性</p>
+<p>LSC(Lens Shading Correction)：镜头阴影校正，lens shading包括luma shading和color shading</p>
+<p>LSF(Line Spread Function)：线扩散函数，一条线上ESF的变化过程，积分得到ESF(边缘扩散函数)</p>
+<p>LTM(Local Tone Mapping)：局部色调映射，根据局部亮度进行增强</p>
+<p>MCE(Memory Color Enhancement)：记忆色增强</p>
+<p>MCTF(Motion Compensated Temporal-Filtering)：运动补偿是通过先前的局部图像来预测、补偿当前的局部图像，它是减少帧序列冗余信息的时域滤波方法。如HDR的Motion Detection中，运动区blend更多短帧，静止区blend更多长帧。</p>
+<p>MLC(Misleading Color)：误导性颜色，如蓝色物体被识别成高色温光源，黄色物体被识别成低色温光源。</p>
+<p>MFNR(Multi-frame Noise Reduction)：多帧降噪</p>
+<p>MTF(Modulation Transform Function)：调制传递函数，调制度随空间频率变化的函数</p>
+<p>MTF和demosaic关系：采样频率≥2信号频率</p>
+<p>MTF和sharpening、focus互相影响</p>
+<p>NR(Noise Reduction)：降噪</p>
+<p>NPS(Noise Power Spectrum)：噪声功率谱，ACF的FFT</p>
+<p>NPS(Noise Processing Segment)：噪声处理模块，位于IPE硬件模块</p>
+<p>OB(Optical Black)：黑电平，10bit raw图经sensor内部处理维持在64</p>
+<p>OIS(Optical Image Stabilization)：光学防抖</p>
+<p>OTP(One-Time Programming)：sensor内部预留的供用户读写的熔断式寄存器，不可重复擦写</p>
+<p>PDAF(Phase Detection AF)：相位对焦</p>
+<p>PDPC(PD Pixel Correction)：PD像素校正</p>
+<p>PLD(Physical Layer Driver)：物理层驱动</p>
+<p>PPS(Post Processing Segment)：后处理模块</p>
+<p>PSF(Point Spread Function)：点光源成像后的亮度分布函数</p>
+<p>RDI(Raw Dump Interface)：原始数据转存端口</p>
+<p>RI(Relative Intensity)：相对亮度</p>
+<p>RGB2YUV：将亮度和色度分开，例如在去彩噪时不会损失图像的亮度细节，对亮度处理时又不会损失图像的色彩细节，YCrCb就是一种色彩空间。每个像素一个Y，2~4个像素共用UV。</p>
+<p>Rolloff：由于模组镜头进光量限制，镜头成像会有暗角，通过Rolloff算法可使Y_corner/Y_center提升</p>
+<p>SAT：利用空间对齐变换技术实现镜头之间的平滑切换</p>
+<p>SCD(Scene Change Detect)：场景变换检测</p>
+<p>SCE(Skin Color Enhancement)：肤色增强</p>
+<p>SFR(Spatial Frenquency Response)：空间频率响应，用于成像系统（包含光学系统），LSF的傅里叶变换</p>
+<p>Shading：图像渐晕，影响因素：焦距、光圈</p>
+<p>luma shading：lens各位置和中心折射率不同。由于摄像头镜片直径、光阑大小、垫片孔径的限制，部分离轴光束被遮挡使周边视场的光照度降低
+color shading：lens对不同光谱的shift不同，导致入射光线中不同波长的光线落在Sensor的不同位置
+SMT(Surface Mounted Technology)：元器件贴装技术</p>
+<p>SNR(Skin Noise Reduce)：肤色降噪</p>
+<p>SNR(Signal-to-noise Ratio)：信噪比</p>
+<p>SOC(System on Chip)：系统级芯片，包括AP(Application Processor)应用处理器、BP基带处理器、GPS全球定位系统、RAM内存、ROM存储</p>
+<p>SOF(Start of Frame)：帧开始</p>
+<p>SR(Super Resolution)：超分辨</p>
+<p>STD(standard deviation)：标准差</p>
+<p>SWG(Simple Gray World)：简单灰度世界，基于图像全局统计特征的经典白平衡算法</p>
+<p>Tele：长焦镜头</p>
+<p>TF(Temporal Filter)：时域降噪，核心是ghost detection（通过比较当前帧和上一帧区别，判断当前帧的图中哪部分是运动区域，哪部分是静止区域）和blending，难点：帧与帧对齐、运动物体检测、局部单帧降噪与多帧降噪强度的balance</p>
+<p>TOF(Time Of Fly)：激光测距法</p>
+<p>USM(Unsharp Masking)：反锐化掩膜</p>
+<p>U-tele：潜望长焦</p>
+<p>VCM(Voice Coil Motor)：音圈马达</p>
+<h2 id="zslzero-shutter-log零延时拍照">ZSL(Zero Shutter Log)：零延时拍照</h2>
+<h2 id="lastmod-2025-03-11t094648z">title: 概念整理
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="概念整理-1">概念整理</h1>
+<p>AA：自动校准工艺</p>
+<p>ABCC(Assisted Bad Cluster Correction)：辅助坏点族校正</p>
+<p>ABF(Adaptive Bayer Filter)：自适应拜尔滤波器，Raw域单帧降噪。先经过Bilateral Filter去除噪声和边缘，再软阈值处理，在ISP流程前面，如果力度大会影响图像清晰度，力度较小</p>
+<p>Accelerate Meter：重力加速感应器</p>
+<p>ACF(Auto Correlation Function)：自相关系数，描述噪声的空间特性</p>
+<p>ADC(Analog-Digital Convert)：模数转换</p>
+<p>AEC(Automatic Exposure Control)：自动曝光控制</p>
+<p>AF：自动对焦，CDAF(Contrast Detection AF)反差对焦、PDAF(Phase Detection AF)相位对焦</p>
+<p>AFD(Automatic Flicker Detection)：频闪自动检测</p>
+<p>AGW(Advanced Grey World)：灰度世界，基本思想是认为若场景包含足够多的颜色，那么平均值为灰色，用来计算白平衡</p>
+<p>ANR(Advanced Noise Reduction)：单帧降噪，通过多种滤波器组合将高频噪声涂抹或强度减弱，先下采样，同时降chroma noise和luma noise。Edge preserving filter + (1 - α)×Low pass image = Result</p>
+<p>Anti-banding = defilicker：去条纹，通过调整曝光时间实现</p>
+<p>AOI(Angle of Incidence)：入射角</p>
+<p>ASF(Adaptive Spatial Filter)：自适应空间域滤波，看做边缘增强，通过高通滤波增强细节</p>
+<p>BCC(Bad Cluster Correction)：坏点对校正</p>
+<p>BG(Bayer Grid)：Bayer网格</p>
+<p>BLC(Black Level Calibration)：黑电平校正。①AD芯片无法将很小的电压值转换，加偏差；②sensor暗电流</p>
+<p>Bokeh：人像虚化</p>
+<p>BPC(Bad Pixel Correction)：坏点校正，成因sensor工艺（静态坏点）和噪声（动态坏点）</p>
+<p>BPS(Bayer Processing Segment)：硬件模块，主要用于拍照图像数据的坏点去除、相位对焦、 去马赛克，下采样、HDR处理以及Bayer的混合降噪处理。</p>
+<p>BPS比IFE多了GIC、HNR、多帧等模块</p>
+<p>BSI(Back Side Illumination)：背照式传感器，金属布线层后置，解决了crosstalk。对应的FSI(Front Side Illumination)为前照式传感器。</p>
+<p>BSP(Board Support Package)：板级支持包，开发包</p>
+<p>CAC(Chromatic Abberation Correction, Color Aliasing Correction, Color Artifact Correction)：色差校正，depurple，产生原因：垂轴色差和轴向色差</p>
+<p>CAF(Contrast AF)：对比度检测法</p>
+<p>CAF(Continuous Auto Focus)：持续自动对焦</p>
+<p>CC(Color Correction)：颜色校正</p>
+<p>CCM(Color Correction Matrix)：颜色校正矩阵</p>
+<p>CCM(CMOS Camera Module)：CMOS照相模组</p>
+<p>CCT(Correlated Color Temperature)：色温</p>
+<p>CDAF(Contrast Detection AF)：反差对焦</p>
+<p>CE(Chroma Enhancement)：色度增强</p>
+<p>CIS(CMOS Image Sensor)：CMOS图像传感器</p>
+<p>COB(Chip On Board)：板上芯片封装</p>
+<p>CPP(Camera Post Processor)：相机后处理</p>
+<p>CRA(Chief Ray Angle)：主光线角度。CRA过大会导致颜色反转</p>
+<p>CSC(Color Space Convert)：颜色空间转换</p>
+<p>CSM(Color Space Matrix)：颜色空间矩阵</p>
+<p>CST(Color Space Transform)：颜色空间转换</p>
+<p>CV(Color Conversion)：颜色空间转换，如RGB→YCrCb</p>
+<p>Depurple：去紫边，通过标定+校正，修正纵向色差和横向色差</p>
+<p>DOF(Depth of Field)：景深</p>
+<p>DPC(Defect Pixel Correction)：坏点校正。坏点分类：静态坏点（工艺）、动态坏点（增益、温度）、hot pixel（亮坏点）、dead pixel（暗坏点）、weak pixel（没有特别亮或暗的坏点）</p>
+<p>DR(Dymatic Range)：动态范围，20log(最大不饱和电流/底电流)，反应显示设备能呈现的最大最小亮度，DR越大，图像明暗细节越丰富。</p>
+<p>EE(Edge Enhancement)：边缘增强</p>
+<p>EEPROM：以独立IC形式存在于模组内部，可重复擦写</p>
+<p>EIS(Electric Image Stabilization)：电子防抖技术，用重力传感器、陀螺仪侦测抖动幅度，动态调节ISO、快门和成像算法，通过软件实现运动补偿</p>
+<p>Encoder：压缩编码</p>
+<p>EOL(End of Line)：产品测试、检验、包装</p>
+<p>EV(Exposure Value)：曝光补偿</p>
+<p>ESF(Edge Spread Function)：边缘扩散函数，微分得到LSF(Line Spread Function)线扩散函数</p>
+<p>EXIF(Exchangeable Image File)：可改变图像文件</p>
+<p>FD(Face Detection)：人脸检测</p>
+<p>FR(Face Recognition)：人脸识别</p>
+<p>FIR(Finite Impulse Response) filter：有限脉冲响应滤波器，用于时域多帧去噪</p>
+<p>FOV：视场角</p>
+<p>FSI：前照式传感器</p>
+<p>FWC(Full Well Capacity)：最大阱容，每个像素的光电二极管电容能够积累的最大电荷量</p>
+<p>GIC(Green Imbalance Correction)：半导体、microlens等原因导致Gr和Gb失衡</p>
+<p>GM(Golden Module)：Golden模组</p>
+<p>GTM(Global Tone Mapping)：全局色调映射</p>
+<p>Gyro：陀螺仪</p>
+<p>HAF(Hybrid Auto Focus)：混合对焦</p>
+<p>HDR(High Dymatic Range)：高动态范围。流程：提取灰度图像→图像配准→灰度融合→图像色彩恢复。HDR常见问题：鬼影、曝光时间选择、颜色效果不自然</p>
+<p>Staggered HDR：单帧逐行HDR，每一行都由三组读出电路分别处理短中长三次曝光</p>
+<p>3HDR：像素级分级曝光</p>
+<p>HNR(Hybrid Noise Reduction)：混合噪声去除模块，是由离散余弦变换（DCT变换）的频域降噪、梯度平滑和空间域降噪共同组成，只用来降luma noise，不能降chroma noise。</p>
+<p>ICA(Image Correction and Ajustment)：帧内畸变校正，在IPE模块</p>
+<p>ICL(Imaging Codec Layer)：图像编解码层</p>
+<p>IIR(Infinite Impulse Response) filter：无限脉冲响应滤波器，用于时域多帧去噪</p>
+<p>IFE(Image Front End)：Sensor输出的数据首先会到达IFE，该硬件模块会针对preview以及video去做一些颜色校正、下采样、去马赛克统计3A数据的处理</p>
+<p>IMU(Inertial Measurement Unit)：惯性传感器，检测和测量加速度与旋转运动的传感器</p>
+<p>IPE(Image Processing Engine)：该硬件模块主要由NPS、PPS两部分组成，承担诸如硬件降噪（MFNR、MFSR）、图像的裁剪、降噪、颜色处理、细节增强等图像处理工作。ICA-帧内畸变校正，ANR-噪声去除</p>
+<p>IS(Image Stabilization)：图像稳定</p>
+<p>2D-Lut：HSL空间算法，将H/S划分形成二维查找表，H-24个区间(15°)，S-16个区间(0.0625)</p>
+<p>LA(Luma Adaptation)：亮度调整</p>
+<p>LCA(Lateral Chromatic Abberation)：横向色差</p>
+<p>LDC(Lens Distortion Correction)：镜头畸变校正</p>
+<p>LHA：镜头镜座封装</p>
+<p>Light Meter：测光仪</p>
+<p>Logarithmic Sensor：HDR中将图像从线性压缩到log域，在isp端用反函数恢复到线性</p>
+<p>LSC(Lens Shading Correction)：镜头阴影校正，lens shading包括luma shading和color shading</p>
+<p>LSF(Line Spread Function)：线扩散函数，一条线上ESF的变化过程，积分得到ESF(边缘扩散函数)</p>
+<p>LTM(Local Tone Mapping)：局部色调映射，根据局部亮度进行增强</p>
+<p>MCE(Memory Color Enhancement)：记忆色增强</p>
+<p>MCTF(Motion Compensated Temporal-Filtering)：运动补偿是通过先前的局部图像来预测、补偿当前的局部图像，它是减少帧序列冗余信息的时域滤波方法。如HDR的Motion Detection中，运动区blend更多短帧，静止区blend更多长帧。</p>
+<p>MLC(Misleading Color)：误导性颜色，如蓝色物体被识别成高色温光源，黄色物体被识别成低色温光源。</p>
+<p>MFNR(Multi-frame Noise Reduction)：多帧降噪</p>
+<p>MTF(Modulation Transform Function)：调制传递函数，调制度随空间频率变化的函数</p>
+<p>MTF和demosaic关系：采样频率≥2信号频率</p>
+<p>MTF和sharpening、focus互相影响</p>
+<p>NR(Noise Reduction)：降噪</p>
+<p>NPS(Noise Power Spectrum)：噪声功率谱，ACF的FFT</p>
+<p>NPS(Noise Processing Segment)：噪声处理模块，位于IPE硬件模块</p>
+<p>OB(Optical Black)：黑电平，10bit raw图经sensor内部处理维持在64</p>
+<p>OIS(Optical Image Stabilization)：光学防抖</p>
+<p>OTP(One-Time Programming)：sensor内部预留的供用户读写的熔断式寄存器，不可重复擦写</p>
+<p>PDAF(Phase Detection AF)：相位对焦</p>
+<p>PDPC(PD Pixel Correction)：PD像素校正</p>
+<p>PLD(Physical Layer Driver)：物理层驱动</p>
+<p>PPS(Post Processing Segment)：后处理模块</p>
+<p>PSF(Point Spread Function)：点光源成像后的亮度分布函数</p>
+<p>RDI(Raw Dump Interface)：原始数据转存端口</p>
+<p>RI(Relative Intensity)：相对亮度</p>
+<p>RGB2YUV：将亮度和色度分开，例如在去彩噪时不会损失图像的亮度细节，对亮度处理时又不会损失图像的色彩细节，YCrCb就是一种色彩空间。每个像素一个Y，2~4个像素共用UV。</p>
+<p>Rolloff：由于模组镜头进光量限制，镜头成像会有暗角，通过Rolloff算法可使Y_corner/Y_center提升</p>
+<p>SAT：利用空间对齐变换技术实现镜头之间的平滑切换</p>
+<p>SCD(Scene Change Detect)：场景变换检测</p>
+<p>SCE(Skin Color Enhancement)：肤色增强</p>
+<p>SFR(Spatial Frenquency Response)：空间频率响应，用于成像系统（包含光学系统），LSF的傅里叶变换</p>
+<p>Shading：图像渐晕，影响因素：焦距、光圈</p>
+<p>luma shading：lens各位置和中心折射率不同。由于摄像头镜片直径、光阑大小、垫片孔径的限制，部分离轴光束被遮挡使周边视场的光照度降低
+color shading：lens对不同光谱的shift不同，导致入射光线中不同波长的光线落在Sensor的不同位置
+SMT(Surface Mounted Technology)：元器件贴装技术</p>
+<p>SNR(Skin Noise Reduce)：肤色降噪</p>
+<p>SNR(Signal-to-noise Ratio)：信噪比</p>
+<p>SOC(System on Chip)：系统级芯片，包括AP(Application Processor)应用处理器、BP基带处理器、GPS全球定位系统、RAM内存、ROM存储</p>
+<p>SOF(Start of Frame)：帧开始</p>
+<p>SR(Super Resolution)：超分辨</p>
+<p>STD(standard deviation)：标准差</p>
+<p>SWG(Simple Gray World)：简单灰度世界，基于图像全局统计特征的经典白平衡算法</p>
+<p>Tele：长焦镜头</p>
+<p>TF(Temporal Filter)：时域降噪，核心是ghost detection（通过比较当前帧和上一帧区别，判断当前帧的图中哪部分是运动区域，哪部分是静止区域）和blending，难点：帧与帧对齐、运动物体检测、局部单帧降噪与多帧降噪强度的balance</p>
+<p>TOF(Time Of Fly)：激光测距法</p>
+<p>USM(Unsharp Masking)：反锐化掩膜</p>
+<p>U-tele：潜望长焦</p>
+<p>VCM(Voice Coil Motor)：音圈马达</p>
+<p>ZSL(Zero Shutter Log)：零延时拍照</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

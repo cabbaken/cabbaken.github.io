@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>Android系统启动流程</title>
+
+<meta name="description" content="Android系统启动流程 Android系统基于Linux，因此启动Android的第一步是启动Linux。
+Linux kernel startup Bootloader Bootloader是在计算机或嵌入式系统启动时运行的一段小程序。其主要功能是初始化系统硬件和加载操作系统。Bootloader在电源开启后由系统的固件（BIOS/UEFI）调用，并准备系统硬件（如内存控制器、处理器、外设）以及软件环境，使其准备好加载并启动操作系统。
+电源开启：按下开机键，主板发送信号给电源。设备电源开启后，固件（BIOS/UEFI）执行自检（Power-On Self Test, POST）并识别启动设备。 加载Bootloader：固件从预设的启动设备（如硬盘、SSD、USB驱动器或网络）中加载Bootloader到内存中执行。 硬件初始化：Bootloader配置必要的硬件资源，如设置内存控制器、检测外部存储设备等。 加载操作系统：Bootloader从存储设备读取操作系统的核心映像（如Linux的vmlinuz，Windows的bootmgr），并将其加载到内存中。 传递控制权：一旦操作系统核心被加载且初始化完成，Bootloader将控制权传递给操作系统，完成启动过程。 Linux kernel kernel处理所有操作系统进程，例如内存管理（MM）、任务调度（schedule）、I/O、进程间通信（IPC）和整个系统控制。kernel启动分为两个阶段：
+Stage 1 在第一阶段，kernel还只是一个压缩镜像文件，所以第一阶段的工作就是将kernel压缩文件加载进内存。kernel会进行自解压（在ARM64架构中，kernel由bootloader解压），并初始化一些基本功能，例如基本内存管理、最基本的硬件初始化。基本完成了基础的CPU架构相关的工作，为第二阶段非架构相关的启动过程做准备。
+Stage 2 在第二阶段（start_kernel()），kernel会设置中断处理（中断向量表），内存相关设置，挂载内存为initramfs（initial ram file system）或initrd（initial RAM disk），作为临时文件系统。
+initrd让kernel能够完全启动并加载驱动（不需要依赖其他硬件设备），initrd包含了大部分可能会需要的驱动，让kernel更小。initramfs是早期用户空间，用于检测并加载需要的设备驱动到用户空间的文件系统。完成后，临时文件系统被真正的用户空间取代。内存被释放，kernel将会启动PID=1的用户空间进程init。
+Idle start_kernel()-&gt; rest_init()-&gt; cpu_startup_entry() PID=0 Idle是PID=0的进程。在start_kernel()中，第一个执行的函数set_task_stack_end_magic(&amp;init_task)将自身进程与init_task链接起来，而init_task是一个全局变量，已经被初始化。也就是说，此时执行start_kernel()的进程是系统中第一个进程，PID被初始化为0，也是唯一一个没有通过fork或kernel_thread创建的进程。在start_kernel()的最后，通过cpu_startup_entry()变为idle进程，CPU在空转时运行此进程。
+Init start_kernel()-&gt; rest_init()-&gt; user_mode_thread(kernel_init)-&gt; 寻找init的文件 kernel_clone()-&gt; copy_process()-&gt; PID=1，虽然此时PID=1，但是依旧是内核线程 run_init_process()-&gt; kernel_execve()-&gt; bprm_execve()-&gt; exec_binprm()-&gt; search_binary_handler()-&gt; fmt-&gt;load_binary()-&gt; load_elf_binary()/load_flat_binary()-&gt; start_thread()-&gt; start_thread_common() 这里转为用户态进程 Init是第一个被kernel启动的用户空间进程，所以PID为1。这是一个后台进程，不与用户直接交互。Init会引导用户空间（挂载文件系统，启动其它程序）。Init拥有多个runlevel（一般是7个，为0~6），不同的runlevel对应init不同的运行状态。Android实现的init的具体功能如下：
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/aosp-related/android%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/aosp-related/android%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/aosp-related/android%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Android系统启动流程">
+<meta property="og:description" content="Android系统启动流程
+Android系统基于Linux，因此启动Android的第一步是启动Linux。
+Linux kernel startup
+Bootloader
+Bootloader是在计算机或嵌入式系统启动时运行的一段小程序。其主要功能是初始化系统硬件和加载操作系统。Bootloader在电源开启后由系统的固件（BIOS/UEFI）调用，并准备系统硬件（如内存控制器、处理器、外设）以及软件环境，使其准备好加载并启动操作系统。
+
+电源开启：按下开机键，主板发送信号给电源。设备电源开启后，固件（BIOS/UEFI）执行自检（Power-On Self Test, POST）并识别启动设备。
+加载Bootloader：固件从预设的启动设备（如硬盘、SSD、USB驱动器或网络）中加载Bootloader到内存中执行。
+硬件初始化：Bootloader配置必要的硬件资源，如设置内存控制器、检测外部存储设备等。
+加载操作系统：Bootloader从存储设备读取操作系统的核心映像（如Linux的vmlinuz，Windows的bootmgr），并将其加载到内存中。
+传递控制权：一旦操作系统核心被加载且初始化完成，Bootloader将控制权传递给操作系统，完成启动过程。
+
+Linux kernel
+kernel处理所有操作系统进程，例如内存管理（MM）、任务调度（schedule）、I/O、进程间通信（IPC）和整个系统控制。kernel启动分为两个阶段：
+Stage 1
+在第一阶段，kernel还只是一个压缩镜像文件，所以第一阶段的工作就是将kernel压缩文件加载进内存。kernel会进行自解压（在ARM64架构中，kernel由bootloader解压），并初始化一些基本功能，例如基本内存管理、最基本的硬件初始化。基本完成了基础的CPU架构相关的工作，为第二阶段非架构相关的启动过程做准备。
+Stage 2
+在第二阶段（start_kernel()），kernel会设置中断处理（中断向量表），内存相关设置，挂载内存为initramfs（initial ram file system）或initrd（initial RAM disk），作为临时文件系统。
+initrd让kernel能够完全启动并加载驱动（不需要依赖其他硬件设备），initrd包含了大部分可能会需要的驱动，让kernel更小。initramfs是早期用户空间，用于检测并加载需要的设备驱动到用户空间的文件系统。完成后，临时文件系统被真正的用户空间取代。内存被释放，kernel将会启动PID=1的用户空间进程init。
+Idle
+start_kernel()-&gt;
+    rest_init()-&gt;
+        cpu_startup_entry()                  PID=0
+Idle是PID=0的进程。在start_kernel()中，第一个执行的函数set_task_stack_end_magic(&amp;init_task)将自身进程与init_task链接起来，而init_task是一个全局变量，已经被初始化。也就是说，此时执行start_kernel()的进程是系统中第一个进程，PID被初始化为0，也是唯一一个没有通过fork或kernel_thread创建的进程。在start_kernel()的最后，通过cpu_startup_entry()变为idle进程，CPU在空转时运行此进程。
+Init
+start_kernel()-&gt;
+    rest_init()-&gt;
+        user_mode_thread(kernel_init)-&gt;      寻找init的文件
+            kernel_clone()-&gt;
+                copy_process()-&gt;             PID=1，虽然此时PID=1，但是依旧是内核线程
+                    run_init_process()-&gt;
+                        kernel_execve()-&gt;
+                            bprm_execve()-&gt;
+                                exec_binprm()-&gt;
+                                    search_binary_handler()-&gt;
+                                        fmt-&gt;load_binary()-&gt;
+                                            load_elf_binary()/load_flat_binary()-&gt;
+                                                start_thread()-&gt;
+                                                    start_thread_common()    这里转为用户态进程
+Init是第一个被kernel启动的用户空间进程，所以PID为1。这是一个后台进程，不与用户直接交互。Init会引导用户空间（挂载文件系统，启动其它程序）。Init拥有多个runlevel（一般是7个，为0~6），不同的runlevel对应init不同的运行状态。Android实现的init的具体功能如下：">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/aosp-related/android%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Android系统启动流程">
+<meta name="twitter:description" content="Android系统启动流程
+Android系统基于Linux，因此启动Android的第一步是启动Linux。
+Linux kernel startup
+Bootloader
+Bootloader是在计算机或嵌入式系统启动时运行的一段小程序。其主要功能是初始化系统硬件和加载操作系统。Bootloader在电源开启后由系统的固件（BIOS/UEFI）调用，并准备系统硬件（如内存控制器、处理器、外设）以及软件环境，使其准备好加载并启动操作系统。
+
+电源开启：按下开机键，主板发送信号给电源。设备电源开启后，固件（BIOS/UEFI）执行自检（Power-On Self Test, POST）并识别启动设备。
+加载Bootloader：固件从预设的启动设备（如硬盘、SSD、USB驱动器或网络）中加载Bootloader到内存中执行。
+硬件初始化：Bootloader配置必要的硬件资源，如设置内存控制器、检测外部存储设备等。
+加载操作系统：Bootloader从存储设备读取操作系统的核心映像（如Linux的vmlinuz，Windows的bootmgr），并将其加载到内存中。
+传递控制权：一旦操作系统核心被加载且初始化完成，Bootloader将控制权传递给操作系统，完成启动过程。
+
+Linux kernel
+kernel处理所有操作系统进程，例如内存管理（MM）、任务调度（schedule）、I/O、进程间通信（IPC）和整个系统控制。kernel启动分为两个阶段：
+Stage 1
+在第一阶段，kernel还只是一个压缩镜像文件，所以第一阶段的工作就是将kernel压缩文件加载进内存。kernel会进行自解压（在ARM64架构中，kernel由bootloader解压），并初始化一些基本功能，例如基本内存管理、最基本的硬件初始化。基本完成了基础的CPU架构相关的工作，为第二阶段非架构相关的启动过程做准备。
+Stage 2
+在第二阶段（start_kernel()），kernel会设置中断处理（中断向量表），内存相关设置，挂载内存为initramfs（initial ram file system）或initrd（initial RAM disk），作为临时文件系统。
+initrd让kernel能够完全启动并加载驱动（不需要依赖其他硬件设备），initrd包含了大部分可能会需要的驱动，让kernel更小。initramfs是早期用户空间，用于检测并加载需要的设备驱动到用户空间的文件系统。完成后，临时文件系统被真正的用户空间取代。内存被释放，kernel将会启动PID=1的用户空间进程init。
+Idle
+start_kernel()-&gt;
+    rest_init()-&gt;
+        cpu_startup_entry()                  PID=0
+Idle是PID=0的进程。在start_kernel()中，第一个执行的函数set_task_stack_end_magic(&amp;init_task)将自身进程与init_task链接起来，而init_task是一个全局变量，已经被初始化。也就是说，此时执行start_kernel()的进程是系统中第一个进程，PID被初始化为0，也是唯一一个没有通过fork或kernel_thread创建的进程。在start_kernel()的最后，通过cpu_startup_entry()变为idle进程，CPU在空转时运行此进程。
+Init
+start_kernel()-&gt;
+    rest_init()-&gt;
+        user_mode_thread(kernel_init)-&gt;      寻找init的文件
+            kernel_clone()-&gt;
+                copy_process()-&gt;             PID=1，虽然此时PID=1，但是依旧是内核线程
+                    run_init_process()-&gt;
+                        kernel_execve()-&gt;
+                            bprm_execve()-&gt;
+                                exec_binprm()-&gt;
+                                    search_binary_handler()-&gt;
+                                        fmt-&gt;load_binary()-&gt;
+                                            load_elf_binary()/load_flat_binary()-&gt;
+                                                start_thread()-&gt;
+                                                    start_thread_common()    这里转为用户态进程
+Init是第一个被kernel启动的用户空间进程，所以PID为1。这是一个后台进程，不与用户直接交互。Init会引导用户空间（挂载文件系统，启动其它程序）。Init拥有多个runlevel（一般是7个，为0~6），不同的runlevel对应init不同的运行状态。Android实现的init的具体功能如下：">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Android系统启动流程",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  3872 ,
+  "description": "Android系统启动流程 Android系统基于Linux，因此启动Android的第一步是启动Linux。\nLinux kernel startup Bootloader Bootloader是在计算机或嵌入式系统启动时运行的一段小程序。其主要功能是初始化系统硬件和加载操作系统。Bootloader在电源开启后由系统的固件（BIOS/UEFI）调用，并准备系统硬件（如内存控制器、处理器、外设）以及软件环境，使其准备好加载并启动操作系统。\n电源开启：按下开机键，主板发送信号给电源。设备电源开启后，固件（BIOS/UEFI）执行自检（Power-On Self Test, POST）并识别启动设备。 加载Bootloader：固件从预设的启动设备（如硬盘、SSD、USB驱动器或网络）中加载Bootloader到内存中执行。 硬件初始化：Bootloader配置必要的硬件资源，如设置内存控制器、检测外部存储设备等。 加载操作系统：Bootloader从存储设备读取操作系统的核心映像（如Linux的vmlinuz，Windows的bootmgr），并将其加载到内存中。 传递控制权：一旦操作系统核心被加载且初始化完成，Bootloader将控制权传递给操作系统，完成启动过程。 Linux kernel kernel处理所有操作系统进程，例如内存管理（MM）、任务调度（schedule）、I/O、进程间通信（IPC）和整个系统控制。kernel启动分为两个阶段：\nStage 1 在第一阶段，kernel还只是一个压缩镜像文件，所以第一阶段的工作就是将kernel压缩文件加载进内存。kernel会进行自解压（在ARM64架构中，kernel由bootloader解压），并初始化一些基本功能，例如基本内存管理、最基本的硬件初始化。基本完成了基础的CPU架构相关的工作，为第二阶段非架构相关的启动过程做准备。\nStage 2 在第二阶段（start_kernel()），kernel会设置中断处理（中断向量表），内存相关设置，挂载内存为initramfs（initial ram file system）或initrd（initial RAM disk），作为临时文件系统。\ninitrd让kernel能够完全启动并加载驱动（不需要依赖其他硬件设备），initrd包含了大部分可能会需要的驱动，让kernel更小。initramfs是早期用户空间，用于检测并加载需要的设备驱动到用户空间的文件系统。完成后，临时文件系统被真正的用户空间取代。内存被释放，kernel将会启动PID=1的用户空间进程init。\nIdle start_kernel()-\u0026gt; rest_init()-\u0026gt; cpu_startup_entry() PID=0 Idle是PID=0的进程。在start_kernel()中，第一个执行的函数set_task_stack_end_magic(\u0026amp;init_task)将自身进程与init_task链接起来，而init_task是一个全局变量，已经被初始化。也就是说，此时执行start_kernel()的进程是系统中第一个进程，PID被初始化为0，也是唯一一个没有通过fork或kernel_thread创建的进程。在start_kernel()的最后，通过cpu_startup_entry()变为idle进程，CPU在空转时运行此进程。\nInit start_kernel()-\u0026gt; rest_init()-\u0026gt; user_mode_thread(kernel_init)-\u0026gt; 寻找init的文件 kernel_clone()-\u0026gt; copy_process()-\u0026gt; PID=1，虽然此时PID=1，但是依旧是内核线程 run_init_process()-\u0026gt; kernel_execve()-\u0026gt; bprm_execve()-\u0026gt; exec_binprm()-\u0026gt; search_binary_handler()-\u0026gt; fmt-\u0026gt;load_binary()-\u0026gt; load_elf_binary()/load_flat_binary()-\u0026gt; start_thread()-\u0026gt; start_thread_common() 这里转为用户态进程 Init是第一个被kernel启动的用户空间进程，所以PID为1。这是一个后台进程，不与用户直接交互。Init会引导用户空间（挂载文件系统，启动其它程序）。Init拥有多个runlevel（一般是7个，为0~6），不同的runlevel对应init不同的运行状态。Android实现的init的具体功能如下：\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="android系统启动流程">Android系统启动流程</h1>
+<p>Android系统基于Linux，因此启动Android的第一步是启动Linux。</p>
+<h1 id="linux-kernel-startup">Linux kernel startup</h1>
+<h2 id="bootloader">Bootloader</h2>
+<p>Bootloader是在计算机或嵌入式系统启动时运行的一段小程序。其主要功能是初始化系统硬件和加载操作系统。Bootloader在电源开启后由系统的固件（BIOS/UEFI）调用，并准备系统硬件（如内存控制器、处理器、外设）以及软件环境，使其准备好加载并启动操作系统。</p>
+<ol>
+<li>电源开启：按下开机键，主板发送信号给电源。设备电源开启后，固件（BIOS/UEFI）执行自检（Power-On Self Test, POST）并识别启动设备。</li>
+<li>加载Bootloader：固件从预设的启动设备（如硬盘、SSD、USB驱动器或网络）中加载Bootloader到内存中执行。</li>
+<li>硬件初始化：Bootloader配置必要的硬件资源，如设置内存控制器、检测外部存储设备等。</li>
+<li>加载操作系统：Bootloader从存储设备读取操作系统的核心映像（如Linux的vmlinuz，Windows的bootmgr），并将其加载到内存中。</li>
+<li>传递控制权：一旦操作系统核心被加载且初始化完成，Bootloader将控制权传递给操作系统，完成启动过程。</li>
+</ol>
+<h2 id="linux-kernel">Linux kernel</h2>
+<p>kernel处理所有操作系统进程，例如内存管理（MM）、任务调度（schedule）、I/O、进程间通信（IPC）和整个系统控制。kernel启动分为两个阶段：</p>
+<h3 id="stage-1">Stage 1</h3>
+<p>在第一阶段，kernel还只是一个压缩镜像文件，所以第一阶段的工作就是将kernel压缩文件加载进内存。kernel会进行自解压（在ARM64架构中，kernel由bootloader解压），并初始化一些基本功能，例如基本内存管理、最基本的硬件初始化。基本完成了基础的CPU架构相关的工作，为第二阶段非架构相关的启动过程做准备。</p>
+<h3 id="stage-2">Stage 2</h3>
+<p>在第二阶段（start_kernel()），kernel会设置中断处理（中断向量表），内存相关设置，挂载内存为initramfs（initial ram file system）或initrd（initial RAM disk），作为临时文件系统。</p>
+<p>initrd让kernel能够完全启动并加载驱动（不需要依赖其他硬件设备），initrd包含了大部分可能会需要的驱动，让kernel更小。initramfs是早期用户空间，用于检测并加载需要的设备驱动到用户空间的文件系统。完成后，临时文件系统被真正的用户空间取代。内存被释放，kernel将会启动PID=1的用户空间进程init。</p>
+<h2 id="idle">Idle</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>start_kernel()-&gt;
+</span></span><span style="display:flex;"><span>    rest_init()-&gt;
+</span></span><span style="display:flex;"><span>        cpu_startup_entry()                  PID=0
+</span></span></code></pre></div><p>Idle是PID=0的进程。在start_kernel()中，第一个执行的函数set_task_stack_end_magic(&amp;init_task)将自身进程与init_task链接起来，而init_task是一个全局变量，已经被初始化。也就是说，此时执行start_kernel()的进程是系统中第一个进程，PID被初始化为0，也是唯一一个没有通过fork或kernel_thread创建的进程。在start_kernel()的最后，通过cpu_startup_entry()变为idle进程，CPU在空转时运行此进程。</p>
+<h2 id="init">Init</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>start_kernel()-&gt;
+</span></span><span style="display:flex;"><span>    rest_init()-&gt;
+</span></span><span style="display:flex;"><span>        user_mode_thread(kernel_init)-&gt;      寻找init的文件
+</span></span><span style="display:flex;"><span>            kernel_clone()-&gt;
+</span></span><span style="display:flex;"><span>                copy_process()-&gt;             PID=1，虽然此时PID=1，但是依旧是内核线程
+</span></span><span style="display:flex;"><span>                    run_init_process()-&gt;
+</span></span><span style="display:flex;"><span>                        kernel_execve()-&gt;
+</span></span><span style="display:flex;"><span>                            bprm_execve()-&gt;
+</span></span><span style="display:flex;"><span>                                exec_binprm()-&gt;
+</span></span><span style="display:flex;"><span>                                    search_binary_handler()-&gt;
+</span></span><span style="display:flex;"><span>                                        fmt-&gt;load_binary()-&gt;
+</span></span><span style="display:flex;"><span>                                            load_elf_binary()/load_flat_binary()-&gt;
+</span></span><span style="display:flex;"><span>                                                start_thread()-&gt;
+</span></span><span style="display:flex;"><span>                                                    start_thread_common()    这里转为用户态进程
+</span></span></code></pre></div><p>Init是第一个被kernel启动的用户空间进程，所以PID为1。这是一个后台进程，不与用户直接交互。Init会引导用户空间（挂载文件系统，启动其它程序）。Init拥有多个runlevel（一般是7个，为0~6），不同的runlevel对应init不同的运行状态。Android实现的init的具体功能如下：</p>
+<p>FirstStageMain():</p>
+<ol>
+<li>挂载<a href="https://docs.kernel.org/filesystems/tmpfs.html" target="_blank" rel="noopener">tmpfs</a>, proc, sysfs生成/proc, /dev, /sys</li>
+<li>加载kernel modules   <code>LoadKernelModules()</code>​</li>
+<li>切换新的根目录（依旧在ramdisk中），释放旧的根文件系统使用的内存（过去创造的临时文件系统）  <code>SwitchRoot()</code>​</li>
+<li>挂载设备树的fstab中描述的分区  <code>DoFirstStageMount()</code>​</li>
+<li>在firststage的最后重新运行init并加上参数&quot;selinux_setup&quot;  <code>execv()</code>​</li>
+</ol>
+<p>SetupSelinux():</p>
+<ol>
+<li>安卓旧版本会在这里为了兼容老机器挂载system_ext.img  <code>MountMissingSystemPartitions()</code>​</li>
+<li>加载selinux相关设置  <code>ReadPolicy()</code>​  <code>LoadSelinuxPolicy()</code>​</li>
+<li>在最后重新运行init并加上参数&quot;second_stage&quot;  <code>execv()</code>​</li>
+</ol>
+<p>SecondStageMain():</p>
+<ol>
+<li>设置信号处理  <code>sigaction()</code>​</li>
+<li>挂载/apex，/linkerconfig    <code>MountExtraFilesystems()</code>​</li>
+<li>初始化并启动property服务  <code>PropertyInit()  </code>​  <code>StartPropertyService()</code>​</li>
+<li>挂载vendor overlay    <code>fs_mgr_vendor_overlay_mount_all()</code>​</li>
+<li>加载并解析rc文件    <code>LoadBootScripts()</code>​</li>
+<li>进入循环等待事件发生（通常是用户态进程的启动和结束，电源信号，通过/usr/sbin/telinit向init发出的请求） <code>auto pending_functions = epoll.Wait(epoll_timeout);</code>​</li>
+</ol>
+<p>注：Init不在Linux kernel代码中实现，而Android使用的Init的实现在system/core/init</p>
+<h2 id="kthreadd">Kthreadd</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>start_kernel()-&gt;
+</span></span><span style="display:flex;"><span>    rest_init()-&gt;
+</span></span><span style="display:flex;"><span>        kernel_thread(kthreadd)              PID=2
+</span></span></code></pre></div><p>kthreadd（kernel thread daemon）的PID为2，用于创建内核线程。无论是进程，还是线程，在kernel看来都是任务（Task），都使用相同的数据结构，平放在同一个链表中。这里的函数kthreadd，负责所有内核态的线程的管理，是内核态所有线程运行的祖先。事实上，init需要kthreadd才能完成进程创建，所以在代码中init需要调度器合理的调度两个进程的执行顺序才能够正常运行。</p>
+<p>kernel_thread()与user_mode_thread()的差别仅有一个.name和.kthread的args初始化差别。</p>
+<p>注：Linux kernel startup部分基于Linux v6.11-rc3</p>
+<p>至此，Linux启动完成。</p>
+<h1 id="zygote">Zygote</h1>
+<p>Zygote是Android中的一个关键概念，它作为Android应用程序启动过程的启动点。Zygote用来孵化和管理Android系统中所有应用进程，在Init的第二阶段被创建，其主要作用是预加载和共享Android系统的核心库和常用资源，以减少每个独立应用程序启动时的时间和资源消耗。</p>
+<p>在init运行的<code>SecondStageMain()</code>​中会解析rc文件，在<code>LoadBootScripts()</code>​中使用<code>Parser</code>​解析并rc文件。其中，会解析手机的system/etc/init/hw/zygote64_32.rc（system/core/rootdir/init.zygote64_32.rc），这正是zygote启动所用到的文件。其中</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>service zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-system-server --socket-name=zygote
+</span></span></code></pre></div><p>表示zygote服务启动的命令行参数，可以看到，实际上时启动了app_process64这个程序，此程序源码位于frameworks/base/cmds/app_process。以下为启动zygote的时序图：</p>
+<p><img src="assets/image-20241023192313-p3eqxt3.png" alt=""></p>
+<p>对此图的详细说明可见此<a href="https://elinux.org/Android_Zygote_Startup" target="_blank" rel="noopener">链接</a>。</p>
+<p>ZygoteInit的代码在近十年间变化不大，这里不展开做详细说明。</p>
+<p>其中AndroidRuntime::start()通过JNI启动了java虚拟机，并根据参数调用其main()函数（需要启动的java程序）。此时，zygoteInit开始运行，其源码位于frameworks/base/core/java/com/android/internal/os/ZygoteInit.java，这个时候，我们已经处于java虚拟机中。</p>
+<p>ZygoteInit的任务为</p>
+<ul>
+<li>
+<p>预加载资源</p>
+</li>
+<li>
+<p>创建并启动ZygoteServer，等待请求并创建新的进程</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Java" data-lang="Java"><span style="display:flex;"><span>            zygoteServer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ZygoteServer(isPrimaryZygote);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (startSystemServer) {
+</span></span><span style="display:flex;"><span>                Runnable r <span style="color:#f92672">=</span> forkSystemServer(abiList, zygoteSocketName, zygoteServer);
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// system_server是Zygote第一个fork出来的进程，负责启动各种服务，设置上下文，系统属性，环境等</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// {@code r == null} in the parent (zygote) process, and {@code r != null} in the</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// child (system_server) process.</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (r <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>                    r.<span style="color:#a6e22e">run</span>();        <span style="color:#75715e">//启动system_service</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            Log.<span style="color:#a6e22e">i</span>(TAG, <span style="color:#e6db74">&#34;Accepting command socket connections&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// The select loop returns early in the child process after a fork and</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// loops forever in the zygote.</span>
+</span></span><span style="display:flex;"><span>            caller <span style="color:#f92672">=</span> zygoteServer.<span style="color:#a6e22e">runSelectLoop</span>(abiList);
+</span></span></code></pre></div></li>
+</ul>
+<p>其中，SystemServer(frameworks/base/services/java/com/android/server/SystemServer.java)是第一个被zygote创建的进程，负责设置系统属性、环境、库、context，启动并管理各种服务。</p>
+<p>启动SystemServer后，ZygoteInit通过ZygoteServer.runSelectLoop()来等待请求并创建新的应用程序。</p>
+<h1 id="systemservice">SystemService</h1>
+<p>上文中提到的SystemServer创建了SystemServiceManager，这就是SystemService的启动者。</p>
+<p>SystemServiceManage用来管理系统中的各种用于C/S架构中的Binder通信机制的Service，Client端使用某个Service，则需要先到ServiceManager中先查询Service的相关信息，然后根据Service的相关信息和Service的进程建立连接，这样Client端就可以使用Service了。</p>
+<p>上述的SystemServer, SystemServiceManager, SystemService的关系如下:</p>
+<p><img src="assets/image-20241023192320-terxr4u.png" alt=""></p>
+<p>至此，系统启动完成。其总体过程如下图:</p>
+<p><img src="assets/image-20241023192324-jpt34vi.png" alt=""></p>
+<h1 id="app启动">APP启动</h1>
+<p>Android APP启动过程如下:</p>
+<p><img src="assets/image-20241023192328-dwptpn4.png" alt=""></p>
+<p>‍</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

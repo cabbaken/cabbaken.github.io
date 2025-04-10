@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>20250211</title>
+
+<meta name="description" content="2025_02_11 N12陀螺仪异常 分析原因: 从目前的反馈来看, 大量N12的预览卡顿问题是OIS时无法拿到陀螺仪数据, 导致camera再P1阶段等待时间变长, 造成了卡顿. Camera通过HFmanger去向陀螺仪拿数据, hfManager是sensor hub负责.
+方案: 导通OIS异步方案, 解耦收发数据给sensorhub相关逻辑, 这样即便无法拿到陀螺仪数据也不会出现异常卡顿. 该方案已经在O12上实现, 将同步到M9/M12A/N11A, 以做优化和预防.
+M9相机HAL内存泄露 原因: M9相机HAL存在内存泄露问题, 长期一直运行会导致高内存占用.
+方案: 临时方案: 适配相机自救系统(https://xiaomi.f.mioffice.cn/docx/doxk491AiMssSI84FfAa6Kqlz5f), 根据内存占用和相机状态通过重启HAL来恢复.
+正解: 尝试找到内存泄露位置, 解决问题.
+M12 N12暗光预览卡顿 原因: 已知问题, 是驱动framelength写入问题, 去年11月解决, 当时未合入稳定版.
+方案: 合入稳定版, 解决. title: 2025_02_11 date: 2025-03-11T09:49:35Z lastmod: 2025-03-11T09:49:35Z 2025_02_11 N12陀螺仪异常 分析原因: 从目前的反馈来看, 大量N12的预览卡顿问题是OIS时无法拿到陀螺仪数据, 导致camera再P1阶段等待时间变长, 造成了卡顿. Camera通过HFmanger去向陀螺仪拿数据, hfManager是sensor hub负责.
+方案: 导通OIS异步方案, 解耦收发数据给sensorhub相关逻辑, 这样即便无法拿到陀螺仪数据也不会出现异常卡顿. 该方案已经在O12上实现, 将同步到M9/M12A/N11A, 以做优化和预防.
+M9相机HAL内存泄露 原因: M9相机HAL存在内存泄露问题, 长期一直运行会导致高内存占用.
+方案: 临时方案: 适配相机自救系统(https://xiaomi.f.mioffice.cn/docx/doxk491AiMssSI84FfAa6Kqlz5f), 根据内存占用和相机状态通过重启HAL来恢复.
+正解: 尝试找到内存泄露位置, 解决问题.
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/daily-note/2025/02/2025_02_11/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/daily-note/2025/02/2025_02_11/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/daily-note/2025/02/2025_02_11/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="20250211">
+<meta property="og:description" content="2025_02_11
+N12陀螺仪异常
+分析原因:
+从目前的反馈来看, 大量N12的预览卡顿问题是OIS时无法拿到陀螺仪数据, 导致camera再P1阶段等待时间变长, 造成了卡顿.
+Camera通过HFmanger去向陀螺仪拿数据, hfManager是sensor hub负责.
+方案:
+导通OIS异步方案, 解耦收发数据给sensorhub相关逻辑, 这样即便无法拿到陀螺仪数据也不会出现异常卡顿.
+该方案已经在O12上实现, 将同步到M9/M12A/N11A, 以做优化和预防.
+M9相机HAL内存泄露
+原因:
+M9相机HAL存在内存泄露问题, 长期一直运行会导致高内存占用.
+方案:
+临时方案:
+适配相机自救系统(https://xiaomi.f.mioffice.cn/docx/doxk491AiMssSI84FfAa6Kqlz5f), 根据内存占用和相机状态通过重启HAL来恢复.
+正解:
+尝试找到内存泄露位置, 解决问题.
+M12
+N12暗光预览卡顿
+原因:
+已知问题, 是驱动framelength写入问题, 去年11月解决, 当时未合入稳定版.
+方案:
+合入稳定版, 解决.
+title: 2025_02_11
+date: 2025-03-11T09:49:35Z
+lastmod: 2025-03-11T09:49:35Z
+2025_02_11
+N12陀螺仪异常
+分析原因:
+从目前的反馈来看, 大量N12的预览卡顿问题是OIS时无法拿到陀螺仪数据, 导致camera再P1阶段等待时间变长, 造成了卡顿.
+Camera通过HFmanger去向陀螺仪拿数据, hfManager是sensor hub负责.
+方案:
+导通OIS异步方案, 解耦收发数据给sensorhub相关逻辑, 这样即便无法拿到陀螺仪数据也不会出现异常卡顿.
+该方案已经在O12上实现, 将同步到M9/M12A/N11A, 以做优化和预防.
+M9相机HAL内存泄露
+原因:
+M9相机HAL存在内存泄露问题, 长期一直运行会导致高内存占用.
+方案:
+临时方案:
+适配相机自救系统(https://xiaomi.f.mioffice.cn/docx/doxk491AiMssSI84FfAa6Kqlz5f), 根据内存占用和相机状态通过重启HAL来恢复.
+正解:
+尝试找到内存泄露位置, 解决问题.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/daily-note/2025/02/2025_02_11/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:49:35+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:49:35+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="20250211">
+<meta name="twitter:description" content="2025_02_11
+N12陀螺仪异常
+分析原因:
+从目前的反馈来看, 大量N12的预览卡顿问题是OIS时无法拿到陀螺仪数据, 导致camera再P1阶段等待时间变长, 造成了卡顿.
+Camera通过HFmanger去向陀螺仪拿数据, hfManager是sensor hub负责.
+方案:
+导通OIS异步方案, 解耦收发数据给sensorhub相关逻辑, 这样即便无法拿到陀螺仪数据也不会出现异常卡顿.
+该方案已经在O12上实现, 将同步到M9/M12A/N11A, 以做优化和预防.
+M9相机HAL内存泄露
+原因:
+M9相机HAL存在内存泄露问题, 长期一直运行会导致高内存占用.
+方案:
+临时方案:
+适配相机自救系统(https://xiaomi.f.mioffice.cn/docx/doxk491AiMssSI84FfAa6Kqlz5f), 根据内存占用和相机状态通过重启HAL来恢复.
+正解:
+尝试找到内存泄露位置, 解决问题.
+M12
+N12暗光预览卡顿
+原因:
+已知问题, 是驱动framelength写入问题, 去年11月解决, 当时未合入稳定版.
+方案:
+合入稳定版, 解决.
+title: 2025_02_11
+date: 2025-03-11T09:49:35Z
+lastmod: 2025-03-11T09:49:35Z
+2025_02_11
+N12陀螺仪异常
+分析原因:
+从目前的反馈来看, 大量N12的预览卡顿问题是OIS时无法拿到陀螺仪数据, 导致camera再P1阶段等待时间变长, 造成了卡顿.
+Camera通过HFmanger去向陀螺仪拿数据, hfManager是sensor hub负责.
+方案:
+导通OIS异步方案, 解耦收发数据给sensorhub相关逻辑, 这样即便无法拿到陀螺仪数据也不会出现异常卡顿.
+该方案已经在O12上实现, 将同步到M9/M12A/N11A, 以做优化和预防.
+M9相机HAL内存泄露
+原因:
+M9相机HAL存在内存泄露问题, 长期一直运行会导致高内存占用.
+方案:
+临时方案:
+适配相机自救系统(https://xiaomi.f.mioffice.cn/docx/doxk491AiMssSI84FfAa6Kqlz5f), 根据内存占用和相机状态通过重启HAL来恢复.
+正解:
+尝试找到内存泄露位置, 解决问题.">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "20250211",
+  "datePublished": "2025-03-11T09:49:35+00:00",
+  "dateModified": "2025-03-11T09:49:35+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  906 ,
+  "description": "2025_02_11 N12陀螺仪异常 分析原因: 从目前的反馈来看, 大量N12的预览卡顿问题是OIS时无法拿到陀螺仪数据, 导致camera再P1阶段等待时间变长, 造成了卡顿. Camera通过HFmanger去向陀螺仪拿数据, hfManager是sensor hub负责.\n方案: 导通OIS异步方案, 解耦收发数据给sensorhub相关逻辑, 这样即便无法拿到陀螺仪数据也不会出现异常卡顿. 该方案已经在O12上实现, 将同步到M9/M12A/N11A, 以做优化和预防.\nM9相机HAL内存泄露 原因: M9相机HAL存在内存泄露问题, 长期一直运行会导致高内存占用.\n方案: 临时方案: 适配相机自救系统(https://xiaomi.f.mioffice.cn/docx/doxk491AiMssSI84FfAa6Kqlz5f), 根据内存占用和相机状态通过重启HAL来恢复.\n正解: 尝试找到内存泄露位置, 解决问题.\nM12 N12暗光预览卡顿 原因: 已知问题, 是驱动framelength写入问题, 去年11月解决, 当时未合入稳定版.\n方案: 合入稳定版, 解决. title: 2025_02_11 date: 2025-03-11T09:49:35Z lastmod: 2025-03-11T09:49:35Z 2025_02_11 N12陀螺仪异常 分析原因: 从目前的反馈来看, 大量N12的预览卡顿问题是OIS时无法拿到陀螺仪数据, 导致camera再P1阶段等待时间变长, 造成了卡顿. Camera通过HFmanger去向陀螺仪拿数据, hfManager是sensor hub负责.\n方案: 导通OIS异步方案, 解耦收发数据给sensorhub相关逻辑, 这样即便无法拿到陀螺仪数据也不会出现异常卡顿. 该方案已经在O12上实现, 将同步到M9/M12A/N11A, 以做优化和预防.\nM9相机HAL内存泄露 原因: M9相机HAL存在内存泄露问题, 长期一直运行会导致高内存占用.\n方案: 临时方案: 适配相机自救系统(https://xiaomi.f.mioffice.cn/docx/doxk491AiMssSI84FfAa6Kqlz5f), 根据内存占用和相机状态通过重启HAL来恢复.\n正解: 尝试找到内存泄露位置, 解决问题.\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="2025_02_11">2025_02_11</h1>
+<h2 id="n12陀螺仪异常">N12陀螺仪异常</h2>
+<h3 id="分析原因">分析原因:</h3>
+<p>从目前的反馈来看, 大量N12的预览卡顿问题是OIS时无法拿到陀螺仪数据, 导致camera再P1阶段等待时间变长, 造成了卡顿.
+Camera通过HFmanger去向陀螺仪拿数据, hfManager是sensor hub负责.</p>
+<h3 id="方案">方案:</h3>
+<p>导通OIS异步方案, 解耦收发数据给sensorhub相关逻辑, 这样即便无法拿到陀螺仪数据也不会出现异常卡顿.
+该方案已经在O12上实现, 将同步到M9/M12A/N11A, 以做优化和预防.</p>
+<h2 id="m9相机hal内存泄露">M9相机HAL内存泄露</h2>
+<h3 id="原因">原因:</h3>
+<p>M9相机HAL存在内存泄露问题, 长期一直运行会导致高内存占用.</p>
+<h3 id="方案-1">方案:</h3>
+<h4 id="临时方案">临时方案:</h4>
+<p>适配相机自救系统(<a href="https://xiaomi.f.mioffice.cn/docx/doxk491AiMssSI84FfAa6Kqlz5f%29" target="_blank" rel="noopener">https://xiaomi.f.mioffice.cn/docx/doxk491AiMssSI84FfAa6Kqlz5f)</a>, 根据内存占用和相机状态通过重启HAL来恢复.</p>
+<h4 id="正解">正解:</h4>
+<p>尝试找到内存泄露位置, 解决问题.</p>
+<h2 id="m12">M12</h2>
+<h2 id="n12暗光预览卡顿">N12暗光预览卡顿</h2>
+<h3 id="原因-1">原因:</h3>
+<p>已知问题, 是驱动framelength写入问题, 去年11月解决, 当时未合入稳定版.</p>
+<h3 id="方案-2">方案:</h3>
+<h2 id="合入稳定版-解决">合入稳定版, 解决.</h2>
+<h2 id="lastmod-2025-03-11t094935z">title: 2025_02_11
+date: 2025-03-11T09:49:35Z
+lastmod: 2025-03-11T09:49:35Z</h2>
+<h1 id="2025_02_11-1">2025_02_11</h1>
+<h2 id="n12陀螺仪异常-1">N12陀螺仪异常</h2>
+<h3 id="分析原因-1">分析原因:</h3>
+<p>从目前的反馈来看, 大量N12的预览卡顿问题是OIS时无法拿到陀螺仪数据, 导致camera再P1阶段等待时间变长, 造成了卡顿.
+Camera通过HFmanger去向陀螺仪拿数据, hfManager是sensor hub负责.</p>
+<h3 id="方案-3">方案:</h3>
+<p>导通OIS异步方案, 解耦收发数据给sensorhub相关逻辑, 这样即便无法拿到陀螺仪数据也不会出现异常卡顿.
+该方案已经在O12上实现, 将同步到M9/M12A/N11A, 以做优化和预防.</p>
+<h2 id="m9相机hal内存泄露-1">M9相机HAL内存泄露</h2>
+<h3 id="原因-2">原因:</h3>
+<p>M9相机HAL存在内存泄露问题, 长期一直运行会导致高内存占用.</p>
+<h3 id="方案-4">方案:</h3>
+<h4 id="临时方案-1">临时方案:</h4>
+<p>适配相机自救系统(<a href="https://xiaomi.f.mioffice.cn/docx/doxk491AiMssSI84FfAa6Kqlz5f%29" target="_blank" rel="noopener">https://xiaomi.f.mioffice.cn/docx/doxk491AiMssSI84FfAa6Kqlz5f)</a>, 根据内存占用和相机状态通过重启HAL来恢复.</p>
+<h4 id="正解-1">正解:</h4>
+<p>尝试找到内存泄露位置, 解决问题.</p>
+<h2 id="m12-1">M12</h2>
+<h2 id="n12暗光预览卡顿-1">N12暗光预览卡顿</h2>
+<h3 id="原因-3">原因:</h3>
+<p>已知问题, 是驱动framelength写入问题, 去年11月解决, 当时未合入稳定版.</p>
+<h3 id="方案-5">方案:</h3>
+<p>合入稳定版, 解决.</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

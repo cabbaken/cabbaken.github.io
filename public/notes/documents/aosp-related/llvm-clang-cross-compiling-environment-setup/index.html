@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>llvm-clang cross compiling environment setup</title>
+
+<meta name="description" content="llvm-clang cross compiling environment setup https://clang.llvm.org/docs/CrossCompilation.html https://llvm.org/docs/HowToCrossCompileLLVM.html https://llvm.org/docs/GettingStarted.html#cross-compiling-llvm TODO:
+建议直接使用NDK title: llvm-clang cross compiling environment setup date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z llvm-clang cross compiling environment setup https://clang.llvm.org/docs/CrossCompilation.html https://llvm.org/docs/HowToCrossCompileLLVM.html https://llvm.org/docs/GettingStarted.html#cross-compiling-llvm TODO:
+建议直接使用NDK
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/aosp-related/llvm-clang-cross-compiling-environment-setup/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/aosp-related/llvm-clang-cross-compiling-environment-setup/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/aosp-related/llvm-clang-cross-compiling-environment-setup/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="llvm-clang cross compiling environment setup">
+<meta property="og:description" content="llvm-clang cross compiling environment setup
+https://clang.llvm.org/docs/CrossCompilation.html
+https://llvm.org/docs/HowToCrossCompileLLVM.html
+https://llvm.org/docs/GettingStarted.html#cross-compiling-llvm
+TODO:
+建议直接使用NDK
+title: llvm-clang cross compiling environment setup
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+llvm-clang cross compiling environment setup
+https://clang.llvm.org/docs/CrossCompilation.html
+https://llvm.org/docs/HowToCrossCompileLLVM.html
+https://llvm.org/docs/GettingStarted.html#cross-compiling-llvm
+TODO:
+建议直接使用NDK">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/aosp-related/llvm-clang-cross-compiling-environment-setup/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="llvm-clang cross compiling environment setup">
+<meta name="twitter:description" content="llvm-clang cross compiling environment setup
+https://clang.llvm.org/docs/CrossCompilation.html
+https://llvm.org/docs/HowToCrossCompileLLVM.html
+https://llvm.org/docs/GettingStarted.html#cross-compiling-llvm
+TODO:
+建议直接使用NDK
+title: llvm-clang cross compiling environment setup
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+llvm-clang cross compiling environment setup
+https://clang.llvm.org/docs/CrossCompilation.html
+https://llvm.org/docs/HowToCrossCompileLLVM.html
+https://llvm.org/docs/GettingStarted.html#cross-compiling-llvm
+TODO:
+建议直接使用NDK">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "llvm-clang cross compiling environment setup",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  46 ,
+  "description": "llvm-clang cross compiling environment setup https://clang.llvm.org/docs/CrossCompilation.html https://llvm.org/docs/HowToCrossCompileLLVM.html https://llvm.org/docs/GettingStarted.html#cross-compiling-llvm TODO:\n建议直接使用NDK title: llvm-clang cross compiling environment setup date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z llvm-clang cross compiling environment setup https://clang.llvm.org/docs/CrossCompilation.html https://llvm.org/docs/HowToCrossCompileLLVM.html https://llvm.org/docs/GettingStarted.html#cross-compiling-llvm TODO:\n建议直接使用NDK\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="llvm-clang-cross-compiling-environment-setup">llvm-clang cross compiling environment setup</h1>
+<p><a href="https://clang.llvm.org/docs/CrossCompilation.html" target="_blank" rel="noopener">https://clang.llvm.org/docs/CrossCompilation.html</a>
+<a href="https://llvm.org/docs/HowToCrossCompileLLVM.html" target="_blank" rel="noopener">https://llvm.org/docs/HowToCrossCompileLLVM.html</a>
+<a href="https://llvm.org/docs/GettingStarted.html#cross-compiling-llvm" target="_blank" rel="noopener">https://llvm.org/docs/GettingStarted.html#cross-compiling-llvm</a>
+TODO:</p>
+<h2 id="建议直接使用ndk">建议直接使用NDK</h2>
+<h2 id="lastmod-2025-03-11t094648z">title: llvm-clang cross compiling environment setup
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="llvm-clang-cross-compiling-environment-setup-1">llvm-clang cross compiling environment setup</h1>
+<p><a href="https://clang.llvm.org/docs/CrossCompilation.html" target="_blank" rel="noopener">https://clang.llvm.org/docs/CrossCompilation.html</a>
+<a href="https://llvm.org/docs/HowToCrossCompileLLVM.html" target="_blank" rel="noopener">https://llvm.org/docs/HowToCrossCompileLLVM.html</a>
+<a href="https://llvm.org/docs/GettingStarted.html#cross-compiling-llvm" target="_blank" rel="noopener">https://llvm.org/docs/GettingStarted.html#cross-compiling-llvm</a>
+TODO:</p>
+<p>建议直接使用NDK</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

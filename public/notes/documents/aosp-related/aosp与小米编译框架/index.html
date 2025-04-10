@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>AOSP与小米编译框架</title>
+
+<meta name="description" content="AOSP与小米编译框架 小米自有编译系统为盘古架构, 本文档主要描述当前盘古架构的编译系统架构方案以及修改SOC的AOSP代码为盘古架构的步骤和约束等.
+OS模块化 减少 system/vendor 镜像的变体，让更多的项目可以共用相同的 system/vendor 镜像，把区域、产品形态等差异进一步解耦到 system_ext/odm/product 分区，实现 system/vendor 的独立编译，大幅提升 OS 编译速度。
+System独立编译 System 与 System_ext 主要托管 Java 与 C/C&#43;&#43; 程序，System 与 System_ext 的解耦，主要是其中的 Java、C/C&#43;&#43; 程序解耦，所以 CSI 本质是上述两种语言的稳定接口层：
+Java Layer Android Internal SDK，Android Fwk 提供给 MIUI Fwk 的 Java 稳定接口层 MIUI Ext SDK，MIUI Fwk 提供给 Android Fwk 的 Java 稳定接口层 C/C&#43;&#43; Layer Android Internal NDK，Android Fwk 提供给 MIUI Fwk 的 C/C&#43;&#43; 稳定接口层 MIUI Ext NDK，MIUI Fwk 提供给 Android Fwk 的 C/C&#43;&#43; 稳定接口层 当 System 与 System_ext 中的程序可以通过上述稳定接口层独立编译后，在运行时还需要通过动态加载框架把不同镜像的程序动态链接，以及管控其实例的生命周期：
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/aosp-related/aosp%E4%B8%8E%E5%B0%8F%E7%B1%B3%E7%BC%96%E8%AF%91%E6%A1%86%E6%9E%B6/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/aosp-related/aosp%E4%B8%8E%E5%B0%8F%E7%B1%B3%E7%BC%96%E8%AF%91%E6%A1%86%E6%9E%B6/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/aosp-related/aosp%E4%B8%8E%E5%B0%8F%E7%B1%B3%E7%BC%96%E8%AF%91%E6%A1%86%E6%9E%B6/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="AOSP与小米编译框架">
+<meta property="og:description" content="AOSP与小米编译框架
+小米自有编译系统为盘古架构, 本文档主要描述当前盘古架构的编译系统架构方案以及修改SOC的AOSP代码为盘古架构的步骤和约束等.
+OS模块化
+减少 system/vendor 镜像的变体，让更多的项目可以共用相同的 system/vendor 镜像，把区域、产品形态等差异进一步解耦到 system_ext/odm/product 分区，实现  system/vendor 的独立编译，大幅提升 OS 编译速度。
+System独立编译
+System 与 System_ext 主要托管 Java 与 C/C&#43;&#43; 程序，System 与 System_ext 的解耦，主要是其中的 Java、C/C&#43;&#43; 程序解耦，所以 CSI 本质是上述两种语言的稳定接口层：
+
+Java Layer
+Android Internal SDK，Android Fwk 提供给 MIUI Fwk 的 Java 稳定接口层
+MIUI Ext SDK，MIUI Fwk 提供给 Android Fwk 的 Java 稳定接口层
+C/C&#43;&#43; Layer
+Android Internal NDK，Android Fwk 提供给 MIUI Fwk 的 C/C&#43;&#43; 稳定接口层
+MIUI Ext NDK，MIUI Fwk 提供给 Android Fwk 的 C/C&#43;&#43; 稳定接口层
+
+当 System 与 System_ext 中的程序可以通过上述稳定接口层独立编译后，在运行时还需要通过动态加载框架把不同镜像的程序动态链接，以及管控其实例的生命周期：">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/aosp-related/aosp%E4%B8%8E%E5%B0%8F%E7%B1%B3%E7%BC%96%E8%AF%91%E6%A1%86%E6%9E%B6/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="AOSP与小米编译框架">
+<meta name="twitter:description" content="AOSP与小米编译框架
+小米自有编译系统为盘古架构, 本文档主要描述当前盘古架构的编译系统架构方案以及修改SOC的AOSP代码为盘古架构的步骤和约束等.
+OS模块化
+减少 system/vendor 镜像的变体，让更多的项目可以共用相同的 system/vendor 镜像，把区域、产品形态等差异进一步解耦到 system_ext/odm/product 分区，实现  system/vendor 的独立编译，大幅提升 OS 编译速度。
+System独立编译
+System 与 System_ext 主要托管 Java 与 C/C&#43;&#43; 程序，System 与 System_ext 的解耦，主要是其中的 Java、C/C&#43;&#43; 程序解耦，所以 CSI 本质是上述两种语言的稳定接口层：
+
+Java Layer
+Android Internal SDK，Android Fwk 提供给 MIUI Fwk 的 Java 稳定接口层
+MIUI Ext SDK，MIUI Fwk 提供给 Android Fwk 的 Java 稳定接口层
+C/C&#43;&#43; Layer
+Android Internal NDK，Android Fwk 提供给 MIUI Fwk 的 C/C&#43;&#43; 稳定接口层
+MIUI Ext NDK，MIUI Fwk 提供给 Android Fwk 的 C/C&#43;&#43; 稳定接口层
+
+当 System 与 System_ext 中的程序可以通过上述稳定接口层独立编译后，在运行时还需要通过动态加载框架把不同镜像的程序动态链接，以及管控其实例的生命周期：">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "AOSP与小米编译框架",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  10829 ,
+  "description": "AOSP与小米编译框架 小米自有编译系统为盘古架构, 本文档主要描述当前盘古架构的编译系统架构方案以及修改SOC的AOSP代码为盘古架构的步骤和约束等.\nOS模块化 减少 system/vendor 镜像的变体，让更多的项目可以共用相同的 system/vendor 镜像，把区域、产品形态等差异进一步解耦到 system_ext/odm/product 分区，实现 system/vendor 的独立编译，大幅提升 OS 编译速度。\nSystem独立编译 System 与 System_ext 主要托管 Java 与 C/C++ 程序，System 与 System_ext 的解耦，主要是其中的 Java、C/C++ 程序解耦，所以 CSI 本质是上述两种语言的稳定接口层：\nJava Layer Android Internal SDK，Android Fwk 提供给 MIUI Fwk 的 Java 稳定接口层 MIUI Ext SDK，MIUI Fwk 提供给 Android Fwk 的 Java 稳定接口层 C/C++ Layer Android Internal NDK，Android Fwk 提供给 MIUI Fwk 的 C/C++ 稳定接口层 MIUI Ext NDK，MIUI Fwk 提供给 Android Fwk 的 C/C++ 稳定接口层 当 System 与 System_ext 中的程序可以通过上述稳定接口层独立编译后，在运行时还需要通过动态加载框架把不同镜像的程序动态链接，以及管控其实例的生命周期：\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="aosp与小米编译框架">AOSP与小米编译框架</h1>
+<p>小米自有编译系统为盘古架构, 本文档主要描述当前盘古架构的编译系统架构方案以及修改SOC的AOSP代码为盘古架构的步骤和约束等.</p>
+<h2 id="os模块化">OS模块化</h2>
+<p>减少 system/vendor 镜像的变体，让更多的项目可以共用相同的 system/vendor 镜像，把区域、产品形态等差异进一步解耦到 system_ext/odm/product 分区，实现  system/vendor 的独立编译，大幅提升 OS 编译速度。</p>
+<h3 id="system独立编译">System独立编译</h3>
+<p>System 与 System_ext 主要托管 Java 与 C/C++ 程序，System 与 System_ext 的解耦，主要是其中的 Java、C/C++ 程序解耦，所以 CSI 本质是上述两种语言的稳定接口层：</p>
+<ul>
+<li>Java Layer</li>
+<li>Android Internal SDK，Android Fwk 提供给 MIUI Fwk 的 Java 稳定接口层</li>
+<li>MIUI Ext SDK，MIUI Fwk 提供给 Android Fwk 的 Java 稳定接口层</li>
+<li>C/C++ Layer</li>
+<li>Android Internal NDK，Android Fwk 提供给 MIUI Fwk 的 C/C++ 稳定接口层</li>
+<li>MIUI Ext NDK，MIUI Fwk 提供给 Android Fwk 的 C/C++ 稳定接口层</li>
+</ul>
+<p>当 System 与 System_ext 中的程序可以通过上述稳定接口层独立编译后，在运行时还需要通过动态加载框架把不同镜像的程序动态链接，以及管控其实例的生命周期：</p>
+<ul>
+<li>Java Dynamic Frameowrk，动态加载 .jar 库并创建、关联、管理实例</li>
+<li>C/C++ Dynamic Framework，动态链接 .so 库并创建、关联、管理实例</li>
+</ul>
+<h3 id="vendor独立编译">Vendor独立编译</h3>
+<p>实现 Vendor 镜像编译时无需依赖 System Source Tree，依赖 SoC 支持。</p>
+<h3 id="代码结构">代码结构</h3>
+<p>以高通平台的M2机型为例（<strong>加粗字体</strong>为SOC厂家的扩展部分）：</p>
+<h4 id="system">System</h4>
+<ul>
+<li>art/ – Android 运行时</li>
+<li>bionic/ – Android C库</li>
+<li>build/ – Makefile和编译环境</li>
+<li>dalvik/ – Android JVM</li>
+<li>kernel_platform/ – Linux kernel</li>
+<li>frameworks/ – Android平台层（系统库和Java组件）</li>
+<li>system/ – Android系统（工具和库，fastboot，logcat，liblog）</li>
+<li>external/ – Android所需的非Android特定开源项目</li>
+<li>prebuilt/ – 用于构建Android的预编译二进制文件，例如交叉编译器</li>
+<li>packages/ – 标准的Android Java应用程序和组件</li>
+<li>development/ – Android开发者参考应用程序和工具</li>
+<li><strong>device/qcom/qssi – 高通定义的SSI</strong></li>
+<li><strong>device/qcom/qssi_32 – 高通定义的32bit SSI</strong></li>
+<li><strong>device/qcom/qssi_64 – 高通定义的64bit SSI</strong></li>
+<li><strong>vendor/qcom/ – 高通的目标定义</strong></li>
+<li><strong>vendor/qcom/proprietary – 高通的专有组件</strong></li>
+<li><strong>device/xiaomi/missi – 小米从高通的SSI扩展的SSI</strong></li>
+<li><strong>device/xiaomi/nuwa/product – M2（nuwa）机型的product</strong></li>
+</ul>
+<h4 id="vendor">Vendor</h4>
+<ul>
+<li>art/ – Android 运行时</li>
+<li>bionic/ – Android C库</li>
+<li>build/ – Makefile和编译环境</li>
+<li>dalvik/ – Android JVM</li>
+<li>kernel_platform/ – Linux kernel</li>
+<li>frameworks/ – Android平台层（系统库和Java组件）</li>
+<li>system/ – Android系统（工具和库，fastboot，logcat，liblog）</li>
+<li>external/ – Android所需的非Android特定开源项目</li>
+<li>prebuilt/ – 用于构建Android的预编译二进制文件，例如交叉编译器</li>
+<li>packages/ – 标准的Android Java应用程序和组件</li>
+<li>development/ – Android开发者参考应用程序和工具</li>
+<li><strong>device/qcom/qssi – 高通定义的SSI</strong></li>
+<li><strong>device/qcom/qssi_32 – 高通定义的32bit SSI</strong></li>
+<li><strong>device/qcom/qssi_64 – 高通定义的64bit SSI</strong></li>
+<li><strong>device/qcom/kalama – M2使用的8550芯片平台</strong></li>
+<li><strong>hardware/qcom – 硬件抽象层（HAL）（音频、传感器）和高通的硬件特定封装</strong></li>
+<li><strong>vendor/qcom/ – 高通的目标定义</strong></li>
+<li><strong>vendor/qcom/proprietary – 高通的专有组件</strong></li>
+<li><strong>device/xiaomi/mivendor– 小米从高通的芯片平台扩展的MiVendor</strong></li>
+<li><strong>device/xiaomi/nuwa/odm</strong>   <strong>– M2（nuwa）机型自定义的odm</strong></li>
+<li><strong>device/xiaomi/nuwa/missi – M2（nuwa）机型工厂版本自定义的Missi</strong></li>
+<li><strong>device/xiaomi/nuwa/images – M2（nuwa）机型生成刷机包需要的prebuilt文件</strong></li>
+<li><strong>device/xiaomi/nuwa/factory_images – M2（nuwa）机型工厂版本生成刷机包需要的prebuilt文件</strong></li>
+<li><strong>device/xiaomi/nuwa/flash_scripts – M2（nuwa）机型刷机包需要的刷机脚本</strong></li>
+</ul>
+<h2 id="仓库与分支模型">仓库与分支模型</h2>
+<p>基于不同的分支模型，可以把仓库分为以下几类，主线制分支模型主要应用于SSI、Vendor类型的仓库：</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>仓库类型</td>
+          <td>说明</td>
+          <td>包含模块示例</td>
+          <td>分支模型</td>
+      </tr>
+      <tr>
+          <td>SSI</td>
+          <td>系统框架、服务等不区分机型的通用功能</td>
+          <td>Framework base，service等系统层模块</td>
+          <td>按芯片厂商、Andorid大版本共用的主线分支，如master-u-qcom，master-u-mtk；<!-- raw HTML omitted --><!-- raw HTML omitted -->按芯片厂商共用的主线分支，如master-qcom，master-mtk；<!-- raw HTML omitted --><!-- raw HTML omitted -->按Android大版本共用的主线分支，如master-u；<!-- raw HTML omitted --><!-- raw HTML omitted -->所有版本通用的主线分支，master。</td>
+      </tr>
+      <tr>
+          <td>Vendor</td>
+          <td>底层BSP不区分机型的通用功能</td>
+          <td>BT、WIFI、GKI等</td>
+          <td>允许使用SSI的分支模型，除此以外：<!-- raw HTML omitted --><!-- raw HTML omitted -->按芯片平台划分的仓库，如master-u-qcom-sm8550；<!-- raw HTML omitted --><!-- raw HTML omitted -->按内核版本划分的仓库，如master-u-mtk-4.14;</td>
+      </tr>
+      <tr>
+          <td>Device</td>
+          <td>区分机型的代码仓库，包括：<!-- raw HTML omitted --><!-- raw HTML omitted -->上层product仓库，底层BSP区分机型的仓库等</td>
+          <td>product分区相关代码，camera相关代码等</td>
+          <td>可以按机型、SKU维度拉分支。</td>
+      </tr>
+      <tr>
+          <td>Non-hlos</td>
+          <td>modem、sensor等在专有芯片上运行的代码仓库</td>
+          <td>modem、sendor、AOP、NPU等</td>
+          <td>可以按照机型+region的维度拉分支。</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="组件和仓库分类的关系">组件和仓库分类的关系</h3>
+<p>仓库分类是基于分支模型划分的；组件指可独立编译的镜像。</p>
+<p>仓库分类和组件是多对多的关系，一个分类里可以包含多个组件，比如Device分类包含product、odm等；多个分类的仓库也可能会编译到一个组件里，比如属于Device分类的camera模块、属于Vendor分类的底层通用功能，都会编译到vendor组件。</p>
+<h3 id="分支策略">分支策略</h3>
+<h4 id="分支类型">分支类型</h4>
+<p>![](assets/Pasted image 20241101163106-20250311094648-iqugz2d.png )</p>
+<h5 id="长期维护分支">长期维护分支</h5>
+<table>
+  <thead>
+      <tr>
+          <th>分支类型</th>
+          <th>作用</th>
+          <th>进版要求</th>
+          <th>测试活动</th>
+          <th>生命周期</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>master主线分支</td>
+          <td>长期存在的稳定的功能集成分支，用于pre版本日构建，按规划拉出release分支。</td>
+          <td>Code Review<!-- raw HTML omitted --><!-- raw HTML omitted -->Code Owner Approve<!-- raw HTML omitted --><!-- raw HTML omitted -->CI/CT<!-- raw HTML omitted --><!-- raw HTML omitted -->代码静态扫描等</td>
+          <td>周期性的主线回归测试<!-- raw HTML omitted --><!-- raw HTML omitted -->（重点功能、性能、功耗、XTS等）；<!-- raw HTML omitted --><!-- raw HTML omitted -->拉release分支前的产品集成测试。</td>
+          <td>master、master-qcom、master-mtk等分支，长期存在（多年），持续演进。<!-- raw HTML omitted --><!-- raw HTML omitted -->master-u，master-u-qcom，master-u-mtk等依赖Android大版本的分支，跟随Android大版本升级节奏，每年拉出一个。</td>
+      </tr>
+      <tr>
+          <td>Release分支</td>
+          <td>项目TR5后从主线分支或保密集成分支拉出，用于构建目标机型的正式版产品ROM，包括dev和stable版本。</td>
+          <td>已经进过master主线或保密集成分支的change才能合入，需要SPM审批。</td>
+          <td>产品验收测试</td>
+          <td>目标机型项目TR5拉出，完成产品发布后转维护。</td>
+      </tr>
+  </tbody>
+</table>
+<h5 id="主线分支命名规范">主线分支命名规范</h5>
+<table>
+  <thead>
+      <tr>
+          <th>仓库类型</th>
+          <th>复用范围</th>
+          <th>分支名称规则</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>通用代码仓库</td>
+          <td>对外部实现没有依赖，完全通用，只创建一个主线分支，master。</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>同芯片厂商共线的仓库</td>
+          <td>每个芯片厂商一个主线分支。 命名规则：master-[芯片厂商]，master-qcom，master-mtk</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>同一个Android大版本上共线的仓库</td>
+          <td>每个Android大版本一个主线分支。<!-- raw HTML omitted --><!-- raw HTML omitted -->主线分支命名规则：master-[Android大版本代号]，例如：master-t，master-u。</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>同Android版本、同芯片厂商共线的仓库</td>
+          <td>根据Android版本和芯片厂商建立不同的主线分支。<!-- raw HTML omitted --><!-- raw HTML omitted -->主线分支命名规则：master-[Android大版本]-[芯片厂商]<!-- raw HTML omitted --><!-- raw HTML omitted -->例如：master-t-qcom，master-t-mtk</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>同芯片平台共线的仓库</td>
+          <td>一个芯片平台建立一个主线分支。<!-- raw HTML omitted --><!-- raw HTML omitted -->主线分支命名规则：master-[Android大版本代号]-[芯片厂商]-[芯片平台]，例如：master-t-qcom-sm8550，master-t-mtk-mt6985。</td>
+      </tr>
+      <tr>
+          <td>6</td>
+          <td>区分机型的仓库</td>
+          <td>基于不同机型拆分仓库代码。<!-- raw HTML omitted --><!-- raw HTML omitted -->分支命名规则：master-[Android大版本]&ndash;[芯片厂商]-[芯片平台]-[device名称]<!-- raw HTML omitted --><!-- raw HTML omitted -->例如：master-t-qcom-sm8550-nuwa</td>
+      </tr>
+  </tbody>
+</table>
+<h5 id="临时分支">临时分支</h5>
+<table>
+  <thead>
+      <tr>
+          <th>分支类型</th>
+          <th>作用</th>
+          <th>进版要求</th>
+          <th>测试活动</th>
+          <th>生命周期</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>保密集成分支</td>
+          <td>用于MIUI大版本保密功能的持续集成。保密功能开发完成后merge到这个分支，用于保密版本日构建打包，按规划拉出保密版本release分支。<!-- raw HTML omitted --><!-- raw HTML omitted -->从master主线分支的相关仓库拉出，每天自动同步master主线分支上的修改。</td>
+          <td></td>
+          <td>同master主线分支</td>
+          <td>根据保密需求，在MIUI大版本TR4前从master拉出，发布会后merge回master主线分支。</td>
+      </tr>
+      <tr>
+          <td>Feature分支</td>
+          <td>开发分支，用于机型适配（TR4前），基线升级，新功能开发等场景。<!-- raw HTML omitted --><!-- raw HTML omitted -->保密feature分支用于MIUI大版本严格保密功能的开发，设置权限控制。<!-- raw HTML omitted --><!-- raw HTML omitted -->从master主线分支的相关仓库拉出。</td>
+          <td>业务组自行管控</td>
+          <td>merge回主线时要求通过相关功能的验收测试、CI/CT测试；</td>
+          <td>跟随Feature的开发周期，分支和Feature JIRA ID绑定。Feature开发完成merge回主线后，关闭对应分支（不能继续提交）。</td>
+      </tr>
+      <tr>
+          <td>Hotfix分支</td>
+          <td>基于某个特定版本，添加紧急修复代码发版本。<!-- raw HTML omitted --><!-- raw HTML omitted -->基于固定的代码节点拉出（比如基于某个日构建），拉出后不再更新base代码。</td>
+          <td>SPM审批进版。</td>
+          <td>紧急修复验收测试</td>
+          <td>按需拉，完成发版后关闭分支。</td>
+      </tr>
+  </tbody>
+</table>
+<h6 id="feature分支">Feature分支</h6>
+<p>![](assets/Pasted image 20241101163621-20250311094648-8wv3ukc.png )</p>
+<p>盘古3.0规范在Android 升U和MIUI15开发上落地，U的项目都要采用feature分支来进行机型适配、基线升级和新功能开发。</p>
+<ul>
+<li>
+<p>master-u主线分支禁止直接push Feature相关代码（通过change相关的JIRA判断），必须使用Feature分支进行开发。</p>
+</li>
+<li>
+<p>Feature分支和一个Feature JIRA绑定，仅用于该feaute的开发、自测。此分支对研发开放所有权限，没有CI/CT检查，方便业务组快速修改代码，业务组研发自己保证代码质量。</p>
+</li>
+<li>
+<p>Feature分支完成开发后，必须通过验收测试和CI/CT测试后才能合入主线。</p>
+<ul>
+<li>机型适配和基线升级根据预先设计的case集进行验收，新功能根据TR4设计的测试方案来验收。</li>
+</ul>
+</li>
+</ul>
+<h2 id="manifest仓库配置">Manifest仓库配置</h2>
+<p>为了让各个组件的逻辑关系更清晰并且解决很多开发人员不知道代码应该合入SSI还是Vendor的问题，所以对Manifest按照盘古架构进行了相应的拆分，将Manifest文件拆分为SSI，Vendor，Device 和 BP (NONHLOS)几个部分，下载代码前需要，将这几部分组合生成完整的manifest才能完成代码的下载。</p>
+<h3 id="仓库配置">仓库配置</h3>
+<h4 id="ssi">SSI</h4>
+<ol>
+<li>基线仓库
+<pre tabindex="0"><code>xiaomi/qssi_u.xml    //qcom的ssi基线
+xiaomi/mssi_u.xml    //mtk的ssi基线
+</code></pre></li>
+<li>missi仓库
+<ul>
+<li>非保密:
+<pre tabindex="0"><code>xiaomi/missi_qcom_u.xml    //小米定制过的qcom的ssi仓库
+xiaomi/missi_mtk_u.xml    //小米定制过的mtk的ssi仓库
+</code></pre></li>
+<li>保密:
+<pre tabindex="0"><code>xiaomi/missi_qcom_u.xml    //小米定制过的qcom的ssi仓库
+xiaomi/missi_mtk_u.xml    //小米定制过的mtk的ssi仓库
+</code></pre></li>
+</ul>
+</li>
+</ol>
+<h4 id="vendor-1">vendor</h4>
+<ol>
+<li>基线仓库
+<pre tabindex="0"><code>xiaomi/vendor_qcom_u.xml    //qcom的vendor基线
+xiaomi/vendor_mtk_u.xml    //mtk的vendor基线，对应mtk提供的manifest中的vendor only仓库
+xiaomi/vendor_mtk_reference_ssi_deprecated.xml    //mtk的vendor基线中引用的mtk的ssi仓库（group 包含 mtk-sys-codebase）
+</code></pre></li>
+<li>mivendor仓库
+<ul>
+<li>非保密:
+<pre tabindex="0"><code>xiaomi/mivendor_qcom_u.xml    //小米定制过的qcom的vendor仓库
+xiaomi/mivendor_mtk_u.xml    //小米定制过的mtk的vendor仓库
+</code></pre></li>
+<li>保密:
+<pre tabindex="0"><code>xiaomi/private/mivendor_qcom_u.xml     //小米定制过的qcom的vendor保密分支仓库
+xiaomi/private/mivendor_mtk_u.xml      //小米定制过的mtk的vendor保密分支仓库
+</code></pre></li>
+</ul>
+</li>
+</ol>
+<h4 id="device">device</h4>
+<p>使用 group 管理，对应设备的仓库需要设置 groups=&quot;{device_name}&quot; ，如：</p>
+<pre tabindex="0"><code>&lt;project name=&#34;device/xiaomi/nuwa&#34; remote=&#34;miui&#34; groups=&#34;nuwa&#34; revision=&#34;master-u-qcom&#34; /&gt;
+</code></pre><ul>
+<li>小米机型</li>
+</ul>
+<pre tabindex="0"><code>xiaomi/device/xiaomi/{device}/{device}.xml    //包含纯源代码的仓库
+xiaomi/device/xiaomi/{device}/{device}_image.xml    //包含Prebuilt的二进制仓库
+//{device} 为设备名：如 nuwa
+</code></pre><ul>
+<li>ODM机型</li>
+</ul>
+<pre tabindex="0"><code>xiaomi/device/{odm_name}/{device}/{device}.xml    //包含纯源代码的仓库
+xiaomi/device/{odm_name}/{device}/{device}_image.xml    //包含Prebuilt的二进制仓库
+//{odm_name} 为ODM名字简写：am(诚迈)、hq(华勤)、lc(龙旗)、ts(中科)、wt(闻泰)、rh(润和)
+//{device} 为设备名：如 nuwa
+</code></pre><h4 id="bpnon-hlos">BP(Non-hlos)</h4>
+<ul>
+<li>基线仓库</li>
+</ul>
+<pre tabindex="0"><code>xiaomi/non-hlos/mtk_mt6897_u.xml    //mtk 6897基线的bp仓库
+xiaomi/non-hlos/qcom_sm8650_u.xml    //qcom 8650基线的bp仓库
+</code></pre><ul>
+<li>xiaomi仓库(小米会区分平台)</li>
+</ul>
+<pre tabindex="0"><code>xiaomi/non-hlos/mi_mtk_mt6897_u.xml    //小米修改过的mtk 6897基线的bp仓库
+xiaomi/non-hlos/mi_qcom_sm8650_u.xml    //小米修改过的qcom 8650基线的bp仓库
+</code></pre><h2 id="编译">编译</h2>
+<h3 id="环境设置">环境设置</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get install git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev libc6-dev lib32ncurses5-dev ia32-libs x11proto-coredev libx11-dev lib32readline5-dev lib32z-dev libgl1-mesa-dev g++-multilib mingw32 tofrodos python-markdown libxml2-utils xsltproc uuid-dev
+</span></span><span style="display:flex;"><span>curl https://mirrors.tuna.tsinghua.edu.cn/git/git-repo -o repo
+</span></span><span style="display:flex;"><span>chmod +x repo
+</span></span></code></pre></div><h3 id="下载代码">下载代码</h3>
+<p>以<code>M2</code>项目的<code>ssi</code>为例:</p>
+<ol>
+<li>复制<a href="https://bbm.pt.miui.com/releases" target="_blank" rel="noopener">bbm</a>上的<code>repo init</code>命令初始化下载</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>repo init -u ssh://username@git.mioffice.cn:29418/platform/manifest.git -b master-u -m default.xml --repo-url<span style="color:#f92672">=</span>ssh://username@git.mioffice.cn:29418/tools/repo.git --depth<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><ol start="2">
+<li>因为对Manifest仓库的定制，所以需要执行missi-tool完成各个组件的组合</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>repo mi-tool missi --miui 15.0 --profile pre --android-version u -d nuwa 
+</span></span></code></pre></div><ol start="3">
+<li><code>repo sync</code>拿取代码</li>
+</ol>
+<h3 id="组件编译与镜像生成">组件编译与镜像生成</h3>
+<p>对应盘古架构的组件拆分，编译分为组件编译和组件组合两部分。</p>
+<p>以编译生成M2镜像为例：</p>
+<p>编译System组件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>source build/envsetup.sh
+</span></span><span style="display:flex;"><span>lunch missi_phone_cn-user
+</span></span><span style="display:flex;"><span>make target-files-package otatools-package dexpreopt_config_zip dexpreopt_tools_zip
+</span></span></code></pre></div><p><code>lunch</code>是envsetup.sh中的一个函数, 具体细节可以看envsetup.sh.</p>
+<p>编译Product</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>source build/envsetup.sh
+</span></span><span style="display:flex;"><span>lunch miproduct_nuwa_cn-user
+</span></span><span style="display:flex;"><span>make target-files-package dexpreopt_config_zip
+</span></span></code></pre></div><p>编译Vendor</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>source build/envsetup.sh
+</span></span><span style="display:flex;"><span>lunch mivendor_sm8550_cn-user
+</span></span><span style="display:flex;"><span>RECOMPILE_KERNEL<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> LTO<span style="color:#f92672">=</span>thin ./kernel_platform/build/android/prepare_vendor.sh //编译Kernel
+</span></span><span style="display:flex;"><span>make vendor-target-files-package //因为T版本时，sm8550生成vendor的targetfile package的命令为vendor-target-files-package
+</span></span></code></pre></div><p>编译Odm</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>source build/envsetup.sh
+</span></span><span style="display:flex;"><span>lunch miodm_nuwa_cn-user
+</span></span><span style="display:flex;"><span>RECOMPILE_KERNEL<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> LTO<span style="color:#f92672">=</span>thin ./kernel_platform/build/android/prepare_vendor.sh //编译Kernel
+</span></span><span style="display:flex;"><span>make odm-target-files-package //因为T版本时，sm8550生成odm的targetfile package的命令为odm-target-files-package
+</span></span></code></pre></div><p>组包</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>ANDROID_HOST_OUT<span style="color:#f92672">=</span>/home/work/data/miui_codes/artifact_intermediate/otatools merge_target_files --vendor-otatools  vendor_otatools.zip  --pangu-system-target-files qcom-target_files-system.zip --pangu-product-target-files nuwa-target_files-product.zip --pangu-vendor-target-files nuwa-target_files-vendor.zip --pangu-odm-target-files nuwa-target_files-odm.zip --output-target-files merged-target_files.zip --framework-misc-info-keys merge_config_system_misc_info_keys --framework-item-list merge_config_system_item_list --vendor-item-list merge_config_other_item_list --allow-duplicate-apkapex-keys
+</span></span></code></pre></div><p>制作刷机包</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>ANDROID_HOST_OUT<span style="color:#f92672">=</span>/home/work/data/miui_codes/artifact_intermediate/otatools build_super_image merged-target_files.zip super.img
+</span></span><span style="display:flex;"><span>//生成super.img后，调用刷机包生成脚本生成刷机包。
+</span></span></code></pre></div><p>可以在Jekins上查看编译命令</p>
+<p>注: 为简化和统一各个机型的编译命令，可以使用mibuild.py进行编译。</p>
+<h4 id="mibuildpy">mibuild.py</h4>
+<p>mibuild.py 为编译的入口，用户通过调用mibuild，完成构建。</p>
+<p>mibuild中会调用build-system-pipeline.sh，build-product-pipeline.sh，build-vendor-pipeline.sh，build-odm-pipeline.sh 等，生成各个组件的targetfiles.zip。</p>
+<p>再调用 merge-all-target-files-pipeline.sh 完成各个组建targetfiles的merge，并且生成最终需要的targetfiles.zip。</p>
+<p>最后调用sign-target-files-pipeline.sh完成最终targetfiles.zip的签名。</p>
+<table>
+  <thead>
+      <tr>
+          <th>说明</th>
+          <th>调用参数</th>
+          <th>输入文件</th>
+          <th>输出文件</th>
+          <th>missi.json</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>编译入口，CI或者本地编译都通过调用mibuild.py完成</td>
+          <td>- soc-vendor，soc厂家名，只能是mtk或者qcom<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- ssi-src-dir，SSI codebase 路径<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- vendor-src-dir，Vendor codebase 路径<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- target-files-dir，编译产物输出路径。<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- build-variant，构建类型，例如user, userdebug, eng<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- device-name，项目名称（优先），例如 matisse，或者是编译任务的 target name，例如 lunch xxx 的名称（不用带 lunch）<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- platform-name，平台名称（优先），例如 SM8550，或者是编译任务的 target name，例如 lunch xxx 的名称（不用带 lunch）<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- build-family，family类型，例如 phone,pad,pc,tv<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- build-region，版本区域，例如 cn,global,eea<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- build-cuttlefish，编译cuttlefish版本<!-- raw HTML omitted -->    <!-- raw HTML omitted -->    - arch, cuttlefish的架构，如x64<!-- raw HTML omitted -->        <!-- raw HTML omitted -->- build-atest-suite, 编译atest 测试用例<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- build-tradefed-testsuit，编译general-tests<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- kernel-type，QCOM编译时选项为odm, vender, mtk编译时不要设置<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- enable-ab，开启ab分区<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- fs-type，分区类型(ext4，erofs)<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- enable-watermark，开启水印<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- enable-private-build，开启私有版本<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- jobs，编译时并行个数<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- ssi-android-version，SSI的Android版本（S，T，U）<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- vendor-android-version，vendor的Android版本（S，T，U）<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- action, 调用的编译脚本(build_system,build_product,build_vendor,build_odm, merge_target_files, sign_target_files, all_in_one, all_in_one_no_sign)<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- rbe，选定src目录中的clouddev路径，开启该选项时，在执行编译前调用clouddev rbe active，不开启时调用clouddev rbe inactive<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- dry-run，开启时，只打印编译时需要调用的命令，但不执行<!-- raw HTML omitted -->    <!-- raw HTML omitted -->- release-type，Android 15 必要参数，取值（feature/final）,(build_system,build_product,build_vendor,build_odm,build_kernel)</td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>执行build_system时</td>
+          <td>必要参数：soc-vendor、ssi-src-dir、target-files-dir、build-variant、build-family、build-region<!-- raw HTML omitted --><!-- raw HTML omitted -->Android 15 必要：release-type<!-- raw HTML omitted --><!-- raw HTML omitted -->可选参数：enable-ab、fs-type、enable-watermark、enable-private-build、build_cuttlefish、skip_copy_target_files、rbe、dry_run</td>
+          <td></td>
+          <td>target-files-dir中生成文件：<!-- raw HTML omitted --><!-- raw HTML omitted -->missi_build-family-target_files-build_number.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->system-otatools.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->missi.json<!-- raw HTML omitted --><!-- raw HTML omitted -->  <!-- raw HTML omitted --><!-- raw HTML omitted -->如果使用了skip_copy_target_files<!-- raw HTML omitted --><!-- raw HTML omitted -->那target-files-dir中生成文件中将只有missi.json</td>
+          <td>默认：<!-- raw HTML omitted --><!-- raw HTML omitted -->{<!-- raw HTML omitted --><!-- raw HTML omitted -->  missi-target-files: ${path_to_missi-target-files},&lt;br&gt;&lt;br&gt;  system-otatools:${path_to_system-otatools}<!-- raw HTML omitted --><!-- raw HTML omitted -->}<!-- raw HTML omitted --><!-- raw HTML omitted -->  <!-- raw HTML omitted --><!-- raw HTML omitted -->如果设置了build_cuttlefish：<!-- raw HTML omitted --><!-- raw HTML omitted -->{<!-- raw HTML omitted --><!-- raw HTML omitted -->  missi-cuttlefish-imgs: ${path_to_missi-cuttlefish-imgs},&lt;br&gt;&lt;br&gt;  cvd-host-package:${path_to_cvd-host-package}<!-- raw HTML omitted --><!-- raw HTML omitted -->}<!-- raw HTML omitted --><!-- raw HTML omitted -->  <!-- raw HTML omitted --><!-- raw HTML omitted -->如果设置了build_atest_suite:<!-- raw HTML omitted --><!-- raw HTML omitted -->{<!-- raw HTML omitted --><!-- raw HTML omitted -->  atest-suite: ${path_to_atest-suite}<!-- raw HTML omitted --><!-- raw HTML omitted -->}</td>
+      </tr>
+      <tr>
+          <td>执行build_product时</td>
+          <td>必要参数：soc-vendor、ssi-src-dir、target-files-dir、build-variant、build-family、device-name、build-region<!-- raw HTML omitted --><!-- raw HTML omitted -->Android 15 必要：release-type<!-- raw HTML omitted --><!-- raw HTML omitted -->可选参数：skip_copy_target_files、rbe、dry_run</td>
+          <td></td>
+          <td>target-files-dir中生成文件：<!-- raw HTML omitted --><!-- raw HTML omitted -->miproduct_device-name_build-region-target_files-build_number.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->miproduct.json<!-- raw HTML omitted --><!-- raw HTML omitted -->  <!-- raw HTML omitted --><!-- raw HTML omitted -->如果使用了skip_copy_target_files<!-- raw HTML omitted --><!-- raw HTML omitted -->那target-files-dir中生成文件中将只有miproduct.json</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>执行build_vendor时</td>
+          <td>必要参数：soc-vendor、vendor-src-dir、target-files-dir、build-variant、platform-name、build-region<!-- raw HTML omitted --><!-- raw HTML omitted -->Android 15 必要：release-type<!-- raw HTML omitted --><!-- raw HTML omitted -->可选参数：skip_copy_target_files、rbe、dry_run</td>
+          <td></td>
+          <td>target-files-dir中生成文件：<!-- raw HTML omitted --><!-- raw HTML omitted -->mivendor_platform-name_build-region-target_files-build_number.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->vendor-otatools.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->mivendor.json<!-- raw HTML omitted --><!-- raw HTML omitted -->  <!-- raw HTML omitted --><!-- raw HTML omitted -->如果使用了skip_copy_target_files<!-- raw HTML omitted --><!-- raw HTML omitted -->那target-files-dir中生成文件中将只有mivendor.json</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>执行build_odm时</td>
+          <td>必要参数：soc-vendor、vendor-src-dir、target-files-dir、build-variant、device-name、build-region<!-- raw HTML omitted --><!-- raw HTML omitted -->Android 15 必要：release-type<!-- raw HTML omitted --><!-- raw HTML omitted -->可选参数：skip_copy_target_files、rbe、dry_run</td>
+          <td></td>
+          <td>target-files-dir中生成文件：<!-- raw HTML omitted --><!-- raw HTML omitted -->miodm_device-name_build-region-target_files-build_number.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->若走归一化会有root产物：<!-- raw HTML omitted --><!-- raw HTML omitted -->miodm_device-name_build-region-target_files-build_number_root.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->flashall目录（包含NONHLOS的文件）<!-- raw HTML omitted --><!-- raw HTML omitted -->miodm.json<!-- raw HTML omitted --><!-- raw HTML omitted -->如果使用了skip_copy_target_files<!-- raw HTML omitted --><!-- raw HTML omitted -->那target-files-dir中生成文件中将只有flashall目录（包含NONHLOS的文件）以及miodm.json</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>执行build_kernel时</td>
+          <td>必要参数：soc-vendor、vendor-src-dir、target-files-dir、build-variant、platform-name、device-name、build-region、kernel-type<!-- raw HTML omitted --><!-- raw HTML omitted -->Android 15 必要：release-type</td>
+          <td></td>
+          <td>mtk平台target-files-dir中生成文件：krn.target_files.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->kernel.json</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>执行build_miext时</td>
+          <td>必要参数：soc-vendor、device-name、target-files-dir、sign-keys-dir<!-- raw HTML omitted --><!-- raw HTML omitted -->可选参数：enable-userprune、userroot-prune-zip、userroot-prune_url</td>
+          <td></td>
+          <td>target-files-dir中生成文件：<!-- raw HTML omitted --><!-- raw HTML omitted -->miext-target_files.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->miext.json</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>执行build_userdata时</td>
+          <td>必要参数：soc-vendor、device-name、target-files-dir、build-region、 build-profile、whitelist-envs<!-- raw HTML omitted --><!-- raw HTML omitted -->可选参数：</td>
+          <td></td>
+          <td>target-files-dir中生成文件：<!-- raw HTML omitted --><!-- raw HTML omitted -->userdata-target-files.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->userdata.json</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>执行merge_target_files时</td>
+          <td>必要参数：soc-vendor、target-files-dir、build-family、device-name、platform-name、build-region<!-- raw HTML omitted --><!-- raw HTML omitted -->  <!-- raw HTML omitted --><!-- raw HTML omitted -->可选参数：system-target-files、product-target-files、vendor-target-files、odm-target-files、system-otatools、vendor-otatools、miext-target-files 、nonhlos-target-files、userdata-target-files</td>
+          <td>target-files-dir中需要包含的文件，<!-- raw HTML omitted --><!-- raw HTML omitted -->missi_build-family-target_files-build_number.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->miproduct_device-name_build-region-target_files-build_number.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->mivendor_platform-name_build-region-target_files-build_number.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->miodm_device-name_build-region-target_files-build_number.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->system-otatools.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->vendor-otatools.zip</td>
+          <td>target-files-dir中生成文件：<!-- raw HTML omitted --><!-- raw HTML omitted -->merged-target_files.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->flashall中的需要的image和super.img</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>执行gen_flash_package</td>
+          <td>必要参数：<!-- raw HTML omitted --><!-- raw HTML omitted -->soc-vendor: qcom/mtk<!-- raw HTML omitted --><!-- raw HTML omitted -->target-files-dir: targetfiles 文件路径和产物输出目录<!-- raw HTML omitted --><!-- raw HTML omitted -->  <!-- raw HTML omitted --><!-- raw HTML omitted -->可选参数：<!-- raw HTML omitted --><!-- raw HTML omitted -->merged-target-files：merged-target_files.zip 文件路径<!-- raw HTML omitted --><!-- raw HTML omitted -->system_otatools：otatools.zip 文件路径<!-- raw HTML omitted --><!-- raw HTML omitted -->misc-images: *_misc_images.zip 文件路径<!-- raw HTML omitted --><!-- raw HTML omitted -->bp-target-files：bp-target-files.zip 文件路径<!-- raw HTML omitted --><!-- raw HTML omitted -->&ndash;copy-abl-elf-file: 解压 targetfiles的 RADIO/abl.elf 文件（Qcom 新U项目编译阶段将不进行secboot签名,挪到组包阶段进行， 最终的target_files.zip中abl.elf会和编译阶段生成的abl.elf不同,需要优先用target_files中的abl.elf）<!-- raw HTML omitted --><!-- raw HTML omitted -->userdata-img-file：替换旧 userdata.img 的文件路径（copy userdata.img from ${BUILD_ARTIFACT_INTERMEDIATE}/pangu_userdata）<!-- raw HTML omitted --><!-- raw HTML omitted -->carrier-userdata-img-file: 需要替换的运营商 userdata.img 文件路径<!-- raw HTML omitted --><!-- raw HTML omitted -->&ndash;copy-userdebug-boot-img: gki 项目 userroot 版本支持 remount 解压PREBUILT_IMAGES/userdebug_boot.img 到线刷包<!-- raw HTML omitted --><!-- raw HTML omitted -->cust-img-file: 运营商 cust.img 文件路径，替换原有的 cust.img<!-- raw HTML omitted --><!-- raw HTML omitted -->misc-txt-file：运营商信息 misc.txt 文件路径<!-- raw HTML omitted --><!-- raw HTML omitted -->build-region：sku 版本 cn、in、global、<!-- raw HTML omitted --><!-- raw HTML omitted -->build-profile：u-pre/u-stable</td>
+          <td>target-files-dir 中需要包含的文件：<!-- raw HTML omitted --><!-- raw HTML omitted -->merged-target_files.zip<!-- raw HTML omitted --><!-- raw HTML omitted --><em>otatools.zip</em>​ *&lt;br&gt;*​ <em>&lt;br&gt;</em> _misc_images.zip<!-- raw HTML omitted --><!-- raw HTML omitted -->abl.elf 可选<!-- raw HTML omitted --><!-- raw HTML omitted -->userdata.img 可选<!-- raw HTML omitted --><!-- raw HTML omitted -->userdebug_boot.img 可选<!-- raw HTML omitted --><!-- raw HTML omitted -->misc.txt 可选</td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>执行sign_target_files时</td>
+          <td>必要参数：soc-vendor、target-files-dir、is-userroot、ssi-android-version、vendor-android-version</td>
+          <td>target-files-dir中需要包含的文件，merged-target_files.zip。<!-- raw HTML omitted --><!-- raw HTML omitted -->is-userroot用于判断是build variant否为userroot，可选值是yes或no</td>
+          <td>target-files-dir中生成文件：<!-- raw HTML omitted --><!-- raw HTML omitted -->signed-target_files.zip</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="编译命令示例">编译命令示例</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span><span style="color:#75715e">#QCOM</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#build system</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_system --soc-vendor qcom --build-variant user --build-family phone --build-region global --ssi-src-dir /home/docker/workspace/codebase/missi_u_qcom --target-files-dir /home/docker/workspace/targetfiles --whitelist-envs <span style="color:#e6db74">&#34;WIFI_GOOGLE_MAINLINE=false;CDP_COMP_SYSTEM_PKG_URL=&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#system 开启水印和pb</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_system --soc-vendor qcom --build-variant user --build-family phone --build-region global --ssi-src-dir /home/docker/workspace/codebase/missi_u_qcom --target-files-dir /home/docker/workspace/targetfiles --enable-watermark --enable-private-build
+</span></span><span style="display:flex;"><span>./mibuild.py build_system --soc-vendor qcom --build-variant userdebug --build-family phone --build-region global --ssi-src-dir /home/docker/workspace/codebase/missi_u_qcom --target-files-dir /home/docker/workspace/targetfiles
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#build system skip_copy_target_files </span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_system --soc-vendor qcom --build-variant userdebug --build-family phone --build-region cn --ssi-src-dir /home/mi/code/Android-U --target-files-dir /home/mi/code/compile/debug-json/skip-action  --skip-copy-target-files
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#build product</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_product --soc-vendor qcom --build-variant userdebug --build-family phone --device-name nuwa --build-region global --ssi-src-dir /home/docker/workspace/codebase/missi_u_qcom --target-files-dir /home/docker/workspace/targetfiles
+</span></span><span style="display:flex;"><span>./mibuild.py build_product --soc-vendor qcom --build-variant user --build-family phone --device-name nuwa --build-region global --ssi-src-dir /home/docker/workspace/codebase/missi_u_qcom --target-files-dir /home/docker/workspace/targetfiles --whitelist-envs <span style="color:#e6db74">&#39;BUILD_NUMBER=0.0.0;CDP_COMP_PRODUCT_PKG_URL=http://eng.comm.miui.srv/xms/api/open/v2/component/manifest/a89056a9a159b9a2/product-nuwa_pre_eea_global-14-V14.0.23.08.11.00001.1_20230811.00:00:01.798-pre-normal.zip&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#build vendor</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_kernel --soc-vendor qcom --build-variant userdebug --platform-name sm8550 --device-name nuwa --build-region global --kernel-type vendor --vendor-src-dir /home/docker/workspace/codebase/vendor_t_8550 --target-files-dir /home/docker/workspace/targetfiles
+</span></span><span style="display:flex;"><span>./mibuild.py build_vendor --soc-vendor qcom --build-variant userdebug --platform-name sm8550 --build-region global --vendor-src-dir /home/docker/workspace/codebase/vendor_t_8550 --target-files-dir /home/docker/workspace/targetfiles
+</span></span><span style="display:flex;"><span>./mibuild.py build_kernel --soc-vendor qcom --build-variant user --platform-name sm8550 --device-name nuwa --build-region global --kernel-type vendor --vendor-src-dir /home/docker/workspace/codebase/vendor_t_8550 --target-files-dir /home/docker/workspace/targetfiles
+</span></span><span style="display:flex;"><span>./mibuild.py build_vendor --soc-vendor qcom --build-variant user --platform-name sm8550 --build-region global --vendor-src-dir /home/docker/workspace/codebase/vendor_t_8550 --target-files-dir /home/docker/workspace/targetfiles
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#build odm</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_odm --soc-vendor qcom --build-variant userdebug --device-name nuwa --build-region global --vendor-src-dir /home/docker/workspace/codebase/vendor_t_8550 --target-files-dir /home/docker/workspace/targetfiles
+</span></span><span style="display:flex;"><span>./mibuild.py build_odm --soc-vendor qcom --build-variant user --device-name nuwa --build-region global --vendor-src-dir /home/docker/workspace/codebase/vendor_t_8550 --target-files-dir /home/docker/workspace/targetfiles
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#build miext</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_miext --soc-vendor qcom --device-name nuwa --target-files-dir /home/docker/workspace/targetfiles --sign-keys-dir /home/docker/workspace/targetfiles/sign --enable-userroot-prune --userroot-prune-zip /home/docker/workspace/targetfiles/missi_phone_global-target_files-eng.docker.zip --whitelist-envs <span style="color:#e6db74">&#34;CDP_COMP_MIEXT_PKG_URL=http://eng.comm.miui.srv/xms/api/open/v2/component/manifest/4145012aaf4be597/miext-nuwa_pre_eea_global-14-V14.0.23.08.11.00001.1_20230811.00:00:01.798-pre-normal.json&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#build userdata</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_userdata --soc-vendor qcom --device-name nuwa --target-files-dir /home/mi/code/compile/ud-f  --build-region global --build-profile u-pre --whitelist-envs <span style="color:#e6db74">&#34;CDP_COMP_PRODUCT_PKG_URL=http://eng.comm.miui.srv/xms/api/open/v2/component/manifest/a89056a9a159b9a2/product-nuwa_pre_eea_global-14-V14.0.23.08.11.00001.1_20230811.00:00:01.798-pre-normal.zip;CDP_COMP_DATA_PKG_URL=https://staging-cnbj2-fds.api.xiaomi.net/release-outcome/xms-marble-global-test-cust-stable-normal.json&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#merge target files</span>
+</span></span><span style="display:flex;"><span>./mibuild.py merge_all_target_files --soc-vendor qcom --build-family phone  --platform-name sm8550 --device-name nuwa --build-region global  --script-dir /home/docker/workspace/codebase/missi_u_qcom/miui/pangu --target-files-dir /home/docker/workspace/targetfiles --miext-target-files /home/docker/workspace/targetfiles/miext_target_files.zip
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#merge target files 可选参数 </span>
+</span></span><span style="display:flex;"><span>./mibuild.py merge_all_target_files --soc-vendor qcom --build-family phone  --platform-name sm8550 --device-name fuxi --build-region cn  --script-dir /home/mi/code/Android-U/miui/pangu --target-files-dir /home/mi/code/compile/debug-merge-add-target-file --system-target-files /home/mi/code/compile/debug-merge-add-target-file/missi_phone_cn-target_files-eng.mi.zip --product-target-files /home/mi/code/compile/debug-merge-add-target-file/miproduct_fuxi_cn-target_files-eng.mi.zip --vendor-target-files /home/mi/code/compile/debug-merge-add-target-file/mivendor_sm8550_cn-target_files-eng.mi.zip --odm-target-files /home/mi/code/compile/debug-merge-add-target-file/miodm_fuxi_cn-target_files-eng.mi.zip --system-otatools /home/mi/code/compile/debug-merge-add-target-file/system-otatools.zip --vendor-otatools /home/mi/code/compile/debug-merge-add-target-file/vendor-otatools.zip --nonhlos-target-files /home/mi/code/compile/nonhlos-target-files-debug/minonhlos_target_files.zip --miext-target-files /home/docker/workspace/targetfiles/miext_target_files.zip --userdata-target-files ~/code/compile/userdata-img-target-files/userdata_target_files.zip
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#sign target files</span>
+</span></span><span style="display:flex;"><span>./mibuild.py sign_target_files --soc-vendor qcom --script-dir /home/docker/workspace/codebase/aosp_master_u/miui/pangu --target-files-dir /home/docker/workspace/targetfiles --is-userroot yes --enable-userroot-prune --ssi-android-version U --vendor-android-version U
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># gen flash package</span>
+</span></span><span style="display:flex;"><span>python ./mibuild.py gen_flash_package --target-files-dir /home/docker/workspace/targetfiles --soc-vendor qcom  /home/docker/workspace/targetfiles/muwa_pre-misc_images.zip
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># gen flash package 可选参数</span>
+</span></span><span style="display:flex;"><span>python ./mibuild.py gen_flash_package --target-files-dir /home/docker/workspace/targetfiles --soc-vendor qcom  --system-otatools /home/docker/workspace/targetfiles/system-otatools.zip --merged-target-files /home/docker/workspace/targetfiles/merged-target_files.zip --misc-images /home/docker/workspace/targetfiles/nuwa_pre-misc_images.zip --misc-txt-file /home/docker/workspace/targetfiles/misc.txt --bp-target-files /home/docker/workspace/targetfiles/minonhlos_target_files.zip --build-region cn --build-profile u-pre
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#MTK</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Build system</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_system --soc-vendor mtk --build-variant user --build-family phone --build-region global --ssi-src-dir /home/docker/workspace/codebase/missi_u_mtk --target-files-dir /home/docker/workspace/targetfiles_mtk
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Build product</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_product --soc-vendor mtk --build-variant user --build-family phone --device-name plato --build-region global --ssi-src-dir /home/docker/workspace/codebase/missi_u_mtk --target-files-dir /home/docker/workspace/targetfiles_mtk --whitelist-envs <span style="color:#e6db74">&#39;BUILD_NUMBER=0.0.0;CDP_COMP_PRODUCT_PKG_URL=http://eng.comm.miui.srv/xms/api/open/v2/component/manifest/product-plato_pre_global-14-V14.0.23.04.24.61202.1_20230424.17:00:02.285-pre-normal.zip&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Build vendor</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_vendor --soc-vendor mtk --build-variant user --platform-name <span style="color:#e6db74">&#34;&#34;</span> --build-region global --vendor-src-dir /home/docker/workspace/codebase/vendor_s_l12a --target-files-dir /home/docker/workspace/targetfiles_mtk --whitelist-envs <span style="color:#e6db74">&#39;BUILD_NUMBER=0.0.0;DEPRECATED_DEPLOY_TARGET_PRODUCT=plato;DEPRECATED_DEPLOY_REGION=global;BUILD_TARGET_PRODUCT=plato&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Build odm</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_odm --soc-vendor mtk --build-variant user --device-name plato --build-region global --vendor-src-dir /home/docker/workspace/codebase/vendor_s_l12a --target-files-dir /home/docker/workspace/targetfiles_mtk --whitelist-envs <span style="color:#e6db74">&#39;BUILD_NUMBER=0.0.0;DEPRECATED_DEPLOY_TARGET_PRODUCT=plato;DEPRECATED_DEPLOY_REGION=global;BUILD_TARGET_PRODUCT=plato&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Build kernel</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_kernel --soc-vendor mtk --build-variant user --device-name plato --build-region global --vendor-src-dir /home/docker/workspace/codebase/vendor_s_l12a --target-files-dir /home/docker/workspace/targetfiles_mtk --whitelist-envs <span style="color:#e6db74">&#39;BUILD_NUMBER=0.0.0;DEPRECATED_DEPLOY_TARGET_PRODUCT=plato;DEPRECATED_DEPLOY_REGION=global;BUILD_TARGET_PRODUCT=plato&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#build miext</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_miext --soc-vendor mtk --device-name plato --target-files-dir /home/docker/workspace/targetfiles_mtk --sign-keys-dir /home/docker/workspace/targetfiles_mtk/sign --enable-userroot-prune --userroot-prune-zip /home/docker/workspace/targetfiles_mtk/sys_images/sys.target_files.zip --whitelist-envs <span style="color:#e6db74">&#34;CDP_COMP_MIEXT_PKG_URL=http://eng.comm.miui.srv/xms/api/open/v2/component/manifest/miext-plato_pre_global-14-V14.0.23.04.25.38106.1_20230425.10:35:06.260-pre-normal.json&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#build userdata</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_userdata --soc-vendor mtk --device-name plato --target-files-dir /home/mi/code/compile/mtk-userdata  --build-region global --build-profile u-pre --whitelist-envs <span style="color:#e6db74">&#34;CDP_COMP_PRODUCT_PKG_URL=http://eng.comm.miui.srv/xms/api/open/v2/component/manifest/product-plato_pre_global-14-V14.0.23.04.24.61202.1_20230424.17:00:02.285-pre-normal.zip&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Merge</span>
+</span></span><span style="display:flex;"><span>./mibuild.py merge_all_target_files --soc-vendor mtk --build-family phone  --platform-name <span style="color:#e6db74">&#34;&#34;</span> --device-name plato --build-region global --ssi-android-version U --script-dir /home/docker/workspace/codebase/missi_u_mtk/miui/pangu --target-files-dir /home/docker/workspace/targetfiles_mtk
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Merge 可選參數</span>
+</span></span><span style="display:flex;"><span>./mibuild.py merge_all_target_files --soc-vendor mtk --build-family phone  --platform-name <span style="color:#e6db74">&#34;&#34;</span> --device-name plato --build-region native --ssi-android-version U --script-dir /home/mi/code/master-u-mtk/miui/pangu --target-files-dir /home/mi/code/mtk-comp/debug-compile-dir --system-dir /home/mi/code/mtk-comp/debug-compile-dir/sys_images --product-dir /home/mi/code/mtk-comp/debug-userdata-img/prd_images --vendor-dir /home/mi/code/mtk-comp/debug-compile-dir/vnd_images --kernel-dir /home/mi/code/mtk-comp/debug-compile-dir/krn_images --vext-dir /home/mi/code/mtk-comp/debug-compile-dir/vext_images --miext-dir /home/mi/code/mtk-comp/debug-compile-dir --userdata-dir /home/mi/code/mtk-comp/debug-compile-dir --output-dir /home/mi/code/mtk-comp/debug-compile-dir/test-merge --system-otatools /home/mi/code/mtk-comp/debug-compile-dir/test-merge/otatools.zip 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Sign</span>
+</span></span><span style="display:flex;"><span>./mibuild.py sign_target_files --soc-vendor mtk --script-dir /home/docker/workspace/codebase/aosp_master_u/miui/pangu --target-files-dir /home/docker/workspace/targetfiles_mtk --is-userroot yes --enable-userroot-prune --ssi-android-version U --vendor-android-version U
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># gen flash package</span>
+</span></span><span style="display:flex;"><span>python ./mibuild.py gen_flash_package --target-files-dir /home/docker/workspace/targetfiles_mtk --soc-vendor mtk  --system-otatools /home/docker/workspace/targetfiles_mtk/sys-otatools.zip --merged-target-files /home/docker/workspace/targetfiles_mtk/merged-target_files.zip --misc-images /home/docker/workspace/targetfiles_mtk/plato_pre-misc_images.zip
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 编译cuttlefish</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_system --soc-vendor qcom --build-variant userdebug --build-family phone --ssi-src-dir /home/liujianfeng5/workspace/codebase/aosp_master_u --target-files-dir /home/liujianfeng5/workspace/targetfiles/ --build-cuttlefish --build-region cn --arch x64
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 编译general-tests</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_testsuite --soc-vendor qcom --build-variant userdebug --build-family phone --ssi-src-dir /home/liujianfeng5/workspace/codebase/aosp_master_u --target-files-dir /home/liujianfeng5/workspace/targetfiles/ --build-cuttlefish --build-tradefed-testsuit --build-region cn --arch x64
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 编译atests suite</span>
+</span></span><span style="display:flex;"><span>./mibuild.py build_testsuite --soc-vendor qcom --build-variant userdebug --build-family phone --ssi-src-dir /home/liujianfeng5/workspace/codebase/aosp_master_u --target-files-dir /home/liujianfeng5/workspace/targetfiles/ --build-cuttlefish --build-atest-suite --build-region cn --arch x64
+</span></span></code></pre></div><h2 id="backlinks">Backlinks</h2>
+<ul>
+<li><a href="http://localhost:1313/notes/documents/%E6%9D%82%E9%A1%B9/%E5%B8%B8%E7%94%A8%E7%BC%A9%E7%95%A5%E8%AF%8D/">常用缩略词</a></li>
+</ul>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

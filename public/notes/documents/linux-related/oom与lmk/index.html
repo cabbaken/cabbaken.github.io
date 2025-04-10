@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>OOM与LMK</title>
+
+<meta name="description" content="OOM与LMK OOM与LMK简介 基础概念 OOM: out of memory, 程序或OS没有可用内存. OOM killer: Linux的机制, 再发生oom时选一个oom score最高的进程kill掉, 获取内存 lm: low memory, 可用内存少. lmk: low memory killer, Android系统的机制, 在lm的情况下kill一部分进程, 以防系统oom出现. lmk对不同状态的进程设置不同的oom score adj, 在不同的剩余内存级别上杀死不同的进程. OOM OOM分类 OOM分为虚拟内存OOM和物理内存OOM.
+虚拟内存OOM: 一般发生在用户空间 native进程一般在malloc或mmap等内存分配函数时出现OOM Java进程在OOM时会触发OutOfMemoryException异常 物理内存OOM: 发生在内核空间, 没有物理内存可用时触发. 可以利用/proc/meminfo查看系统的内存情况. cat /proc/meminfo | grep -E &#34;(Mem)|(Commit)&#34; MemTotal: 16001012 kB # 总物理内存 MemFree: 667500 kB # 剩余物理内存 MemAvailable: 3084224 kB # 系统能为一个新进程拿出的内存, 详见https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773 CommitLimit: 70501364 kB # 表示所有可分配的物理内存 Committed_AS: 105873324 kB # 表示已分配的虚拟内存的总量, 有大量的虚拟内存未分配物理内存 如下图所示, 在OS中, 每个进程都拥有很大的虚拟地址空间, 进程可以随意分配. ![](assets/Pasted image 20241106215156-20250311094648-9gn2c9h.png ) 进程分配的都是虚拟地址, 在进程要对某块内存进行读写时如果OS还没有为其分配物理内存, 就会产生page fault, 内核需要为其分配物理内存然后建立映射. 这种情况下, 每一个进程都能够分配很大的内存, 但当物理内存不够用时, OOM发生了.
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/linux-related/oom%E4%B8%8Elmk/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/linux-related/oom%E4%B8%8Elmk/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/linux-related/oom%E4%B8%8Elmk/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="OOM与LMK">
+<meta property="og:description" content="OOM与LMK
+OOM与LMK简介
+基础概念
+
+OOM: out of memory, 程序或OS没有可用内存.
+OOM killer: Linux的机制, 再发生oom时选一个oom score最高的进程kill掉, 获取内存
+lm: low memory, 可用内存少.
+lmk: low memory killer, Android系统的机制, 在lm的情况下kill一部分进程, 以防系统oom出现. lmk对不同状态的进程设置不同的oom score adj, 在不同的剩余内存级别上杀死不同的进程.
+
+OOM
+OOM分类
+OOM分为虚拟内存OOM和物理内存OOM.
+
+虚拟内存OOM: 一般发生在用户空间
+
+native进程一般在malloc或mmap等内存分配函数时出现OOM
+Java进程在OOM时会触发OutOfMemoryException异常
+
+
+物理内存OOM: 发生在内核空间, 没有物理内存可用时触发.
+可以利用/proc/meminfo查看系统的内存情况.
+
+cat /proc/meminfo  |  grep -E &#34;(Mem)|(Commit)&#34;
+MemTotal:       16001012 kB      # 总物理内存
+MemFree:          667500 kB      # 剩余物理内存
+MemAvailable:    3084224 kB      # 系统能为一个新进程拿出的内存, 详见https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773
+CommitLimit:    70501364 kB      # 表示所有可分配的物理内存
+Committed_AS:   105873324 kB     # 表示已分配的虚拟内存的总量, 有大量的虚拟内存未分配物理内存
+如下图所示, 在OS中, 每个进程都拥有很大的虚拟地址空间, 进程可以随意分配.
+![](assets/Pasted image 20241106215156-20250311094648-9gn2c9h.png )
+进程分配的都是虚拟地址, 在进程要对某块内存进行读写时如果OS还没有为其分配物理内存, 就会产生page fault, 内核需要为其分配物理内存然后建立映射.
+这种情况下, 每一个进程都能够分配很大的内存, 但当物理内存不够用时, OOM发生了.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/linux-related/oom%E4%B8%8Elmk/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="OOM与LMK">
+<meta name="twitter:description" content="OOM与LMK
+OOM与LMK简介
+基础概念
+
+OOM: out of memory, 程序或OS没有可用内存.
+OOM killer: Linux的机制, 再发生oom时选一个oom score最高的进程kill掉, 获取内存
+lm: low memory, 可用内存少.
+lmk: low memory killer, Android系统的机制, 在lm的情况下kill一部分进程, 以防系统oom出现. lmk对不同状态的进程设置不同的oom score adj, 在不同的剩余内存级别上杀死不同的进程.
+
+OOM
+OOM分类
+OOM分为虚拟内存OOM和物理内存OOM.
+
+虚拟内存OOM: 一般发生在用户空间
+
+native进程一般在malloc或mmap等内存分配函数时出现OOM
+Java进程在OOM时会触发OutOfMemoryException异常
+
+
+物理内存OOM: 发生在内核空间, 没有物理内存可用时触发.
+可以利用/proc/meminfo查看系统的内存情况.
+
+cat /proc/meminfo  |  grep -E &#34;(Mem)|(Commit)&#34;
+MemTotal:       16001012 kB      # 总物理内存
+MemFree:          667500 kB      # 剩余物理内存
+MemAvailable:    3084224 kB      # 系统能为一个新进程拿出的内存, 详见https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773
+CommitLimit:    70501364 kB      # 表示所有可分配的物理内存
+Committed_AS:   105873324 kB     # 表示已分配的虚拟内存的总量, 有大量的虚拟内存未分配物理内存
+如下图所示, 在OS中, 每个进程都拥有很大的虚拟地址空间, 进程可以随意分配.
+![](assets/Pasted image 20241106215156-20250311094648-9gn2c9h.png )
+进程分配的都是虚拟地址, 在进程要对某块内存进行读写时如果OS还没有为其分配物理内存, 就会产生page fault, 内核需要为其分配物理内存然后建立映射.
+这种情况下, 每一个进程都能够分配很大的内存, 但当物理内存不够用时, OOM发生了.">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "OOM与LMK",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  4383 ,
+  "description": "OOM与LMK OOM与LMK简介 基础概念 OOM: out of memory, 程序或OS没有可用内存. OOM killer: Linux的机制, 再发生oom时选一个oom score最高的进程kill掉, 获取内存 lm: low memory, 可用内存少. lmk: low memory killer, Android系统的机制, 在lm的情况下kill一部分进程, 以防系统oom出现. lmk对不同状态的进程设置不同的oom score adj, 在不同的剩余内存级别上杀死不同的进程. OOM OOM分类 OOM分为虚拟内存OOM和物理内存OOM.\n虚拟内存OOM: 一般发生在用户空间 native进程一般在malloc或mmap等内存分配函数时出现OOM Java进程在OOM时会触发OutOfMemoryException异常 物理内存OOM: 发生在内核空间, 没有物理内存可用时触发. 可以利用/proc/meminfo查看系统的内存情况. cat /proc/meminfo | grep -E \u0026#34;(Mem)|(Commit)\u0026#34; MemTotal: 16001012 kB # 总物理内存 MemFree: 667500 kB # 剩余物理内存 MemAvailable: 3084224 kB # 系统能为一个新进程拿出的内存, 详见https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773 CommitLimit: 70501364 kB # 表示所有可分配的物理内存 Committed_AS: 105873324 kB # 表示已分配的虚拟内存的总量, 有大量的虚拟内存未分配物理内存 如下图所示, 在OS中, 每个进程都拥有很大的虚拟地址空间, 进程可以随意分配. ![](assets/Pasted image 20241106215156-20250311094648-9gn2c9h.png ) 进程分配的都是虚拟地址, 在进程要对某块内存进行读写时如果OS还没有为其分配物理内存, 就会产生page fault, 内核需要为其分配物理内存然后建立映射. 这种情况下, 每一个进程都能够分配很大的内存, 但当物理内存不够用时, OOM发生了.\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="oom与lmk">OOM与LMK</h1>
+<h2 id="oom与lmk简介">OOM与LMK简介</h2>
+<h3 id="基础概念">基础概念</h3>
+<ul>
+<li>OOM: out of memory, 程序或OS没有可用内存.</li>
+<li>OOM killer: Linux的机制, 再发生oom时选一个oom score最高的进程kill掉, 获取内存</li>
+<li>lm: low memory, 可用内存少.</li>
+<li>lmk: low memory killer, Android系统的机制, 在lm的情况下kill一部分进程, 以防系统oom出现. lmk对不同状态的进程设置不同的oom score adj, 在不同的剩余内存级别上杀死不同的进程.</li>
+</ul>
+<h2 id="oom">OOM</h2>
+<h3 id="oom分类">OOM分类</h3>
+<p>OOM分为虚拟内存OOM和物理内存OOM.</p>
+<ul>
+<li>虚拟内存OOM: 一般发生在用户空间
+<ul>
+<li>native进程一般在malloc或mmap等内存分配函数时出现OOM</li>
+<li>Java进程在OOM时会触发OutOfMemoryException异常</li>
+</ul>
+</li>
+<li>物理内存OOM: 发生在内核空间, 没有物理内存可用时触发.
+可以利用<code>/proc/meminfo</code>查看系统的内存情况.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-zsh" data-lang="zsh"><span style="display:flex;"><span>cat /proc/meminfo  |  grep -E <span style="color:#e6db74">&#34;(Mem)|(Commit)&#34;</span>
+</span></span><span style="display:flex;"><span>MemTotal:       <span style="color:#ae81ff">16001012</span> kB      <span style="color:#75715e"># 总物理内存</span>
+</span></span><span style="display:flex;"><span>MemFree:          <span style="color:#ae81ff">667500</span> kB      <span style="color:#75715e"># 剩余物理内存</span>
+</span></span><span style="display:flex;"><span>MemAvailable:    <span style="color:#ae81ff">3084224</span> kB      <span style="color:#75715e"># 系统能为一个新进程拿出的内存, 详见https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773</span>
+</span></span><span style="display:flex;"><span>CommitLimit:    <span style="color:#ae81ff">70501364</span> kB      <span style="color:#75715e"># 表示所有可分配的物理内存</span>
+</span></span><span style="display:flex;"><span>Committed_AS:   <span style="color:#ae81ff">105873324</span> kB     <span style="color:#75715e"># 表示已分配的虚拟内存的总量, 有大量的虚拟内存未分配物理内存</span>
+</span></span></code></pre></div><p>如下图所示, 在OS中, 每个进程都拥有很大的虚拟地址空间, 进程可以随意分配.
+![](assets/Pasted image 20241106215156-20250311094648-9gn2c9h.png )
+进程分配的都是虚拟地址, 在进程要对某块内存进行读写时如果OS还没有为其分配物理内存, 就会产生page fault, 内核需要为其分配物理内存然后建立映射.
+这种情况下, 每一个进程都能够分配很大的内存, 但当物理内存不够用时, OOM发生了.</p>
+<h3 id="虚拟内存oomuser-space">虚拟内存OOM(user space)</h3>
+<p>用户空间进程申请内存的行为叫做commit memory(可以理解为<code>进程:&quot;I want some memory, but I decide if I use it.&quot;</code>)</p>
+<p>分配虚拟内存有三种策略:</p>
+<ol>
+<li>禁止多分配虚拟内存, 多个进程的虚拟内存总和小于等于物理内存
+在这种情况下, 不可能发生物理内存不够的情况, 因为虚拟内存一定会先无法分配. 也就是说程序会在申请内存的阶段发生错误. 而此时对于所有的虚拟内存, 内核都有足够的物理内存进行分配, 不会发生物理内存OOM, 也就不会触发OOM killer机制.</li>
+<li>允许多分配虚拟内存, 多个进程的虚拟内存总和大于物理内存
+在这种情况下, 每个进程都可以分配尽可能多的虚拟内存, 但是使用的虚拟内存达到物理内存总量时会触发OOM killer机制, 杀掉一些进程.</li>
+<li>限制多分配虚拟内存
+许多进程分配了虚拟内存却并没有进行使用, 也就一直都没有分配物理内存.
+如果禁止多分配虚拟内存就无法充分利用物理内存.
+如果允许无限多分配内存也不可以, 这样会经常触发OOM killer.
+此时需要结合1与2, 适当的多分配一些虚拟内存, 这样既能提高物理内存的利用率, 也能够降低OOM(无法避免)的出现.</li>
+</ol>
+<p>对于这三种策略, 内核提供了配置文件<code>/proc/sys/vm/overcommit_memory</code>, 可以写入不同的值来控制策略选择:
+内核为这三种策略定义了宏，</p>
+<pre tabindex="0"><code>#define OVERCOMMIT_GUESS 0    // 对应策略3
+#define OVERCOMMIT_ALWAYS 1   // 对应策略2
+#define OVERCOMMIT_NEVER 2    // 对应策略1
+</code></pre><p>检测代码在mm/util.c: <code>__vm_enough_memory()</code>，所有的虚拟内存分配都会走到这个函数。</p>
+<p>在使用策略一的情况下(<code>OVERCOMMIT_NEVER</code>), 我们有两种方式配置允许分配虚拟内存的量(此时虚拟内存量等于真的分配的物理内存的量):</p>
+<ol>
+<li><code>/proc/sys/vm/overcommit_kbytes</code> 定义允许分配内存的量, 可分配内存量为<code>overcommit_kbytes + swap</code></li>
+<li><code>/proc/sys/vm/overcommit_ratio</code> 定义允许分配内存的比例, 可分配内存量为<code>overcommit_ratio / 100 * RAM + swap</code>
+两者中只有一个生效, 写入一个文件时, 另一个文件的值会被置0. 默认初始状态下<code>overcommit_ratio = 50</code></li>
+</ol>
+<p>在使用策略三的情况下(<code>OVERCOMMIT_GUESS</code>), 只要当前剩余的物理内存足够，就允许分配相应的虚拟内存。此时可能分配的虚拟内存已经超过了物理内存, 但是这些虚拟内存还没有使用到, 所以没有分配相应的物理内存, 还有不少剩余物理内存。</p>
+<p>ARM架构默认采用策略2.</p>
+<h3 id="物理内存oomkernel-space">物理内存OOM(kernel space)</h3>
+<p>如果发生oom, 内核会有log, cat /dev/kmsg | grep -e &ldquo;Kill process&rdquo; -e &ldquo;Killed process&rdquo;</p>
+<p>所有的物理内存都由内核来分配, 所以只有内核能触发物理内存OOM.</p>
+<ol>
+<li>为kernel space分配内存的相关代码在mm/page_alloc.c: <code>__alloc_pages_slowpath()</code></li>
+<li>为user space分配内存的相关代码在(以arm64为例)arch/arm64/mm/fault.c: <code>do_page_fault()</code>
+这两个函数发现物理内存不足时都会调用mm/oom_kill.c: <code>out_of_memory()</code>, 其逻辑大致如下:
+如果OOM killer存在, 则让其选择一个进程(优先选择等待死亡的进程, 也就是已经发送SIGKILL的进程, 若没有, 则根据OOM score选择进程), 然后杀死这个进程, 获取内存.
+代码如下:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * out_of_memory - kill the &#34;best&#34; process when we run out of memory
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @oc: pointer to struct oom_control
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * If we run out of memory, we have the choice between either
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * killing a random task (bad), letting the system crash (worse)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * OR try to be smart about which process to kill. Note that we
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * don&#39;t have to be perfect here, we just have to be good.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">out_of_memory</span>(<span style="color:#66d9ef">struct</span> oom_control <span style="color:#f92672">*</span>oc)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> freed <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (oom_killer_disabled)
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> false;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">is_memcg_oom</span>(oc)) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">blocking_notifier_call_chain</span>(<span style="color:#f92672">&amp;</span>oom_notify_list, <span style="color:#ae81ff">0</span>, <span style="color:#f92672">&amp;</span>freed);
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (freed <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span><span style="color:#a6e22e">is_sysrq_oom</span>(oc))
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">/* Got some memory back in the last second. */</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> true;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * If current has a pending SIGKILL or is exiting, then automatically
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * select it.  The goal is to allow it to allocate so that it may
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * quickly exit and free its memory.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">task_will_free_mem</span>(current)) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">mark_oom_victim</span>(current);
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">queue_oom_reaper</span>(current);
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> true;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * The OOM killer does not compensate for IO-less reclaim.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * But mem_cgroup_oom() has to invoke the OOM killer even
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * if it is a GFP_NOFS allocation.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(oc<span style="color:#f92672">-&gt;</span>gfp_mask <span style="color:#f92672">&amp;</span> __GFP_FS) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span><span style="color:#a6e22e">is_memcg_oom</span>(oc))
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> true;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * Check if there were limitations on the allocation (only relevant for
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * NUMA and memcg) that may require different handling.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 */</span>
+</span></span><span style="display:flex;"><span>	oc<span style="color:#f92672">-&gt;</span>constraint <span style="color:#f92672">=</span> <span style="color:#a6e22e">constrained_alloc</span>(oc);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (oc<span style="color:#f92672">-&gt;</span>constraint <span style="color:#f92672">!=</span> CONSTRAINT_MEMORY_POLICY)
+</span></span><span style="display:flex;"><span>		oc<span style="color:#f92672">-&gt;</span>nodemask <span style="color:#f92672">=</span> NULL;
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">check_panic_on_oom</span>(oc);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">is_memcg_oom</span>(oc) <span style="color:#f92672">&amp;&amp;</span> sysctl_oom_kill_allocating_task <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>	    current<span style="color:#f92672">-&gt;</span>mm <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span><span style="color:#a6e22e">oom_unkillable_task</span>(current) <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>	    <span style="color:#a6e22e">oom_cpuset_eligible</span>(current, oc) <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>	    current<span style="color:#f92672">-&gt;</span>signal<span style="color:#f92672">-&gt;</span>oom_score_adj <span style="color:#f92672">!=</span> OOM_SCORE_ADJ_MIN) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">get_task_struct</span>(current);
+</span></span><span style="display:flex;"><span>		oc<span style="color:#f92672">-&gt;</span>chosen <span style="color:#f92672">=</span> current;
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">oom_kill_process</span>(oc, <span style="color:#e6db74">&#34;Out of memory (oom_kill_allocating_task)&#34;</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> true;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">select_bad_process</span>(oc);
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">/* Found nothing?!?! */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>oc<span style="color:#f92672">-&gt;</span>chosen) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">dump_header</span>(oc);
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">pr_warn</span>(<span style="color:#e6db74">&#34;Out of memory and no killable processes...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		 * If we got here due to an actual allocation at the
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		 * system level, we cannot survive this and will enter
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		 * an endless loop in the allocator. Bail out now.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		 */</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">is_sysrq_oom</span>(oc) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span><span style="color:#a6e22e">is_memcg_oom</span>(oc))
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">panic</span>(<span style="color:#e6db74">&#34;System is deadlocked on memory</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (oc<span style="color:#f92672">-&gt;</span>chosen <span style="color:#f92672">&amp;&amp;</span> oc<span style="color:#f92672">-&gt;</span>chosen <span style="color:#f92672">!=</span> (<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1UL</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">oom_kill_process</span>(oc, <span style="color:#f92672">!</span><span style="color:#a6e22e">is_memcg_oom</span>(oc) <span style="color:#f92672">?</span> <span style="color:#e6db74">&#34;Out of memory&#34;</span> <span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>				 <span style="color:#e6db74">&#34;Memory cgroup out of memory&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#f92672">!!</span>oc<span style="color:#f92672">-&gt;</span>chosen;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可以简化为</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">out_of_memory</span>(<span style="color:#66d9ef">struct</span> oom_control <span style="color:#f92672">*</span>oc)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">select_bad_process</span>(oc);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">oom_kill_process</span>(oc,<span style="color:#e6db74">&#34;...&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="select_bad_process">select_bad_process()</h4>
+<p><code>select_bad_process()</code>会遍历所有进程, 根据进程的OOM score来选择进程.
+每个进程都有下面三个oom相关的文件</p>
+<ul>
+<li><code>/proc/&lt;pid&gt;/oom_score</code>: 系统计算出来的oom_score值，只读文件，取值范围0 –- 1000，0代表never kill，1000代表aways kill</li>
+<li><code>/proc/&lt;pid&gt;/oom_score_adj</code>: 让用户空间调节oom_score的接口，root可读写，取值范围 -1000 &mdash; 1000，若为 -1000，则oom_score必为0</li>
+<li><code>/proc/&lt;pid&gt;/oom_adj</code>: 旧的接口文件，为兼容而保留，root可读写，取值范围 -16 — 15，特殊值 -17代表 OOM_DISABLE，会被线性映射到oom_score_adj
+计算oom_score的逻辑在<code>oom_badness()</code>中</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>	<span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * The baseline for the badness score is the proportion of RAM that each
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 * task&#39;s rss, pagetable and swap space use.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	 */</span>
+</span></span><span style="display:flex;"><span>	points <span style="color:#f92672">=</span> <span style="color:#a6e22e">get_mm_rss</span>(p<span style="color:#f92672">-&gt;</span>mm) <span style="color:#f92672">+</span> <span style="color:#a6e22e">get_mm_counter</span>(p<span style="color:#f92672">-&gt;</span>mm, MM_SWAPENTS) <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">mm_pgtables_bytes</span>(p<span style="color:#f92672">-&gt;</span>mm) <span style="color:#f92672">/</span> PAGE_SIZE;
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">task_unlock</span>(p);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">/* Normalize to oom_score_adj units */</span>
+</span></span><span style="display:flex;"><span>	adj <span style="color:#f92672">*=</span> totalpages <span style="color:#f92672">/</span> <span style="color:#ae81ff">1000</span>;
+</span></span><span style="display:flex;"><span>	points <span style="color:#f92672">+=</span> adj;
+</span></span></code></pre></div><p><code>oom_score = rss/total * 1000 + oom_score_adj</code> (rss表示实际使用的内存, total表示总内存)
+也就是说进程在使用的内存越多, oom_score就越大, 越容易被选中.</p>
+<h4 id="oom_kill_process">oom_kill_process()</h4>
+<p><code>oom_kill_process()</code>会先判断选定进程是否正在退出, 若否, 则杀死进程. 在这一步会kill共享相关内存的进程, 具体可以看oom_kill.c: <code>__oom_kill_process()</code>.</p>
+<h2 id="lmk">LMK</h2>
+<p>Android上开发了low memory killer机制, 在系统内存较低时就开始杀进程, 而不是等到内存不足时再杀, 进程名为lmkd, 代码在<code>system/memory/lmkd</code>.
+Lmk复用了oom killer的<code>/proc/&lt;pid&gt;/oom_score_adj</code>接口, 但是没有使用<code>/proc/&lt;pid&gt;/oom_score</code>, lmk仅根据oom_score_adj值的大小选择杀进程, 不会考虑进程本身占用内存的大小.</p>
+<ul>
+<li>oom_score_adj：取值为-1000&mdash;1000,如果赋值为-1000将关闭oom killer对他的管理（如init、surfaceflinger等native 进程）。它和oom_adj都是kernel留给用户空间更改进程被杀优先级的接口，AMS调整app adj值就是通过unix socket传给lmkd修改这个值。</li>
+<li>oom_adj：是oom_score_adj之前的老接口，为了兼容而保留，取值为-16&ndash;15,如果赋值为-17将关闭oom killer对他的管理。现在如果用户改变这个值，后面在kernel里边也会换算成oom_score_adj。oom_score：kernel根据oom_score_adj值，结合该进程使用的内存量算出的值。
+不同类型的进程拥有不同的oom_score_adj.</li>
+<li>Apk进程的oom_score_adj的值由AMS根据apk的生命周期和其他一些因素进行设置, 会动态变化, 一般都大于等于0.</li>
+<li>Native进程的oom_score_adj的值由rc文件设置或者继承自父进程，一般都是静态的，不会变化, 一般都小于0.
+其中很多重要的系统支撑进程的oom_score_adj值为-1000，oom killer无法杀死.
+Lmk默认只管理oom_score_adj大于等于0的进程, 所以只能杀死apk进程. Lmk会按照剩余内存量的水平杀死大于相应oom_score_adj的所有进程.
+Lmk根据以下的顺序杀进程:</li>
+</ul>
+<ol>
+<li>CACHED_APP_MAX_ADJ</li>
+<li>CACHED_APP_MIN_ADJ</li>
+<li>BACKUP_APP_ADJ</li>
+<li>PERCEPTIBLE_APP_ADJ</li>
+<li>VISIBLE_APP_ADJ</li>
+<li>FOREGROUND_APP_ADJ</li>
+</ol>
+<p>ProcessList.java:</p>
+<table>
+  <thead>
+      <tr>
+          <th>ADJ级别</th>
+          <th>取值</th>
+          <th>解释</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>UNKNOWN_ADJ</td>
+          <td>16</td>
+          <td>一般指将要会缓存进程，无法获取确定值</td>
+      </tr>
+      <tr>
+          <td>CACHED_APP_MAX_ADJ</td>
+          <td>15</td>
+          <td><strong>不可见进程的adj最大值 1</strong></td>
+      </tr>
+      <tr>
+          <td>CACHED_APP_MIN_ADJ</td>
+          <td>9</td>
+          <td><strong>不可见进程的adj最小值 2</strong></td>
+      </tr>
+      <tr>
+          <td>SERVICE_B_AD</td>
+          <td>8</td>
+          <td>B List中的Service（较老的、使用可能性更小）</td>
+      </tr>
+      <tr>
+          <td>PREVIOUS_APP_ADJ</td>
+          <td>7</td>
+          <td>上一个App的进程(往往通过按返回键)</td>
+      </tr>
+      <tr>
+          <td>HOME_APP_ADJ</td>
+          <td>6</td>
+          <td>Home进程</td>
+      </tr>
+      <tr>
+          <td>SERVICE_ADJ</td>
+          <td>5</td>
+          <td>服务进程(Service process)</td>
+      </tr>
+      <tr>
+          <td>HEAVY_WEIGHT_APP_ADJ</td>
+          <td>4</td>
+          <td>后台的重量级进程，system/rootdir/init.rc文件中设置</td>
+      </tr>
+      <tr>
+          <td>BACKUP_APP_ADJ</td>
+          <td>3</td>
+          <td><strong>备份进程 3</strong></td>
+      </tr>
+      <tr>
+          <td>PERCEPTIBLE_APP_ADJ</td>
+          <td>2</td>
+          <td><strong>可感知进程，比如后台音乐播放 4</strong></td>
+      </tr>
+      <tr>
+          <td>VISIBLE_APP_ADJ</td>
+          <td>1</td>
+          <td><strong>可见进程(Visible process) 5</strong></td>
+      </tr>
+      <tr>
+          <td>FOREGROUND_APP_ADJ</td>
+          <td>0</td>
+          <td><strong>前台进程（Foreground process） 6</strong></td>
+      </tr>
+      <tr>
+          <td>PERSISTENT_SERVICE_ADJ</td>
+          <td>-11</td>
+          <td>关联着系统或persistent进程</td>
+      </tr>
+      <tr>
+          <td>PERSISTENT_PROC_ADJ</td>
+          <td>-12</td>
+          <td>系统persistent进程，比如telephony</td>
+      </tr>
+      <tr>
+          <td>SYSTEM_ADJ</td>
+          <td>-16</td>
+          <td>系统进程</td>
+      </tr>
+      <tr>
+          <td>NATIVE_ADJ</td>
+          <td>-17</td>
+          <td>native进程（不被系统管理）</td>
+      </tr>
+  </tbody>
+</table>
+<p>ActivityManager.java:</p>
+<table>
+  <thead>
+      <tr>
+          <th>state级别</th>
+          <th>取值</th>
+          <th>解释</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>PROCESS_STATE_CACHED_EMPTY</td>
+          <td>16</td>
+          <td>进程处于cached状态，且为空进程</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_CACHED_ACTIVITY_CLIENT</td>
+          <td>15</td>
+          <td>进程处于cached状态，且为另一个cached进程(内含Activity)的client进程</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_CACHED_ACTIVITY</td>
+          <td>14</td>
+          <td>进程处于cached状态，且内含Activity</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_LAST_ACTIVITY</td>
+          <td>13</td>
+          <td>后台进程，且拥有上一次显示的Activity</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_HOME</td>
+          <td>12</td>
+          <td>后台进程，且拥有home Activity</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_RECEIVER</td>
+          <td>11</td>
+          <td>后台进程，且正在运行receiver</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_SERVICE</td>
+          <td>10</td>
+          <td>后台进程，且正在运行service</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_HEAVY_WEIGHT</td>
+          <td>9</td>
+          <td>后台进程，但无法执行restore，因此尽量避免kill该进程</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_BACKUP</td>
+          <td>8</td>
+          <td>后台进程，正在运行backup/restore操作</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_IMPORTANT_BACKGROUND</td>
+          <td>7</td>
+          <td>对用户很重要的进程，用户不可感知其存在</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_IMPORTANT_FOREGROUND</td>
+          <td>6</td>
+          <td>对用户很重要的进程，用户可感知其存在</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_TOP_SLEEPING</td>
+          <td>5</td>
+          <td>与PROCESS_STATE_TOP一样，但此时设备正处于休眠状态</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_FOREGROUND_SERVICE</td>
+          <td>4</td>
+          <td>拥有给一个前台Service</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_BOUND_FOREGROUND_SERVICE</td>
+          <td>3</td>
+          <td>拥有给一个前台Service，且由系统绑定</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_TOP</td>
+          <td>2</td>
+          <td>拥有当前用户可见的top Activity</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_PERSISTENT_UI</td>
+          <td>1</td>
+          <td>persistent系统进程，并正在执行UI操作</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_PERSISTENT</td>
+          <td>0</td>
+          <td>persistent系统进程</td>
+      </tr>
+      <tr>
+          <td>PROCESS_STATE_NONEXISTENT</td>
+          <td>-1</td>
+          <td>不存在的进程</td>
+      </tr>
+      <tr>
+          <td><a href="https://gityuan.com/2015/10/01/process-lifecycle/" target="_blank" rel="noopener">https://gityuan.com/2015/10/01/process-lifecycle/</a></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

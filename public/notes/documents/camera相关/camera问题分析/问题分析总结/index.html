@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>问题分析总结</title>
+
+<meta name="description" content="问题分析总结 问题分析总结 先联系测试，看看能不能单测测试出问题，并让其提供内存数据（目的是确定问题是否还存在，不存在就直接关jira。因为如果有内存泄漏问题，很容易就可以复现出来，而概率出现的问题可能是因为测试流程出了问题） 使用相机自动化测试工具能力扩展 中提供的工具进行分析和定位（能复现问题就好解决） 如果问题不包含在文档中，则自己抓函数调用栈分析 相机专项测试安装：
+wget http://cnbj1-fds.api.xiaomi.net/camera-devtest/00/apks/install_apk.sh -O install_apk.sh chmod &#43;x install_apk.sh ./install_apk.sh 设备号 先找资料，看看前人遇到的类似问题和解决方法 Perfetto trace 系统跟踪 开启开发者模式-&gt;系统跟踪-&gt;录制跟踪记录
+获取文件用于perfetto分析
+Perfetto脚本 curl -O https://raw.githubusercontent.com/google/perfetto/main/tools/record_android_trace chmod u&#43;x record_android_trace # See ./record_android_trace --help for more ./record_android_trace -o trace_file.perfetto-trace -t 30s -b 64mb \ sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory 或
+adb shell perfetto -o /data/misc/perfetto-traces/trace_file.perfetto-trace -t 20s \ sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory 获取文件用于perfetto分析
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90%E6%80%BB%E7%BB%93/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90%E6%80%BB%E7%BB%93/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90%E6%80%BB%E7%BB%93/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="问题分析总结">
+<meta property="og:description" content="问题分析总结
+问题分析总结
+
+先联系测试，看看能不能单测测试出问题，并让其提供内存数据（目的是确定问题是否还存在，不存在就直接关jira。因为如果有内存泄漏问题，很容易就可以复现出来，而概率出现的问题可能是因为测试流程出了问题）
+使用相机自动化测试工具能力扩展 中提供的工具进行分析和定位（能复现问题就好解决）
+如果问题不包含在文档中，则自己抓函数调用栈分析
+
+相机专项测试安装：
+wget http://cnbj1-fds.api.xiaomi.net/camera-devtest/00/apks/install_apk.sh -O install_apk.sh
+chmod &#43;x install_apk.sh
+ ./install_apk.sh 设备号
+先找资料，看看前人遇到的类似问题和解决方法
+Perfetto trace
+系统跟踪
+开启开发者模式-&gt;系统跟踪-&gt;录制跟踪记录
+获取文件用于perfetto分析
+Perfetto脚本
+curl -O https://raw.githubusercontent.com/google/perfetto/main/tools/record_android_trace
+chmod u&#43;x record_android_trace
+
+# See ./record_android_trace --help for more
+./record_android_trace -o trace_file.perfetto-trace -t 30s -b 64mb \
+sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory
+或
+adb shell perfetto -o /data/misc/perfetto-traces/trace_file.perfetto-trace -t 20s \
+sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory
+获取文件用于perfetto分析">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90%E6%80%BB%E7%BB%93/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="问题分析总结">
+<meta name="twitter:description" content="问题分析总结
+问题分析总结
+
+先联系测试，看看能不能单测测试出问题，并让其提供内存数据（目的是确定问题是否还存在，不存在就直接关jira。因为如果有内存泄漏问题，很容易就可以复现出来，而概率出现的问题可能是因为测试流程出了问题）
+使用相机自动化测试工具能力扩展 中提供的工具进行分析和定位（能复现问题就好解决）
+如果问题不包含在文档中，则自己抓函数调用栈分析
+
+相机专项测试安装：
+wget http://cnbj1-fds.api.xiaomi.net/camera-devtest/00/apks/install_apk.sh -O install_apk.sh
+chmod &#43;x install_apk.sh
+ ./install_apk.sh 设备号
+先找资料，看看前人遇到的类似问题和解决方法
+Perfetto trace
+系统跟踪
+开启开发者模式-&gt;系统跟踪-&gt;录制跟踪记录
+获取文件用于perfetto分析
+Perfetto脚本
+curl -O https://raw.githubusercontent.com/google/perfetto/main/tools/record_android_trace
+chmod u&#43;x record_android_trace
+
+# See ./record_android_trace --help for more
+./record_android_trace -o trace_file.perfetto-trace -t 30s -b 64mb \
+sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory
+或
+adb shell perfetto -o /data/misc/perfetto-traces/trace_file.perfetto-trace -t 20s \
+sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory
+获取文件用于perfetto分析">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "问题分析总结",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  6679 ,
+  "description": "问题分析总结 问题分析总结 先联系测试，看看能不能单测测试出问题，并让其提供内存数据（目的是确定问题是否还存在，不存在就直接关jira。因为如果有内存泄漏问题，很容易就可以复现出来，而概率出现的问题可能是因为测试流程出了问题） 使用相机自动化测试工具能力扩展 中提供的工具进行分析和定位（能复现问题就好解决） 如果问题不包含在文档中，则自己抓函数调用栈分析 相机专项测试安装：\nwget http://cnbj1-fds.api.xiaomi.net/camera-devtest/00/apks/install_apk.sh -O install_apk.sh chmod +x install_apk.sh ./install_apk.sh 设备号 先找资料，看看前人遇到的类似问题和解决方法 Perfetto trace 系统跟踪 开启开发者模式-\u0026gt;系统跟踪-\u0026gt;录制跟踪记录\n获取文件用于perfetto分析\nPerfetto脚本 curl -O https://raw.githubusercontent.com/google/perfetto/main/tools/record_android_trace chmod u+x record_android_trace # See ./record_android_trace --help for more ./record_android_trace -o trace_file.perfetto-trace -t 30s -b 64mb \\ sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory 或\nadb shell perfetto -o /data/misc/perfetto-traces/trace_file.perfetto-trace -t 20s \\ sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory 获取文件用于perfetto分析\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="问题分析总结">问题分析总结</h1>
+<h1 id="问题分析总结-1">问题分析总结</h1>
+<ol>
+<li>先联系测试，看看能不能单测测试出问题，并让其提供内存数据（目的是确定问题是否还存在，不存在就直接关jira。因为如果有内存泄漏问题，很容易就可以复现出来，而概率出现的问题可能是因为测试流程出了问题）</li>
+<li>使用<a href="https://xiaomi.f.mioffice.cn/docx/doxk4oY3GWjUu1VcK1pjTiGK40e" target="_blank" rel="noopener">相机自动化测试工具能力扩展</a> 中提供的工具进行分析和定位（能复现问题就好解决）</li>
+<li>如果问题不包含在文档中，则自己抓函数调用栈分析</li>
+</ol>
+<p>相机专项测试安装：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>wget http:<span style="color:#75715e">//cnbj1-fds.api.xiaomi.net/camera-devtest/00/apks/install_apk.sh -O install_apk.sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>chmod <span style="color:#f92672">+</span>x install_apk.sh
+</span></span><span style="display:flex;"><span> .<span style="color:#f92672">/</span>install_apk.sh <span style="color:#960050;background-color:#1e0010">设备号</span>
+</span></span></code></pre></div><h1 id="先找资料看看前人遇到的类似问题和解决方法">先找资料，看看前人遇到的类似问题和解决方法</h1>
+<h1 id="perfetto-trace">Perfetto trace</h1>
+<h2 id="系统跟踪">系统跟踪</h2>
+<p>开启开发者模式-&gt;系统跟踪-&gt;录制跟踪记录</p>
+<p>获取文件用于perfetto分析</p>
+<h2 id="perfetto脚本">Perfetto脚本</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>curl -O https://raw.githubusercontent.com/google/perfetto/main/tools/record_android_trace
+</span></span><span style="display:flex;"><span>chmod u+x record_android_trace
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># See ./record_android_trace --help for more</span>
+</span></span><span style="display:flex;"><span>./record_android_trace -o trace_file.perfetto-trace -t 30s -b 64mb <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory
+</span></span></code></pre></div><p>或</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>adb shell perfetto -o /data/misc/perfetto-traces/trace_file.perfetto-trace -t 20s <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory
+</span></span></code></pre></div><p>获取文件用于perfetto分析</p>
+<h1 id="perfetto分析">Perfetto分析</h1>
+<p>Wall time是进程/线程结束时间-开始时间
+<a href="https://developer.android.com/topic/performance/tracing/navigate-report" target="_blank" rel="noopener">https://developer.android.com/topic/performance/tracing/navigate-report</a></p>
+<p>线程视图每个线程有2行。</p>
+<h3 id="运行时刻">运行时刻</h3>
+<p>第一行，显示线程的运行状态，对照时间刻度，可以计算运行的时间点和运行的时长，点击运行时刻条，可以查看当前运行的线程状态：</p>
+<ul>
+<li>​<code>Running</code>​：绿色运行时刻条，线程实际运行的时间</li>
+<li>​<code>Runnable</code>​：浅绿色运行时刻条，在<code>Running</code>​绿色运行条之前，点击可查看waker和woken thread，</li>
+<li>​<code>Uninterruptible Sleep (IO)</code>​：黄色时刻条，可能因为等待io的sleep</li>
+</ul>
+<h3 id="运行方法">运行方法</h3>
+<p>第二行，显示当前运行的线程方法，运行线程方法，结合第一行的运行时刻，可以知道线程当前运行的方法。</p>
+<p>方法颜色条可能很会长，对照第一行运行时刻，跨越多个<code>Running</code>​运行。方法的状态：</p>
+<ul>
+<li>方法只在运行时刻<code>Running</code>​的时间段运行</li>
+<li>方法上方再次看到运行时刻Running，说明该方法再次进入运行：得到运行的条件有两个：被<code>wakeup</code>​或被调度。</li>
+</ul>
+<p>运行时刻<code>Running</code>​，显示有多个方法，是该运行时刻线程方法的调用栈。</p>
+<h3 id="性能分析">性能分析</h3>
+<h4 id="耗时时刻">耗时时刻</h4>
+<p>日志里面找到耗时的时刻点，通过服务的运行流程的日志打印时间点，找到哪段时间耗时异常。</p>
+<h4 id="定位方法">定位方法</h4>
+<h5 id="阻塞导致的耗时">阻塞导致的耗时</h5>
+<p>根据耗时时刻点，找到耗时的线程和方法：</p>
+<ol>
+<li>定位到问题进程</li>
+<li>展开问题进程的线程列表</li>
+<li>定位耗时的线程方法（方法条）</li>
+</ol>
+<p><strong>耗时方法条的特征</strong></p>
+<ul>
+<li>方法条异常的长，可能长达<code>1s</code>​以上（根据日志耗时的实际时间）</li>
+<li>方法条对应的运行时刻<code>Running</code>​特别少，可能只在方法条首尾有<code>Running</code>​运行时刻</li>
+<li>点击方法，进入方法状态，查看<code>Sleeping</code>​和<code>Running</code>​两个时间项，耗时的方法，<code>Sleeping</code>​时间异常大，而实际<code>Running</code>​时间可能很短</li>
+</ul>
+<h5 id="分析耗时">分析耗时</h5>
+<ol>
+<li>分析方法调用什么服务导致阻塞</li>
+<li>分析方法条结尾，由什么服务唤醒得到执行</li>
+</ol>
+<h1 id="分析log">分析log</h1>
+<p>使用logcat抓取log</p>
+<p>logcat各字段含义：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>08-30 10:33:10.485 17792 19055 I         CAM_PerformanceManager: [P_PERFORM]: Action: switch_prefix_camera_setup_162_0 takes 3 ms
+</span></span><span style="display:flex;"><span>时间                进程号 线程号 log等级   tag                      message
+</span></span></code></pre></div><p>start u0     相机软件启动与结束</p>
+<p>connect     相机连接</p>
+<p>disconnect 相机断开连接</p>
+<p>onModeSelected</p>
+<p>K_PROCESS  key process</p>
+<p>U_ACTION     user action</p>
+<p>P_PERFORM  相机性能</p>
+<p><a href="https://wiki.n.miui.com/pages/viewpage.action?pageId=692265756" target="_blank" rel="noopener">mtk内存问题基础分析</a></p>
+<p><a href="https://wiki.n.miui.com/pages/viewpage.action?pageId=131038582" target="_blank" rel="noopener">相机内存测试</a></p>
+<p><a href="https://xiaomi.f.mioffice.cn/docx/doxk46Rj2LVuWlnop9f3YNT58fg" target="_blank" rel="noopener">内存报告分析工具集合</a></p>
+<p><a href="https://xiaomi.f.mioffice.cn/docs/dock4WehnVbjpGKK18yd4YTJQie" target="_blank" rel="noopener">K1_totaldiff </a>​<a href="https://xiaomi.f.mioffice.cn/docs/dock4WehnVbjpGKK18yd4YTJQie" target="_blank" rel="noopener">&amp; GPU泄露分析案例</a></p>
+<p><a href="https://xiaomi.f.mioffice.cn/docx/doxk4L3JS1gi7187eJFoun4jtmh" target="_blank" rel="noopener">内存统计与分析</a></p>
+<p><a href="https://wiki.n.miui.com/pages/viewpage.action?pageId=133319994" target="_blank" rel="noopener">使用malloc debug追踪Camera模块的内存泄漏</a></p>
+<h2 id="错误分析">错误分析</h2>
+<p>参考<a href="https://xiaomi.f.mioffice.cn/docs/dock4gwXLrTzZTEgUTDzHKDsPgc" target="_blank" rel="noopener">Log parser Web工具使用流程</a> <a href="https://xiaomi.f.mioffice.cn/base/bask4zf6y7Kpq8JCwdyf30WFNZf?from=from_copylink" target="_blank" rel="noopener">小猪兽配置文档</a></p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>异常类型</strong></th>
+          <th></th>
+          <th><strong>流转</strong></th>
+          <th><strong>分析</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>硬件异常</td>
+          <td></td>
+          <td>hal</td>
+          <td>一般优先转给hal在做double check，确认好了在由hal转硬件</td>
+      </tr>
+      <tr>
+          <td>信号量异常</td>
+          <td></td>
+          <td>具体so负责人</td>
+          <td>这里一般是so执行出错可能是由于so 出现内存踩踏，空指针异常，或者其他c/c++ 的运行时异常，这里需要看具体是具体哪个算法库报错了，然后找到算法负责人</td>
+      </tr>
+      <tr>
+          <td>SAT hand shake 失败了</td>
+          <td></td>
+          <td>app、hal</td>
+          <td>sat 摄像头切换失败，一般先转给hal分析，新平台的话需要在结合上下文，以及该机型上的sat的定义在对一下摄像头切换的id的顺序</td>
+      </tr>
+      <tr>
+          <td>打开摄像头失败</td>
+          <td></td>
+          <td>hal</td>
+          <td>一般是在CameraManager.open的回调接口没有执行onOpened接口而是回调了onError，优先转hal分析</td>
+      </tr>
+      <tr>
+          <td>无法连接摄像头</td>
+          <td></td>
+          <td>hal</td>
+          <td>也是打开摄像头失败，可能是回调的onDisconnect接口，不同平台机型， 比如摄像头抢占问题，有些机型是回调onDisconnect，有些机型是回调onError接口，根据具体平台策略来</td>
+      </tr>
+      <tr>
+          <td>低内存杀掉相机APP</td>
+          <td></td>
+          <td>系统</td>
+          <td>一般是由于发生问题时间点时系统内存消耗殆尽，系统不得不杀掉一些app进行释放出运行内存空间，可以看一下是不是有很多进程都被杀掉了，一般这种直接低内存杀进行的是没有error trace的</td>
+      </tr>
+      <tr>
+          <td>各种超时问题<!-- raw HTML omitted --></td>
+          <td></td>
+          <td>app</td>
+          <td>有算法上移的出图的10秒超时， 有夜景出图的12秒超时，有拍照最终出图的15秒超时。这些超时一般测试不会上报问题，但是我们需要看关注超时问题，如拍照超时最终丢照片，或者小图问题</td>
+      </tr>
+      <tr>
+          <td>HAL进程被杀</td>
+          <td></td>
+          <td>hal</td>
+          <td>根据log关键字得出的结论一般给hal分析，hal挂了之后 app这边一般会出现如下2类现象：1 预览卡死，2 无法连接相机。</td>
+      </tr>
+      <tr>
+          <td>app相关问题</td>
+          <td></td>
+          <td>app</td>
+          <td>这里包含如下问题：预览启动失败，切摄像头失败，对焦失败，相机进程被杀，app需要继续分析</td>
+      </tr>
+      <tr>
+          <td>HAL发生内部严重错误</td>
+          <td></td>
+          <td>hal</td>
+          <td>一般会出现预览卡死，弹出无法连接相机，</td>
+      </tr>
+      <tr>
+          <td>HAL 拍照出图失败</td>
+          <td></td>
+          <td>hal</td>
+          <td>普通拍照没有出图，算法上移device拍照出图失败，一般生成一张预览尺寸的小图</td>
+      </tr>
+      <tr>
+          <td>HAL 无法连接相机</td>
+          <td></td>
+          <td>hal</td>
+          <td>一般问题8,10 会导致当前问题，也可能是其他情况也可能导致当前问题的产生</td>
+      </tr>
+      <tr>
+          <td>相机闪退（无堆栈信息）内存访问超标 需对比进程号是否一致</td>
+          <td></td>
+          <td>app</td>
+          <td>当前问题是app的内存使用超过系统分配给app的最大内存，不能再分配更多的内存，一般app首先查一下是不是有内存泄漏</td>
+      </tr>
+      <tr>
+          <td>HAL hal/server crash</td>
+          <td></td>
+          <td>hal</td>
+          <td>hal进程出现运行时异常</td>
+      </tr>
+      <tr>
+          <td>HAL 无法打开或者访问摄像头</td>
+          <td></td>
+          <td>hal<!-- raw HTML omitted -->app</td>
+          <td>log层面可以明确看出是由于hal层面的显示的异常log导致打开或者没有对应的camera id<!-- raw HTML omitted -->app需要检查一下打开的相机id是不是当前平台包含了这个camera id</td>
+      </tr>
+      <tr>
+          <td>HAL多帧拍照返回图片buffer的timestamp发生了倒序异常</td>
+          <td></td>
+          <td>hal</td>
+          <td>根本原因是多帧拍照的开始和结束只能串行先拍的照片需要先返回，否则framework的buffer校验机制不会通过<!-- raw HTML omitted -->比如 HDR拍照 ev0 做mfnr，所以这一帧拍照只能放最后来拍</td>
+      </tr>
+      <tr>
+          <td>HAL请求乱许导致异常</td>
+          <td></td>
+          <td>hal</td>
+          <td>涉及到单帧请求和多帧请求参数传递问题。比如前面是多帧请求apply的video eis开关是关闭，后面接单帧请求是打开video eis开关，有概率会出现最后由于多帧请求的参数apply会导致video eis最终是关闭的，这个是google设计如此，请求发送处于效率考虑是不安全的。</td>
+      </tr>
+      <tr>
+          <td>HAL 算法上移拍照过算法框架hal多返回了图片buffer，或者拍照hal给了相同的timestamp过来</td>
+          <td></td>
+          <td>算法上移hal</td>
+          <td>主要是算法上移维护了一个hashmap  是以拍照的的timestamp作为key，所以如果出现timestamp 不能对应就会应发app crash，算法上移拍照过算法框架hal多返回了图片buffer，可能是算法底层没有适配好</td>
+      </tr>
+      <tr>
+          <td>算法上移上移拍照完后close session被卡住camera service bandler hang住了</td>
+          <td></td>
+          <td>算法上移hal</td>
+          <td>由于算法上移是多次和hal层做image buffer的输入输出，所以这里一但hal异常流程就会终端，算法上移拍照过算法框架hal多返回了图片buffer，可能是算法底层没有适配好<!-- raw HTML omitted --></td>
+      </tr>
+      <tr>
+          <td>APP 算法上移多帧拍摄可能丢失照片,或者计数器不正确，小图问题发生</td>
+          <td></td>
+          <td>算法上移APP</td>
+          <td>算法上移多帧拍摄可能丢失照片,或者计数器不正确，小图问题发生</td>
+      </tr>
+      <tr>
+          <td>APP 压测检测到相机APP不在前台 可能发生了闪退</td>
+          <td></td>
+          <td>app</td>
+          <td>可能是工具按了back键  导致app onstop了，因为这个检查app的window是否有焦点  来判断app一直在前台，查一下操作逻辑看看 U_ACTION  log</td>
+      </tr>
+      <tr>
+          <td>APP fatal crash</td>
+          <td></td>
+          <td>app<!-- raw HTML omitted --></td>
+          <td>一般可能是so报错</td>
+      </tr>
+      <tr>
+          <td>APP java异常</td>
+          <td></td>
+          <td>app</td>
+          <td>看一下报错的app的包名是不是在MiuiCamera里面， 其他模块的跳过，只看MiuiCamera java exception的异常</td>
+      </tr>
+      <tr>
+          <td>APP尝试打开了错误的camera id</td>
+          <td></td>
+          <td>app</td>
+          <td>打开了平台不支持的id</td>
+      </tr>
+      <tr>
+          <td>APP anr</td>
+          <td></td>
+          <td>app</td>
+          <td>这个需要看APP的主线程（UI线程）在哪里卡住了， 一般超过10秒，如果有新的ui事件没有响应就会报ANR</td>
+      </tr>
+      <tr>
+          <td>各种so加载或者打开失败</td>
+          <td></td>
+          <td>so owner</td>
+          <td>库文件打开失败， 1 找不到， 2 文件权限 看是不是用 adb shell setenforce 0  可以解决</td>
+      </tr>
+      <tr>
+          <td>camera exception具体看error code</td>
+          <td></td>
+          <td>app</td>
+          <td>先看error code的含义在做具体的流转</td>
+      </tr>
+      <tr>
+          <td>Miuihome is killed</td>
+          <td></td>
+          <td></td>
+          <td>可能是AOSP原生机制，见<a href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/miuihome-is-killed%E6%BE%84%E6%B8%85/">MiuiHome is killed澄清</a></td>
+      </tr>
+      <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="lastmod-2025-03-11t094648z">title: 问题分析总结
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="问题分析总结-2">问题分析总结</h1>
+<h1 id="问题分析总结-3">问题分析总结</h1>
+<ol>
+<li>先联系测试，看看能不能单测测试出问题，并让其提供内存数据（目的是确定问题是否还存在，不存在就直接关jira。因为如果有内存泄漏问题，很容易就可以复现出来，而概率出现的问题可能是因为测试流程出了问题）</li>
+<li>使用<a href="https://xiaomi.f.mioffice.cn/docx/doxk4oY3GWjUu1VcK1pjTiGK40e" target="_blank" rel="noopener">相机自动化测试工具能力扩展</a> 中提供的工具进行分析和定位（能复现问题就好解决）</li>
+<li>如果问题不包含在文档中，则自己抓函数调用栈分析</li>
+</ol>
+<p>相机专项测试安装：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>wget http:<span style="color:#75715e">//cnbj1-fds.api.xiaomi.net/camera-devtest/00/apks/install_apk.sh -O install_apk.sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>chmod <span style="color:#f92672">+</span>x install_apk.sh
+</span></span><span style="display:flex;"><span> .<span style="color:#f92672">/</span>install_apk.sh <span style="color:#960050;background-color:#1e0010">设备号</span>
+</span></span></code></pre></div><h1 id="先找资料看看前人遇到的类似问题和解决方法-1">先找资料，看看前人遇到的类似问题和解决方法</h1>
+<h1 id="perfetto-trace-1">Perfetto trace</h1>
+<h2 id="系统跟踪-1">系统跟踪</h2>
+<p>开启开发者模式-&gt;系统跟踪-&gt;录制跟踪记录</p>
+<p>获取文件用于perfetto分析</p>
+<h2 id="perfetto脚本-1">Perfetto脚本</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>curl -O https://raw.githubusercontent.com/google/perfetto/main/tools/record_android_trace
+</span></span><span style="display:flex;"><span>chmod u+x record_android_trace
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># See ./record_android_trace --help for more</span>
+</span></span><span style="display:flex;"><span>./record_android_trace -o trace_file.perfetto-trace -t 30s -b 64mb <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory
+</span></span></code></pre></div><p>或</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>adb shell perfetto -o /data/misc/perfetto-traces/trace_file.perfetto-trace -t 20s <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory
+</span></span></code></pre></div><p>获取文件用于perfetto分析</p>
+<h1 id="perfetto分析-1">Perfetto分析</h1>
+<p>Wall time是进程/线程结束时间-开始时间
+<a href="https://developer.android.com/topic/performance/tracing/navigate-report" target="_blank" rel="noopener">https://developer.android.com/topic/performance/tracing/navigate-report</a></p>
+<p>线程视图每个线程有2行。</p>
+<h3 id="运行时刻-1">运行时刻</h3>
+<p>第一行，显示线程的运行状态，对照时间刻度，可以计算运行的时间点和运行的时长，点击运行时刻条，可以查看当前运行的线程状态：</p>
+<ul>
+<li>​<code>Running</code>​：绿色运行时刻条，线程实际运行的时间</li>
+<li>​<code>Runnable</code>​：浅绿色运行时刻条，在<code>Running</code>​绿色运行条之前，点击可查看waker和woken thread，</li>
+<li>​<code>Uninterruptible Sleep (IO)</code>​：黄色时刻条，可能因为等待io的sleep</li>
+</ul>
+<h3 id="运行方法-1">运行方法</h3>
+<p>第二行，显示当前运行的线程方法，运行线程方法，结合第一行的运行时刻，可以知道线程当前运行的方法。</p>
+<p>方法颜色条可能很会长，对照第一行运行时刻，跨越多个<code>Running</code>​运行。方法的状态：</p>
+<ul>
+<li>方法只在运行时刻<code>Running</code>​的时间段运行</li>
+<li>方法上方再次看到运行时刻Running，说明该方法再次进入运行：得到运行的条件有两个：被<code>wakeup</code>​或被调度。</li>
+</ul>
+<p>运行时刻<code>Running</code>​，显示有多个方法，是该运行时刻线程方法的调用栈。</p>
+<h3 id="性能分析-1">性能分析</h3>
+<h4 id="耗时时刻-1">耗时时刻</h4>
+<p>日志里面找到耗时的时刻点，通过服务的运行流程的日志打印时间点，找到哪段时间耗时异常。</p>
+<h4 id="定位方法-1">定位方法</h4>
+<h5 id="阻塞导致的耗时-1">阻塞导致的耗时</h5>
+<p>根据耗时时刻点，找到耗时的线程和方法：</p>
+<ol>
+<li>定位到问题进程</li>
+<li>展开问题进程的线程列表</li>
+<li>定位耗时的线程方法（方法条）</li>
+</ol>
+<p><strong>耗时方法条的特征</strong></p>
+<ul>
+<li>方法条异常的长，可能长达<code>1s</code>​以上（根据日志耗时的实际时间）</li>
+<li>方法条对应的运行时刻<code>Running</code>​特别少，可能只在方法条首尾有<code>Running</code>​运行时刻</li>
+<li>点击方法，进入方法状态，查看<code>Sleeping</code>​和<code>Running</code>​两个时间项，耗时的方法，<code>Sleeping</code>​时间异常大，而实际<code>Running</code>​时间可能很短</li>
+</ul>
+<h5 id="分析耗时-1">分析耗时</h5>
+<ol>
+<li>分析方法调用什么服务导致阻塞</li>
+<li>分析方法条结尾，由什么服务唤醒得到执行</li>
+</ol>
+<h1 id="分析log-1">分析log</h1>
+<p>使用logcat抓取log</p>
+<p>logcat各字段含义：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>08-30 10:33:10.485 17792 19055 I         CAM_PerformanceManager: [P_PERFORM]: Action: switch_prefix_camera_setup_162_0 takes 3 ms
+</span></span><span style="display:flex;"><span>时间                进程号 线程号 log等级   tag                      message
+</span></span></code></pre></div><p>start u0     相机软件启动与结束</p>
+<p>connect     相机连接</p>
+<p>disconnect 相机断开连接</p>
+<p>onModeSelected</p>
+<p>K_PROCESS  key process</p>
+<p>U_ACTION     user action</p>
+<p>P_PERFORM  相机性能</p>
+<p><a href="https://wiki.n.miui.com/pages/viewpage.action?pageId=692265756" target="_blank" rel="noopener">mtk内存问题基础分析</a></p>
+<p><a href="https://wiki.n.miui.com/pages/viewpage.action?pageId=131038582" target="_blank" rel="noopener">相机内存测试</a></p>
+<p><a href="https://xiaomi.f.mioffice.cn/docx/doxk46Rj2LVuWlnop9f3YNT58fg" target="_blank" rel="noopener">内存报告分析工具集合</a></p>
+<p><a href="https://xiaomi.f.mioffice.cn/docs/dock4WehnVbjpGKK18yd4YTJQie" target="_blank" rel="noopener">K1_totaldiff </a>​<a href="https://xiaomi.f.mioffice.cn/docs/dock4WehnVbjpGKK18yd4YTJQie" target="_blank" rel="noopener">&amp; GPU泄露分析案例</a></p>
+<p><a href="https://xiaomi.f.mioffice.cn/docx/doxk4L3JS1gi7187eJFoun4jtmh" target="_blank" rel="noopener">内存统计与分析</a></p>
+<p><a href="https://wiki.n.miui.com/pages/viewpage.action?pageId=133319994" target="_blank" rel="noopener">使用malloc debug追踪Camera模块的内存泄漏</a></p>
+<h2 id="错误分析-1">错误分析</h2>
+<p>参考<a href="https://xiaomi.f.mioffice.cn/docs/dock4gwXLrTzZTEgUTDzHKDsPgc" target="_blank" rel="noopener">Log parser Web工具使用流程</a> <a href="https://xiaomi.f.mioffice.cn/base/bask4zf6y7Kpq8JCwdyf30WFNZf?from=from_copylink" target="_blank" rel="noopener">小猪兽配置文档</a></p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>异常类型</strong></th>
+          <th></th>
+          <th><strong>流转</strong></th>
+          <th><strong>分析</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>硬件异常</td>
+          <td></td>
+          <td>hal</td>
+          <td>一般优先转给hal在做double check，确认好了在由hal转硬件</td>
+      </tr>
+      <tr>
+          <td>信号量异常</td>
+          <td></td>
+          <td>具体so负责人</td>
+          <td>这里一般是so执行出错可能是由于so 出现内存踩踏，空指针异常，或者其他c/c++ 的运行时异常，这里需要看具体是具体哪个算法库报错了，然后找到算法负责人</td>
+      </tr>
+      <tr>
+          <td>SAT hand shake 失败了</td>
+          <td></td>
+          <td>app、hal</td>
+          <td>sat 摄像头切换失败，一般先转给hal分析，新平台的话需要在结合上下文，以及该机型上的sat的定义在对一下摄像头切换的id的顺序</td>
+      </tr>
+      <tr>
+          <td>打开摄像头失败</td>
+          <td></td>
+          <td>hal</td>
+          <td>一般是在CameraManager.open的回调接口没有执行onOpened接口而是回调了onError，优先转hal分析</td>
+      </tr>
+      <tr>
+          <td>无法连接摄像头</td>
+          <td></td>
+          <td>hal</td>
+          <td>也是打开摄像头失败，可能是回调的onDisconnect接口，不同平台机型， 比如摄像头抢占问题，有些机型是回调onDisconnect，有些机型是回调onError接口，根据具体平台策略来</td>
+      </tr>
+      <tr>
+          <td>低内存杀掉相机APP</td>
+          <td></td>
+          <td>系统</td>
+          <td>一般是由于发生问题时间点时系统内存消耗殆尽，系统不得不杀掉一些app进行释放出运行内存空间，可以看一下是不是有很多进程都被杀掉了，一般这种直接低内存杀进行的是没有error trace的</td>
+      </tr>
+      <tr>
+          <td>各种超时问题<!-- raw HTML omitted --></td>
+          <td></td>
+          <td>app</td>
+          <td>有算法上移的出图的10秒超时， 有夜景出图的12秒超时，有拍照最终出图的15秒超时。这些超时一般测试不会上报问题，但是我们需要看关注超时问题，如拍照超时最终丢照片，或者小图问题</td>
+      </tr>
+      <tr>
+          <td>HAL进程被杀</td>
+          <td></td>
+          <td>hal</td>
+          <td>根据log关键字得出的结论一般给hal分析，hal挂了之后 app这边一般会出现如下2类现象：1 预览卡死，2 无法连接相机。</td>
+      </tr>
+      <tr>
+          <td>app相关问题</td>
+          <td></td>
+          <td>app</td>
+          <td>这里包含如下问题：预览启动失败，切摄像头失败，对焦失败，相机进程被杀，app需要继续分析</td>
+      </tr>
+      <tr>
+          <td>HAL发生内部严重错误</td>
+          <td></td>
+          <td>hal</td>
+          <td>一般会出现预览卡死，弹出无法连接相机，</td>
+      </tr>
+      <tr>
+          <td>HAL 拍照出图失败</td>
+          <td></td>
+          <td>hal</td>
+          <td>普通拍照没有出图，算法上移device拍照出图失败，一般生成一张预览尺寸的小图</td>
+      </tr>
+      <tr>
+          <td>HAL 无法连接相机</td>
+          <td></td>
+          <td>hal</td>
+          <td>一般问题8,10 会导致当前问题，也可能是其他情况也可能导致当前问题的产生</td>
+      </tr>
+      <tr>
+          <td>相机闪退（无堆栈信息）内存访问超标 需对比进程号是否一致</td>
+          <td></td>
+          <td>app</td>
+          <td>当前问题是app的内存使用超过系统分配给app的最大内存，不能再分配更多的内存，一般app首先查一下是不是有内存泄漏</td>
+      </tr>
+      <tr>
+          <td>HAL hal/server crash</td>
+          <td></td>
+          <td>hal</td>
+          <td>hal进程出现运行时异常</td>
+      </tr>
+      <tr>
+          <td>HAL 无法打开或者访问摄像头</td>
+          <td></td>
+          <td>hal<!-- raw HTML omitted -->app</td>
+          <td>log层面可以明确看出是由于hal层面的显示的异常log导致打开或者没有对应的camera id<!-- raw HTML omitted -->app需要检查一下打开的相机id是不是当前平台包含了这个camera id</td>
+      </tr>
+      <tr>
+          <td>HAL多帧拍照返回图片buffer的timestamp发生了倒序异常</td>
+          <td></td>
+          <td>hal</td>
+          <td>根本原因是多帧拍照的开始和结束只能串行先拍的照片需要先返回，否则framework的buffer校验机制不会通过<!-- raw HTML omitted -->比如 HDR拍照 ev0 做mfnr，所以这一帧拍照只能放最后来拍</td>
+      </tr>
+      <tr>
+          <td>HAL请求乱许导致异常</td>
+          <td></td>
+          <td>hal</td>
+          <td>涉及到单帧请求和多帧请求参数传递问题。比如前面是多帧请求apply的video eis开关是关闭，后面接单帧请求是打开video eis开关，有概率会出现最后由于多帧请求的参数apply会导致video eis最终是关闭的，这个是google设计如此，请求发送处于效率考虑是不安全的。</td>
+      </tr>
+      <tr>
+          <td>HAL 算法上移拍照过算法框架hal多返回了图片buffer，或者拍照hal给了相同的timestamp过来</td>
+          <td></td>
+          <td>算法上移hal</td>
+          <td>主要是算法上移维护了一个hashmap  是以拍照的的timestamp作为key，所以如果出现timestamp 不能对应就会应发app crash，算法上移拍照过算法框架hal多返回了图片buffer，可能是算法底层没有适配好</td>
+      </tr>
+      <tr>
+          <td>算法上移上移拍照完后close session被卡住camera service bandler hang住了</td>
+          <td></td>
+          <td>算法上移hal</td>
+          <td>由于算法上移是多次和hal层做image buffer的输入输出，所以这里一但hal异常流程就会终端，算法上移拍照过算法框架hal多返回了图片buffer，可能是算法底层没有适配好<!-- raw HTML omitted --></td>
+      </tr>
+      <tr>
+          <td>APP 算法上移多帧拍摄可能丢失照片,或者计数器不正确，小图问题发生</td>
+          <td></td>
+          <td>算法上移APP</td>
+          <td>算法上移多帧拍摄可能丢失照片,或者计数器不正确，小图问题发生</td>
+      </tr>
+      <tr>
+          <td>APP 压测检测到相机APP不在前台 可能发生了闪退</td>
+          <td></td>
+          <td>app</td>
+          <td>可能是工具按了back键  导致app onstop了，因为这个检查app的window是否有焦点  来判断app一直在前台，查一下操作逻辑看看 U_ACTION  log</td>
+      </tr>
+      <tr>
+          <td>APP fatal crash</td>
+          <td></td>
+          <td>app<!-- raw HTML omitted --></td>
+          <td>一般可能是so报错</td>
+      </tr>
+      <tr>
+          <td>APP java异常</td>
+          <td></td>
+          <td>app</td>
+          <td>看一下报错的app的包名是不是在MiuiCamera里面， 其他模块的跳过，只看MiuiCamera java exception的异常</td>
+      </tr>
+      <tr>
+          <td>APP尝试打开了错误的camera id</td>
+          <td></td>
+          <td>app</td>
+          <td>打开了平台不支持的id</td>
+      </tr>
+      <tr>
+          <td>APP anr</td>
+          <td></td>
+          <td>app</td>
+          <td>这个需要看APP的主线程（UI线程）在哪里卡住了， 一般超过10秒，如果有新的ui事件没有响应就会报ANR</td>
+      </tr>
+      <tr>
+          <td>各种so加载或者打开失败</td>
+          <td></td>
+          <td>so owner</td>
+          <td>库文件打开失败， 1 找不到， 2 文件权限 看是不是用 adb shell setenforce 0  可以解决</td>
+      </tr>
+      <tr>
+          <td>camera exception具体看error code</td>
+          <td></td>
+          <td>app</td>
+          <td>先看error code的含义在做具体的流转</td>
+      </tr>
+      <tr>
+          <td>Miuihome is killed</td>
+          <td></td>
+          <td></td>
+          <td>可能是AOSP原生机制，见<a href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/miuihome-is-killed%E6%BE%84%E6%B8%85/">MiuiHome is killed澄清</a></td>
+      </tr>
+      <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

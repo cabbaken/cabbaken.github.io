@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>灰阶, 16-235, 0-255</title>
+
+<meta name="description" content="灰阶, 16-235, 0-255 灰阶 16-235和0-255的由来 电视视频的标准色域: BT.709, 这个标准的色彩范围和sRGB的色彩范围一样, 唯一的不同就是灰阶为16-235. 在BT.709的规定中, 亮度分量在8bit深度下, 取值范围是16-235.
+电视采用16-235原因: a. 模拟信号转为数字信号时, 数字信号在超过电平上限时处理不完善, 不能像模拟信号那样在顶端平缓过度, 为了确保瞬时峰值电平不会超限, 所以留了一小部分空间. b. 在黑白电视机和彩色电视机共存时代, 彩色电视机为了兼容黑白电视机, 彩色电视机的彩色信号必须被压缩, 为了截去最不敏感的色彩信息, 色差分量就此而来（YUV: Y是亮度, UV是色度；YPbPr, YCbCr等）. RGB的0-255模式无法运作于黑白电视上, 因为带宽有限, 因此需要改用色差分量来传输, 并压缩至16-235的色阶范围. 逐行输出和隔行输出: 由于要兼容黑白电视, 原有的电视带宽不够, 因此隔行输出模式产生, 将一副电视机拆分为两个场输出, 由于电视机的扫描速度快, 人眼不会察觉, 但是却能省下了一半的信号带宽. YPbPr表示逐行扫描色差输出, YCbCr表示隔行扫描色差输出. 现象: PC使用0-255, 电视摄像机使用16-235, 由于电视视频先入为主, 大部分视频默认为16-235, 当放到电脑上看的时候, 会出现黑场不会是最黑的0, 白场最白的也不是255. 0-255下色彩显示会更真实, 但是黑的会黑一片, 白的会白一片, 细节会有丢失. 16-235去掉了两头色系, 不会很黑很白, 但是会有朦胧感, 能看到细节. 16-235和0-255之间的转换 0-255 RGB -&gt; 16-235 YUV 的过程, 叫做YC压缩 16-235 YUV -&gt; 0-255 RGB 的过程, 叫做YC伸张 ITU-R BT.601里面规定了RGB&lt;–&gt;YUV的转换式, 视频转为MPEG的时候, 数据范围0-255的RGB要转为YUV的时候, 要先做数据范围的压缩, 把范围压缩成16-235, 然后才转成YUV存储起来. 相反MPEG解压缩的时候, Y: 16-235, UV: 16-240扩展为0-255RGB
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E7%81%B0%E9%98%B6-16-235-0-255/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E7%81%B0%E9%98%B6-16-235-0-255/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E7%81%B0%E9%98%B6-16-235-0-255/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="灰阶, 16-235, 0-255">
+<meta property="og:description" content="灰阶, 16-235, 0-255
+灰阶 16-235和0-255的由来
+电视视频的标准色域: BT.709, 这个标准的色彩范围和sRGB的色彩范围一样, 唯一的不同就是灰阶为16-235. 在BT.709的规定中, 亮度分量在8bit深度下, 取值范围是16-235.
+电视采用16-235原因:
+
+a. 模拟信号转为数字信号时, 数字信号在超过电平上限时处理不完善, 不能像模拟信号那样在顶端平缓过度, 为了确保瞬时峰值电平不会超限, 所以留了一小部分空间.
+b. 在黑白电视机和彩色电视机共存时代, 彩色电视机为了兼容黑白电视机, 彩色电视机的彩色信号必须被压缩, 为了截去最不敏感的色彩信息, 色差分量就此而来（YUV: Y是亮度, UV是色度；YPbPr, YCbCr等）. RGB的0-255模式无法运作于黑白电视上, 因为带宽有限, 因此需要改用色差分量来传输, 并压缩至16-235的色阶范围.
+
+逐行输出和隔行输出:
+
+由于要兼容黑白电视, 原有的电视带宽不够, 因此隔行输出模式产生, 将一副电视机拆分为两个场输出, 由于电视机的扫描速度快, 人眼不会察觉, 但是却能省下了一半的信号带宽. YPbPr表示逐行扫描色差输出, YCbCr表示隔行扫描色差输出.
+
+现象:
+
+PC使用0-255, 电视摄像机使用16-235, 由于电视视频先入为主, 大部分视频默认为16-235, 当放到电脑上看的时候, 会出现黑场不会是最黑的0, 白场最白的也不是255.
+0-255下色彩显示会更真实, 但是黑的会黑一片, 白的会白一片, 细节会有丢失. 16-235去掉了两头色系, 不会很黑很白, 但是会有朦胧感, 能看到细节.
+
+16-235和0-255之间的转换
+
+0-255 RGB -&gt; 16-235 YUV 的过程, 叫做YC压缩
+16-235 YUV -&gt; 0-255 RGB 的过程, 叫做YC伸张
+
+ITU-R BT.601里面规定了RGB&lt;–&gt;YUV的转换式, 视频转为MPEG的时候, 数据范围0-255的RGB要转为YUV的时候, 要先做数据范围的压缩, 把范围压缩成16-235,
+然后才转成YUV存储起来. 相反MPEG解压缩的时候, Y: 16-235, UV: 16-240扩展为0-255RGB">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E7%81%B0%E9%98%B6-16-235-0-255/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="灰阶, 16-235, 0-255">
+<meta name="twitter:description" content="灰阶, 16-235, 0-255
+灰阶 16-235和0-255的由来
+电视视频的标准色域: BT.709, 这个标准的色彩范围和sRGB的色彩范围一样, 唯一的不同就是灰阶为16-235. 在BT.709的规定中, 亮度分量在8bit深度下, 取值范围是16-235.
+电视采用16-235原因:
+
+a. 模拟信号转为数字信号时, 数字信号在超过电平上限时处理不完善, 不能像模拟信号那样在顶端平缓过度, 为了确保瞬时峰值电平不会超限, 所以留了一小部分空间.
+b. 在黑白电视机和彩色电视机共存时代, 彩色电视机为了兼容黑白电视机, 彩色电视机的彩色信号必须被压缩, 为了截去最不敏感的色彩信息, 色差分量就此而来（YUV: Y是亮度, UV是色度；YPbPr, YCbCr等）. RGB的0-255模式无法运作于黑白电视上, 因为带宽有限, 因此需要改用色差分量来传输, 并压缩至16-235的色阶范围.
+
+逐行输出和隔行输出:
+
+由于要兼容黑白电视, 原有的电视带宽不够, 因此隔行输出模式产生, 将一副电视机拆分为两个场输出, 由于电视机的扫描速度快, 人眼不会察觉, 但是却能省下了一半的信号带宽. YPbPr表示逐行扫描色差输出, YCbCr表示隔行扫描色差输出.
+
+现象:
+
+PC使用0-255, 电视摄像机使用16-235, 由于电视视频先入为主, 大部分视频默认为16-235, 当放到电脑上看的时候, 会出现黑场不会是最黑的0, 白场最白的也不是255.
+0-255下色彩显示会更真实, 但是黑的会黑一片, 白的会白一片, 细节会有丢失. 16-235去掉了两头色系, 不会很黑很白, 但是会有朦胧感, 能看到细节.
+
+16-235和0-255之间的转换
+
+0-255 RGB -&gt; 16-235 YUV 的过程, 叫做YC压缩
+16-235 YUV -&gt; 0-255 RGB 的过程, 叫做YC伸张
+
+ITU-R BT.601里面规定了RGB&lt;–&gt;YUV的转换式, 视频转为MPEG的时候, 数据范围0-255的RGB要转为YUV的时候, 要先做数据范围的压缩, 把范围压缩成16-235,
+然后才转成YUV存储起来. 相反MPEG解压缩的时候, Y: 16-235, UV: 16-240扩展为0-255RGB">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "灰阶, 16-235, 0-255",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  2202 ,
+  "description": "灰阶, 16-235, 0-255 灰阶 16-235和0-255的由来 电视视频的标准色域: BT.709, 这个标准的色彩范围和sRGB的色彩范围一样, 唯一的不同就是灰阶为16-235. 在BT.709的规定中, 亮度分量在8bit深度下, 取值范围是16-235.\n电视采用16-235原因: a. 模拟信号转为数字信号时, 数字信号在超过电平上限时处理不完善, 不能像模拟信号那样在顶端平缓过度, 为了确保瞬时峰值电平不会超限, 所以留了一小部分空间. b. 在黑白电视机和彩色电视机共存时代, 彩色电视机为了兼容黑白电视机, 彩色电视机的彩色信号必须被压缩, 为了截去最不敏感的色彩信息, 色差分量就此而来（YUV: Y是亮度, UV是色度；YPbPr, YCbCr等）. RGB的0-255模式无法运作于黑白电视上, 因为带宽有限, 因此需要改用色差分量来传输, 并压缩至16-235的色阶范围. 逐行输出和隔行输出: 由于要兼容黑白电视, 原有的电视带宽不够, 因此隔行输出模式产生, 将一副电视机拆分为两个场输出, 由于电视机的扫描速度快, 人眼不会察觉, 但是却能省下了一半的信号带宽. YPbPr表示逐行扫描色差输出, YCbCr表示隔行扫描色差输出. 现象: PC使用0-255, 电视摄像机使用16-235, 由于电视视频先入为主, 大部分视频默认为16-235, 当放到电脑上看的时候, 会出现黑场不会是最黑的0, 白场最白的也不是255. 0-255下色彩显示会更真实, 但是黑的会黑一片, 白的会白一片, 细节会有丢失. 16-235去掉了两头色系, 不会很黑很白, 但是会有朦胧感, 能看到细节. 16-235和0-255之间的转换 0-255 RGB -\u0026gt; 16-235 YUV 的过程, 叫做YC压缩 16-235 YUV -\u0026gt; 0-255 RGB 的过程, 叫做YC伸张 ITU-R BT.601里面规定了RGB\u0026lt;–\u0026gt;YUV的转换式, 视频转为MPEG的时候, 数据范围0-255的RGB要转为YUV的时候, 要先做数据范围的压缩, 把范围压缩成16-235, 然后才转成YUV存储起来. 相反MPEG解压缩的时候, Y: 16-235, UV: 16-240扩展为0-255RGB\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="灰阶-16-235-0-255">灰阶, 16-235, 0-255</h1>
+<h2 id="灰阶-16-235和0-255的由来">灰阶 16-235和0-255的由来</h2>
+<p>电视视频的标准色域: BT.709, 这个标准的色彩范围和sRGB的色彩范围一样, 唯一的不同就是灰阶为16-235. 在BT.709的规定中, 亮度分量在8bit深度下, 取值范围是16-235.</p>
+<h3 id="电视采用16-235原因">电视采用16-235原因:</h3>
+<ul>
+<li>a. 模拟信号转为数字信号时, 数字信号在超过电平上限时处理不完善, 不能像模拟信号那样在顶端平缓过度, 为了确保瞬时峰值电平不会超限, 所以留了一小部分空间.</li>
+<li>b. 在黑白电视机和彩色电视机共存时代, 彩色电视机为了兼容黑白电视机, 彩色电视机的彩色信号必须被压缩, 为了截去最不敏感的色彩信息, 色差分量就此而来（YUV: Y是亮度, UV是色度；YPbPr, YCbCr等）. RGB的0-255模式无法运作于黑白电视上, 因为带宽有限, 因此需要改用色差分量来传输, 并压缩至16-235的色阶范围.</li>
+</ul>
+<h4 id="逐行输出和隔行输出">逐行输出和隔行输出:</h4>
+<ul>
+<li>由于要兼容黑白电视, 原有的电视带宽不够, 因此隔行输出模式产生, 将一副电视机拆分为两个场输出, 由于电视机的扫描速度快, 人眼不会察觉, 但是却能省下了一半的信号带宽. YPbPr表示逐行扫描色差输出, YCbCr表示隔行扫描色差输出.</li>
+</ul>
+<h4 id="现象">现象:</h4>
+<ul>
+<li>PC使用0-255, 电视摄像机使用16-235, 由于电视视频先入为主, 大部分视频默认为16-235, 当放到电脑上看的时候, 会出现黑场不会是最黑的0, 白场最白的也不是255.</li>
+<li>0-255下色彩显示会更真实, 但是黑的会黑一片, 白的会白一片, 细节会有丢失. 16-235去掉了两头色系, 不会很黑很白, 但是会有朦胧感, 能看到细节.</li>
+</ul>
+<h2 id="16-235和0-255之间的转换">16-235和0-255之间的转换</h2>
+<ul>
+<li>0-255 RGB -&gt; 16-235 YUV 的过程, 叫做YC压缩</li>
+<li>16-235 YUV -&gt; 0-255 RGB 的过程, 叫做YC伸张</li>
+</ul>
+<p>ITU-R BT.601里面规定了RGB&lt;–&gt;YUV的转换式, 视频转为MPEG的时候, 数据范围0-255的RGB要转为YUV的时候, 要先做数据范围的压缩, 把范围压缩成16-235,
+然后才转成YUV存储起来. 相反MPEG解压缩的时候, Y: 16-235, UV: 16-240扩展为0-255RGB</p>
+<ul>
+<li>a. 转MPEG的时候没有YC压缩, 储存0-255YUV, 播放时不可做YC伸张, 否则0-255的灰阶会被扩展到-19~278, 8bit（0-255数据范围）深度下, 超出的数据范围的数据会被去掉, 导致画面对比过强, 色彩会崩</li>
+<li>b. 转MPEG的时候做YC压缩, 储存16-235YUV, 播放一定要做YC伸张, 否则显示的是16-235RGB, 数据范围变小, 纯白不是[255, 255, 255], 纯黑不是[0, 0, 0], 色彩黯淡, 有朦胧感</li>
+<li>c. 输入RGB数据范围为0-255, 转MPEG做压缩, 转16-235YUV</li>
+<li>d. 输入RGB数据范围为16-235, 转MPEG不做压缩, 转16-235YUV</li>
+</ul>
+<hr>
+<h2 id="lastmod-2025-03-11t094648z">title: 灰阶, 16-235, 0-255
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="灰阶-16-235-0-255-1">灰阶, 16-235, 0-255</h1>
+<h2 id="灰阶-16-235和0-255的由来-1">灰阶 16-235和0-255的由来</h2>
+<p>电视视频的标准色域: BT.709, 这个标准的色彩范围和sRGB的色彩范围一样, 唯一的不同就是灰阶为16-235. 在BT.709的规定中, 亮度分量在8bit深度下, 取值范围是16-235.</p>
+<h3 id="电视采用16-235原因-1">电视采用16-235原因:</h3>
+<ul>
+<li>a. 模拟信号转为数字信号时, 数字信号在超过电平上限时处理不完善, 不能像模拟信号那样在顶端平缓过度, 为了确保瞬时峰值电平不会超限, 所以留了一小部分空间.</li>
+<li>b. 在黑白电视机和彩色电视机共存时代, 彩色电视机为了兼容黑白电视机, 彩色电视机的彩色信号必须被压缩, 为了截去最不敏感的色彩信息, 色差分量就此而来（YUV: Y是亮度, UV是色度；YPbPr, YCbCr等）. RGB的0-255模式无法运作于黑白电视上, 因为带宽有限, 因此需要改用色差分量来传输, 并压缩至16-235的色阶范围.</li>
+</ul>
+<h4 id="逐行输出和隔行输出-1">逐行输出和隔行输出:</h4>
+<ul>
+<li>由于要兼容黑白电视, 原有的电视带宽不够, 因此隔行输出模式产生, 将一副电视机拆分为两个场输出, 由于电视机的扫描速度快, 人眼不会察觉, 但是却能省下了一半的信号带宽. YPbPr表示逐行扫描色差输出, YCbCr表示隔行扫描色差输出.</li>
+</ul>
+<h4 id="现象-1">现象:</h4>
+<ul>
+<li>PC使用0-255, 电视摄像机使用16-235, 由于电视视频先入为主, 大部分视频默认为16-235, 当放到电脑上看的时候, 会出现黑场不会是最黑的0, 白场最白的也不是255.</li>
+<li>0-255下色彩显示会更真实, 但是黑的会黑一片, 白的会白一片, 细节会有丢失. 16-235去掉了两头色系, 不会很黑很白, 但是会有朦胧感, 能看到细节.</li>
+</ul>
+<h2 id="16-235和0-255之间的转换-1">16-235和0-255之间的转换</h2>
+<ul>
+<li>0-255 RGB -&gt; 16-235 YUV 的过程, 叫做YC压缩</li>
+<li>16-235 YUV -&gt; 0-255 RGB 的过程, 叫做YC伸张</li>
+</ul>
+<p>ITU-R BT.601里面规定了RGB&lt;–&gt;YUV的转换式, 视频转为MPEG的时候, 数据范围0-255的RGB要转为YUV的时候, 要先做数据范围的压缩, 把范围压缩成16-235,
+然后才转成YUV存储起来. 相反MPEG解压缩的时候, Y: 16-235, UV: 16-240扩展为0-255RGB</p>
+<ul>
+<li>a. 转MPEG的时候没有YC压缩, 储存0-255YUV, 播放时不可做YC伸张, 否则0-255的灰阶会被扩展到-19~278, 8bit（0-255数据范围）深度下, 超出的数据范围的数据会被去掉, 导致画面对比过强, 色彩会崩</li>
+<li>b. 转MPEG的时候做YC压缩, 储存16-235YUV, 播放一定要做YC伸张, 否则显示的是16-235RGB, 数据范围变小, 纯白不是[255, 255, 255], 纯黑不是[0, 0, 0], 色彩黯淡, 有朦胧感</li>
+<li>c. 输入RGB数据范围为0-255, 转MPEG做压缩, 转16-235YUV</li>
+<li>d. 输入RGB数据范围为16-235, 转MPEG不做压缩, 转16-235YUV</li>
+</ul>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

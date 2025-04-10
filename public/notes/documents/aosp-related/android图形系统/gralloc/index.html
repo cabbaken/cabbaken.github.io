@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>Gralloc</title>
+
+<meta name="description" content="Gralloc Gralloc Linux显示 Linux内核在启动的过程中会创建一个类别和名称分别为&quot;graphics&quot;和&quot;fb0&quot;(0表示从设备号)的设备, 用来描述系统中的第一个帧缓冲区, 即第一个显示屏. init进程在启动的过程中, 会启动另外一个进程ueventd来管理系统的设备文件. 当ueventd进程启动起来之后, 会通过netlink接口来Linux内核通信, 以便可以获得内核中的硬件设备变化通知. 而当ueventd进程发现内核中创建了一个类型和名称分别为&quot;graphics&quot;和&quot;fb0&quot;的设备的时候, 就会这个设备创建一个/dev/graphics/fb0设备文件. 这样, 用户空间的应用程序就可以通过设备文件/dev/graphics/fb0来访问内核中的帧缓冲区, 即在设备的显示屏中绘制指定的画面. 注: 用户空间的应用程序一般是通过内存映射的方式来访问设备文件/dev/graphics/fb0的.
+HAL模块 Gralloc模块是一个HAL模块, 以下对HAL模块的概念做简要介绍.
+Android是基于Linux进行开发的, Linux对硬件的操作基本都在内核中. Android把对硬件的操作分为了HAL和内核驱动两部分, HAL实现在用户空间, 驱动在内核空间. 这是因为Linux内核中的代码是需要开源的, 如果把对硬件的操作放在内核这会损害硬件厂商的利益. 有了HAL层位于用户空间, 硬件厂商就可以将自己的核心算法之类的放在HAL层, 保护了自己的利益, 这样Android系统才能得到更多厂商的支持.
+HAL模块实现的规则 每一种硬件都对应一个HAL模块, 要实现HAL, 必须满足HAL的相关规则. hardware/libhardware/include/hardware/hardware.h中定义了几个结构体:
+typedef struct hw_module_t { /** tag must be initialized to HARDWARE_MODULE_TAG */ uint32_t tag; uint16_t module_api_version; /** Identifier of module */ const char *id; /** Name of this module */ const char *name; /** Author/owner/implementor of the module */ const char *author; /** Modules methods */ struct hw_module_methods_t* methods; /** module&#39;s dso */ void* dso; uint64_t reserved[32-7]; } hw_module_t; 结构体hw_module_t代表HAL模块, 自己定义的HAL模块必须包含一个自定义struct, 且必须包含hw_module_t(第一个变量必须为 hw_module_t), 且模块的tag必须指定为HARDWARE_MODULE_TAG, 代表这是HAL模块的结构体.
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/gralloc/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/gralloc/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/gralloc/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Gralloc">
+<meta property="og:description" content="Gralloc
+Gralloc
+Linux显示
+Linux内核在启动的过程中会创建一个类别和名称分别为&quot;graphics&quot;和&quot;fb0&quot;(0表示从设备号)的设备, 用来描述系统中的第一个帧缓冲区, 即第一个显示屏.
+init进程在启动的过程中, 会启动另外一个进程ueventd来管理系统的设备文件. 当ueventd进程启动起来之后, 会通过netlink接口来Linux内核通信, 以便可以获得内核中的硬件设备变化通知. 而当ueventd进程发现内核中创建了一个类型和名称分别为&quot;graphics&quot;和&quot;fb0&quot;的设备的时候, 就会这个设备创建一个/dev/graphics/fb0设备文件.
+这样, 用户空间的应用程序就可以通过设备文件/dev/graphics/fb0来访问内核中的帧缓冲区, 即在设备的显示屏中绘制指定的画面.
+注: 用户空间的应用程序一般是通过内存映射的方式来访问设备文件/dev/graphics/fb0的.
+HAL模块
+Gralloc模块是一个HAL模块, 以下对HAL模块的概念做简要介绍.
+Android是基于Linux进行开发的, Linux对硬件的操作基本都在内核中. Android把对硬件的操作分为了HAL和内核驱动两部分, HAL实现在用户空间, 驱动在内核空间. 这是因为Linux内核中的代码是需要开源的, 如果把对硬件的操作放在内核这会损害硬件厂商的利益. 有了HAL层位于用户空间, 硬件厂商就可以将自己的核心算法之类的放在HAL层, 保护了自己的利益, 这样Android系统才能得到更多厂商的支持.
+HAL模块实现的规则
+每一种硬件都对应一个HAL模块, 要实现HAL, 必须满足HAL的相关规则.
+hardware/libhardware/include/hardware/hardware.h中定义了几个结构体:
+typedef struct hw_module_t {
+    /** tag must be initialized to HARDWARE_MODULE_TAG */
+    uint32_t tag;
+    uint16_t module_api_version;
+
+    /** Identifier of module */
+    const char *id;
+
+    /** Name of this module */
+    const char *name;
+
+    /** Author/owner/implementor of the module */
+    const char *author;
+
+    /** Modules methods */
+    struct hw_module_methods_t* methods;
+
+    /** module&#39;s dso */
+    void* dso;
+    uint64_t reserved[32-7];
+} hw_module_t;
+结构体hw_module_t代表HAL模块, 自己定义的HAL模块必须包含一个自定义struct, 且必须包含hw_module_t(第一个变量必须为 hw_module_t), 且模块的tag必须指定为HARDWARE_MODULE_TAG, 代表这是HAL模块的结构体.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/gralloc/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Gralloc">
+<meta name="twitter:description" content="Gralloc
+Gralloc
+Linux显示
+Linux内核在启动的过程中会创建一个类别和名称分别为&quot;graphics&quot;和&quot;fb0&quot;(0表示从设备号)的设备, 用来描述系统中的第一个帧缓冲区, 即第一个显示屏.
+init进程在启动的过程中, 会启动另外一个进程ueventd来管理系统的设备文件. 当ueventd进程启动起来之后, 会通过netlink接口来Linux内核通信, 以便可以获得内核中的硬件设备变化通知. 而当ueventd进程发现内核中创建了一个类型和名称分别为&quot;graphics&quot;和&quot;fb0&quot;的设备的时候, 就会这个设备创建一个/dev/graphics/fb0设备文件.
+这样, 用户空间的应用程序就可以通过设备文件/dev/graphics/fb0来访问内核中的帧缓冲区, 即在设备的显示屏中绘制指定的画面.
+注: 用户空间的应用程序一般是通过内存映射的方式来访问设备文件/dev/graphics/fb0的.
+HAL模块
+Gralloc模块是一个HAL模块, 以下对HAL模块的概念做简要介绍.
+Android是基于Linux进行开发的, Linux对硬件的操作基本都在内核中. Android把对硬件的操作分为了HAL和内核驱动两部分, HAL实现在用户空间, 驱动在内核空间. 这是因为Linux内核中的代码是需要开源的, 如果把对硬件的操作放在内核这会损害硬件厂商的利益. 有了HAL层位于用户空间, 硬件厂商就可以将自己的核心算法之类的放在HAL层, 保护了自己的利益, 这样Android系统才能得到更多厂商的支持.
+HAL模块实现的规则
+每一种硬件都对应一个HAL模块, 要实现HAL, 必须满足HAL的相关规则.
+hardware/libhardware/include/hardware/hardware.h中定义了几个结构体:
+typedef struct hw_module_t {
+    /** tag must be initialized to HARDWARE_MODULE_TAG */
+    uint32_t tag;
+    uint16_t module_api_version;
+
+    /** Identifier of module */
+    const char *id;
+
+    /** Name of this module */
+    const char *name;
+
+    /** Author/owner/implementor of the module */
+    const char *author;
+
+    /** Modules methods */
+    struct hw_module_methods_t* methods;
+
+    /** module&#39;s dso */
+    void* dso;
+    uint64_t reserved[32-7];
+} hw_module_t;
+结构体hw_module_t代表HAL模块, 自己定义的HAL模块必须包含一个自定义struct, 且必须包含hw_module_t(第一个变量必须为 hw_module_t), 且模块的tag必须指定为HARDWARE_MODULE_TAG, 代表这是HAL模块的结构体.">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Gralloc",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  4324 ,
+  "description": "Gralloc Gralloc Linux显示 Linux内核在启动的过程中会创建一个类别和名称分别为\u0026quot;graphics\u0026quot;和\u0026quot;fb0\u0026quot;(0表示从设备号)的设备, 用来描述系统中的第一个帧缓冲区, 即第一个显示屏. init进程在启动的过程中, 会启动另外一个进程ueventd来管理系统的设备文件. 当ueventd进程启动起来之后, 会通过netlink接口来Linux内核通信, 以便可以获得内核中的硬件设备变化通知. 而当ueventd进程发现内核中创建了一个类型和名称分别为\u0026quot;graphics\u0026quot;和\u0026quot;fb0\u0026quot;的设备的时候, 就会这个设备创建一个/dev/graphics/fb0设备文件. 这样, 用户空间的应用程序就可以通过设备文件/dev/graphics/fb0来访问内核中的帧缓冲区, 即在设备的显示屏中绘制指定的画面. 注: 用户空间的应用程序一般是通过内存映射的方式来访问设备文件/dev/graphics/fb0的.\nHAL模块 Gralloc模块是一个HAL模块, 以下对HAL模块的概念做简要介绍.\nAndroid是基于Linux进行开发的, Linux对硬件的操作基本都在内核中. Android把对硬件的操作分为了HAL和内核驱动两部分, HAL实现在用户空间, 驱动在内核空间. 这是因为Linux内核中的代码是需要开源的, 如果把对硬件的操作放在内核这会损害硬件厂商的利益. 有了HAL层位于用户空间, 硬件厂商就可以将自己的核心算法之类的放在HAL层, 保护了自己的利益, 这样Android系统才能得到更多厂商的支持.\nHAL模块实现的规则 每一种硬件都对应一个HAL模块, 要实现HAL, 必须满足HAL的相关规则. hardware/libhardware/include/hardware/hardware.h中定义了几个结构体:\ntypedef struct hw_module_t { /** tag must be initialized to HARDWARE_MODULE_TAG */ uint32_t tag; uint16_t module_api_version; /** Identifier of module */ const char *id; /** Name of this module */ const char *name; /** Author/owner/implementor of the module */ const char *author; /** Modules methods */ struct hw_module_methods_t* methods; /** module\u0026#39;s dso */ void* dso; uint64_t reserved[32-7]; } hw_module_t; 结构体hw_module_t代表HAL模块, 自己定义的HAL模块必须包含一个自定义struct, 且必须包含hw_module_t(第一个变量必须为 hw_module_t), 且模块的tag必须指定为HARDWARE_MODULE_TAG, 代表这是HAL模块的结构体.\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="gralloc">Gralloc</h1>
+<h1 id="gralloc-1">Gralloc</h1>
+<h2 id="linux显示">Linux显示</h2>
+<p>Linux内核在启动的过程中会创建一个类别和名称分别为&quot;graphics&quot;和&quot;fb0&quot;(0表示从设备号)的设备, 用来描述系统中的第一个帧缓冲区, 即第一个显示屏.
+init进程在启动的过程中, 会启动另外一个进程ueventd来管理系统的设备文件. 当ueventd进程启动起来之后, 会通过netlink接口来Linux内核通信, 以便可以获得内核中的硬件设备变化通知. 而当ueventd进程发现内核中创建了一个类型和名称分别为&quot;graphics&quot;和&quot;fb0&quot;的设备的时候, 就会这个设备创建一个/dev/graphics/fb0设备文件.
+这样, 用户空间的应用程序就可以通过设备文件/dev/graphics/fb0来访问内核中的帧缓冲区, 即在设备的显示屏中绘制指定的画面.
+注: 用户空间的应用程序一般是通过内存映射的方式来访问设备文件/dev/graphics/fb0的.</p>
+<h2 id="hal模块">HAL模块</h2>
+<p>Gralloc模块是一个HAL模块, 以下对HAL模块的概念做简要介绍.</p>
+<p>Android是基于Linux进行开发的, Linux对硬件的操作基本都在内核中. Android把对硬件的操作分为了HAL和内核驱动两部分, HAL实现在用户空间, 驱动在内核空间. 这是因为Linux内核中的代码是需要开源的, 如果把对硬件的操作放在内核这会损害硬件厂商的利益. 有了HAL层位于用户空间, 硬件厂商就可以将自己的核心算法之类的放在HAL层, 保护了自己的利益, 这样Android系统才能得到更多厂商的支持.</p>
+<h3 id="hal模块实现的规则">HAL模块实现的规则</h3>
+<p>每一种硬件都对应一个HAL模块, 要实现HAL, 必须满足HAL的相关规则.
+hardware/libhardware/include/hardware/hardware.h中定义了几个结构体:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">hw_module_t</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** tag must be initialized to HARDWARE_MODULE_TAG */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> tag;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint16_t</span> module_api_version;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** Identifier of module */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>id;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** Name of this module */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>name;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** Author/owner/implementor of the module */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>author;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** Modules methods */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">hw_module_methods_t</span><span style="color:#f92672">*</span> methods;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** module&#39;s dso */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> dso;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint64_t</span> reserved[<span style="color:#ae81ff">32</span><span style="color:#f92672">-</span><span style="color:#ae81ff">7</span>];
+</span></span><span style="display:flex;"><span>} <span style="color:#66d9ef">hw_module_t</span>;
+</span></span></code></pre></div><p>结构体<code>hw_module_t</code>代表HAL模块, 自己定义的HAL模块必须包含一个自定义struct, 且必须包含<code>hw_module_t</code>(第一个变量必须为 <code>hw_module_t</code>), 且模块的tag必须指定为<code>HARDWARE_MODULE_TAG</code>, 代表这是HAL模块的结构体.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">hw_module_methods_t</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** Open a specific device */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>open)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">hw_module_t</span><span style="color:#f92672">*</span> module, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> id,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">hw_device_t</span><span style="color:#f92672">**</span> device);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>} <span style="color:#66d9ef">hw_module_methods_t</span>;
+</span></span></code></pre></div><p>结构体<code>hw_module_methods_t</code>代表模块的操作方法列表, 它内部只有一个函数指针<code>open</code>, 用来打开该模块下的设备.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * Every device data structure must begin with hw_device_t
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * followed by module specific public methods and attributes.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">hw_device_t</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** tag must be initialized to HARDWARE_DEVICE_TAG */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> tag;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> version;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** reference to the module this device belongs to */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">hw_module_t</span><span style="color:#f92672">*</span> module;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint64_t</span> reserved[<span style="color:#ae81ff">12</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** Close this device */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>close)(<span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">hw_device_t</span><span style="color:#f92672">*</span> device);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>} <span style="color:#66d9ef">hw_device_t</span>;
+</span></span></code></pre></div><p>结构体<code>hw_device_t</code>代表该模块下的设备, 自己定义的HAL模块必须包含一个结构体, 且必须“继承”<code>hw_device_t</code>(即第一个变量必须为<code>hw_device_t</code>)
+每个自定义HAL模块还有一个模块名和N个设备名(一个模块可以有多个设备). 在模块定义后需要导出<code>HAL_MODULE_INFO_SYM</code>(HMI), 指向此模块. 以下为一个camera hal的HMI:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/******************************************************************************
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * Implementation of camera_module
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> ******************************************************************************/</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">camera_module_t</span> HAL_MODULE_INFO_SYM <span style="color:#a6e22e">__attribute__</span>((<span style="color:#a6e22e">visibility</span>(<span style="color:#e6db74">&#34;default&#34;</span>))) <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>  .common <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    .tag <span style="color:#f92672">=</span> HARDWARE_MODULE_TAG,
+</span></span><span style="display:flex;"><span>    .module_api_version <span style="color:#f92672">=</span> CAMERA_MODULE_API_VERSION_2_5,
+</span></span><span style="display:flex;"><span>    .hal_api_version <span style="color:#f92672">=</span> HARDWARE_HAL_API_VERSION,
+</span></span><span style="display:flex;"><span>    .id <span style="color:#f92672">=</span> CAMERA_HARDWARE_MODULE_ID,
+</span></span><span style="display:flex;"><span>    .name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;MediaTek Camera Module&#34;</span>,
+</span></span><span style="display:flex;"><span>    .author <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;MediaTek&#34;</span>,
+</span></span><span style="display:flex;"><span>    .methods <span style="color:#f92672">=</span> <span style="color:#a6e22e">get_module_methods</span>(),
+</span></span><span style="display:flex;"><span>    .dso <span style="color:#f92672">=</span> NULL,
+</span></span><span style="display:flex;"><span>    .reserved <span style="color:#f92672">=</span> {<span style="color:#ae81ff">0</span>},
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  .get_number_of_cameras <span style="color:#f92672">=</span> get_number_of_cameras,
+</span></span><span style="display:flex;"><span>  .get_camera_info <span style="color:#f92672">=</span> get_camera_info,
+</span></span><span style="display:flex;"><span>  .set_callbacks <span style="color:#f92672">=</span> set_callbacks,
+</span></span><span style="display:flex;"><span>  .get_vendor_tag_ops <span style="color:#f92672">=</span> get_vendor_tag_ops,
+</span></span><span style="display:flex;"><span>  .open_legacy <span style="color:#f92672">=</span> NULL,
+</span></span><span style="display:flex;"><span>  .set_torch_mode <span style="color:#f92672">=</span> set_torch_mode,
+</span></span><span style="display:flex;"><span>  .init <span style="color:#f92672">=</span> init,
+</span></span><span style="display:flex;"><span>  .get_physical_camera_info <span style="color:#f92672">=</span> get_physical_camera_info,
+</span></span><span style="display:flex;"><span>  .is_stream_combination_supported <span style="color:#f92672">=</span> is_stream_combination_supported,
+</span></span><span style="display:flex;"><span>  .notify_device_state_change <span style="color:#f92672">=</span> notify_device_state_change,
+</span></span><span style="display:flex;"><span>  .reserved <span style="color:#f92672">=</span> {<span style="color:#ae81ff">0</span>},
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>要想自定义的HAL模块被外部使用, 需要导出符号<code>HAL_MODULE_INFO_SYM</code>, 导出的这个模块结构体最重要的其实就是tag, id和methods.</p>
+<ul>
+<li>tag必须定义为<code>HARDWARE_MODULE_TAG</code></li>
+<li>id就是定义的模块名</li>
+<li>methods指向自己实现的(包含<code>hw_module_methods_t</code>)的结构体, 其中的<code>open</code>用于打开模块下的设备, 指向自己实现的<code>open</code>函数.</li>
+</ul>
+<p>HAL模块需要实现的部分总结如下:</p>
+<ul>
+<li>实现<code>hw_module_t</code>, <code>hw_module_methods_t</code>中的<code>open()</code>, <code>hw_device_t</code>中的<code>close()</code></li>
+<li>使用<code>open()</code>获取到device的device对应操作</li>
+<li>导出HMI</li>
+</ul>
+<p>HAL模块最后会被编译层一个so库, 放到手机的/system/lib64下.</p>
+<h2 id="gralloc简介">Gralloc简介</h2>
+<p>Android设备的显示屏被抽象为一个帧缓冲区, 而Android系统中的SurfaceFlinger服务就是通过向这个帧缓冲区写入内容来绘制应用程序的用户界面的.
+Android系统在HAL层中提供了一个Gralloc模块 (hardware/libhardware/modules/gralloc), 封装了对帧缓冲区的所有访问操作.</p>
+<p>用户空间的应用程序在使用帧缓冲区之前, 首先要加载Gralloc模块, 并且获得一个gralloc设备和一个fb设备. 有了gralloc设备之后, 用户空间中的应用程序就可以申请图形缓冲区, 并且将图形缓冲区映射到应用程序的地址空间来, 向里面写入要绘制的画面的内容.
+之后, 用户空间中的应用程序就通过fb设备来将已经准备好了的图形缓冲区渲染到帧缓冲区中去, 即将图形缓冲区的内容绘制到显示屏中去.
+相应地, 当用户空间中的应用程序不再需要使用一块图形缓冲区的时候, 就可以通过gralloc设备来释放它, 并且将它从地址空间中解除映射.
+Gralloc模块负责申请和释放GraphicBuffer的HAL层模块, 由硬件驱动提供实现, 为BufferQueue机制提供了基础. gralloc分配的图形Buffer是进程间共享的, 且根据其Flag支持不同硬件设备的读写.</p>
+<p><img src="assets/g1-20241008184351-a5aeho6.png" alt=""></p>
+<ul>
+<li>最底层是gralloc HAL模块.</li>
+<li>向上是libui库, 主要功能是封装对gralloc模块的HAL层的调用. 代码目录是frameworks/native/include/ui和frameworks/native/libs/ui.</li>
+<li>再向上是libgui库, 主要功能是封装BufferQueue, 向下依赖于于libui. 代码目录是frameworks/native/include/gui和frameworks/native/libs/gui.</li>
+<li>最上面是使用方, OpenGL ES是BufferQueue的生产方, SurfaceFlinger是BufferQueue的消费方.</li>
+</ul>
+<h2 id="gralloc模块的实现">Gralloc模块的实现</h2>
+<p>每一个HAL模块都有一个ID, 以ID为参数来调用硬件抽象层提供的函数<code>hw_get_module()</code>就可以将指定的模块加载到内存来, 并且获得一个<code>hw_module_t</code>接口来打开相应的设备.
+Gralloc模块的ID定义在hardware/libhardware/include/hardware/gralloc.h文件中, <code>GRALLOC_HARDWARE_MODULE_ID</code>实际上为字符串&quot;gralloc&quot;.
+以下为Gralloc模块的HMI, 对其进行分析以剖析Gralloc模块的具体实现.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">private_module_t</span> HAL_MODULE_INFO_SYM <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    .base <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>        .common <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>            .tag <span style="color:#f92672">=</span> HARDWARE_MODULE_TAG,
+</span></span><span style="display:flex;"><span>            .version_major <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>            .version_minor <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>            .id <span style="color:#f92672">=</span> GRALLOC_HARDWARE_MODULE_ID,
+</span></span><span style="display:flex;"><span>            .name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Graphics Memory Allocator Module&#34;</span>,
+</span></span><span style="display:flex;"><span>            .author <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;The Android Open Source Project&#34;</span>,
+</span></span><span style="display:flex;"><span>            .methods <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>gralloc_module_methods
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        .registerBuffer <span style="color:#f92672">=</span> gralloc_register_buffer,
+</span></span><span style="display:flex;"><span>        .unregisterBuffer <span style="color:#f92672">=</span> gralloc_unregister_buffer,
+</span></span><span style="display:flex;"><span>        .lock <span style="color:#f92672">=</span> gralloc_lock,
+</span></span><span style="display:flex;"><span>        .unlock <span style="color:#f92672">=</span> gralloc_unlock,
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    .framebuffer <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>    .flags <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>    .numBuffers <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>    .bufferMask <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>    .lock <span style="color:#f92672">=</span> PTHREAD_MUTEX_INITIALIZER,
+</span></span><span style="display:flex;"><span>    .currentBuffer <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>可以看到Gralloc模块的HMI类型为<code>private_module_t</code>, 其定义(hardware/libhardware/modules/gralloc/gralloc_priv.h)如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">private_module_t</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">gralloc_module_t</span> base;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private_handle_t</span><span style="color:#f92672">*</span> framebuffer;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> flags;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> numBuffers;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> bufferMask;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pthread_mutex_t</span> lock;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">buffer_handle_t</span> currentBuffer;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> pmem_master;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> pmem_master_base;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> fb_var_screeninfo info;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> fb_fix_screeninfo finfo;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> xdpi;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> ydpi;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">float</span> fps;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>结构体private_module_t, 主要是用来描述帧缓冲区的属性, 简要描述如下:</p>
+<ul>
+<li>private_handle_t framebuffer: 一个指向系统帧缓冲区的指针</li>
+<li>flags： 标志系统帧缓冲区是否支持双缓冲。如果支持的话，那么它的PAGE_FLIP位就等于1，否则的话，就等于0。</li>
+<li>numBuffers: 表示系统帧缓冲区包含图形缓冲区数量。一个帧缓冲区包含图形缓冲区数量与它的可视分辨率以及虚拟分辨率的大小有关。例如，如果一个帧缓冲区的可视分辨率为800x600，而虚拟分辨率为1600x600，那么这个帧缓冲区就可以包含有两个图形缓冲区。</li>
+<li>bufferMask: 记录系统帧缓冲区中的图形缓冲区的使用情况(按位记录)</li>
+<li>lock: 一个互斥锁，用来保护结构体private_module_t的并行访问。</li>
+<li>buffer_handle_t currentBuffer: 描述当前正在被渲染的图形缓冲区</li>
+<li>fb_var_screeninfo info: 保存设备显示屏的可变属性信息</li>
+<li>fb_fix_screeninfo finfo: 保存设备的只读属性信息
+注: 这info和finfo的值可以通过IO控制命令FBIOGET_VSCREENINFO和FBIOGET_FSCREENINFO来从帧缓冲区驱动模块中获得。</li>
+<li>xdpi, ydpi: 分别用来描述设备显示屏在宽度和高度上的密度，即每英寸有多少个像素点。</li>
+<li>fps: 描述刷新率，即帧率。</li>
+</ul>
+<p>其中<code>gralloc_module_t</code>(也就是<code>.base</code>部分)封装了<code>hw_module_t</code>实现了HAL模块的需要. 其定义(hardware/libhardware/include/hardware/gralloc.h)如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">gralloc_module_t</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">hw_module_t</span> common;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>registerBuffer)(<span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">gralloc_module_t</span> <span style="color:#66d9ef">const</span><span style="color:#f92672">*</span> module,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">buffer_handle_t</span> handle);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>unregisterBuffer)(<span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">gralloc_module_t</span> <span style="color:#66d9ef">const</span><span style="color:#f92672">*</span> module,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">buffer_handle_t</span> handle);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>lock)(<span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">gralloc_module_t</span> <span style="color:#66d9ef">const</span><span style="color:#f92672">*</span> module,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">buffer_handle_t</span> handle, <span style="color:#66d9ef">int</span> usage,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> l, <span style="color:#66d9ef">int</span> t, <span style="color:#66d9ef">int</span> w, <span style="color:#66d9ef">int</span> h,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">void</span><span style="color:#f92672">**</span> vaddr);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>unlock)(<span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">gralloc_module_t</span> <span style="color:#66d9ef">const</span><span style="color:#f92672">*</span> module,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">buffer_handle_t</span> handle);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>perform)(<span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">gralloc_module_t</span> <span style="color:#66d9ef">const</span><span style="color:#f92672">*</span> module,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> operation, ... );
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>lock_ycbcr)(<span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">gralloc_module_t</span> <span style="color:#66d9ef">const</span><span style="color:#f92672">*</span> module,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">buffer_handle_t</span> handle, <span style="color:#66d9ef">int</span> usage,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> l, <span style="color:#66d9ef">int</span> t, <span style="color:#66d9ef">int</span> w, <span style="color:#66d9ef">int</span> h,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">struct</span> android_ycbcr <span style="color:#f92672">*</span>ycbcr);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>lockAsync)(<span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">gralloc_module_t</span> <span style="color:#66d9ef">const</span><span style="color:#f92672">*</span> module,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">buffer_handle_t</span> handle, <span style="color:#66d9ef">int</span> usage,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> l, <span style="color:#66d9ef">int</span> t, <span style="color:#66d9ef">int</span> w, <span style="color:#66d9ef">int</span> h,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">void</span><span style="color:#f92672">**</span> vaddr, <span style="color:#66d9ef">int</span> fenceFd);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>unlockAsync)(<span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">gralloc_module_t</span> <span style="color:#66d9ef">const</span><span style="color:#f92672">*</span> module,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">buffer_handle_t</span> handle, <span style="color:#66d9ef">int</span><span style="color:#f92672">*</span> fenceFd);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>lockAsync_ycbcr)(<span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">gralloc_module_t</span> <span style="color:#66d9ef">const</span><span style="color:#f92672">*</span> module,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">buffer_handle_t</span> handle, <span style="color:#66d9ef">int</span> usage,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> l, <span style="color:#66d9ef">int</span> t, <span style="color:#66d9ef">int</span> w, <span style="color:#66d9ef">int</span> h,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">struct</span> android_ycbcr <span style="color:#f92672">*</span>ycbcr, <span style="color:#66d9ef">int</span> fenceFd);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int32_t</span> (<span style="color:#f92672">*</span>getTransportSize)(
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">gralloc_module_t</span> <span style="color:#66d9ef">const</span><span style="color:#f92672">*</span> module, <span style="color:#66d9ef">buffer_handle_t</span> handle, <span style="color:#66d9ef">uint32_t</span> <span style="color:#f92672">*</span>outNumFds,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">uint32_t</span> <span style="color:#f92672">*</span>outNumInts);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int32_t</span> (<span style="color:#f92672">*</span>validateBufferSize)(
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">struct</span> <span style="color:#66d9ef">gralloc_module_t</span> <span style="color:#66d9ef">const</span><span style="color:#f92672">*</span> device, <span style="color:#66d9ef">buffer_handle_t</span> handle,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">uint32_t</span> w, <span style="color:#66d9ef">uint32_t</span> h, <span style="color:#66d9ef">int32_t</span> format, <span style="color:#66d9ef">int</span> usage,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">uint32_t</span> stride);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> reserved_proc[<span style="color:#ae81ff">1</span>];
+</span></span><span style="display:flex;"><span>} <span style="color:#66d9ef">gralloc_module_t</span>;
+</span></span></code></pre></div><p>其具体实现在hardware/libhardware/modules/gralloc/mapper.cpp</p>
+<ul>
+<li><code>registerBuffer</code>和<code>unregisterBuffer</code>: 分别用来注册和注销一个指定的图形缓冲区, 这个指定的图形缓冲区使用一个buffer_handle_t指针来描述. 所谓注册图形缓冲区, 实际上就是将一块图形缓冲区映射到一个进程的地址空间去, 而注销图形缓冲区就是执行相反的操作.</li>
+<li><code>lock</code>和<code>unlock</code>: 分别用来锁定和解锁一个指定的图形缓冲区, 这个指定的图形缓冲区同样是使用一个buffer_handle_t指针来描述. 在访问一块图形缓冲区的时候, 需要将该图形缓冲区锁定, 用来避免访问冲突. 在锁定一块图形缓冲区的时候, 可以通过参数l, t, w, h来指定要锁定的图形绘冲区的位置以及大小. 其中, 参数l和t指定的是要访问的图形缓冲区的左上角位置, 而参数w和h指定的是要访问的图形缓冲区的宽度和长度. 锁定之后, 就可以获得由参数l, t, w, h所圈定的一块缓冲区的起始地址, 保存在参数vaddr中. 在访问完成一块图形缓冲区之后, 需要解除这块图形缓冲区的锁定.</li>
+</ul>
+<p>更多具体解释见原文注释</p>
+<p>在Gralloc模块中, <code>HAL_MODULE_INFO_SYM</code>指向的gralloc结构体的成员函数<code>registerBuffer</code>, <code>unregisterBuffer</code>, <code>lock</code>, <code>unlock</code>分别被指定为函数<code>gralloc_register_buffer</code>, <code>gralloc_unregister_buffer</code>, <code>gralloc_lock</code>, <code>gralloc_unlock</code>.</p>
+<p>至此, 简要介绍了Gralloc模块HMI中的内容.</p>
+<h2 id="gralloc模块的使用">Gralloc模块的使用</h2>
+<p>待补充</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

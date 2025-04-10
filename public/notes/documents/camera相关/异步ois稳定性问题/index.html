@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>异步OIS稳定性问题</title>
+
+<meta name="description" content="异步OIS稳定性问题 异步OIS引起的稳定性问题 03-11 20:44:03.254 1047 15824 15824 F DEBUG : tagged_addr_ctrl: 0000000000000001 (PR_TAGGED_ADDR_ENABLE) 03-11 20:44:03.254 1047 15824 15824 F DEBUG : pac_enabled_keys: 000000000000000f (PR_PAC_APIAKEY, PR_PAC_APIBKEY, PR_PAC_APDAKEY, PR_PAC_APDBKEY) 03-11 20:44:03.254 1047 15824 15824 F DEBUG : signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0xc171000000010121 03-11 20:44:03.254 1047 15824 15824 F DEBUG : x0 b4000075e734ae7c x1 000000754fbcd7f8 x2 000000754fbcd858 x3 0000000000000003 03-11 20:44:03.254 1047 15824 15824 F DEBUG : x4 000000754fbcd760 x5 0000000000cd6e1a x6 61607268636c1f2b x7 7f7f7f7f7f7f7f7f 03-11 20:44:03.254 1047 15824 15824 F DEBUG : x8 c171000000010101 x9 0000000000000000 x10 0000000000000040 x11 000000000000003f 03-11 20:44:03.254 1047 15824 15824 F DEBUG : x12 0000000000000000 x13 0000000000000033 x14 000000754fbcda08 x15 00000051c6187228 03-11 20:44:03.254 1047 15824 15824 F DEBUG : x16 0000007858729718 x17 00000078903155d0 x18 0000000000000152 x19 b40000756ed9bf50 03-11 20:44:03.254 1047 15824 15824 F DEBUG : x20 000000754fbce320 x21 0000000000000008 x22 b4000075e734ae7c x23 000000754fbcfe80 03-11 20:44:03.254 1047 15824 15824 F DEBUG : x24 00000078510c8018 x25 b4000075e734adf0 x26 000be22c0000001b x27 000000754fbcfe80 03-11 20:44:03.254 1047 15824 15824 F DEBUG : x28 00000078510c8018 x29 000000754fbce270 03-11 20:44:03.254 1047 15824 15824 F DEBUG : lr 000000785a054f34 sp 000000754fbcde60 pc 000000785a055080 pst 0000000020001000 03-11 20:44:03.254 1047 15824 15824 F DEBUG : 10 total frames 03-11 20:44:03.254 1047 15824 15824 F DEBUG : backtrace: 03-11 20:44:03.254 1047 15824 15824 F DEBUG : #00 pc 0000000000012080 /vendor/lib64/mt6985/libcam.utils.sensorprovider.so (NSCam::Utils::SensorProviderService::customCmd(NSCam::Utils::eSensorType, void*)&#43;1104) (BuildId: d5f24bfac288fb503be8da71dd3110a0) 03-11 20:44:03.254 1047 15824 15824 F DEBUG : #01 pc 000000000002c6b8 /vendor/lib64/mt6985/libcam.utils.sensorprovider.so (NSCam::Utils::SensorProvider::customCmd(NSCam::Utils::eSensorType, void*)&#43;56) (BuildId: d5f24bfac288fb503be8da71dd3110a0) 03-11 20:44:03.254 1047 15824 15824 F DEBUG : #02 pc 0000000000013398 /vendor/lib64/mt6985/libcam.peripheralcontroller.so (mtk::hal3a::PeripheralController::NotifyEvent_Part1(mtk::hal3a::IPeripheralController::MtkNotifyEventId, long, long, long, long)&#43;888) (BuildId: 4e05dfaf37ece422d64525faff675531) 03-11 20:44:03.254 1047 15824 15824 F DEBUG : #03 pc 0000000000012f94 /vendor/lib64/mt6985/libcam.peripheralcontroller.so (mtk::hal3a::PeripheralController::NotifyEvent(mtk::hal3a::IPeripheralController::MtkNotifyEventId, long, long, long, long)&#43;628) (BuildId: 4e05dfaf37ece422d64525faff675531) 03-11 20:44:03.254 1047 15824 15824 F DEBUG : #04 pc 000000000004fd9c /vendor/lib64/mt6985/libcam.hal3a.ctrl.so (mtk::hal3a::Hal3AFlowCtrlImp::onAFFinish(mtk::hal3a::v1_0::mtk_thread_request&amp;)&#43;188) (BuildId: 19f7733f5fc3e573a74b541bfa332511) 03-11 20:44:03.254 1047 15824 15824 F DEBUG : #05 pc 00000000000534d8 /vendor/lib64/mt6985/libcam.hal3a.ctrl.so (mtk::hal3a::Hal3AFlowCtrlImp::doNotifyCb(mtk::hal3a::IHal3ACb::ECb_T, long, long, long)&#43;2056) (BuildId: 19f7733f5fc3e573a74b541bfa332511) 03-11 20:44:03.254 1047 15824 15824 F DEBUG : #06 pc 0000000000029d20 /vendor/lib64/mt6985/libcam.hal3a.ctrl.so (mtk::hal3a::ThreadAF::onThreadLoop()&#43;240) (BuildId: 19f7733f5fc3e573a74b541bfa332511) 03-11 20:44:03.254 1047 15824 15824 F DEBUG : #07 pc 000000000002a5fc /vendor/lib64/mt6985/libcam.hal3a.ctrl.so (void* std::__1::__thread_proxy&lt;std::__1::tuple&lt;std::__1::unique_ptr&lt;std::__1::__thread_struct, std::__1::default_delete&lt;std::__1::__thread_struct&gt;&gt;, void* (mtk::hal3a::ThreadAF::*)(), mtk::hal3a::ThreadAF*&gt;&gt;(void*)&#43;60) (BuildId: 19f7733f5fc3e573a74b541bfa332511) 03-11 20:44:03.254 1047 15824 15824 F DEBUG : #08 pc 0000000000070138 /apex/com.android.runtime/lib64/bionic/libc.so (__pthread_start(void*)&#43;200) (BuildId: 94d417fdb46723bc4d7e45f68d275444) 03-11 20:44:03.254 1047 15824 15824 F DEBUG : #09 pc 00000000000614d0 /apex/com.android.runtime/lib64/bionic/libc.so (__start_thread&#43;64) (BuildId: 94d417fdb46723bc4d7e45f68d275444) 以上为报错, 定位到代码:
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E5%BC%82%E6%AD%A5ois%E7%A8%B3%E5%AE%9A%E6%80%A7%E9%97%AE%E9%A2%98/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E5%BC%82%E6%AD%A5ois%E7%A8%B3%E5%AE%9A%E6%80%A7%E9%97%AE%E9%A2%98/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E5%BC%82%E6%AD%A5ois%E7%A8%B3%E5%AE%9A%E6%80%A7%E9%97%AE%E9%A2%98/">
+
+
+
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E5%BC%82%E6%AD%A5ois%E7%A8%B3%E5%AE%9A%E6%80%A7%E9%97%AE%E9%A2%98/index.xml">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="异步OIS稳定性问题">
+<meta property="og:description" content="">
+<meta property="og:type" content="website">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/%E5%BC%82%E6%AD%A5ois%E7%A8%B3%E5%AE%9A%E6%80%A7%E9%97%AE%E9%A2%98/">
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="异步OIS稳定性问题">
+<meta name="twitter:description" content="">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs list d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+
+    
+
+    
+
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">gdb调试</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-14T12:09:51Z">March 14, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="gdb调试">gdb调试</h1>
+<p>利用adb进行端口映射, 远程运行需要运行gdbserver.</p>
+<p>例如:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>adb push gdbserver64 /vendor/bin/
+</span></span><span style="display:flex;"><span>adb shell /vendor/bin/gdbserver64 :$port --attach $target_pid
+</span></span></code></pre></div><p>本地需要执行gdb后:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>target remote :$port
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#如果需要的话</span>
+</span></span><span style="display:flex;"><span>set print pretty on
+</span></span><span style="display:flex;"><span>set pagination off 
+</span></span><span style="display:flex;"><span>set disassemble-next-line on
+</span></span></code></pre></div><p>注: gdbserver在attach进程后会让进程stop, 如果时间较久可能会让进程hang, 此时需要利用脚本来获取想要的信息.</p>
+<p>‍</p>
+<h2 id="gdb-script">gdb script</h2>
+<h2 id="heading">‍</h2>
+<h2 id="lastmod-2025-03-14t120951z">title: gdb调试
+date: 2025-03-14T12:03:52Z
+lastmod: 2025-03-14T12:09:51Z …</h2>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/camera%E7%9B%B8%E5%85%B3/%E5%BC%82%E6%AD%A5ois%E7%A8%B3%E5%AE%9A%E6%80%A7%E9%97%AE%E9%A2%98/gdb%E8%B0%83%E8%AF%95/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+
+    
+
+</div>
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

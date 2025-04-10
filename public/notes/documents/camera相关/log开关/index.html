@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>Log开关</title>
+
+<meta name="description" content="Log开关 Log开关 可以用
+adb shell stop logd adb shell start logd 来开关logd, 排除log的影响, 用trace来看性能
+关log
+adb root adb shell setprop vendor.debug.camera.ulog.mode 0x10 adb shell setprop persist.vendor.mtk.camera.log_level -1 adb shell setprop persist.sys.offlinelog.logcat false adb shell setprop persist.sys.offlinelog.logcatkernel false adb shell setprop persist.vendor.camera.mivi.groupsEnable 0 adb shell setprop persist.vendor.camera.offlinedebug.mask 0 adb shell setprop persist.vendor.camera.mialgo.tracegroups 0 adb shell setprop camera.debug.log_level 4 adb shell pkill camera*
+adb wait-for-device adb root #adb disable-verity adb remount #adb reboot adb wait-for-device #close log by set persist adb shell setprop persist.vendor.camera.debugdata.enable3A 0 adb shell setprop persist.vendor.camera.debugdata.enableTuningMetadata 0 adb shell setprop persist.vendor.camera.logInfoMask 0 adb shell setprop persist.vendor.camera.logVerboseMask 0 adb shell setprop persist.vendor.camera.logConfigMask 0 adb shell setprop persist.vendor.camera.logWarningMask 0 adb shell setprop persist.vendor.camera.systemLogEnable 0 adb shell setprop persist.vendor.camera.logCoreCfgMask 0 adb shell setprop persist.vendor.camera.traceGroupsEnable 0 adb shell setprop vendor.debug.camera.overrideLogLevels 0x1 adb shell setprop persist.vendor.camera.enableAsciiLogging 0 adb shell setprop persist.vendor.camera.enableTxtLogging 0 adb shell setprop persist.vendor.camera.raiserecoverysigabrt FALSE adb shell setprop persist.vendor.camera.enableCameraCoreDumpBinary FALSE adb shell setprop persist.vendor.camera.enableCameraCoreDumpText FALSE adb shell setprop persist.vendor.camera.logRequestMapping FALSE #closeAsdLog adb shell setprop persist.vendor.camera.mawlog.aiasd 0 adb shell setprop persist.vendor.camera.mawtools.offlinelog 0 adb shell setprop persist.vendor.camera.mawlog 0 #closeBspOfflineLog adb shell setprop persist.sys.offlinelog.logcat false adb shell setprop persist.sys.offlinelog.logcatkernel false #remove ssgtzd adb shell &#34;rm /vendor/bin/ssgtzd&#34; #close mivi log adb shell setprop persist.vendor.camera.mivi.groupsEnable 0 adb shell setprop persist.vendor.camera.offlinedebug.mask 0 adb shell setprop persist.vendor.camera.mialgo.tracegroups 0 #close MiuiCamera debug log #adb shell setprop camera.debug.log_level 4 adb shell setprop camera_dump_parameters true adb shell setprop camera.debug.log_level 1 adb shell setprop camera.debug.dump_stat_event true adb shell pkill camera* 开log
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/log%E5%BC%80%E5%85%B3/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/log%E5%BC%80%E5%85%B3/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/log%E5%BC%80%E5%85%B3/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Log开关">
+<meta property="og:description" content="Log开关
+Log开关
+可以用
+adb shell stop logd
+adb shell start logd
+来开关logd, 排除log的影响, 用trace来看性能
+关log
+adb root
+adb shell setprop vendor.debug.camera.ulog.mode 0x10
+adb shell setprop persist.vendor.mtk.camera.log_level -1
+adb shell setprop persist.sys.offlinelog.logcat false
+adb shell setprop persist.sys.offlinelog.logcatkernel false
+adb shell setprop persist.vendor.camera.mivi.groupsEnable 0
+adb shell setprop persist.vendor.camera.offlinedebug.mask 0
+adb shell setprop persist.vendor.camera.mialgo.tracegroups 0
+adb shell setprop camera.debug.log_level 4
+adb shell pkill camera*
+adb wait-for-device
+adb root
+#adb disable-verity
+adb remount
+#adb reboot
+adb wait-for-device
+
+#close log by set persist
+adb shell setprop persist.vendor.camera.debugdata.enable3A 0
+adb shell setprop persist.vendor.camera.debugdata.enableTuningMetadata 0
+
+adb shell setprop persist.vendor.camera.logInfoMask 0
+adb shell setprop persist.vendor.camera.logVerboseMask 0
+adb shell setprop persist.vendor.camera.logConfigMask 0
+adb shell setprop persist.vendor.camera.logWarningMask 0
+adb shell setprop persist.vendor.camera.systemLogEnable 0
+adb shell setprop persist.vendor.camera.logCoreCfgMask 0
+adb shell setprop persist.vendor.camera.traceGroupsEnable 0
+adb shell setprop vendor.debug.camera.overrideLogLevels 0x1
+
+adb shell setprop persist.vendor.camera.enableAsciiLogging 0
+adb shell setprop persist.vendor.camera.enableTxtLogging 0
+adb shell setprop persist.vendor.camera.raiserecoverysigabrt FALSE
+adb shell setprop persist.vendor.camera.enableCameraCoreDumpBinary FALSE
+adb shell setprop persist.vendor.camera.enableCameraCoreDumpText FALSE
+
+adb shell setprop persist.vendor.camera.logRequestMapping FALSE
+
+#closeAsdLog
+adb shell setprop persist.vendor.camera.mawlog.aiasd 0
+adb shell setprop persist.vendor.camera.mawtools.offlinelog 0
+adb shell setprop persist.vendor.camera.mawlog 0
+
+#closeBspOfflineLog
+adb shell setprop persist.sys.offlinelog.logcat false
+adb shell setprop persist.sys.offlinelog.logcatkernel false
+
+#remove ssgtzd
+adb shell &#34;rm /vendor/bin/ssgtzd&#34;
+
+#close mivi log
+adb shell setprop persist.vendor.camera.mivi.groupsEnable 0
+adb shell setprop persist.vendor.camera.offlinedebug.mask 0
+adb shell setprop persist.vendor.camera.mialgo.tracegroups 0
+
+#close MiuiCamera debug log
+#adb shell setprop camera.debug.log_level 4
+adb shell setprop camera_dump_parameters true
+adb shell setprop camera.debug.log_level 1
+adb shell setprop camera.debug.dump_stat_event true
+
+adb shell pkill camera*
+开log">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/log%E5%BC%80%E5%85%B3/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Log开关">
+<meta name="twitter:description" content="Log开关
+Log开关
+可以用
+adb shell stop logd
+adb shell start logd
+来开关logd, 排除log的影响, 用trace来看性能
+关log
+adb root
+adb shell setprop vendor.debug.camera.ulog.mode 0x10
+adb shell setprop persist.vendor.mtk.camera.log_level -1
+adb shell setprop persist.sys.offlinelog.logcat false
+adb shell setprop persist.sys.offlinelog.logcatkernel false
+adb shell setprop persist.vendor.camera.mivi.groupsEnable 0
+adb shell setprop persist.vendor.camera.offlinedebug.mask 0
+adb shell setprop persist.vendor.camera.mialgo.tracegroups 0
+adb shell setprop camera.debug.log_level 4
+adb shell pkill camera*
+adb wait-for-device
+adb root
+#adb disable-verity
+adb remount
+#adb reboot
+adb wait-for-device
+
+#close log by set persist
+adb shell setprop persist.vendor.camera.debugdata.enable3A 0
+adb shell setprop persist.vendor.camera.debugdata.enableTuningMetadata 0
+
+adb shell setprop persist.vendor.camera.logInfoMask 0
+adb shell setprop persist.vendor.camera.logVerboseMask 0
+adb shell setprop persist.vendor.camera.logConfigMask 0
+adb shell setprop persist.vendor.camera.logWarningMask 0
+adb shell setprop persist.vendor.camera.systemLogEnable 0
+adb shell setprop persist.vendor.camera.logCoreCfgMask 0
+adb shell setprop persist.vendor.camera.traceGroupsEnable 0
+adb shell setprop vendor.debug.camera.overrideLogLevels 0x1
+
+adb shell setprop persist.vendor.camera.enableAsciiLogging 0
+adb shell setprop persist.vendor.camera.enableTxtLogging 0
+adb shell setprop persist.vendor.camera.raiserecoverysigabrt FALSE
+adb shell setprop persist.vendor.camera.enableCameraCoreDumpBinary FALSE
+adb shell setprop persist.vendor.camera.enableCameraCoreDumpText FALSE
+
+adb shell setprop persist.vendor.camera.logRequestMapping FALSE
+
+#closeAsdLog
+adb shell setprop persist.vendor.camera.mawlog.aiasd 0
+adb shell setprop persist.vendor.camera.mawtools.offlinelog 0
+adb shell setprop persist.vendor.camera.mawlog 0
+
+#closeBspOfflineLog
+adb shell setprop persist.sys.offlinelog.logcat false
+adb shell setprop persist.sys.offlinelog.logcatkernel false
+
+#remove ssgtzd
+adb shell &#34;rm /vendor/bin/ssgtzd&#34;
+
+#close mivi log
+adb shell setprop persist.vendor.camera.mivi.groupsEnable 0
+adb shell setprop persist.vendor.camera.offlinedebug.mask 0
+adb shell setprop persist.vendor.camera.mialgo.tracegroups 0
+
+#close MiuiCamera debug log
+#adb shell setprop camera.debug.log_level 4
+adb shell setprop camera_dump_parameters true
+adb shell setprop camera.debug.log_level 1
+adb shell setprop camera.debug.dump_stat_event true
+
+adb shell pkill camera*
+开log">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Log开关",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  906 ,
+  "description": "Log开关 Log开关 可以用\nadb shell stop logd adb shell start logd 来开关logd, 排除log的影响, 用trace来看性能\n关log\nadb root adb shell setprop vendor.debug.camera.ulog.mode 0x10 adb shell setprop persist.vendor.mtk.camera.log_level -1 adb shell setprop persist.sys.offlinelog.logcat false adb shell setprop persist.sys.offlinelog.logcatkernel false adb shell setprop persist.vendor.camera.mivi.groupsEnable 0 adb shell setprop persist.vendor.camera.offlinedebug.mask 0 adb shell setprop persist.vendor.camera.mialgo.tracegroups 0 adb shell setprop camera.debug.log_level 4 adb shell pkill camera*\nadb wait-for-device adb root #adb disable-verity adb remount #adb reboot adb wait-for-device #close log by set persist adb shell setprop persist.vendor.camera.debugdata.enable3A 0 adb shell setprop persist.vendor.camera.debugdata.enableTuningMetadata 0 adb shell setprop persist.vendor.camera.logInfoMask 0 adb shell setprop persist.vendor.camera.logVerboseMask 0 adb shell setprop persist.vendor.camera.logConfigMask 0 adb shell setprop persist.vendor.camera.logWarningMask 0 adb shell setprop persist.vendor.camera.systemLogEnable 0 adb shell setprop persist.vendor.camera.logCoreCfgMask 0 adb shell setprop persist.vendor.camera.traceGroupsEnable 0 adb shell setprop vendor.debug.camera.overrideLogLevels 0x1 adb shell setprop persist.vendor.camera.enableAsciiLogging 0 adb shell setprop persist.vendor.camera.enableTxtLogging 0 adb shell setprop persist.vendor.camera.raiserecoverysigabrt FALSE adb shell setprop persist.vendor.camera.enableCameraCoreDumpBinary FALSE adb shell setprop persist.vendor.camera.enableCameraCoreDumpText FALSE adb shell setprop persist.vendor.camera.logRequestMapping FALSE #closeAsdLog adb shell setprop persist.vendor.camera.mawlog.aiasd 0 adb shell setprop persist.vendor.camera.mawtools.offlinelog 0 adb shell setprop persist.vendor.camera.mawlog 0 #closeBspOfflineLog adb shell setprop persist.sys.offlinelog.logcat false adb shell setprop persist.sys.offlinelog.logcatkernel false #remove ssgtzd adb shell \u0026#34;rm /vendor/bin/ssgtzd\u0026#34; #close mivi log adb shell setprop persist.vendor.camera.mivi.groupsEnable 0 adb shell setprop persist.vendor.camera.offlinedebug.mask 0 adb shell setprop persist.vendor.camera.mialgo.tracegroups 0 #close MiuiCamera debug log #adb shell setprop camera.debug.log_level 4 adb shell setprop camera_dump_parameters true adb shell setprop camera.debug.log_level 1 adb shell setprop camera.debug.dump_stat_event true adb shell pkill camera* 开log\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="log开关">Log开关</h1>
+<h1 id="log开关-1">Log开关</h1>
+<p>可以用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>adb shell stop logd
+</span></span><span style="display:flex;"><span>adb shell start logd
+</span></span></code></pre></div><p>来开关logd, 排除log的影响, 用trace来看性能</p>
+<p>关log</p>
+<p>adb root
+adb shell setprop vendor.debug.camera.ulog.mode 0x10
+adb shell setprop persist.vendor.mtk.camera.log_level -1
+adb shell setprop persist.sys.offlinelog.logcat false
+adb shell setprop persist.sys.offlinelog.logcatkernel false
+adb shell setprop persist.vendor.camera.mivi.groupsEnable 0
+adb shell setprop persist.vendor.camera.offlinedebug.mask 0
+adb shell setprop persist.vendor.camera.mialgo.tracegroups 0
+adb shell setprop camera.debug.log_level 4
+adb shell pkill camera*</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>adb wait-for-device
+</span></span><span style="display:flex;"><span>adb root
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#adb disable-verity</span>
+</span></span><span style="display:flex;"><span>adb remount
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#adb reboot</span>
+</span></span><span style="display:flex;"><span>adb wait-for-device
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#close log by set persist</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.debugdata.enable3A <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.debugdata.enableTuningMetadata <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logInfoMask <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logVerboseMask <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logConfigMask <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logWarningMask <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.systemLogEnable <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logCoreCfgMask <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.traceGroupsEnable <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop vendor.debug.camera.overrideLogLevels 0x1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableAsciiLogging <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableTxtLogging <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.raiserecoverysigabrt FALSE
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableCameraCoreDumpBinary FALSE
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableCameraCoreDumpText FALSE
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logRequestMapping FALSE
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#closeAsdLog</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mawlog.aiasd <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mawtools.offlinelog <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mawlog <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#closeBspOfflineLog</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.sys.offlinelog.logcat false
+</span></span><span style="display:flex;"><span>adb shell setprop persist.sys.offlinelog.logcatkernel false
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#remove ssgtzd</span>
+</span></span><span style="display:flex;"><span>adb shell <span style="color:#e6db74">&#34;rm /vendor/bin/ssgtzd&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#close mivi log</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mivi.groupsEnable <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.offlinedebug.mask <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mialgo.tracegroups <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#close MiuiCamera debug log</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#adb shell setprop camera.debug.log_level 4</span>
+</span></span><span style="display:flex;"><span>adb shell setprop camera_dump_parameters true
+</span></span><span style="display:flex;"><span>adb shell setprop camera.debug.log_level <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop camera.debug.dump_stat_event true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell pkill camera*
+</span></span></code></pre></div><p>开log</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>adb wait-for-device
+</span></span><span style="display:flex;"><span>adb root
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#adb disable-verity</span>
+</span></span><span style="display:flex;"><span>adb remount
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#adb reboot</span>
+</span></span><span style="display:flex;"><span>adb wait-for-device
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#close log by set persist</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.debugdata.enable3A <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.debugdata.enableTuningMetadata <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logInfoMask <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logVerboseMask <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logConfigMask <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logWarningMask <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.systemLogEnable <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logCoreCfgMask <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.traceGroupsEnable <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop vendor.debug.camera.overrideLogLevels 0x1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableAsciiLogging <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableTxtLogging <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.raiserecoverysigabrt TRUE
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableCameraCoreDumpBinary TRUE
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableCameraCoreDumpText TRUE
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logRequestMapping TRUE
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#closeAsdLog</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mawlog.aiasd <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mawtools.offlinelog <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mawlog <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#closeBspOfflineLog</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.sys.offlinelog.logcat true
+</span></span><span style="display:flex;"><span>adb shell setprop persist.sys.offlinelog.logcatkernel true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#close mivi log</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mivi.groupsEnable <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.offlinedebug.mask <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mialgo.tracegroups <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#close MiuiCamera debug log</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#adb shell setprop camera.debug.log_level 4</span>
+</span></span><span style="display:flex;"><span>adb shell setprop camera_dump_parameters false
+</span></span><span style="display:flex;"><span>adb shell setprop camera.debug.log_level <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop camera.debug.dump_stat_event false
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell pkill camera*
+</span></span></code></pre></div><hr>
+<h2 id="lastmod-2025-03-11t094648z">title: Log开关
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="log开关-2">Log开关</h1>
+<h1 id="log开关-3">Log开关</h1>
+<p>可以用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>adb shell stop logd
+</span></span><span style="display:flex;"><span>adb shell start logd
+</span></span></code></pre></div><p>来开关logd, 排除log的影响, 用trace来看性能</p>
+<p>关log</p>
+<p>adb root
+adb shell setprop vendor.debug.camera.ulog.mode 0x10
+adb shell setprop persist.vendor.mtk.camera.log_level -1
+adb shell setprop persist.sys.offlinelog.logcat false
+adb shell setprop persist.sys.offlinelog.logcatkernel false
+adb shell setprop persist.vendor.camera.mivi.groupsEnable 0
+adb shell setprop persist.vendor.camera.offlinedebug.mask 0
+adb shell setprop persist.vendor.camera.mialgo.tracegroups 0
+adb shell setprop camera.debug.log_level 4
+adb shell pkill camera*</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>adb wait-for-device
+</span></span><span style="display:flex;"><span>adb root
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#adb disable-verity</span>
+</span></span><span style="display:flex;"><span>adb remount
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#adb reboot</span>
+</span></span><span style="display:flex;"><span>adb wait-for-device
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#close log by set persist</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.debugdata.enable3A <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.debugdata.enableTuningMetadata <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logInfoMask <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logVerboseMask <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logConfigMask <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logWarningMask <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.systemLogEnable <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logCoreCfgMask <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.traceGroupsEnable <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop vendor.debug.camera.overrideLogLevels 0x1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableAsciiLogging <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableTxtLogging <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.raiserecoverysigabrt FALSE
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableCameraCoreDumpBinary FALSE
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableCameraCoreDumpText FALSE
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logRequestMapping FALSE
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#closeAsdLog</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mawlog.aiasd <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mawtools.offlinelog <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mawlog <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#closeBspOfflineLog</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.sys.offlinelog.logcat false
+</span></span><span style="display:flex;"><span>adb shell setprop persist.sys.offlinelog.logcatkernel false
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#remove ssgtzd</span>
+</span></span><span style="display:flex;"><span>adb shell <span style="color:#e6db74">&#34;rm /vendor/bin/ssgtzd&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#close mivi log</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mivi.groupsEnable <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.offlinedebug.mask <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mialgo.tracegroups <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#close MiuiCamera debug log</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#adb shell setprop camera.debug.log_level 4</span>
+</span></span><span style="display:flex;"><span>adb shell setprop camera_dump_parameters true
+</span></span><span style="display:flex;"><span>adb shell setprop camera.debug.log_level <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop camera.debug.dump_stat_event true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell pkill camera*
+</span></span></code></pre></div><p>开log</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>adb wait-for-device
+</span></span><span style="display:flex;"><span>adb root
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#adb disable-verity</span>
+</span></span><span style="display:flex;"><span>adb remount
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#adb reboot</span>
+</span></span><span style="display:flex;"><span>adb wait-for-device
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#close log by set persist</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.debugdata.enable3A <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.debugdata.enableTuningMetadata <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logInfoMask <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logVerboseMask <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logConfigMask <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logWarningMask <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.systemLogEnable <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logCoreCfgMask <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.traceGroupsEnable <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop vendor.debug.camera.overrideLogLevels 0x1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableAsciiLogging <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableTxtLogging <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.raiserecoverysigabrt TRUE
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableCameraCoreDumpBinary TRUE
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.enableCameraCoreDumpText TRUE
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.logRequestMapping TRUE
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#closeAsdLog</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mawlog.aiasd <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mawtools.offlinelog <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mawlog <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#closeBspOfflineLog</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.sys.offlinelog.logcat true
+</span></span><span style="display:flex;"><span>adb shell setprop persist.sys.offlinelog.logcatkernel true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#close mivi log</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mivi.groupsEnable <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.offlinedebug.mask <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop persist.vendor.camera.mialgo.tracegroups <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#close MiuiCamera debug log</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#adb shell setprop camera.debug.log_level 4</span>
+</span></span><span style="display:flex;"><span>adb shell setprop camera_dump_parameters false
+</span></span><span style="display:flex;"><span>adb shell setprop camera.debug.log_level <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>adb shell setprop camera.debug.dump_stat_event false
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>adb shell pkill camera*
+</span></span></code></pre></div>
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

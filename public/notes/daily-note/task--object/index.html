@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>Task &amp;&amp; Object</title>
+
+<meta name="description" content="Task &amp;&amp; Object 优先用户反馈 N12 1. 拿不到陀螺仪数据3A数据拿不到. AISeg Do_Cal 3A依赖 Bypass EIS2. 专业暗光切回普通模式预览Fps设置错误 可能驱动问题 3. 侧边栏问题 安全中心修复方案待验证 相机测试可复现 M12 1. cameraopt间隔压制 使用epbf方案 2. miui搜狗输入法CPU占用大 考虑查杀，防止自启动（需评估） M9 1. 抖音&#43;相机场景卡顿反馈量大 1.抖音子进程数量 2.softlimit 限制三方内存使用量 3.perf 优化2. 系统占用大 3. 部分系统进程systemUI&#43;相机hal进程泄露 Linux内存 Linux kernel MMU MIVI中的buffer流转整理 丢帧预测模型完善 目标
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/daily-note/task--object/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/daily-note/task--object/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/daily-note/task--object/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Task &amp;&amp; Object">
+<meta property="og:description" content="Task &amp;&amp; Object
+优先用户反馈
+
+  
+      
+          N12
+          1. 拿不到陀螺仪数据3A数据拿不到.  AISeg Do_Cal  3A依赖  Bypass EIS2. 专业暗光切回普通模式预览Fps设置错误  可能驱动问题  3. 侧边栏问题  安全中心修复方案待验证  相机测试可复现
+      
+  
+  
+      
+          M12
+          1. cameraopt间隔压制  使用epbf方案  2. miui搜狗输入法CPU占用大  考虑查杀，防止自启动（需评估）
+      
+      
+          M9
+          1. 抖音&#43;相机场景卡顿反馈量大    1.抖音子进程数量    2.softlimit 限制三方内存使用量    3.perf 优化2. 系统占用大  3. 部分系统进程systemUI&#43;相机hal进程泄露
+      
+  
+
+Linux内存
+Linux kernel MMU
+MIVI中的buffer流转整理
+丢帧预测模型完善
+目标">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/daily-note/task--object/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:49:35+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-31T10:39:54+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Task &amp;&amp; Object">
+<meta name="twitter:description" content="Task &amp;&amp; Object
+优先用户反馈
+
+  
+      
+          N12
+          1. 拿不到陀螺仪数据3A数据拿不到.  AISeg Do_Cal  3A依赖  Bypass EIS2. 专业暗光切回普通模式预览Fps设置错误  可能驱动问题  3. 侧边栏问题  安全中心修复方案待验证  相机测试可复现
+      
+  
+  
+      
+          M12
+          1. cameraopt间隔压制  使用epbf方案  2. miui搜狗输入法CPU占用大  考虑查杀，防止自启动（需评估）
+      
+      
+          M9
+          1. 抖音&#43;相机场景卡顿反馈量大    1.抖音子进程数量    2.softlimit 限制三方内存使用量    3.perf 优化2. 系统占用大  3. 部分系统进程systemUI&#43;相机hal进程泄露
+      
+  
+
+Linux内存
+Linux kernel MMU
+MIVI中的buffer流转整理
+丢帧预测模型完善
+目标">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Task \u0026\u0026 Object",
+  "datePublished": "2025-03-11T09:49:35+00:00",
+  "dateModified": "2025-03-31T10:39:54+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  811 ,
+  "description": "Task \u0026amp;\u0026amp; Object 优先用户反馈 N12 1. 拿不到陀螺仪数据3A数据拿不到. AISeg Do_Cal 3A依赖 Bypass EIS2. 专业暗光切回普通模式预览Fps设置错误 可能驱动问题 3. 侧边栏问题 安全中心修复方案待验证 相机测试可复现 M12 1. cameraopt间隔压制 使用epbf方案 2. miui搜狗输入法CPU占用大 考虑查杀，防止自启动（需评估） M9 1. 抖音+相机场景卡顿反馈量大 1.抖音子进程数量 2.softlimit 限制三方内存使用量 3.perf 优化2. 系统占用大 3. 部分系统进程systemUI+相机hal进程泄露 Linux内存 Linux kernel MMU MIVI中的buffer流转整理 丢帧预测模型完善 目标\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="task--object">Task &amp;&amp; Object</h1>
+<h1 id="优先用户反馈">优先用户反馈</h1>
+<table>
+  <thead>
+      <tr>
+          <th>N12</th>
+          <th>1. 拿不到陀螺仪数据<!-- raw HTML omitted -->3A数据拿不到.  <!-- raw HTML omitted -->AISeg Do_Cal  <!-- raw HTML omitted -->3A依赖  <!-- raw HTML omitted -->Bypass EIS<!-- raw HTML omitted -->2. 专业暗光切回普通模式预览Fps设置错误  <!-- raw HTML omitted -->可能驱动问题  <!-- raw HTML omitted -->3. 侧边栏问题  <!-- raw HTML omitted -->安全中心修复方案待验证  <!-- raw HTML omitted -->相机测试可复现</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>M12</td>
+          <td>1. cameraopt间隔压制  <!-- raw HTML omitted -->使用epbf方案  <!-- raw HTML omitted -->2. miui搜狗输入法CPU占用大  <!-- raw HTML omitted -->考虑查杀，防止自启动（需评估）</td>
+      </tr>
+      <tr>
+          <td>M9</td>
+          <td>1. 抖音+相机场景卡顿反馈量大  <!-- raw HTML omitted -->  1.抖音子进程数量  <!-- raw HTML omitted -->  2.softlimit 限制三方内存使用量  <!-- raw HTML omitted -->  3.perf 优化<!-- raw HTML omitted -->2. 系统占用大  <!-- raw HTML omitted -->3. 部分系统进程systemUI+相机hal进程泄露</td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="linux内存">Linux内存</h1>
+<h2 id="linux-kernel-mmu">Linux kernel MMU</h2>
+<h2 id="mivi中的buffer流转整理">MIVI中的buffer流转整理</h2>
+<h1 id="丢帧预测模型完善">丢帧预测模型完善</h1>
+<p><a href="https://onedrive.live.com/edit.aspx?resid=B0AE6DDB96CCDD7A!1517&amp;migratedtospo=true&amp;wd=target%28Quick%20notes.one%7c3b71887e-dda3-48c7-8ccd-f08c37dd7f85/Untitled%20Page%7c776f21c8-4037-4343-9d26-0668f5fe961d/%29&amp;wdorigin=703&amp;wdpreservelink=1" target="_blank" rel="noopener">目标</a></p>
+<ul>
+<li>接入camera_boost</li>
+<li>精简数据</li>
+<li>性能拆解优化</li>
+<li>学习AI相关内容</li>
+<li>后续可以写一些专利</li>
+</ul>
+<h1 id="达成">达成</h1>
+<h2 id="n12暗光卡顿问题">N12暗光卡顿问题</h2>
+<p>已知问题, 见<a href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E6%9A%97%E5%85%89%E4%B8%A2%E5%B8%A7%E4%B8%8D%E6%81%A2%E5%A4%8D%E5%88%86%E6%9E%90/">暗光丢帧不恢复分析</a></p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-kernel_device_modules/&#43;/4654276" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-kernel_device_modules/+/4654276</a></p>
+<h2 id="n12n11am9m12a-ois异步适配">N12/N11A/M9/M12A OIS异步适配</h2>
+<p>N12:</p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android-cn/&#43;/5048977" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android-cn/+/5048977</a></p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android-cn/&#43;/5078707" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android-cn/+/5078707</a></p>
+<p>M12:</p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android/&#43;/5154832" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android/+/5154832</a></p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android/&#43;/5095385" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android/+/5095385</a></p>
+<h2 id="cameraopt-native-feature">CameraOpt Native Feature</h2>
+<ul>
+<li>性能</li>
+<li>兼容</li>
+</ul>
+<p><a href="https://gerrit.pt.mioffice.cn/q/topic:%22N12&#43;porting&#43;cameraopt&#43;optimization%22" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/q/topic:%22N12+porting+cameraopt+optimization%22</a></p>
+<p><a href="https://gerrit.pt.mioffice.cn/q/topic:%2522pre&#43;N12&#43;porting&#43;cameraopt&#43;optimization%2522" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/q/topic:%2522pre+N12+porting+cameraopt+optimization%2522</a></p>
+<h2 id="动态照片问题">动态照片问题</h2>
+<p>‍</p>
+<h1 id="n12-scudo-优化">N12 scudo 优化</h1>
+<p><a href="https://gerrit.pt.mioffice.cn/c/device/xiaomi/rothko/&#43;/5203987" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/device/xiaomi/rothko/+/5203987</a></p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/platform/external/scudo/&#43;/5181705" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/platform/external/scudo/+/5181705</a></p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android-cn/&#43;/5156457" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android-cn/+/5156457</a></p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt_release/&#43;/5191885" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt_release/+/5191885</a></p>
+<h2 id="heading">‍</h2>
+<h2 id="lastmod-2025-03-31t103954z">title: Task &amp;&amp; Object
+date: 2025-03-11T09:49:35Z
+lastmod: 2025-03-31T10:39:54Z</h2>
+<h1 id="task--object-1">Task &amp;&amp; Object</h1>
+<h1 id="优先用户反馈-1">优先用户反馈</h1>
+<table>
+  <thead>
+      <tr>
+          <th>N12</th>
+          <th>1. 拿不到陀螺仪数据<!-- raw HTML omitted -->3A数据拿不到.  <!-- raw HTML omitted -->AISeg Do_Cal  <!-- raw HTML omitted -->3A依赖  <!-- raw HTML omitted -->Bypass EIS<!-- raw HTML omitted -->2. 专业暗光切回普通模式预览Fps设置错误  <!-- raw HTML omitted -->可能驱动问题  <!-- raw HTML omitted -->3. 侧边栏问题  <!-- raw HTML omitted -->安全中心修复方案待验证  <!-- raw HTML omitted -->相机测试可复现</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>M12</td>
+          <td>1. cameraopt间隔压制  <!-- raw HTML omitted -->使用epbf方案  <!-- raw HTML omitted -->2. miui搜狗输入法CPU占用大  <!-- raw HTML omitted -->考虑查杀，防止自启动（需评估）</td>
+      </tr>
+      <tr>
+          <td>M9</td>
+          <td>1. 抖音+相机场景卡顿反馈量大  <!-- raw HTML omitted -->  1.抖音子进程数量  <!-- raw HTML omitted -->  2.softlimit 限制三方内存使用量  <!-- raw HTML omitted -->  3.perf 优化<!-- raw HTML omitted -->2. 系统占用大  <!-- raw HTML omitted -->3. 部分系统进程systemUI+相机hal进程泄露</td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="linux内存-1">Linux内存</h1>
+<h2 id="linux-kernel-mmu-1">Linux kernel MMU</h2>
+<h2 id="mivi中的buffer流转整理-1">MIVI中的buffer流转整理</h2>
+<h1 id="丢帧预测模型完善-1">丢帧预测模型完善</h1>
+<p>[目标](<a href="https://onedrive.live.com/edit.aspx?resid=B0AE6DDB96CCDD7A!1517&amp;migratedtospo=true&amp;wd=target%28Quick" target="_blank" rel="noopener">https://onedrive.live.com/edit.aspx?resid=B0AE6DDB96CCDD7A!1517&migratedtospo=true&wd=target(Quick</a> notes.one|3b71887e-dda3-48c7-8ccd-f08c37dd7f85/Untitled Page|776f21c8-4037-4343-9d26-0668f5fe961d/)&amp;wdorigin=703&amp;wdpreservelink=1)</p>
+<ul>
+<li>接入camera_boost</li>
+<li>精简数据</li>
+<li>性能拆解优化</li>
+<li>学习AI相关内容</li>
+<li>后续可以写一些专利</li>
+</ul>
+<h1 id="达成-1">达成</h1>
+<h2 id="n12暗光卡顿问题-1">N12暗光卡顿问题</h2>
+<p>已知问题, 见<a href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E6%9A%97%E5%85%89%E4%B8%A2%E5%B8%A7%E4%B8%8D%E6%81%A2%E5%A4%8D%E5%88%86%E6%9E%90/">暗光丢帧不恢复分析</a></p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-kernel_device_modules/&#43;/4654276" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-kernel_device_modules/+/4654276</a></p>
+<h2 id="n12n11am9m12a-ois异步适配-1">N12/N11A/M9/M12A OIS异步适配</h2>
+<p>N12:</p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android-cn/&#43;/5048977" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android-cn/+/5048977</a></p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android-cn/&#43;/5078707" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android-cn/+/5078707</a></p>
+<p>M12:</p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android/&#43;/5154832" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android/+/5154832</a></p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android/&#43;/5095385" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android/+/5095385</a></p>
+<h2 id="cameraopt-native-feature-1">CameraOpt Native Feature</h2>
+<ul>
+<li>性能</li>
+<li>兼容</li>
+</ul>
+<p><a href="https://gerrit.pt.mioffice.cn/q/topic:%22N12&#43;porting&#43;cameraopt&#43;optimization%22" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/q/topic:%22N12+porting+cameraopt+optimization%22</a></p>
+<p><a href="https://gerrit.pt.mioffice.cn/q/topic:%2522pre&#43;N12&#43;porting&#43;cameraopt&#43;optimization%2522" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/q/topic:%2522pre+N12+porting+cameraopt+optimization%2522</a></p>
+<h2 id="动态照片问题-1">动态照片问题</h2>
+<p>‍</p>
+<h1 id="n12-scudo-优化-1">N12 scudo 优化</h1>
+<p><a href="https://gerrit.pt.mioffice.cn/c/device/xiaomi/rothko/&#43;/5203987" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/device/xiaomi/rothko/+/5203987</a></p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/platform/external/scudo/&#43;/5181705" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/platform/external/scudo/+/5181705</a></p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android-cn/&#43;/5156457" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-android-cn/+/5156457</a></p>
+<p><a href="https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt_release/&#43;/5191885" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt_release/+/5191885</a></p>
+<p>‍</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>1 on My New Hugo Site</title>
+    <link>http://localhost:1313/notes/daily-note/2025/01/</link>
+    <description>Recent content in 1 on My New Hugo Site</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 11 Mar 2025 09:49:35 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/notes/daily-note/2025/01/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20250102</title>
+      <link>http://localhost:1313/notes/daily-note/2025/01/2025_01_02/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2025/01/2025_01_02/</guid>
+      <description>&lt;h1 id=&#34;2025_01_02&#34;&gt;2025_01_02&lt;/h1&gt;&#xA;&lt;p&gt;AI预测丢帧接入camerabooster, 进行中[[丢帧预测#接入camerabooster]]&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugm12upv-3493-后台内存占用高-大量的杀后台任务-导致期间kswap0占用cpu增加&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM12UPV-3054&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM12UPV-3054&lt;/a&gt; 不复现&#xA;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM12UPV-3493&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM12UPV-3493&lt;/a&gt; 后台内存占用高, 大量的杀后台任务, 导致期间kswap0占用CPU增加.&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2025_01_02&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2025_01_02-1&#34;&gt;2025_01_02&lt;/h1&gt;&#xA;&lt;p&gt;AI预测丢帧接入camerabooster, 进行中[[丢帧预测#接入camerabooster]]&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM12UPV-3054&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM12UPV-3054&lt;/a&gt; 不复现&#xA;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM12UPV-3493&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM12UPV-3493&lt;/a&gt; 后台内存占用高, 大量的杀后台任务, 导致期间kswap0占用CPU增加.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20250106</title>
+      <link>http://localhost:1313/notes/daily-note/2025/01/2025_01_06/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2025/01/2025_01_06/</guid>
+      <description>&lt;h1 id=&#34;2025_01_06&#34;&gt;2025_01_06&lt;/h1&gt;&#xA;&lt;h2 id=&#34;丢帧预测接入cameraopt&#34;&gt;丢帧预测接入cameraopt&lt;/h2&gt;&#xA;&lt;h2 id=&#34;丢帧预测接入camerabooster&#34;&gt;丢帧预测接入camerabooster&#xA;在Android Studio中可以跑起来, 但是迁移到cameraopt中遇到一些困难, 主要是系统中已经存在了libonnxruntime.so和libonnxruntime4j_jni.so, 所以在cameraopt中没有办法load这个库.&#xA;设置SELinux后, 库的兼容性似乎也有问题, 需要进一步的学习和debug.&#xA;[[丢帧预测#接入camerabooster]]&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2025_01_06&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2025_01_06-1&#34;&gt;2025_01_06&lt;/h1&gt;&#xA;&lt;h2 id=&#34;丢帧预测接入cameraopt-1&#34;&gt;丢帧预测接入cameraopt&lt;/h2&gt;&#xA;&lt;p&gt;丢帧预测接入camerabooster&#xA;在Android Studio中可以跑起来, 但是迁移到cameraopt中遇到一些困难, 主要是系统中已经存在了libonnxruntime.so和libonnxruntime4j_jni.so, 所以在cameraopt中没有办法load这个库.&#xA;设置SELinux后, 库的兼容性似乎也有问题, 需要进一步的学习和debug.&#xA;[[丢帧预测#接入camerabooster]]&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20250108</title>
+      <link>http://localhost:1313/notes/daily-note/2025/01/2025_01_08/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2025/01/2025_01_08/</guid>
+      <description>&lt;h1 id=&#34;2025_01_08&#34;&gt;2025_01_08&lt;/h1&gt;&#xA;&lt;h2 id=&#34;bugm12upv-3493&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM12UPV-3493&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM12UPV-3493&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;M12拍照模式0.6X连拍时预览卡顿&#xA;提线程优先级解决&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugm12upv-900&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM12UPV-900&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM12UPV-900&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;M12相机后置超广角连拍到16张时，显示张数会卡1S左右&#xA;U版本复现&#xA;CPU Memory占用正常&#xA;在切换后第一次复现&#xA;![](assets/Pasted image 20250108202355-20250311094935-vzf2vl1.png )&#xA;似乎是request没有下&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20250109</title>
+      <link>http://localhost:1313/notes/daily-note/2025/01/2025_01_09/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2025/01/2025_01_09/</guid>
+      <description>&lt;h1 id=&#34;2025_01_09&#34;&gt;2025_01_09&lt;/h1&gt;&#xA;&lt;h2&gt;&lt;/h2&gt;&#xA;&lt;h2 id=&#34;bugm12upv-900&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM12UPV-900&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM12UPV-900&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;h2 id=&#34;连拍相关bugm12upv-900&#34;&gt;[[连拍相关#&lt;a href=&#34;https%20//jira-phone.mioffice.cn/browse/BUGM12UPV-900&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM12UPV-900&lt;/a&gt;]]&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2025_01_09&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2025_01_09-1&#34;&gt;2025_01_09&lt;/h1&gt;&#xA;&lt;h2&gt;&lt;/h2&gt;&#xA;&lt;h2 id=&#34;bugm12upv-900-1&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM12UPV-900&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM12UPV-900&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;[[连拍相关#[BUGM12UPV-900](https //jira-phone.mioffice.cn/browse/BUGM12UPV-900)]]&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20250113</title>
+      <link>http://localhost:1313/notes/daily-note/2025/01/2025_01_13/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2025/01/2025_01_13/</guid>
+      <description>&lt;h1 id=&#34;2025_01_13&#34;&gt;2025_01_13&lt;/h1&gt;&#xA;&lt;h2 id=&#34;连拍相关bugm12upv-900&#34;&gt;[[连拍相关#&lt;a href=&#34;https%20//jira-phone.mioffice.cn/browse/BUGM12UPV-900&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM12UPV-900&lt;/a&gt;]]&lt;/h2&gt;&#xA;&lt;h2 id=&#34;后续&#34;&gt;后续&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2025_01_13&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2025_01_13-1&#34;&gt;2025_01_13&lt;/h1&gt;&#xA;&lt;h2 id=&#34;连拍相关bugm12upv-900https-jira-phonemiofficecnbrowsebugm12upv-900&#34;&gt;[[连拍相关#[BUGM12UPV-900](https //jira-phone.mioffice.cn/browse/BUGM12UPV-900)]]&lt;/h2&gt;&#xA;&lt;p&gt;后续&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20250114</title>
+      <link>http://localhost:1313/notes/daily-note/2025/01/2025_01_14/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2025/01/2025_01_14/</guid>
+      <description>&lt;h1 id=&#34;2025_01_14&#34;&gt;2025_01_14&lt;/h1&gt;&#xA;&lt;h2 id=&#34;bugm9upv-673&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM9UPV-673&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM9UPV-673&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;U:&#xA;![](assets/Pasted image 20250114205145-20250311094935-hn6v8g7.png )&#xA;V:&#xA;![](assets/Pasted image 20250114205211-20250311094935-630e5bb.png )&#xA;AppFUS用时可能有关. 明天需要问一下&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20250115</title>
+      <link>http://localhost:1313/notes/daily-note/2025/01/2025_01_15/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2025/01/2025_01_15/</guid>
+      <description>&lt;h1 id=&#34;2025_01_15&#34;&gt;2025_01_15&lt;/h1&gt;&#xA;&lt;p&gt;jira analyzer 接入orion&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugm9upv-673&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM9UPV-673&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM9UPV-673&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;[[配流问题#&lt;a href=&#34;https%20//jira-phone.mioffice.cn/browse/BUGM9UPV-673&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM9UPV-673&lt;/a&gt;]]&lt;/p&gt;&#xA;&lt;h2 id=&#34;ai丢帧预测-调试中&#34;&gt;AI丢帧预测, 调试中.&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2025_01_15&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2025_01_15-1&#34;&gt;2025_01_15&lt;/h1&gt;&#xA;&lt;p&gt;jira analyzer 接入orion&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugm9upv-673-1&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGM9UPV-673&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGM9UPV-673&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;[[配流问题#[BUGM9UPV-673](https //jira-phone.mioffice.cn/browse/BUGM9UPV-673)]]&lt;/p&gt;&#xA;&lt;p&gt;AI丢帧预测, 调试中.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20250122</title>
+      <link>http://localhost:1313/notes/daily-note/2025/01/2025_01_22/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2025/01/2025_01_22/</guid>
+      <description>&lt;h1 id=&#34;2025_01_22&#34;&gt;2025_01_22&lt;/h1&gt;&#xA;&lt;h2 id=&#34;this-is-a-test&#34;&gt;This is a test&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2025_01_22&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2025_01_22-1&#34;&gt;2025_01_22&lt;/h1&gt;&#xA;&lt;p&gt;This is a test&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

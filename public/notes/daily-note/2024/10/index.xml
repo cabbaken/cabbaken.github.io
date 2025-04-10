@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>10 on My New Hugo Site</title>
+    <link>http://localhost:1313/notes/daily-note/2024/10/</link>
+    <description>Recent content in 10 on My New Hugo Site</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 11 Mar 2025 09:58:36 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/notes/daily-note/2024/10/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2024-10-14</title>
+      <link>http://localhost:1313/notes/daily-note/2024/10/2024-10-14/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/10/2024-10-14/</guid>
+      <description>&lt;h1 id=&#34;2024-10-14&#34;&gt;2024-10-14&lt;/h1&gt;&#xA;&lt;h1 id=&#34;2024-10-14-1&#34;&gt;2024-10-14&lt;/h1&gt;&#xA;&lt;h2 id=&#34;bugn16uupv-147&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGN16UUPV-147&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN16UUPV-147&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;看log, 得到主要性能点(log分析). 过程中MtkCam/IspTuningDataPackNode耗时长&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugn12upv-1426&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGN12UPV-1426&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN12UPV-1426&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;沟通MTK, 需要找sensor owner分析log.&lt;/p&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;&#xA;&lt;h2&gt;&lt;/h2&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;&#xA;&lt;h2 id=&#34;大模型学习&#34;&gt;大模型学习&lt;/h2&gt;&#xA;&lt;p&gt;环境搭建, transformers学习.&lt;/p&gt;&#xA;&lt;h2 id=&#34;heading&#34;&gt;‍&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024-10-14&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024-10-14-2&#34;&gt;2024-10-14&lt;/h1&gt;&#xA;&lt;h1 id=&#34;2024-10-14-3&#34;&gt;2024-10-14&lt;/h1&gt;&#xA;&lt;h2 id=&#34;bugn16uupv-147-1&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGN16UUPV-147&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN16UUPV-147&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;看log, 得到主要性能点(log分析). 过程中MtkCam/IspTuningDataPackNode耗时长&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugn12upv-1426-1&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGN12UPV-1426&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN12UPV-1426&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;沟通MTK, 需要找sensor owner分析log.&lt;/p&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;&#xA;&lt;h2&gt;&lt;/h2&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;&#xA;&lt;h2 id=&#34;大模型学习-1&#34;&gt;大模型学习&lt;/h2&gt;&#xA;&lt;p&gt;环境搭建, transformers学习.&lt;/p&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>2024-10-15</title>
+      <link>http://localhost:1313/notes/daily-note/2024/10/2024-10-15/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/10/2024-10-15/</guid>
+      <description>&lt;h1 id=&#34;2024-10-15&#34;&gt;2024-10-15&lt;/h1&gt;&#xA;&lt;h1 id=&#34;2024-10-15-1&#34;&gt;2024-10-15&lt;/h1&gt;&#xA;&lt;h2 id=&#34;bugn16uupv-147&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGN16UUPV-147&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN16UUPV-147&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;了解IspTuningDataPackNode相关知识&lt;/p&gt;&#xA;&lt;p&gt;大略看trace并没有发现的地方, 后续根据&lt;a href=&#34;https://online.mediatek.com/apps/quickstart/QS00415#QSS06359&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;MTK文档&lt;/a&gt;仔细对比&lt;/p&gt;&#xA;&lt;p&gt;使用U版本的MIUICamera测试&lt;/p&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;&#xA;&lt;h2 id=&#34;完善答辩文档&#34;&gt;完善答辩文档&lt;/h2&gt;&#xA;&lt;h2 id=&#34;heading&#34;&gt;‍&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024-10-15&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024-10-15-2&#34;&gt;2024-10-15&lt;/h1&gt;&#xA;&lt;h1 id=&#34;2024-10-15-3&#34;&gt;2024-10-15&lt;/h1&gt;&#xA;&lt;h2 id=&#34;bugn16uupv-147-1&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGN16UUPV-147&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN16UUPV-147&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;了解IspTuningDataPackNode相关知识&lt;/p&gt;&#xA;&lt;p&gt;大略看trace并没有发现的地方, 后续根据&lt;a href=&#34;https://online.mediatek.com/apps/quickstart/QS00415#QSS06359&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;MTK文档&lt;/a&gt;仔细对比&lt;/p&gt;&#xA;&lt;p&gt;使用U版本的MIUICamera测试&lt;/p&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;&#xA;&lt;h2 id=&#34;完善答辩文档-1&#34;&gt;完善答辩文档&lt;/h2&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>2024-10-16</title>
+      <link>http://localhost:1313/notes/daily-note/2024/10/2024-10-16/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/10/2024-10-16/</guid>
+      <description>&lt;h1 id=&#34;2024-10-16&#34;&gt;2024-10-16&lt;/h1&gt;&#xA;&lt;h1 id=&#34;2024-10-16-1&#34;&gt;2024-10-16&lt;/h1&gt;&#xA;&lt;h2 id=&#34;完善ppt&#34;&gt;完善ppt&lt;/h2&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugn16uupv-147&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGN16UUPV-147&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN16UUPV-147&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;adb shell setprop persist.vendor.camera.mialgo.tracegroups &lt;span style=&#34;color:#ae81ff&#34;&gt;255&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;打开mivi trace再看&lt;/p&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;&#xA;&lt;h2 id=&#34;bugn12upv-1426&#34;&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGN12UPV-1426&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN12UPV-1426&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;p&gt;&lt;img src=&#34;assets/image-20241016141516-vdc0kn8.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;&#xA;&lt;p&gt;写入framelength逻辑问题&lt;/p&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>2024-10-17</title>
+      <link>http://localhost:1313/notes/daily-note/2024/10/2024-10-17/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/10/2024-10-17/</guid>
+      <description>&lt;h1 id=&#34;2024-10-17&#34;&gt;2024-10-17&lt;/h1&gt;&#xA;&lt;h1 id=&#34;2024-10-17-1&#34;&gt;2024-10-17&lt;/h1&gt;&#xA;&lt;p&gt;学习shot_to_shot分析方法&lt;/p&gt;&#xA;&lt;h2 id=&#34;heading&#34;&gt;‍&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024-10-17&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024-10-17-2&#34;&gt;2024-10-17&lt;/h1&gt;&#xA;&lt;h1 id=&#34;2024-10-17-3&#34;&gt;2024-10-17&lt;/h1&gt;&#xA;&lt;p&gt;学习shot_to_shot分析方法&lt;/p&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>2024-10-22</title>
+      <link>http://localhost:1313/notes/daily-note/2024/10/2024-10-22/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/10/2024-10-22/</guid>
+      <description>&lt;h1 id=&#34;2024-10-22&#34;&gt;2024-10-22&lt;/h1&gt;&#xA;&lt;h1 id=&#34;2024-10-22-1&#34;&gt;2024-10-22&lt;/h1&gt;&#xA;&lt;h1 id=&#34;未来一个月任务&#34;&gt;未来一个月任务&lt;/h1&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;完善jira分析工具，部署到服务器，自动loop使用者转入jira，寻找接入orion的可能&lt;/li&gt;&#xA;&lt;li&gt;完成机器学习的demo，预测工具&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024-10-22&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024-10-22-2&#34;&gt;2024-10-22&lt;/h1&gt;&#xA;&lt;h1 id=&#34;2024-10-22-3&#34;&gt;2024-10-22&lt;/h1&gt;&#xA;&lt;h1 id=&#34;未来一个月任务-1&#34;&gt;未来一个月任务&lt;/h1&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;完善jira分析工具，部署到服务器，自动loop使用者转入jira，寻找接入orion的可能&lt;/li&gt;&#xA;&lt;li&gt;完成机器学习的demo，预测工具&lt;/li&gt;&#xA;&lt;/ul&gt;</description>
+    </item>
+    <item>
+      <title>2024-10-28</title>
+      <link>http://localhost:1313/notes/daily-note/2024/10/2024-10-28/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/10/2024-10-28/</guid>
+      <description>&lt;h1 id=&#34;2024-10-28&#34;&gt;2024-10-28&lt;/h1&gt;&#xA;&lt;h1 id=&#34;2024-10-28-1&#34;&gt;2024-10-28&lt;/h1&gt;&#xA;&lt;p&gt;协助刘恒轩完成jira自动化分析工具迁移到orion&lt;/p&gt;&#xA;&lt;h2 id=&#34;heading&#34;&gt;‍&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024-10-28&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024-10-28-2&#34;&gt;2024-10-28&lt;/h1&gt;&#xA;&lt;h1 id=&#34;2024-10-28-3&#34;&gt;2024-10-28&lt;/h1&gt;&#xA;&lt;p&gt;协助刘恒轩完成jira自动化分析工具迁移到orion&lt;/p&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>2024-10-29</title>
+      <link>http://localhost:1313/notes/daily-note/2024/10/2024-10-29/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/10/2024-10-29/</guid>
+      <description>&lt;h1 id=&#34;2024-10-29&#34;&gt;2024-10-29&lt;/h1&gt;&#xA;&lt;h1 id=&#34;2024-10-29-1&#34;&gt;2024-10-29&lt;/h1&gt;&#xA;&lt;p&gt;收集训练用数据&lt;/p&gt;&#xA;&lt;p&gt;更深入学习PSI相关知识&lt;/p&gt;&#xA;&lt;p&gt;目前模型准确度达到了70%&lt;/p&gt;&#xA;&lt;h2 id=&#34;heading&#34;&gt;‍&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024-10-29&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024-10-29-2&#34;&gt;2024-10-29&lt;/h1&gt;&#xA;&lt;h1 id=&#34;2024-10-29-3&#34;&gt;2024-10-29&lt;/h1&gt;&#xA;&lt;p&gt;收集训练用数据&lt;/p&gt;&#xA;&lt;p&gt;更深入学习PSI相关知识&lt;/p&gt;&#xA;&lt;p&gt;目前模型准确度达到了70%&lt;/p&gt;&#xA;&lt;p&gt;‍&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>2024-10-30</title>
+      <link>http://localhost:1313/notes/daily-note/2024/10/2024-10-30/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/10/2024-10-30/</guid>
+      <description>&lt;h1 id=&#34;2024-10-30&#34;&gt;2024-10-30&lt;/h1&gt;&#xA;&lt;h2 id=&#34;软件大赛会议-确定方向&#34;&gt;完善数据, 增加psi数据patch, 处理psi数据&#xA;软件大赛会议, 确定方向&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024-10-30&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024-10-30-1&#34;&gt;2024-10-30&lt;/h1&gt;&#xA;&lt;p&gt;完善数据, 增加psi数据patch, 处理psi数据&#xA;软件大赛会议, 确定方向&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>2024-10-31</title>
+      <link>http://localhost:1313/notes/daily-note/2024/10/2024-10-31/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/10/2024-10-31/</guid>
+      <description>&lt;h1 id=&#34;2024-10-31&#34;&gt;2024-10-31&lt;/h1&gt;&#xA;&lt;h2 id=&#34;结合psi数据训练丢帧预测模型-目前准确度达到85&#34;&gt;完善数据, 增加psi数据patch, 处理psi数据&#xA;学习深度学习相关知识, 整理文档.&#xA;结合psi数据训练丢帧预测模型, 目前准确度达到85%&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t095836z&#34;&gt;title: 2024-10-31&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:58:36Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024-10-31-1&#34;&gt;2024-10-31&lt;/h1&gt;&#xA;&lt;p&gt;完善数据, 增加psi数据patch, 处理psi数据&#xA;学习深度学习相关知识, 整理文档.&#xA;结合psi数据训练丢帧预测模型, 目前准确度达到85%&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

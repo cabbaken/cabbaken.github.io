@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>常用缩略词</title>
+
+<meta name="description" content="常用缩略词 上层 在小米的Android手机团队里, 指的是与硬件无关的代码, 通常上层指的是frameworks以上由Google写的代码. 涉及到的是java语言. APK所使用的API都是由这个层面提供的. 当然还有一种特殊情况, 就是对于外界app开发者而言, 他们可能会认为APK是上层, 然后整个Android和MIUI都算底层. 底层 相对于上层而言. 底层自然就是**与硬件有关的代码**, 也就是所有非java语言的部分. 主要是从C语言写的linux的*.so库, 到linux的*.ko驱动. 再往下就是linux kernel部分. 再往下就是bootloader以及主板驱动. 这两部分的代码是直接占据整个分区, 已经没有文件系统和目录的概念了. 再剩下的, 就是不跑在CPU上的程序, 比如cdsp adsp modem. SSI Shared System Image. 其实指的就是手机上system分区. 这个分区里放了大多数**和硬件无关的代码**. 这是Google自从Android Q大规模实施解耦以来所提出的一个概念. 意思就是所有厂商都应该做到, 无论底层代码怎么改, ssi即便一行代码不改直接使用Google编译出来的system分区, 都可以正常开机并且正常运行app. Google有两项测试CTS-on-GSI和VTS, 都会要求我们这些厂商先刷上Google提供的System分区再跑测试. 在代码层面, 一套ssi代码的编译产物, 就是system.img这个文件, 这里面存在的就是整个system分区里的完整数据
+关于一笔代码应该进ssi还是vendor, 取决于你这个bug到底是ssi里的某个编译产物引起的, 还是vendor里的某个编译产物引起的. 通过Android.bp和Android.mk的基本判断方法定位编译产物
+Vendor 这个指的就是vendor分区. 这个分区存放了大多数与硬件有关的代码. 主要放的是linux的*.ko和.so. 这个分区里的代码, 不同的硬件差别会很大, 主要差距来自于CPU的型号差异. 同样的, 在代码层面, 一套vendor编译的产物, 就是vendor.img. 它就是整个vendor分区的所有数据. Product 特指product分区，用于放置OEM厂商对AOSP系统所做的定制化功能（比如不可卸载的预装应用），按照机型维度进行定制，每个机型可以有不同的product内容。盘古2.0解耦的时候，就是把很多应用从system分区挪到了product分区。 桌面, 主题, 壁纸, 短信, 通话之类的app都是放在product分区里的.从system分区里拿出来的原因是他们这些应用每个机型都有不一样的定制的地方, 尤其是运营商相关的
+Ext 这里特指system_ext分区，根据AOSP的定义，system_ext是对system分区的扩展，主要是放置OEM厂商的自定义功能，这些功能和system组件耦合比较紧密，需要和system相同的权限，直接访问system代码。system和system_ext统称为SSI（Shared System Image）。 举个例子, 比如设置app, 也就是settings.apk. 原生Android是由Google编写的, 并且需要很高的权限, 所以是放在system分区. 但是MIUI需要大改它, 由于改动过大已经和原生的apk完全没有了任何关系. 所以最终我们单独起了一个仓库, 然后将编译出来的settings.apk放在了system_ext分区. 它事实上和system分区的功能和定义几乎一模一样.
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/%E6%9D%82%E9%A1%B9/%E5%B8%B8%E7%94%A8%E7%BC%A9%E7%95%A5%E8%AF%8D/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/%E6%9D%82%E9%A1%B9/%E5%B8%B8%E7%94%A8%E7%BC%A9%E7%95%A5%E8%AF%8D/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/%E6%9D%82%E9%A1%B9/%E5%B8%B8%E7%94%A8%E7%BC%A9%E7%95%A5%E8%AF%8D/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="常用缩略词">
+<meta property="og:description" content="常用缩略词
+
+上层
+在小米的Android手机团队里, 指的是与硬件无关的代码, 通常上层指的是frameworks以上由Google写的代码. 涉及到的是java语言. APK所使用的API都是由这个层面提供的.
+当然还有一种特殊情况, 就是对于外界app开发者而言, 他们可能会认为APK是上层, 然后整个Android和MIUI都算底层.
+底层
+相对于上层而言. 底层自然就是**与硬件有关的代码**, 也就是所有非java语言的部分. 主要是从C语言写的linux的*.so库, 到linux的*.ko驱动. 再往下就是linux kernel部分. 再往下就是bootloader以及主板驱动. 这两部分的代码是直接占据整个分区, 已经没有文件系统和目录的概念了. 再剩下的, 就是不跑在CPU上的程序, 比如cdsp adsp modem.
+SSI
+Shared System Image. 其实指的就是手机上system分区. 这个分区里放了大多数**和硬件无关的代码**. 这是Google自从Android Q大规模实施解耦以来所提出的一个概念. 意思就是所有厂商都应该做到, 无论底层代码怎么改, ssi即便一行代码不改直接使用Google编译出来的system分区, 都可以正常开机并且正常运行app. Google有两项测试CTS-on-GSI和VTS, 都会要求我们这些厂商先刷上Google提供的System分区再跑测试.
+
+在代码层面, 一套ssi代码的编译产物, 就是system.img这个文件, 这里面存在的就是整个system分区里的完整数据
+关于一笔代码应该进ssi还是vendor, 取决于你这个bug到底是ssi里的某个编译产物引起的, 还是vendor里的某个编译产物引起的. 通过Android.bp和Android.mk的基本判断方法定位编译产物
+
+Vendor
+这个指的就是vendor分区. 这个分区存放了大多数与硬件有关的代码. 主要放的是linux的*.ko和.so. 这个分区里的代码, 不同的硬件差别会很大, 主要差距来自于CPU的型号差异.
+同样的, 在代码层面, 一套vendor编译的产物, 就是vendor.img. 它就是整个vendor分区的所有数据.
+Product
+特指product分区，用于放置OEM厂商对AOSP系统所做的定制化功能（比如不可卸载的预装应用），按照机型维度进行定制，每个机型可以有不同的product内容。盘古2.0解耦的时候，就是把很多应用从system分区挪到了product分区。
+
+桌面, 主题, 壁纸, 短信, 通话之类的app都是放在product分区里的.从system分区里拿出来的原因是他们这些应用每个机型都有不一样的定制的地方, 尤其是运营商相关的
+
+Ext
+这里特指system_ext分区，根据AOSP的定义，system_ext是对system分区的扩展，主要是放置OEM厂商的自定义功能，这些功能和system组件耦合比较紧密，需要和system相同的权限，直接访问system代码。system和system_ext统称为SSI（Shared System Image）。
+
+举个例子, 比如设置app, 也就是settings.apk. 原生Android是由Google编写的, 并且需要很高的权限, 所以是放在system分区. 但是MIUI需要大改它, 由于改动过大已经和原生的apk完全没有了任何关系. 所以最终我们单独起了一个仓库, 然后将编译出来的settings.apk放在了system_ext分区. 它事实上和system分区的功能和定义几乎一模一样.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/%E6%9D%82%E9%A1%B9/%E5%B8%B8%E7%94%A8%E7%BC%A9%E7%95%A5%E8%AF%8D/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="常用缩略词">
+<meta name="twitter:description" content="常用缩略词
+
+上层
+在小米的Android手机团队里, 指的是与硬件无关的代码, 通常上层指的是frameworks以上由Google写的代码. 涉及到的是java语言. APK所使用的API都是由这个层面提供的.
+当然还有一种特殊情况, 就是对于外界app开发者而言, 他们可能会认为APK是上层, 然后整个Android和MIUI都算底层.
+底层
+相对于上层而言. 底层自然就是**与硬件有关的代码**, 也就是所有非java语言的部分. 主要是从C语言写的linux的*.so库, 到linux的*.ko驱动. 再往下就是linux kernel部分. 再往下就是bootloader以及主板驱动. 这两部分的代码是直接占据整个分区, 已经没有文件系统和目录的概念了. 再剩下的, 就是不跑在CPU上的程序, 比如cdsp adsp modem.
+SSI
+Shared System Image. 其实指的就是手机上system分区. 这个分区里放了大多数**和硬件无关的代码**. 这是Google自从Android Q大规模实施解耦以来所提出的一个概念. 意思就是所有厂商都应该做到, 无论底层代码怎么改, ssi即便一行代码不改直接使用Google编译出来的system分区, 都可以正常开机并且正常运行app. Google有两项测试CTS-on-GSI和VTS, 都会要求我们这些厂商先刷上Google提供的System分区再跑测试.
+
+在代码层面, 一套ssi代码的编译产物, 就是system.img这个文件, 这里面存在的就是整个system分区里的完整数据
+关于一笔代码应该进ssi还是vendor, 取决于你这个bug到底是ssi里的某个编译产物引起的, 还是vendor里的某个编译产物引起的. 通过Android.bp和Android.mk的基本判断方法定位编译产物
+
+Vendor
+这个指的就是vendor分区. 这个分区存放了大多数与硬件有关的代码. 主要放的是linux的*.ko和.so. 这个分区里的代码, 不同的硬件差别会很大, 主要差距来自于CPU的型号差异.
+同样的, 在代码层面, 一套vendor编译的产物, 就是vendor.img. 它就是整个vendor分区的所有数据.
+Product
+特指product分区，用于放置OEM厂商对AOSP系统所做的定制化功能（比如不可卸载的预装应用），按照机型维度进行定制，每个机型可以有不同的product内容。盘古2.0解耦的时候，就是把很多应用从system分区挪到了product分区。
+
+桌面, 主题, 壁纸, 短信, 通话之类的app都是放在product分区里的.从system分区里拿出来的原因是他们这些应用每个机型都有不一样的定制的地方, 尤其是运营商相关的
+
+Ext
+这里特指system_ext分区，根据AOSP的定义，system_ext是对system分区的扩展，主要是放置OEM厂商的自定义功能，这些功能和system组件耦合比较紧密，需要和system相同的权限，直接访问system代码。system和system_ext统称为SSI（Shared System Image）。
+
+举个例子, 比如设置app, 也就是settings.apk. 原生Android是由Google编写的, 并且需要很高的权限, 所以是放在system分区. 但是MIUI需要大改它, 由于改动过大已经和原生的apk完全没有了任何关系. 所以最终我们单独起了一个仓库, 然后将编译出来的settings.apk放在了system_ext分区. 它事实上和system分区的功能和定义几乎一模一样.">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "常用缩略词",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  4216 ,
+  "description": "常用缩略词 上层 在小米的Android手机团队里, 指的是与硬件无关的代码, 通常上层指的是frameworks以上由Google写的代码. 涉及到的是java语言. APK所使用的API都是由这个层面提供的. 当然还有一种特殊情况, 就是对于外界app开发者而言, 他们可能会认为APK是上层, 然后整个Android和MIUI都算底层. 底层 相对于上层而言. 底层自然就是**与硬件有关的代码**, 也就是所有非java语言的部分. 主要是从C语言写的linux的*.so库, 到linux的*.ko驱动. 再往下就是linux kernel部分. 再往下就是bootloader以及主板驱动. 这两部分的代码是直接占据整个分区, 已经没有文件系统和目录的概念了. 再剩下的, 就是不跑在CPU上的程序, 比如cdsp adsp modem. SSI Shared System Image. 其实指的就是手机上system分区. 这个分区里放了大多数**和硬件无关的代码**. 这是Google自从Android Q大规模实施解耦以来所提出的一个概念. 意思就是所有厂商都应该做到, 无论底层代码怎么改, ssi即便一行代码不改直接使用Google编译出来的system分区, 都可以正常开机并且正常运行app. Google有两项测试CTS-on-GSI和VTS, 都会要求我们这些厂商先刷上Google提供的System分区再跑测试. 在代码层面, 一套ssi代码的编译产物, 就是system.img这个文件, 这里面存在的就是整个system分区里的完整数据\n关于一笔代码应该进ssi还是vendor, 取决于你这个bug到底是ssi里的某个编译产物引起的, 还是vendor里的某个编译产物引起的. 通过Android.bp和Android.mk的基本判断方法定位编译产物\nVendor 这个指的就是vendor分区. 这个分区存放了大多数与硬件有关的代码. 主要放的是linux的*.ko和.so. 这个分区里的代码, 不同的硬件差别会很大, 主要差距来自于CPU的型号差异. 同样的, 在代码层面, 一套vendor编译的产物, 就是vendor.img. 它就是整个vendor分区的所有数据. Product 特指product分区，用于放置OEM厂商对AOSP系统所做的定制化功能（比如不可卸载的预装应用），按照机型维度进行定制，每个机型可以有不同的product内容。盘古2.0解耦的时候，就是把很多应用从system分区挪到了product分区。 桌面, 主题, 壁纸, 短信, 通话之类的app都是放在product分区里的.从system分区里拿出来的原因是他们这些应用每个机型都有不一样的定制的地方, 尤其是运营商相关的\nExt 这里特指system_ext分区，根据AOSP的定义，system_ext是对system分区的扩展，主要是放置OEM厂商的自定义功能，这些功能和system组件耦合比较紧密，需要和system相同的权限，直接访问system代码。system和system_ext统称为SSI（Shared System Image）。 举个例子, 比如设置app, 也就是settings.apk. 原生Android是由Google编写的, 并且需要很高的权限, 所以是放在system分区. 但是MIUI需要大改它, 由于改动过大已经和原生的apk完全没有了任何关系. 所以最终我们单独起了一个仓库, 然后将编译出来的settings.apk放在了system_ext分区. 它事实上和system分区的功能和定义几乎一模一样.\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="常用缩略词">常用缩略词</h1>
+<ol>
+<li>上层
+在小米的Android手机团队里, 指的是与硬件无关的代码, 通常上层指的是<code>frameworks</code>以上由<code>Google</code>写的代码. 涉及到的是<code>java</code>语言. <code>APK</code>所使用的<code>API</code>都是由这个层面提供的.
+当然还有一种特殊情况, 就是对于外界<code>app</code>开发者而言, 他们可能会认为<code>APK</code>是上层, 然后整个<code>Android</code>和<code>MIUI</code>都算底层.</li>
+<li>底层
+相对于<code>上层</code>而言. 底层自然就是**<code>与硬件有关的代码</code>**, 也就是所有非<code>java</code>语言的部分. 主要是从<code>C</code>语言写的<code>linux</code>的<code>*.so</code>库, 到<code>linux</code>的<code>*.ko</code>驱动. 再往下就是<code>linux kernel</code>部分. 再往下就是<code>bootloader</code>以及主板驱动. 这两部分的代码是直接占据整个分区, 已经没有文件系统和目录的概念了. 再剩下的, 就是不跑在<code>CPU</code>上的程序, 比如<code>cdsp</code> <code>adsp</code> <code>modem</code>.</li>
+<li>SSI
+<code>Shared System Image</code>. 其实指的就是手机上<code>system</code>分区. 这个分区里放了大多数**<code>和硬件无关的代码</code>**. 这是<code>Google</code>自从<code>Android Q</code>大规模实施解耦以来所提出的一个概念. 意思就是所有厂商都应该做到, 无论底层代码怎么改, <code>ssi</code>即便一行代码不改直接使用<code>Google</code>编译出来的<code>system</code>分区, 都可以正常开机并且正常运行app. Google有两项测试<code>CTS-on-GSI</code>和<code>VTS</code>, 都会要求我们这些厂商先刷上<code>Google</code>提供的<code>System</code>分区再跑测试.</li>
+</ol>
+<p>在代码层面, 一套<code>ssi</code>代码的编译产物, 就是<code>system.img</code>这个文件, 这里面存在的就是整个<code>system</code>分区里的完整数据</p>
+<p>关于一笔代码应该进ssi还是vendor, 取决于你这个bug到底是ssi里的某个编译产物引起的, 还是vendor里的某个编译产物引起的. 通过Android.bp和Android.mk的基本判断方法<a href="">定位编译产物</a></p>
+<ol start="4">
+<li>Vendor
+这个指的就是<code>vendor</code>分区. 这个分区存放了大多数与硬件有关的代码. 主要放的是<code>linux</code>的<code>*.ko</code>和<code>.so</code>. 这个分区里的代码, 不同的硬件差别会很大, 主要差距来自于<code>CPU</code>的型号差异.
+同样的, 在代码层面, 一套<code>vendor</code>编译的产物, 就是<code>vendor.img</code>. 它就是整个<code>vendor</code>分区的所有数据.</li>
+<li>Product
+特指<code>product</code>分区，用于放置OEM厂商对AOSP系统所做的定制化功能（比如不可卸载的预装应用），按照机型维度进行定制，每个机型可以有不同的<code>product</code>内容。盘古2.0解耦的时候，就是把很多应用从<code>system</code>分区挪到了<code>product</code>分区。</li>
+</ol>
+<p>桌面, 主题, 壁纸, 短信, 通话之类的app都是放在<code>product</code>分区里的.从<code>system</code>分区里拿出来的原因是他们这些应用每个机型都有不一样的定制的地方, 尤其是运营商相关的</p>
+<ol start="6">
+<li>Ext
+这里特指<code>system_ext</code>分区，根据AOSP的定义，system_ext是对system分区的扩展，主要是放置OEM厂商的自定义功能，这些功能和system组件耦合比较紧密，需要和system相同的权限，直接访问system代码。system和system_ext统称为SSI（<code>Shared System Image</code>）。</li>
+</ol>
+<p>举个例子, 比如<code>设置</code>app, 也就是<code>settings.apk</code>. 原生Android是由Google编写的, 并且需要很高的权限, 所以是放在<code>system</code>分区. 但是MIUI需要大改它, 由于改动过大已经和原生的apk完全没有了任何关系. 所以最终我们单独起了一个仓库, 然后将编译出来的<code>settings.apk</code>放在了<code>system_ext</code>分区. 它事实上和<code>system</code>分区的功能和定义几乎一模一样.</p>
+<p>关于上述几个分区. Google也有一篇文章, 从不同角度解释了一些东西:https://source.android.com/docs/core/architecture/partitions?hl=zh-cn</p>
+<ol start="7">
+<li>AP
+<code>Application Processor</code>,这个概念是高通侧的概念. 本意是指<code>CPU</code>, 但是在代码层面又并不是指跑在<code>CPU</code>上的代码. 它比较容易和上面几个解耦的概念搞混. 高通对于<code>AP</code>的定义是, <code>所有bootloader, linux kernel以及更上层的代码</code>. 所以对于高通来说, <code>ssi</code>和<code>vendor</code>都是<code>AP</code>.</li>
+<li>BP
+<code>Baseband Processor</code>. 同样的, 也是高通的相对于<code>AP</code>的概念. 本意是指基带处理器, 也就是处理4G 5G信号的那个芯片, 属于是高通的核心技术了. 但是在代码层面, 这个又被扩宽了, 它目前指的是所有除了<code>AP</code>之外的代码. 大多数高通不想给小米开放代码的部分都在这里面. 具体包括modem代码, cdsp代码, adsp代码. 这三者是分别跑在对应的芯片上. 但是也有一些更加底层的代码是跑在CPU上的, 比如boot引导程序, trustzone等等.</li>
+<li>Feature分支
+这个其实就是从一个分支上, 拉出来一个专门用于开发新Feature的分支, 在这个分支上进代码无需review, 直到你最后合入的时候. 才需要review. 具体的使用方法在<a href="https://xiaomi.f.mioffice.cn/wiki/wikk4CJDTarDApd7cfnm1oo2FFg" target="_blank" rel="noopener">BBM-Feature分支</a></li>
+<li>Hotfix分支
+<a href="https://xiaomi.f.mioffice.cn/wiki/wikk4voBz8t44frsAoTEfMNfaZg" target="_blank" rel="noopener">BBM-Hofix打包方案</a>
+这个类似Feature分支, 但是主要是给SPM用的. 通常是因为需要紧急修复一个BUG, 但是来不及从最新点打包并且完成完整的测试了. 这时候SPM会从一个历史版本里, 把所有仓库都拉出一条单独的Hotfix分支, 供研发修改一些紧急BUG, 然后发版.</li>
+</ol>
+<p>在有这个功能之前, SPM通常会使用带change打包, 但是这样打出来的包, 完全无法追溯之前加了什么patch, 以致于日后出现问题都无法分析. 所以才有了这个方案</p>
+<ol start="11">
+<li>ODM
+<code>Original Design Manufacturer</code> . 以小米举例. 大多数旗舰机型, 小米是从头到尾自研的. 但是有一些低端机型, 我们会把硬件设计和硬件相关的代码, 比如<code>vendor</code>的代码, 交给一些厂商比如<code>龙旗</code> <code>华勤</code>来做. 他们对我们来说就是<code>ODM</code> 我们只负责<code>ssi</code>以及<code>MIUI</code>的部分.</li>
+<li>OEM
+<code>Original Entrusted Manufacture</code>. 这个基本上指的就是小米华为OV这些手机的品牌厂商. 比如对于购买了<code>红米Note8</code> (内部代号<code>C3J1</code>)的用户而言, <code>ODM</code>是润和, <code>OEM</code>就是小米.</li>
+<li>XMS
+<code>Xiaomi Mobile Service</code>，小米所有预装到系统中的解耦应用的总称，对应Google的GMS（Google所有预置应用的总称，俗称谷歌全家桶）。XMS应用都是通过组件交付平台（https://auto.pt.miui.com/microapp/xms/home）进ROM，支持预装到不同的分区（<code>system</code>、<code>product</code>、<code>mi_ext</code>等），可以为每个机型生成定制化的应用组合。</li>
+</ol>
+<p>简单来说, APK的编译可以完全和MIUI的编译独立出来. 所以你可以理解为所有小米的APK都是在XMS里编译, 然后MIUI都是在corgi上编译, 然后两者组装成真正的ROM.</p>
+<ol start="14">
+<li>CI/CT
+<code>Continuous Integration/Continuous Test</code>. 这两个概念所蕴含的思想是. 在任意时间, 代码都是<code>可编译</code>并且<code>可通过测试</code>的. 这是最初产生于互联网的Web服务的概念. 因为他们要确保服务器的代码不会天天出问题导致无法上线. 那么为了实现这个目的, 需要做的就是在代码合入之前就编译一次, 并且测试一次. 这样就能确保合入之后的代码也是可编译可测试的.</li>
+</ol>
+<p>在Gerrit上, 是由两个标签<code>presubmit-Verified</code>和<code>presubmit-AutoTest</code>组成. 当用户设置<code>presubmit-Ready</code>标签的时候, Corgi就会自动加上这个change启动编译. 编译完成之后就给<code>presubmit-Verified</code>标签+2, 之后再进行测试, 成功之后再给<code>presubmit-AutoTest</code>标签+2.</p>
+<ol start="15">
+<li>BB
+<code>Build Break</code>. 就是编译失败的意思</li>
+<li>基线
+小米的代码, 是基于<code>Google</code>, <code>高通</code>, <code>MTK</code>等上游厂商的代码改的. 而上游厂商的代码就叫<code>基线</code>. 升级<code>基线</code>的意思一般情况就就是用最新的上游代码merge到我们的代码中</li>
+<li>锁库
+在基线升级的时候, 相当于合入高通所改动的几万笔代码, 那么是一定和小米有冲突的. 这个解冲突的过程中通常需要好几天. 然而在这个过程中, 也会有小米的员工大量进代码. 这个时候就容易陷入没完没了的解冲突. 所以我们会在升级的过程中锁库. 确保整个升级和merge过程顺利</li>
+<li>Bring up
+这个在手机软件里的意思是第一次让手机开机. 一般这出现在手机硬件设计完, 第一批手机主板从工厂里生产出来之后, 交由小米的适配工程师将高通的软件第一次烧到手机里, 然后想办法确保能开机. 在这之后, 软件才能交付给其他各个团队进行开发.</li>
+<li>KO
+<code>Kick Off</code>. 这个在软件部的意思是一个项目可以开始干活了. 通常是产品定义已经完成, 硬件设计也已经完成的时候.</li>
+<li>xTS
+<code>xxx Test Suite</code>. 这指的是由Google开发的自动化测试套件. 并且交由厂商比如小米去跑. 厂商在任意一个发布版本上, 必须通过所有的测试. Google才会允许你这个这个版本真正的发布给用户. 常见的有<code>CTS</code> <code>VTS</code> <code>STS</code>. 他们的具体细节我会在<a href="https://xiaomi.f.mioffice.cn/wiki/wikk4ewj4dh6FUX2Bznyl1ukvKG" target="_blank" rel="noopener">从锁屏密码功能解释几个和解耦相关的行业名词</a> 这个文档里详细解释</li>
+<li>SKU
+<code>Stock Keeping Unit</code> 这个是在零售行业里用来追踪库存的最小单元. 在手机行业里, 这通常是<code>硬件+软件</code>的所有组合. 比如M2的日本运营商是一个SKU, M2的印度版又是另外一个SKU</li>
+<li>AOSP
+<code>Android Open Source Project</code>. 指的就是纯净的<code>Google Android</code>代码</li>
+<li>主线
+<a href="">AOSP与小米编译框架</a></li>
+</ol>
+<p>这其实是一个比较通用的概念. 大多数程序员开发程序的时候, 一般会先拉一个<code>master</code>分支, 然后开发到一定阶段, 拉一个和发布版本号相关的<code>release</code>分支. 而这个<code>master</code>就是主线</p>
+<p>但是在手机软件里有一些特殊. 因为我们的代码并不完全是我们开发的, 而是从高通或者Google拿过来的. 那不可避免的会和Google或者高通的一些属性相关. 比如不同Android版本在我们这里无法公用一条线. 所以我们会出现<code>master-u</code>这样的主线分支. 其他主线分支也类似, 就是因为它们和其他属性相关无法一条路走到黑</p>
+<ol start="24">
+<li>发布分支
+如上所说, <code>release</code>分支就是发布分支. 它通常代表着软件已经在一定阶段上稳定了. 为了发布特定的版本而拉出来进行最后测试并且发布给用户的分支</li>
+<li>TR节点
+<a href="https://xiaomi.f.mioffice.cn/wiki/wikk4Yjfjwc4nqFRxLKjoQCcxzg" target="_blank" rel="noopener">1.8.7 软件产品开发与生命周期管理 V1.5</a></li>
+</ol>
+<p><code>Technical Review</code></p>
+<p>这是华为的IPD流程里的概念. 通常我们在进行一个以年为周期的大项目的时候, 上一阶段的文档, 需求, 规划是否合理直接影响下一阶段的工作. 否则就极易出现返工的问题, 就是我都已经进入下一阶段干了, 突然发现上一段的工作没干好只能再拉上上一阶段的人过来修复问题.这样会造成极大的资源浪费, 甚至影响项目进度</p>
+<p>具体的软件TR节点设置, 在上面的文档里标注的很清楚</p>
+<ol start="27">
+<li>ES, FC, CS
+下面的这些, 指的都是高通在发布代码的一些节点. 有点类似于我们的TR节点. 每个节点他们经过了什么测试, 经过了什么评审, 都是高通自己内部的规则. 总体来说可以理解为越往后代码越稳定.</li>
+</ol>
+<p>![](assets/Pasted image 20241115200140-20250311094648-r97cv0m.png )</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

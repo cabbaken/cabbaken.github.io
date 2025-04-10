@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>AIDL重新生成</title>
+
+<meta name="description" content="AIDL重新生成 命令参考 https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt/&#43;/4638759
+out/host/linux-x86/bin/aidl --lang=ndk --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.cpp.d -h out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl 在 out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl中生成相关文件, 包括: vendor.xiaomi.hardware.quickcamera-api/dump/ vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging
+out/host/linux-x86/bin/aidl --lang=java --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.java.d -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/com.miui.cameraopt.quickcamera.aidl/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/com.miui.cameraopt.quickcamera.aidl/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl 类似的, 生成com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen
+Backlinks Camera AutoRecovery适配&mdash; title: AIDL重新生成 date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z AIDL重新生成 命令参考 https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt/&#43;/4638759
+out/host/linux-x86/bin/aidl --lang=ndk --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.cpp.d -h out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl 在 out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl中生成相关文件, 包括: vendor.xiaomi.hardware.quickcamera-api/dump/ vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/aosp-related/aidl%E9%87%8D%E6%96%B0%E7%94%9F%E6%88%90/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/aosp-related/aidl%E9%87%8D%E6%96%B0%E7%94%9F%E6%88%90/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/aosp-related/aidl%E9%87%8D%E6%96%B0%E7%94%9F%E6%88%90/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="AIDL重新生成">
+<meta property="og:description" content="AIDL重新生成
+命令参考
+https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt/&#43;/4638759
+out/host/linux-x86/bin/aidl --lang=ndk --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.cpp.d -h out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl
+在 out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl中生成相关文件, 包括:
+vendor.xiaomi.hardware.quickcamera-api/dump/
+vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging
+vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging
+out/host/linux-x86/bin/aidl --lang=java --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.java.d -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/com.miui.cameraopt.quickcamera.aidl/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/com.miui.cameraopt.quickcamera.aidl/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl
+类似的, 生成com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen
+Backlinks
+
+Camera AutoRecovery适配&mdash;
+title: AIDL重新生成
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+
+
+AIDL重新生成
+命令参考
+https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt/&#43;/4638759
+out/host/linux-x86/bin/aidl --lang=ndk --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.cpp.d -h out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl
+在 out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl中生成相关文件, 包括:
+vendor.xiaomi.hardware.quickcamera-api/dump/
+vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging
+vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/aosp-related/aidl%E9%87%8D%E6%96%B0%E7%94%9F%E6%88%90/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="AIDL重新生成">
+<meta name="twitter:description" content="AIDL重新生成
+命令参考
+https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt/&#43;/4638759
+out/host/linux-x86/bin/aidl --lang=ndk --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.cpp.d -h out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl
+在 out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl中生成相关文件, 包括:
+vendor.xiaomi.hardware.quickcamera-api/dump/
+vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging
+vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging
+out/host/linux-x86/bin/aidl --lang=java --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.java.d -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/com.miui.cameraopt.quickcamera.aidl/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/com.miui.cameraopt.quickcamera.aidl/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl
+类似的, 生成com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen
+Backlinks
+
+Camera AutoRecovery适配&mdash;
+title: AIDL重新生成
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+
+
+AIDL重新生成
+命令参考
+https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt/&#43;/4638759
+out/host/linux-x86/bin/aidl --lang=ndk --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.cpp.d -h out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl
+在 out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl中生成相关文件, 包括:
+vendor.xiaomi.hardware.quickcamera-api/dump/
+vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging
+vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "AIDL重新生成",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  496 ,
+  "description": "AIDL重新生成 命令参考 https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt/+/4638759\nout/host/linux-x86/bin/aidl --lang=ndk --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.cpp.d -h out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl 在 out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl中生成相关文件, 包括: vendor.xiaomi.hardware.quickcamera-api/dump/ vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging\nout/host/linux-x86/bin/aidl --lang=java --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.java.d -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/com.miui.cameraopt.quickcamera.aidl/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/com.miui.cameraopt.quickcamera.aidl/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl 类似的, 生成com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen\nBacklinks Camera AutoRecovery适配\u0026mdash; title: AIDL重新生成 date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z AIDL重新生成 命令参考 https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt/+/4638759\nout/host/linux-x86/bin/aidl --lang=ndk --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.cpp.d -h out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl 在 out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl中生成相关文件, 包括: vendor.xiaomi.hardware.quickcamera-api/dump/ vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="aidl重新生成">AIDL重新生成</h1>
+<p>命令参考
+<a href="https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt/&#43;/4638759" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt/+/4638759</a></p>
+<pre tabindex="0"><code>out/host/linux-x86/bin/aidl --lang=ndk --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.cpp.d -h out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl
+</code></pre><p>在 <code>out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl</code>中生成相关文件, 包括:
+<code>vendor.xiaomi.hardware.quickcamera-api/dump/</code>
+<code>vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging</code>
+<code>vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging</code></p>
+<pre tabindex="0"><code>out/host/linux-x86/bin/aidl --lang=java --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.java.d -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/com.miui.cameraopt.quickcamera.aidl/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/com.miui.cameraopt.quickcamera.aidl/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl
+</code></pre><p>类似的, 生成<code>com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen</code></p>
+<h2 id="backlinks">Backlinks</h2>
+<ul>
+<li><a href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera-autorecovery%E9%80%82%E9%85%8D/">Camera AutoRecovery适配</a>&mdash;
+title: AIDL重新生成
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</li>
+</ul>
+<hr>
+<h1 id="aidl重新生成-1">AIDL重新生成</h1>
+<p>命令参考
+<a href="https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt/&#43;/4638759" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/vendor/xiaomi/proprietary/cameraopt/+/4638759</a></p>
+<pre tabindex="0"><code>out/host/linux-x86/bin/aidl --lang=ndk --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.cpp.d -h out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/vendor.xiaomi.hardware.quickcamera/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl
+</code></pre><p>在 <code>out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl</code>中生成相关文件, 包括:
+<code>vendor.xiaomi.hardware.quickcamera-api/dump/</code>
+<code>vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/include/staging</code>
+<code>vendor.xiaomi.hardware.quickcamera-V1-ndk_platform-source/gen/staging</code></p>
+<pre tabindex="0"><code>out/host/linux-x86/bin/aidl --lang=java --structured --version 1 --hash 8e06ea0846c19c1a5b2e89d106333d8c9cebb338 --stability vintf --min_sdk_version current --ninja -d out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.java.d -o out/soong/.intermediates/vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen -Nvendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/com.miui.cameraopt.quickcamera.aidl/1 vendor/xiaomi/proprietary/cameraopt/src/native/feature/quickcamera/aidl/aidl_api/com.miui.cameraopt.quickcamera.aidl/1/vendor/xiaomi/hardware/quickcamera/IQuickCameraService.aidl
+</code></pre><p>类似的, 生成<code>com.miui.cameraopt.quickcamera.aidl-V1-java-source/gen</code></p>
+<h2 id="backlinks-1">Backlinks</h2>
+<ul>
+<li><a href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera-autorecovery%E9%80%82%E9%85%8D/">Camera AutoRecovery适配</a></li>
+</ul>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

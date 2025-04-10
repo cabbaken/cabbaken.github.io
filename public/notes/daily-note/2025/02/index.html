@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>2</title>
+
+<meta name="description" content="02 ‍ title: 02 date: 2025-03-11T09:49:35Z lastmod: 2025-03-11T09:49:35Z 02 ‍
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/daily-note/2025/02/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/daily-note/2025/02/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/daily-note/2025/02/">
+
+
+
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/notes/daily-note/2025/02/index.xml">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="2">
+<meta property="og:description" content="">
+<meta property="og:type" content="website">
+<meta property="og:url" content="http://localhost:1313/notes/daily-note/2025/02/">
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="2">
+<meta name="twitter:description" content="">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs list d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+
+    
+
+    
+
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">20250205</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:49:35Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="2025_02_05">2025_02_05</h1>
+<h2 id="n12暗光问题">N12暗光问题</h2>
+<p>遗留问题, 稳定版没有合入, 合入一下.</p>
+<h2 id="aiseg问题">Aiseg问题</h2>
+<p>本地的没找到有对应的线程, 但是可以看到:</p>
+<p>本地没问题的sttr_event会wake up sensor_worker-0</p>
+<p>有问题的trace的sensor_worker是由irq/566-1a13000唤醒的.</p>
+<p>没问题:
+<img src="assets/img_v3_02j7_32397e25-0d29-44cc-a1c8-abd32edb92dl-20250311094935-4kr0nhx.jpg" alt="">
+有问题:
+<img src="assets/img_v3_02j7_14e2f364-36ef-41f7-8dd0-e389187e9d5l-20250311094935-bxby34z.jpg" alt="">
+这里可以看到sensor_worker的running的时机也不一样, 会不会是超时拿不到数据导致流程不太一样? 具体需要看一下代码.
+找到了sttrr_event对应代码处: …</p>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/daily-note/2025/02/2025_02_05/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">20250211</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:49:35Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="2025_02_11">2025_02_11</h1>
+<h2 id="n12陀螺仪异常">N12陀螺仪异常</h2>
+<h3 id="分析原因">分析原因:</h3>
+<p>从目前的反馈来看, 大量N12的预览卡顿问题是OIS时无法拿到陀螺仪数据, 导致camera再P1阶段等待时间变长, 造成了卡顿.
+Camera通过HFmanger去向陀螺仪拿数据, hfManager是sensor hub负责.</p>
+<h3 id="方案">方案:</h3>
+<p>导通OIS异步方案, 解耦收发数据给sensorhub相关逻辑, 这样即便无法拿到陀螺仪数据也不会出现异常卡顿.
+该方案已经在O12上实现, 将同步到M9/M12A/N11A, 以做优化和预防.</p>
+<h2 id="m9相机hal内存泄露">M9相机HAL内存泄露</h2>
+<h3 id="原因">原因:</h3>
+<p>M9相机HAL存在内存泄露问题, 长期一直运行会导致高内存占用.</p>
+<h3 id="方案-1">方案:</h3>
+<h4 id="临时方案">临时方案:</h4>
+<p>适配相机自救系统(<a href="https://xiaomi.f.mioffice.cn/docx/doxk491AiMssSI84FfAa6Kqlz5f%29" target="_blank" rel="noopener">https://xiaomi.f.mioffice.cn/docx/doxk491AiMssSI84FfAa6Kqlz5f)</a>, 根据内存占用和相机状态通过重启HAL来恢复.</p>
+<h4 id="正解">正 …</h4>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/daily-note/2025/02/2025_02_11/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+
+    
+
+</div>
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>连拍相关</title>
+
+<meta name="description" content="连拍相关 BUGM12UPV-900 M12相机0.6x连拍到16张时，预览会卡1S左右
+CPU Memory占用正常, 在切换后第一次复现, 似乎是app那边的request没有下
+异常: 正常: 看到这边异常情况的putParallelTaskData()到setImage()用了800ms, 正常的只用300ms 暂时先转给APP看看 回复: 本地复现率不高，且没有发现卡顿时间过长的情况。
+从流程上看，app下发的是一次性连续拍照： ![](assets/Pasted image 20250109202714-20250311094648-lt7f34k.png )
+从测试日志上看，16帧到17帧之间，MiAlgo突然出现了forwardNotifyToFwk上的时间波动 ![](assets/Pasted image 20250109202726-20250311094648-a135lif.png )
+观察log, 发现 ![](assets/Pasted image 20250109202607-20250311094648-b8e6s7a.png )
+![](assets/Pasted image 20250110173519-20250311094648-mh2ms3t.png ) 下周多分配点buffer试试 ![](assets/Pasted image 20250110173810-20250311094648-z997n51.png )
+测了一下不是buffer的问题, 根据timestamp对比log发现:
+正常: 01-08 11:54:08.727 9237 9675 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1096 onResultComing()frameNum: 563 timeStamp: 84191803013250 data: SatSnapshot_LdcInstance begin:{Temp:28109 CpuFreq:2000000,3000000,3350000 GpuFreq:0} 01-08 11:54:08.736 9237 9675 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1096 onResultComing()frameNum: 563 timeStamp: 84191803013250 data: SatSnapshot_LdcInstance end:{Temp:28109 CpuFreq:2000000,3000000,3350000 GpuFreq:0} 异常: 01-13 08:18:32.491 1402 7156 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1099 onResultComing()frameNum: 62 timeStamp: 4506525905250 data: SatSnapshot_LdcInstance begin:{Temp:35239 CpuFreq:2000000,2800000,3350000 GpuFreq:0} 01-13 08:18:32.612 1402 7156 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1099 onResultComing()frameNum: 62 timeStamp: 4506525905250 data: SatSnapshot_LdcInstance end:{Temp:35239 CpuFreq:2000000,2800000,3350000 GpuFreq:0} 可以看到这个算法的耗时差异较大.
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E8%BF%9E%E6%8B%8D%E7%9B%B8%E5%85%B3/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E8%BF%9E%E6%8B%8D%E7%9B%B8%E5%85%B3/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E8%BF%9E%E6%8B%8D%E7%9B%B8%E5%85%B3/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="连拍相关">
+<meta property="og:description" content="连拍相关
+BUGM12UPV-900
+
+M12相机0.6x连拍到16张时，预览会卡1S左右
+CPU Memory占用正常, 在切换后第一次复现, 似乎是app那边的request没有下
+异常:
+
+正常:
+
+看到这边异常情况的putParallelTaskData()到setImage()用了800ms, 正常的只用300ms
+暂时先转给APP看看
+回复:
+本地复现率不高，且没有发现卡顿时间过长的情况。
+从流程上看，app下发的是一次性连续拍照：
+![](assets/Pasted image 20250109202714-20250311094648-lt7f34k.png )
+从测试日志上看，16帧到17帧之间，MiAlgo突然出现了forwardNotifyToFwk上的时间波动
+![](assets/Pasted image 20250109202726-20250311094648-a135lif.png )
+观察log, 发现
+![](assets/Pasted image 20250109202607-20250311094648-b8e6s7a.png )
+![](assets/Pasted image 20250110173519-20250311094648-mh2ms3t.png )
+下周多分配点buffer试试
+![](assets/Pasted image 20250110173810-20250311094648-z997n51.png )
+测了一下不是buffer的问题, 根据timestamp对比log发现:
+
+正常:
+
+01-08 11:54:08.727  9237  9675 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1096 onResultComing()frameNum: 563 timeStamp:  84191803013250 data: SatSnapshot_LdcInstance begin:{Temp:28109 CpuFreq:2000000,3000000,3350000 GpuFreq:0} 
+01-08 11:54:08.736  9237  9675 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1096 onResultComing()frameNum: 563 timeStamp:  84191803013250 data: SatSnapshot_LdcInstance end:{Temp:28109 CpuFreq:2000000,3000000,3350000 GpuFreq:0}
+
+异常:
+
+01-13 08:18:32.491  1402  7156 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1099 onResultComing()frameNum: 62 timeStamp:  4506525905250 data: SatSnapshot_LdcInstance begin:{Temp:35239 CpuFreq:2000000,2800000,3350000 GpuFreq:0} 
+01-13 08:18:32.612  1402  7156 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1099 onResultComing()frameNum: 62 timeStamp:  4506525905250 data: SatSnapshot_LdcInstance end:{Temp:35239 CpuFreq:2000000,2800000,3350000 GpuFreq:0} 
+可以看到这个算法的耗时差异较大.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E8%BF%9E%E6%8B%8D%E7%9B%B8%E5%85%B3/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="连拍相关">
+<meta name="twitter:description" content="连拍相关
+BUGM12UPV-900
+
+M12相机0.6x连拍到16张时，预览会卡1S左右
+CPU Memory占用正常, 在切换后第一次复现, 似乎是app那边的request没有下
+异常:
+
+正常:
+
+看到这边异常情况的putParallelTaskData()到setImage()用了800ms, 正常的只用300ms
+暂时先转给APP看看
+回复:
+本地复现率不高，且没有发现卡顿时间过长的情况。
+从流程上看，app下发的是一次性连续拍照：
+![](assets/Pasted image 20250109202714-20250311094648-lt7f34k.png )
+从测试日志上看，16帧到17帧之间，MiAlgo突然出现了forwardNotifyToFwk上的时间波动
+![](assets/Pasted image 20250109202726-20250311094648-a135lif.png )
+观察log, 发现
+![](assets/Pasted image 20250109202607-20250311094648-b8e6s7a.png )
+![](assets/Pasted image 20250110173519-20250311094648-mh2ms3t.png )
+下周多分配点buffer试试
+![](assets/Pasted image 20250110173810-20250311094648-z997n51.png )
+测了一下不是buffer的问题, 根据timestamp对比log发现:
+
+正常:
+
+01-08 11:54:08.727  9237  9675 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1096 onResultComing()frameNum: 563 timeStamp:  84191803013250 data: SatSnapshot_LdcInstance begin:{Temp:28109 CpuFreq:2000000,3000000,3350000 GpuFreq:0} 
+01-08 11:54:08.736  9237  9675 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1096 onResultComing()frameNum: 563 timeStamp:  84191803013250 data: SatSnapshot_LdcInstance end:{Temp:28109 CpuFreq:2000000,3000000,3350000 GpuFreq:0}
+
+异常:
+
+01-13 08:18:32.491  1402  7156 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1099 onResultComing()frameNum: 62 timeStamp:  4506525905250 data: SatSnapshot_LdcInstance begin:{Temp:35239 CpuFreq:2000000,2800000,3350000 GpuFreq:0} 
+01-13 08:18:32.612  1402  7156 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1099 onResultComing()frameNum: 62 timeStamp:  4506525905250 data: SatSnapshot_LdcInstance end:{Temp:35239 CpuFreq:2000000,2800000,3350000 GpuFreq:0} 
+可以看到这个算法的耗时差异较大.">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "连拍相关",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  413 ,
+  "description": "连拍相关 BUGM12UPV-900 M12相机0.6x连拍到16张时，预览会卡1S左右\nCPU Memory占用正常, 在切换后第一次复现, 似乎是app那边的request没有下\n异常: 正常: 看到这边异常情况的putParallelTaskData()到setImage()用了800ms, 正常的只用300ms 暂时先转给APP看看 回复: 本地复现率不高，且没有发现卡顿时间过长的情况。\n从流程上看，app下发的是一次性连续拍照： ![](assets/Pasted image 20250109202714-20250311094648-lt7f34k.png )\n从测试日志上看，16帧到17帧之间，MiAlgo突然出现了forwardNotifyToFwk上的时间波动 ![](assets/Pasted image 20250109202726-20250311094648-a135lif.png )\n观察log, 发现 ![](assets/Pasted image 20250109202607-20250311094648-b8e6s7a.png )\n![](assets/Pasted image 20250110173519-20250311094648-mh2ms3t.png ) 下周多分配点buffer试试 ![](assets/Pasted image 20250110173810-20250311094648-z997n51.png )\n测了一下不是buffer的问题, 根据timestamp对比log发现:\n正常: 01-08 11:54:08.727 9237 9675 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1096 onResultComing()frameNum: 563 timeStamp: 84191803013250 data: SatSnapshot_LdcInstance begin:{Temp:28109 CpuFreq:2000000,3000000,3350000 GpuFreq:0} 01-08 11:54:08.736 9237 9675 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1096 onResultComing()frameNum: 563 timeStamp: 84191803013250 data: SatSnapshot_LdcInstance end:{Temp:28109 CpuFreq:2000000,3000000,3350000 GpuFreq:0} 异常: 01-13 08:18:32.491 1402 7156 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1099 onResultComing()frameNum: 62 timeStamp: 4506525905250 data: SatSnapshot_LdcInstance begin:{Temp:35239 CpuFreq:2000000,2800000,3350000 GpuFreq:0} 01-13 08:18:32.612 1402 7156 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1099 onResultComing()frameNum: 62 timeStamp: 4506525905250 data: SatSnapshot_LdcInstance end:{Temp:35239 CpuFreq:2000000,2800000,3350000 GpuFreq:0} 可以看到这个算法的耗时差异较大.\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="连拍相关">连拍相关</h1>
+<h2 id="bugm12upv-900"><a href="https://jira-phone.mioffice.cn/browse/BUGM12UPV-900" target="_blank" rel="noopener">BUGM12UPV-900</a></h2>
+<p><img src="assets/img_v3_02ic_c726c21a-98c1-4a28-8230-58f0f50e23el-20250311094648-vw9jj8d.jpg" alt=""></p>
+<p>M12相机0.6x连拍到16张时，预览会卡1S左右</p>
+<p>CPU Memory占用正常, 在切换后第一次复现, 似乎是app那边的request没有下</p>
+<p>异常:
+<img src="assets/img_v3_02ic_35b8b7d9-6a0c-4626-98c6-33478f52d6cl-20250311094648-27jdqmm.jpg" alt=""></p>
+<p>正常:
+<img src="assets/img_v3_02ic_cc54341b-81a7-4ad2-b707-0f8e2186620l-20250311094648-hqxqxrq.jpg" alt=""></p>
+<p>看到这边异常情况的putParallelTaskData()到setImage()用了800ms, 正常的只用300ms
+暂时先转给APP看看
+回复:
+本地复现率不高，且没有发现卡顿时间过长的情况。</p>
+<p>从流程上看，app下发的是一次性连续拍照：
+![](assets/Pasted image 20250109202714-20250311094648-lt7f34k.png )</p>
+<p>从测试日志上看，16帧到17帧之间，MiAlgo突然出现了forwardNotifyToFwk上的时间波动
+![](assets/Pasted image 20250109202726-20250311094648-a135lif.png )</p>
+<p>观察log, 发现
+![](assets/Pasted image 20250109202607-20250311094648-b8e6s7a.png )</p>
+<p>![](assets/Pasted image 20250110173519-20250311094648-mh2ms3t.png )
+下周多分配点buffer试试
+![](assets/Pasted image 20250110173810-20250311094648-z997n51.png )</p>
+<p>测了一下不是buffer的问题, 根据timestamp对比log发现:</p>
+<ul>
+<li>正常:</li>
+</ul>
+<pre tabindex="0"><code>01-08 11:54:08.727  9237  9675 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1096 onResultComing()frameNum: 563 timeStamp:  84191803013250 data: SatSnapshot_LdcInstance begin:{Temp:28109 CpuFreq:2000000,3000000,3350000 GpuFreq:0} 
+01-08 11:54:08.736  9237  9675 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1096 onResultComing()frameNum: 563 timeStamp:  84191803013250 data: SatSnapshot_LdcInstance end:{Temp:28109 CpuFreq:2000000,3000000,3350000 GpuFreq:0}
+</code></pre><ul>
+<li>异常:</li>
+</ul>
+<pre tabindex="0"><code>01-13 08:18:32.491  1402  7156 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1099 onResultComing()frameNum: 62 timeStamp:  4506525905250 data: SatSnapshot_LdcInstance begin:{Temp:35239 CpuFreq:2000000,2800000,3350000 GpuFreq:0} 
+01-13 08:18:32.612  1402  7156 I MiCamDebug: [AlgoFwk] MiaOfflineSession.cpp:1099 onResultComing()frameNum: 62 timeStamp:  4506525905250 data: SatSnapshot_LdcInstance end:{Temp:35239 CpuFreq:2000000,2800000,3350000 GpuFreq:0} 
+</code></pre><p>可以看到这个算法的耗时差异较大.</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

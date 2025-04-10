@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>Profiling with perf</title>
+
+<meta name="description" content="Profiling with perf 我们可以运用perf来对我们的程序进行profiling, 其原理类似于Android的Simpleperf(倒反天罡).
+quick use # -g for call graph # -F for frequency perf record -g ${your_excutable} # 可以使用默认的perf report perf report # 但是更推荐另一种方法, 生成火焰图, 更加直观 # 需要FlameGraph(https://github.com/brendangregg/FlameGraph) perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; perf.svg # open perf.svg with your broswer 评价是不如simpleperf提供的脚本, 可以参考Simpleperf简明教程, 使用这里生成的perf.data, 直接使用report_html.py生成报告.
+‍
+Backlinks 2025-03-19&mdash; title: Profiling with perf date: 2025-03-19T13:59:44Z lastmod: 2025-04-10T19:10:03Z Profiling with perf 我们可以运用perf来对我们的程序进行profiling, 其原理类似于Android的Simpleperf(倒反天罡).
+quick use # -g for call graph # -F for frequency perf record -g ${your_excutable} # 可以使用默认的perf report perf report # 但是更推荐另一种方法, 生成火焰图, 更加直观 # 需要FlameGraph(https://github.com/brendangregg/FlameGraph) perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; perf.svg # open perf.svg with your broswer 评价是不如simpleperf提供的脚本, 可以参考Simpleperf简明教程, 使用这里生成的perf.data, 直接使用report_html.py生成报告.
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/linux-related/profiling-with-perf/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/linux-related/profiling-with-perf/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/linux-related/profiling-with-perf/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Profiling with perf">
+<meta property="og:description" content="Profiling with perf
+我们可以运用perf来对我们的程序进行profiling, 其原理类似于Android的Simpleperf(倒反天罡).
+quick use
+# -g for call graph
+# -F for frequency
+perf record -g ${your_excutable}
+# 可以使用默认的perf report
+perf report
+# 但是更推荐另一种方法, 生成火焰图, 更加直观
+# 需要FlameGraph(https://github.com/brendangregg/FlameGraph)
+perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; perf.svg
+# open perf.svg with your broswer
+评价是不如simpleperf提供的脚本, 可以参考Simpleperf简明教程, 使用这里生成的perf.data, 直接使用report_html.py生成报告.
+‍
+Backlinks
+
+2025-03-19&mdash;
+title: Profiling with perf
+date: 2025-03-19T13:59:44Z
+lastmod: 2025-04-10T19:10:03Z
+
+
+Profiling with perf
+我们可以运用perf来对我们的程序进行profiling, 其原理类似于Android的Simpleperf(倒反天罡).
+quick use
+# -g for call graph
+# -F for frequency
+perf record -g ${your_excutable}
+# 可以使用默认的perf report
+perf report
+# 但是更推荐另一种方法, 生成火焰图, 更加直观
+# 需要FlameGraph(https://github.com/brendangregg/FlameGraph)
+perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; perf.svg
+# open perf.svg with your broswer
+评价是不如simpleperf提供的脚本, 可以参考Simpleperf简明教程, 使用这里生成的perf.data, 直接使用report_html.py生成报告.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/linux-related/profiling-with-perf/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-19T13:59:44+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-04-10T19:10:03+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Profiling with perf">
+<meta name="twitter:description" content="Profiling with perf
+我们可以运用perf来对我们的程序进行profiling, 其原理类似于Android的Simpleperf(倒反天罡).
+quick use
+# -g for call graph
+# -F for frequency
+perf record -g ${your_excutable}
+# 可以使用默认的perf report
+perf report
+# 但是更推荐另一种方法, 生成火焰图, 更加直观
+# 需要FlameGraph(https://github.com/brendangregg/FlameGraph)
+perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; perf.svg
+# open perf.svg with your broswer
+评价是不如simpleperf提供的脚本, 可以参考Simpleperf简明教程, 使用这里生成的perf.data, 直接使用report_html.py生成报告.
+‍
+Backlinks
+
+2025-03-19&mdash;
+title: Profiling with perf
+date: 2025-03-19T13:59:44Z
+lastmod: 2025-04-10T19:10:03Z
+
+
+Profiling with perf
+我们可以运用perf来对我们的程序进行profiling, 其原理类似于Android的Simpleperf(倒反天罡).
+quick use
+# -g for call graph
+# -F for frequency
+perf record -g ${your_excutable}
+# 可以使用默认的perf report
+perf report
+# 但是更推荐另一种方法, 生成火焰图, 更加直观
+# 需要FlameGraph(https://github.com/brendangregg/FlameGraph)
+perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; perf.svg
+# open perf.svg with your broswer
+评价是不如simpleperf提供的脚本, 可以参考Simpleperf简明教程, 使用这里生成的perf.data, 直接使用report_html.py生成报告.">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Profiling with perf",
+  "datePublished": "2025-03-19T13:59:44+00:00",
+  "dateModified": "2025-04-10T19:10:03+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  546 ,
+  "description": "Profiling with perf 我们可以运用perf来对我们的程序进行profiling, 其原理类似于Android的Simpleperf(倒反天罡).\nquick use # -g for call graph # -F for frequency perf record -g ${your_excutable} # 可以使用默认的perf report perf report # 但是更推荐另一种方法, 生成火焰图, 更加直观 # 需要FlameGraph(https://github.com/brendangregg/FlameGraph) perf script | ./stackcollapse-perf.pl | ./flamegraph.pl \u0026gt; perf.svg # open perf.svg with your broswer 评价是不如simpleperf提供的脚本, 可以参考Simpleperf简明教程, 使用这里生成的perf.data, 直接使用report_html.py生成报告.\n‍\nBacklinks 2025-03-19\u0026mdash; title: Profiling with perf date: 2025-03-19T13:59:44Z lastmod: 2025-04-10T19:10:03Z Profiling with perf 我们可以运用perf来对我们的程序进行profiling, 其原理类似于Android的Simpleperf(倒反天罡).\nquick use # -g for call graph # -F for frequency perf record -g ${your_excutable} # 可以使用默认的perf report perf report # 但是更推荐另一种方法, 生成火焰图, 更加直观 # 需要FlameGraph(https://github.com/brendangregg/FlameGraph) perf script | ./stackcollapse-perf.pl | ./flamegraph.pl \u0026gt; perf.svg # open perf.svg with your broswer 评价是不如simpleperf提供的脚本, 可以参考Simpleperf简明教程, 使用这里生成的perf.data, 直接使用report_html.py生成报告.\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="profiling-with-perf">Profiling with perf</h1>
+<p>我们可以运用perf来对我们的程序进行profiling, 其原理类似于Android的<a href="">Simpleperf</a>(倒反天罡).</p>
+<h2 id="quick-use">quick use</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># -g for call graph</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -F for frequency</span>
+</span></span><span style="display:flex;"><span>perf record -g <span style="color:#e6db74">${</span>your_excutable<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 可以使用默认的perf report</span>
+</span></span><span style="display:flex;"><span>perf report
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 但是更推荐另一种方法, 生成火焰图, 更加直观</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 需要FlameGraph(https://github.com/brendangregg/FlameGraph)</span>
+</span></span><span style="display:flex;"><span>perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; perf.svg
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># open perf.svg with your broswer</span>
+</span></span></code></pre></div><p>评价是不如simpleperf提供的脚本, 可以参考<a href="">Simpleperf简明教程</a>, 使用这里生成的perf.data, 直接使用report_html.py生成报告.</p>
+<p>‍</p>
+<h2 id="backlinks">Backlinks</h2>
+<ul>
+<li><a href="">2025-03-19</a>&mdash;
+title: Profiling with perf
+date: 2025-03-19T13:59:44Z
+lastmod: 2025-04-10T19:10:03Z</li>
+</ul>
+<hr>
+<h1 id="profiling-with-perf-1">Profiling with perf</h1>
+<p>我们可以运用perf来对我们的程序进行profiling, 其原理类似于Android的<a href="">Simpleperf</a>(倒反天罡).</p>
+<h2 id="quick-use-1">quick use</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># -g for call graph</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -F for frequency</span>
+</span></span><span style="display:flex;"><span>perf record -g <span style="color:#e6db74">${</span>your_excutable<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 可以使用默认的perf report</span>
+</span></span><span style="display:flex;"><span>perf report
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 但是更推荐另一种方法, 生成火焰图, 更加直观</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 需要FlameGraph(https://github.com/brendangregg/FlameGraph)</span>
+</span></span><span style="display:flex;"><span>perf script | ./stackcollapse-perf.pl | ./flamegraph.pl &gt; perf.svg
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># open perf.svg with your broswer</span>
+</span></span></code></pre></div><p>评价是不如simpleperf提供的脚本, 可以参考<a href="">Simpleperf简明教程</a>, 使用这里生成的perf.data, 直接使用report_html.py生成报告.</p>
+<p>‍</p>
+<h2 id="backlinks-1">Backlinks</h2>
+<ul>
+<li><a href="">2025-03-19</a></li>
+</ul>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

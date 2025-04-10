@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>VFS(Virtual File System)</title>
+
+<meta name="description" content="VFS(Virtual File System) VFS intro Filesystem Abstraction 文件系统是组织文件和文件夹的子系统. Linux支持多种文件系统(ext4, btrfs等)同时运行在同一个系统上.
+VFS(Virtual FileSystem)是一个内核抽象层, 能够隐藏具体文件系统的实现细节, 从而给用户态进程提供一套统一的API接口. VFS使用了一种通用文件系统的设计, 具体的文件系统只要实现了 VFS 的设计接口, 就能够注册到 VFS 中, 从而使内核可以读写这种文件系统. 这很像面向对象设计中的抽象类与子类之间的关系, 抽象类负责对外接口的设计, 子类负责具体的实现. 其实, VFS本身就是用C实现的一套面向对象的接口.
+VFS通用文件模型中包含以下四种元数据结构:
+超级块(superblock​): 用于存放已经注册的文件系统的信息(如block size, root inode, filesystem size等), 同时存在与存储介质与内存(为了缓存, 增加性能).
+文件(file​): 一个文件对象表示进程内打开的一个文件, 文件对象是存放在进程的文件描述符表里面的(因此file只存在于内存中). 同样这个文件中比较重要的部分是一个叫file_operations​的结构体, 这个结构体描述了具体的文件系统的读写实现. 当进程在某一个文件描述符上调用读写操作时, 实际调用的是 file_operations​中定义的方法. 对于普通的磁盘文件系统, file_operations​中定义的就是普通的块设备读写操作; 对于socket文件系统, file_operations​中定义的就是socket对应的send/recv等操作；而对于cgroups这样的特殊文件系统, file_operations​中定义的就是操作cgroup结构体等具体的实现.
+索引节点(inode​): 用于存放具体文件的属性. 对于一般的磁盘文件系统而言, inode​节点中一般会存放文件在硬盘中的存储块等属性(注: 文件名不属于文件的属性, 其一般包含文件大小, ); 对于socket文件系统, inode​会存放socket的相关属性, 而对于cgroups这样的特殊文件系统, inode​会存放与cgroup节点相关的属性信息. 这里面比较重要的一个部分是一个叫做inode_operations​的结构体, 这个结构体定义了在具体文件系统中创建文件, 删除文件等的具体实现.
+目录项(dentry​), 在每个文件系统中, 内核在查找某一个路径中的文件时, 会为内核路径上的每一个分量都生成一个目录项对象, 通过目录项对象能够找到对应的inode​对象, 目录项对象一般会被缓存(在内存中), 从而提高内核查找速度.
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/linux-related/vfsvirtual-file-system/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/linux-related/vfsvirtual-file-system/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/linux-related/vfsvirtual-file-system/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="VFS(Virtual File System)">
+<meta property="og:description" content="VFS(Virtual File System)
+VFS intro
+Filesystem Abstraction
+文件系统是组织文件和文件夹的子系统. Linux支持多种文件系统(ext4, btrfs等)同时运行在同一个系统上.
+VFS(Virtual FileSystem)是一个内核抽象层, 能够隐藏具体文件系统的实现细节, 从而给用户态进程提供一套统一的API接口. VFS使用了一种通用文件系统的设计, 具体的文件系统只要实现了 VFS 的设计接口, 就能够注册到 VFS 中, 从而使内核可以读写这种文件系统. 这很像面向对象设计中的抽象类与子类之间的关系, 抽象类负责对外接口的设计, 子类负责具体的实现. 其实, VFS本身就是用C实现的一套面向对象的接口.
+VFS通用文件模型中包含以下四种元数据结构:
+
+
+超级块(superblock​): 用于存放已经注册的文件系统的信息(如block size, root inode, filesystem size等), 同时存在与存储介质与内存(为了缓存, 增加性能).
+
+
+文件(file​): 一个文件对象表示进程内打开的一个文件, 文件对象是存放在进程的文件描述符表里面的(因此file只存在于内存中). 同样这个文件中比较重要的部分是一个叫file_operations​的结构体, 这个结构体描述了具体的文件系统的读写实现. 当进程在某一个文件描述符上调用读写操作时, 实际调用的是 file_operations​中定义的方法. 对于普通的磁盘文件系统, file_operations​中定义的就是普通的块设备读写操作; 对于socket文件系统, file_operations​中定义的就是socket对应的send/recv等操作；而对于cgroups这样的特殊文件系统, file_operations​中定义的就是操作cgroup结构体等具体的实现.
+
+
+索引节点(inode​): 用于存放具体文件的属性. 对于一般的磁盘文件系统而言, inode​节点中一般会存放文件在硬盘中的存储块等属性(注: 文件名不属于文件的属性, 其一般包含文件大小, ); 对于socket文件系统, inode​会存放socket的相关属性, 而对于cgroups这样的特殊文件系统, inode​会存放与cgroup节点相关的属性信息. 这里面比较重要的一个部分是一个叫做inode_operations​的结构体, 这个结构体定义了在具体文件系统中创建文件, 删除文件等的具体实现.
+
+
+目录项(dentry​), 在每个文件系统中, 内核在查找某一个路径中的文件时, 会为内核路径上的每一个分量都生成一个目录项对象, 通过目录项对象能够找到对应的inode​对象, 目录项对象一般会被缓存(在内存中), 从而提高内核查找速度.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/linux-related/vfsvirtual-file-system/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-04-10T19:09:13+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="VFS(Virtual File System)">
+<meta name="twitter:description" content="VFS(Virtual File System)
+VFS intro
+Filesystem Abstraction
+文件系统是组织文件和文件夹的子系统. Linux支持多种文件系统(ext4, btrfs等)同时运行在同一个系统上.
+VFS(Virtual FileSystem)是一个内核抽象层, 能够隐藏具体文件系统的实现细节, 从而给用户态进程提供一套统一的API接口. VFS使用了一种通用文件系统的设计, 具体的文件系统只要实现了 VFS 的设计接口, 就能够注册到 VFS 中, 从而使内核可以读写这种文件系统. 这很像面向对象设计中的抽象类与子类之间的关系, 抽象类负责对外接口的设计, 子类负责具体的实现. 其实, VFS本身就是用C实现的一套面向对象的接口.
+VFS通用文件模型中包含以下四种元数据结构:
+
+
+超级块(superblock​): 用于存放已经注册的文件系统的信息(如block size, root inode, filesystem size等), 同时存在与存储介质与内存(为了缓存, 增加性能).
+
+
+文件(file​): 一个文件对象表示进程内打开的一个文件, 文件对象是存放在进程的文件描述符表里面的(因此file只存在于内存中). 同样这个文件中比较重要的部分是一个叫file_operations​的结构体, 这个结构体描述了具体的文件系统的读写实现. 当进程在某一个文件描述符上调用读写操作时, 实际调用的是 file_operations​中定义的方法. 对于普通的磁盘文件系统, file_operations​中定义的就是普通的块设备读写操作; 对于socket文件系统, file_operations​中定义的就是socket对应的send/recv等操作；而对于cgroups这样的特殊文件系统, file_operations​中定义的就是操作cgroup结构体等具体的实现.
+
+
+索引节点(inode​): 用于存放具体文件的属性. 对于一般的磁盘文件系统而言, inode​节点中一般会存放文件在硬盘中的存储块等属性(注: 文件名不属于文件的属性, 其一般包含文件大小, ); 对于socket文件系统, inode​会存放socket的相关属性, 而对于cgroups这样的特殊文件系统, inode​会存放与cgroup节点相关的属性信息. 这里面比较重要的一个部分是一个叫做inode_operations​的结构体, 这个结构体定义了在具体文件系统中创建文件, 删除文件等的具体实现.
+
+
+目录项(dentry​), 在每个文件系统中, 内核在查找某一个路径中的文件时, 会为内核路径上的每一个分量都生成一个目录项对象, 通过目录项对象能够找到对应的inode​对象, 目录项对象一般会被缓存(在内存中), 从而提高内核查找速度.">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "VFS(Virtual File System)",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-04-10T19:09:13+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  3486 ,
+  "description": "VFS(Virtual File System) VFS intro Filesystem Abstraction 文件系统是组织文件和文件夹的子系统. Linux支持多种文件系统(ext4, btrfs等)同时运行在同一个系统上.\nVFS(Virtual FileSystem)是一个内核抽象层, 能够隐藏具体文件系统的实现细节, 从而给用户态进程提供一套统一的API接口. VFS使用了一种通用文件系统的设计, 具体的文件系统只要实现了 VFS 的设计接口, 就能够注册到 VFS 中, 从而使内核可以读写这种文件系统. 这很像面向对象设计中的抽象类与子类之间的关系, 抽象类负责对外接口的设计, 子类负责具体的实现. 其实, VFS本身就是用C实现的一套面向对象的接口.\nVFS通用文件模型中包含以下四种元数据结构:\n超级块(superblock​): 用于存放已经注册的文件系统的信息(如block size, root inode, filesystem size等), 同时存在与存储介质与内存(为了缓存, 增加性能).\n文件(file​): 一个文件对象表示进程内打开的一个文件, 文件对象是存放在进程的文件描述符表里面的(因此file只存在于内存中). 同样这个文件中比较重要的部分是一个叫file_operations​的结构体, 这个结构体描述了具体的文件系统的读写实现. 当进程在某一个文件描述符上调用读写操作时, 实际调用的是 file_operations​中定义的方法. 对于普通的磁盘文件系统, file_operations​中定义的就是普通的块设备读写操作; 对于socket文件系统, file_operations​中定义的就是socket对应的send/recv等操作；而对于cgroups这样的特殊文件系统, file_operations​中定义的就是操作cgroup结构体等具体的实现.\n索引节点(inode​): 用于存放具体文件的属性. 对于一般的磁盘文件系统而言, inode​节点中一般会存放文件在硬盘中的存储块等属性(注: 文件名不属于文件的属性, 其一般包含文件大小, ); 对于socket文件系统, inode​会存放socket的相关属性, 而对于cgroups这样的特殊文件系统, inode​会存放与cgroup节点相关的属性信息. 这里面比较重要的一个部分是一个叫做inode_operations​的结构体, 这个结构体定义了在具体文件系统中创建文件, 删除文件等的具体实现.\n目录项(dentry​), 在每个文件系统中, 内核在查找某一个路径中的文件时, 会为内核路径上的每一个分量都生成一个目录项对象, 通过目录项对象能够找到对应的inode​对象, 目录项对象一般会被缓存(在内存中), 从而提高内核查找速度.\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="vfsvirtual-file-system">VFS(Virtual File System)</h1>
+<h1 id="vfs-intro">VFS intro</h1>
+<h1 id="filesystem-abstraction">Filesystem Abstraction</h1>
+<p>文件系统是组织文件和文件夹的子系统. Linux支持多种文件系统(ext4, btrfs等)同时运行在同一个系统上.</p>
+<p>VFS(Virtual FileSystem)是一个内核抽象层, 能够隐藏具体文件系统的实现细节, 从而给用户态进程提供一套统一的API接口. VFS使用了一种通用文件系统的设计, 具体的文件系统只要实现了 VFS 的设计接口, 就能够注册到 VFS 中, 从而使内核可以读写这种文件系统. 这很像面向对象设计中的抽象类与子类之间的关系, 抽象类负责对外接口的设计, 子类负责具体的实现. 其实, VFS本身就是用C实现的一套面向对象的接口.</p>
+<p>VFS通用文件模型中包含以下四种元数据结构:</p>
+<ul>
+<li>
+<p>超级块(<code>superblock</code>​): 用于存放已经注册的文件系统的信息(如block size, root inode, filesystem size等), 同时存在与存储介质与内存(为了缓存, 增加性能).</p>
+</li>
+<li>
+<p>文件(<code>file</code>​): 一个文件对象表示进程内打开的一个文件, 文件对象是存放在进程的文件描述符表里面的(因此file只存在于内存中). 同样这个文件中比较重要的部分是一个叫<code>file_operations</code>​的结构体, 这个结构体描述了具体的文件系统的读写实现. 当进程在某一个文件描述符上调用读写操作时, 实际调用的是 <code>file_operations</code>​中定义的方法. 对于普通的磁盘文件系统, <code>file_operations</code>​中定义的就是普通的块设备读写操作; 对于socket文件系统, <code>file_operations</code>​中定义的就是socket对应的send/recv等操作；而对于cgroups这样的特殊文件系统, <code>file_operations</code>​中定义的就是操作cgroup结构体等具体的实现.</p>
+</li>
+<li>
+<p>索引节点(<code>inode</code>​): 用于存放具体文件的属性. 对于一般的磁盘文件系统而言, <code>inode</code>​节点中一般会存放文件在硬盘中的存储块等属性(注: 文件名不属于文件的属性, 其一般包含文件大小, ); 对于socket文件系统, <code>inode</code>​会存放socket的相关属性, 而对于cgroups这样的特殊文件系统, <code>inode</code>​会存放与cgroup节点相关的属性信息. 这里面比较重要的一个部分是一个叫做<code>inode_operations</code>​的结构体, 这个结构体定义了在具体文件系统中创建文件, 删除文件等的具体实现.</p>
+</li>
+<li>
+<p>目录项(<code>dentry</code>​), 在每个文件系统中, 内核在查找某一个路径中的文件时, 会为内核路径上的每一个分量都生成一个目录项对象, 通过目录项对象能够找到对应的<code>inode</code>​对象, 目录项对象一般会被缓存(在内存中), 从而提高内核查找速度.</p>
+</li>
+</ul>
+<p>下图展示了这些数据结构(不同文件系统)在**==内存==**中的关系和使用:</p>
+<p><img src="assets/image-20250331125822-n0kl7ud.png" alt="image">​</p>
+<p>多个fd(file descriptor)可以指向同一个文件(<code>file</code>​), 因为可以使用<code>dup()</code>​系统调用来复制fd.</p>
+<p>当我们打开同一个路径多次时, 多个<code>file</code>​可以指向同一个<code>dentry</code>​.</p>
+<p>多个<code>dentry</code>​可以指向同一个<code>inode</code>​(使用hardlink).</p>
+<p>‍</p>
+<p>下图展示数据结构在**==存储介质==**中的关系和使用:</p>
+<p><img src="assets/image-20250331154851-us2p44f.png" alt="image">​</p>
+<p>此图说明<code>superblock</code>​存储在文件系统的最开始, 各block有不同的功能, 可以存储dentry, inode, 数据等.</p>
+<p><img src="assets/image-20250331160055-farcwn2.png" alt="image">​</p>
+<p>上图展示了一个简单文件系统示例, 以功能将block分类:</p>
+<ul>
+<li>superblock: 包含IMAP, DMAP, IZONE, DZONE的大小</li>
+<li>IMAP: 由多个包含inode分配的<code>bitmap</code>​组成, 维护IZONE区的inode的分配(allocated)与空间(free)状态</li>
+<li>DMAP: 由多个包含数据块的<code>bitmap</code>​组成, 维护DZONE区的所有block的分配(allocated)与空间(free)状态</li>
+</ul>
+<h1 id="filesystem-operation">Filesystem Operation</h1>
+<p>下图展示了文件系统驱动与其其他部分交互的整体逻辑.</p>
+<p><img src="assets/image-20250331161510-sfm119o.png" alt="image">​</p>
+<p>VFS将复杂的文件管理相关的系统调用简化为设备驱动实现的操作, 如下是一个文件系统的必须实现的操作:</p>
+<ul>
+<li><a href="http://localhost:1313/notes/documents/linux-related/vfsvirtual-file-system/#20250410190645-8ln5zs7">Mount</a></li>
+<li><a href="http://localhost:1313/notes/documents/linux-related/vfsvirtual-file-system/#20250410190636-hy1v0xx">Open</a> a file</li>
+<li><a href="http://localhost:1313/notes/documents/linux-related/vfsvirtual-file-system/#20250410190625-6z42tp0">Query</a> file attributes</li>
+<li><a href="http://localhost:1313/notes/documents/linux-related/vfsvirtual-file-system/#20250410190618-x2siy4c">Read</a> data from a file</li>
+<li><a href="http://localhost:1313/notes/documents/linux-related/vfsvirtual-file-system/#20250410190610-m9o50mp">Write</a> file to a file</li>
+<li><a href="http://localhost:1313/notes/documents/linux-related/vfsvirtual-file-system/#20250410190544-dstvtwv">Create</a> a file</li>
+<li><a href="http://localhost:1313/notes/documents/linux-related/vfsvirtual-file-system/#20250410190533-nnqu86y">Delete</a> a file</li>
+</ul>
+<h2 id="mount">Mount</h2>
+<p>挂载一个文件系统, 典型实现:</p>
+<ul>
+<li>Input: 存储设备(硬盘分区)</li>
+<li>Output: 挂载点(文件夹)对应的<code>dentry</code>​</li>
+<li>Steps: Check device, 决定文件系统参数, 定位root inode</li>
+<li>Example: 检查magic, 决定block大小, 读取root inode</li>
+</ul>
+<h2 id="open">Open</h2>
+<p>A summary of a typical implementation is presented below:</p>
+<ul>
+<li>
+<p>Input: path</p>
+</li>
+<li>
+<p>Output: file descriptor</p>
+</li>
+<li>
+<p>Steps:</p>
+<ul>
+<li>Determine the filesystem type</li>
+<li>For each name in the path: lookup parent dentry, load inode, load data, find dentry</li>
+<li>Create a new <em>file</em> that points to the last <em>dentry</em></li>
+<li>Find a free entry in the file descriptor table and set it to <em>file</em></li>
+</ul>
+</li>
+</ul>
+<h2 id="query">Query</h2>
+<p>A summary of a typical implementation is presented below:</p>
+<ul>
+<li>
+<p>Input: path</p>
+</li>
+<li>
+<p>Output: file attributes</p>
+</li>
+<li>
+<p>Steps:</p>
+<ul>
+<li>Access file-&gt;dentry-&gt;inode</li>
+<li>Read file attributes from the <em>inode</em></li>
+</ul>
+</li>
+</ul>
+<h2 id="read">Read</h2>
+<p>A summary of a typical implementation is presented below:</p>
+<ul>
+<li>
+<p>Input: file descriptor, offset, length</p>
+</li>
+<li>
+<p>Output: data</p>
+</li>
+<li>
+<p>Steps:</p>
+<ul>
+<li>Access file-&gt;dentry-&gt;inode</li>
+<li>Determine data blocks</li>
+<li>Copy data blocks to memory</li>
+</ul>
+</li>
+</ul>
+<h2 id="write">Write</h2>
+<p>A summary of a typical implementation is presented below:</p>
+<ul>
+<li>
+<p>Input: file descriptor, offset, length, data</p>
+</li>
+<li>
+<p>Output:</p>
+</li>
+<li>
+<p>Steps:</p>
+<ul>
+<li>Allocate one or more data blocks</li>
+<li>Add the allocated blocks to the inode and update file size</li>
+<li>Copy data from userspace to internal buffers and write them to storage</li>
+</ul>
+</li>
+</ul>
+<h2 id="close">Close</h2>
+<p>A summary of a typical implementation is presented below:</p>
+<ul>
+<li>
+<p>Input: file descriptor</p>
+</li>
+<li>
+<p>Output:</p>
+</li>
+<li>
+<p>Steps:</p>
+<ul>
+<li>set the file descriptor entry to NULL</li>
+<li>Decrement file reference counter</li>
+<li>When the counter reaches 0 free <em>file</em></li>
+</ul>
+</li>
+</ul>
+<h2 id="directory">Directory</h2>
+<p>Directories are special files which contain one or more dentries.</p>
+<h2 id="create">Create</h2>
+<p>A summary of a typical implementation is presented below:</p>
+<ul>
+<li>
+<p>Input: path</p>
+</li>
+<li>
+<p>Output:</p>
+</li>
+<li>
+<p>Steps:</p>
+<ul>
+<li>Determine the inode directory</li>
+<li>Read data blocks and find space for a new dentry</li>
+<li>Write back the modified inode directory data blocks</li>
+</ul>
+</li>
+</ul>
+<h2 id="delete">Delete</h2>
+<p>A summary of a typical implementation is presented below:</p>
+<ul>
+<li>
+<p>Input: path</p>
+</li>
+<li>
+<p>Output:</p>
+</li>
+<li>
+<p>Steps:</p>
+<ul>
+<li>determine the parent inode</li>
+<li>read parent inode data blocks</li>
+<li>find and erase the dentry (check for links)</li>
+<li>when last file is closed: deallocate data and inode blocks</li>
+</ul>
+</li>
+</ul>
+<p>‍</p>
+<h1 id="filesystem-driver-for-vfs">FileSystem Driver for VFS</h1>
+<p><img src="assets/image-20250331170442-c1wo47i.png" alt="image">​</p>
+<p>UNIX kernel中VFS的设计的主要目的是支持多种文件系统(为了处理多种文件系统, VFS引入了上文中的文件系统的抽象概念), 其另一个好处是简化文件系统驱动的开发. 几乎所有的cache和buffer管理都在VFS中处理, 而文件系统驱动只需要处理高效的数据管理.</p>
+<p>这种抽象让filesystem driver能够:</p>
+<ul>
+<li>在内存中使用其特定的抽象实现(如ext4的inode和dentry)</li>
+<li>在存储设备(HD)中使用特定抽象实现</li>
+</ul>
+<p>所以综合上文, 我们得到了三种略有不同的抽象结构:</p>
+<ol>
+<li>
+<p>用于VFS的抽象结构</p>
+<ul>
+<li>始终在内存中, 也就是上文中描述的抽象结构</li>
+</ul>
+</li>
+<li>
+<p>用于各文件系统</p>
+<ul>
+<li>文件系统驱动使用的内存</li>
+<li>文件系统驱动使用的存储</li>
+</ul>
+</li>
+</ol>
+<p>​​</p>
+<h2 id="superblock-operations">Superblock Operations</h2>
+<p>VFS需要文件系统驱动实现一些&quot;superblock operations&quot;, 其处理superblock的初始化, 更新, 释放.</p>
+<ul>
+<li>
+<p><code>fill_super()</code>​ - reads the filesystem statistics (e.g. total number of inode, free number of inodes, total number of blocks, free number of blocks)</p>
+</li>
+<li>
+<p><code>write_super()</code>​ - updates the superblock information on storage (e.g. updating the number of free inode or data blocks)</p>
+</li>
+<li>
+<p><code>put_super()</code>​ - free any data associated with the filsystem instance, called when unmounting a filesystem</p>
+</li>
+</ul>
+<p>‍</p>
+<p>还有一些对文件系统的inode进行操作, 这些函数将VFS inode作为参数, 修改文件系统内部的inode. 以下是一些典型的操作:</p>
+<ul>
+<li>fill_super</li>
+<li>put_super</li>
+<li>write_super</li>
+<li>read_inode</li>
+<li>write_inode</li>
+<li>evict_inode</li>
+<li>statfs</li>
+<li>remount_fs</li>
+</ul>
+<p>‍</p>
+<h2 id="inode-operations">Inode Operations</h2>
+<p>文件系统驱动还需要实现一些&quot;inode operations&quot;, 其大多是对dentry的操作, 用于查看文件名, 创建文件/文件夹, 删除文件/文件夹, 建立链接, 处理软链接等. 以下是一些典型操作</p>
+<ul>
+<li>create</li>
+<li>lookup</li>
+<li>link</li>
+<li>unlink</li>
+<li>symlink</li>
+<li>mkdir</li>
+<li>rmdir</li>
+<li>rename</li>
+<li>readlink</li>
+<li>follow_link</li>
+<li>put_link</li>
+<li>&hellip;</li>
+</ul>
+<h2 id="the-inode-cache">The Inode Cache</h2>
+<p>Inode cache用于避免频繁的对于存储介质的存取操作. 其使用一个hash table存储inode, 在文件系统unmount, inode被删除或系统内存不足时被释放. 有如下特点:</p>
+<ul>
+<li>Caches inodes into memory to avoid costly storage operations</li>
+<li>An inode is cached until low memory conditions are triggered</li>
+<li>inodes are indexed with a hash table</li>
+<li>The inode hash function takes the superblock and inode number as inputs</li>
+</ul>
+<h2 id="the-dentry-cache">The Dentry Cache</h2>
+<ul>
+<li>
+<p>State:</p>
+<ul>
+<li>Used – <em>d_inode</em> is valid and the <em>dentry</em> object is in use</li>
+<li>Unused – <em>d_inode</em> is valid but the dentry object is not in use</li>
+<li>Negative – <em>d_inode</em> is not valid; the inode was not yet loaded or the file was erased</li>
+</ul>
+</li>
+<li>
+<p>Dentry cache</p>
+<ul>
+<li>List of used dentries (dentry-&gt;d_state == used)</li>
+<li>List of the most recent used dentries (sorted by access time)</li>
+<li>Hash table to avoid searching the tree</li>
+</ul>
+</li>
+</ul>
+<p>‍</p>
+<h2 id="the-page-cache">The Page Cache</h2>
+<ul>
+<li>Caches file data and not block device data</li>
+<li>Uses the <code>struct address_space</code>​ to translate file offsets to block offsets</li>
+<li>Used for both read / write and mmap</li>
+<li>Uses a radix tree</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * struct address_space - Contents of a cacheable, mappable object.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @host: Owner, either the inode or the block_device.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @i_pages: Cached pages.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @gfp_mask: Memory allocation flags to use for allocating pages.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @i_mmap_writable: Number of VM_SHARED mappings.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @nr_thps: Number of THPs in the pagecache (non-shmem only).
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @i_mmap: Tree of private and shared mappings.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @i_mmap_rwsem: Protects @i_mmap and @i_mmap_writable.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @nrpages: Number of page entries, protected by the i_pages lock.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @nrexceptional: Shadow or DAX entries, protected by the i_pages lock.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @writeback_index: Writeback starts here.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @a_ops: Methods.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @flags: Error bits and flags (AS_*).
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @wb_err: The most recent error which has occurred.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @private_lock: For use by the owner of the address_space.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @private_list: For use by the owner of the address_space.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @private_data: For use by the owner of the address_space.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> address_space {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">struct</span> inode            <span style="color:#f92672">*</span>host;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">struct</span> xarray           i_pages;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">gfp_t</span>                   gfp_mask;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">atomic_t</span>                i_mmap_writable;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#ifdef CONFIG_READ_ONLY_THP_FOR_FS
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">/* number of thp, only for non-shmem files */</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">atomic_t</span>                nr_thps;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> rb_root_cached   i_mmap;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">struct</span> rw_semaphore     i_mmap_rwsem;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span>           nrpages;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span>           nrexceptional;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">pgoff_t</span>                 writeback_index;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> address_space_operations <span style="color:#f92672">*</span>a_ops;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span>           flags;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">errseq_t</span>                wb_err;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">spinlock_t</span>              private_lock;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">struct</span> list_head        private_list;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">void</span>                    <span style="color:#f92672">*</span>private_data;
+</span></span><span style="display:flex;"><span>} <span style="color:#a6e22e">__attribute__</span>((<span style="color:#a6e22e">aligned</span>(<span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">long</span>)))) __randomize_layout;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> address_space_operations {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>writepage)(<span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>page, <span style="color:#66d9ef">struct</span> writeback_control <span style="color:#f92672">*</span>wbc);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>readpage)(<span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>, <span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">/* Write back some dirty pages from this mapping. */</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>writepages)(<span style="color:#66d9ef">struct</span> address_space <span style="color:#f92672">*</span>, <span style="color:#66d9ef">struct</span> writeback_control <span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">/* Set a page dirty.  Return true if this dirtied it */</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>set_page_dirty)(<span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>page);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">   * Reads in the requested pages. Unlike -&gt;readpage(), this is
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">   * PURELY used for read-ahead!.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">   */</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>readpages)(<span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>filp, <span style="color:#66d9ef">struct</span> address_space <span style="color:#f92672">*</span>mapping,
+</span></span><span style="display:flex;"><span>                  <span style="color:#66d9ef">struct</span> list_head <span style="color:#f92672">*</span>pages, <span style="color:#66d9ef">unsigned</span> nr_pages);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>readahead)(<span style="color:#66d9ef">struct</span> readahead_control <span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>write_begin)(<span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>, <span style="color:#66d9ef">struct</span> address_space <span style="color:#f92672">*</span>mapping,
+</span></span><span style="display:flex;"><span>                          <span style="color:#66d9ef">loff_t</span> pos, <span style="color:#66d9ef">unsigned</span> len, <span style="color:#66d9ef">unsigned</span> flags,
+</span></span><span style="display:flex;"><span>                          <span style="color:#66d9ef">struct</span> page <span style="color:#f92672">**</span>pagep, <span style="color:#66d9ef">void</span> <span style="color:#f92672">**</span>fsdata);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>write_end)(<span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>, <span style="color:#66d9ef">struct</span> address_space <span style="color:#f92672">*</span>mapping,
+</span></span><span style="display:flex;"><span>                          <span style="color:#66d9ef">loff_t</span> pos, <span style="color:#66d9ef">unsigned</span> len, <span style="color:#66d9ef">unsigned</span> copied,
+</span></span><span style="display:flex;"><span>                          <span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>page, <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>fsdata);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">/* Unfortunately this kludge is needed for FIBMAP. Don&#39;t use it */</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">sector_t</span> (<span style="color:#f92672">*</span>bmap)(<span style="color:#66d9ef">struct</span> address_space <span style="color:#f92672">*</span>, <span style="color:#66d9ef">sector_t</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>invalidatepage) (<span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span>, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>releasepage) (<span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>, <span style="color:#66d9ef">gfp_t</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>freepage)(<span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">ssize_t</span> (<span style="color:#f92672">*</span>direct_IO)(<span style="color:#66d9ef">struct</span> kiocb <span style="color:#f92672">*</span>, <span style="color:#66d9ef">struct</span> iov_iter <span style="color:#f92672">*</span>iter);
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">   * migrate the contents of a page to the specified target. If
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">   * migrate_mode is MIGRATE_ASYNC, it must not block.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">   */</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>migratepage) (<span style="color:#66d9ef">struct</span> address_space <span style="color:#f92672">*</span>,
+</span></span><span style="display:flex;"><span>                  <span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>, <span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>, <span style="color:#66d9ef">enum</span> migrate_mode);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">bool</span> (<span style="color:#f92672">*</span>isolate_page)(<span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>, <span style="color:#66d9ef">isolate_mode_t</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>putback_page)(<span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>launder_page) (<span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>is_partially_uptodate) (<span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span>,
+</span></span><span style="display:flex;"><span>                                  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>is_dirty_writeback) (<span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>, <span style="color:#66d9ef">bool</span> <span style="color:#f92672">*</span>, <span style="color:#66d9ef">bool</span> <span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>error_remove_page)(<span style="color:#66d9ef">struct</span> address_space <span style="color:#f92672">*</span>, <span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">/* swapfile support */</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>swap_activate)(<span style="color:#66d9ef">struct</span> swap_info_struct <span style="color:#f92672">*</span>sis, <span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>file,
+</span></span><span style="display:flex;"><span>                          <span style="color:#66d9ef">sector_t</span> <span style="color:#f92672">*</span>span);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>swap_deactivate)(<span style="color:#66d9ef">struct</span> file <span style="color:#f92672">*</span>file);
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * generic_file_read_iter - generic filesystem read routine
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @iocb: kernel I/O control block
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @iter: destination for the data read
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * This is the &#34;read_iter()&#34; routine for all filesystems
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * that can use the page cache directly.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * The IOCB_NOWAIT flag in iocb-&gt;ki_flags indicates that -EAGAIN shall
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * be returned when no data can be read without waiting for I/O requests
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * to complete; it doesn&#39;t prevent readahead.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * The IOCB_NOIO flag in iocb-&gt;ki_flags indicates that no new I/O
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * requests shall be made for the read or for readahead.  When no data
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * can be read, -EAGAIN shall be returned.  When readahead would be
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * triggered, a partial, possibly empty read shall be returned.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * Return:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * * number of bytes copied, even for partial reads
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * * negative error code (or 0 if IOCB_NOIO) if nothing was read
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ssize_t</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">generic_file_read_iter</span>(<span style="color:#66d9ef">struct</span> kiocb <span style="color:#f92672">*</span>iocb, <span style="color:#66d9ef">struct</span> iov_iter <span style="color:#f92672">*</span>iter)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * Generic &#34;read page&#34; function for block devices that have the normal
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * get_block functionality. This is most of the block device filesystems.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * Reads the page asynchronously --- the unlock_buffer() and
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * set/clear_buffer_uptodate() functions propagate buffer state into the
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * page struct once IO has completed.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">block_read_full_page</span>(<span style="color:#66d9ef">struct</span> page <span style="color:#f92672">*</span>page, <span style="color:#66d9ef">get_block_t</span> <span style="color:#f92672">*</span>get_block)
+</span></span></code></pre></div><p>‍</p>
+<h1 id="reference">Reference</h1>
+<p><a href="https://linux-kernel-labs.github.io/refs/heads/master/lectures/fs.html#linux-virtual-file-system" target="_blank" rel="noopener">https://linux-kernel-labs.github.io/refs/heads/master/lectures/fs.html#linux-virtual-file-system</a></p>
+<p>‍</p>
+<h2 id="backlinks">Backlinks</h2>
+<ul>
+<li><a href="http://localhost:1313/notes/documents/linux-related/vfsvirtual-file-system/">VFS(Virtual File System)</a></li>
+<li><a href="">DSAC IO优化</a></li>
+<li><a href="">2025-03-31</a></li>
+</ul>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

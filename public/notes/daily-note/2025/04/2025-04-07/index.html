@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>2025-04-07</title>
+
+<meta name="description" content="2025-04-07 N12 UFI 111778190 无Log
+‍
+==111772006== 预览卡顿
+有trace, 从trace上看是没内存了, kswap0占用极高, 导致卡顿
+‍
+111745689 打开微距闪退
+‍
+log丢失严重
+看log是成功打开了微距对应的摄像头, 但是没有出帧, 中间log全丢了
+大量:
+04-04 18:13:36.195 1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_COMMON_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found 04-04 18:13:36.195 1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_DEVICE_DEFAULT not found 04-04 18:13:36.196 1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_DEVICE_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found 04-04 18:13:36.196 1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_PROJECT_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found 对应这里, 看一下正常情况下这里的symbol是否相同, 如果相同, 会不会是so库出了问题?
+@startuml getMtkcamProviderInstance -&gt; MtkCameraProvider MtkCameraProvider -&gt; CameraDeviceManagerImpl.initialize : CameraDeviceManagerImpl继承CameraDeviceManagerBase CameraDeviceManagerImpl.initialize -&gt; NSTemplateRequestManager.constructTemplateRequests NSTemplateRequestManager.constructTemplateRequests -&gt; ITemplateRequest.getInstance ITemplateRequest.getInstance -&gt; onCreate onCreate -&gt; constructRequestMetadata constructRequestMetadata -&gt; impConstructRequestMetadata impConstructRequestMetadata -&gt; dlopen : libmtkcam_metastore.so impConstructRequestMetadata -&gt; impConstructRequestMetadata_by_SymbolName @enduml 正常版本也有此log, 非问题.
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/daily-note/2025/04/2025-04-07/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/daily-note/2025/04/2025-04-07/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/daily-note/2025/04/2025-04-07/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="2025-04-07">
+<meta property="og:description" content="2025-04-07
+N12 UFI
+111778190
+无Log
+‍
+==111772006==
+预览卡顿
+有trace, 从trace上看是没内存了, kswap0占用极高, 导致卡顿
+‍
+111745689
+打开微距闪退
+‍
+log丢失严重
+
+看log是成功打开了微距对应的摄像头, 但是没有出帧, 中间log全丢了
+大量:
+04-04 18:13:36.195  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_COMMON_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found
+04-04 18:13:36.195  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_DEVICE_DEFAULT not found
+04-04 18:13:36.196  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_DEVICE_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found
+04-04 18:13:36.196  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_PROJECT_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found
+对应这里, 看一下正常情况下这里的symbol是否相同, 如果相同, 会不会是so库出了问题?
+@startuml
+getMtkcamProviderInstance -&gt; MtkCameraProvider
+MtkCameraProvider -&gt; CameraDeviceManagerImpl.initialize : CameraDeviceManagerImpl继承CameraDeviceManagerBase
+CameraDeviceManagerImpl.initialize -&gt; NSTemplateRequestManager.constructTemplateRequests
+NSTemplateRequestManager.constructTemplateRequests -&gt; ITemplateRequest.getInstance
+ITemplateRequest.getInstance -&gt; onCreate
+onCreate -&gt; constructRequestMetadata
+constructRequestMetadata -&gt; impConstructRequestMetadata
+impConstructRequestMetadata -&gt; dlopen : libmtkcam_metastore.so
+impConstructRequestMetadata -&gt; impConstructRequestMetadata_by_SymbolName
+@enduml
+正常版本也有此log, 非问题.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/daily-note/2025/04/2025-04-07/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-04-07T09:57:07+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-04-09T10:10:31+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="2025-04-07">
+<meta name="twitter:description" content="2025-04-07
+N12 UFI
+111778190
+无Log
+‍
+==111772006==
+预览卡顿
+有trace, 从trace上看是没内存了, kswap0占用极高, 导致卡顿
+‍
+111745689
+打开微距闪退
+‍
+log丢失严重
+
+看log是成功打开了微距对应的摄像头, 但是没有出帧, 中间log全丢了
+大量:
+04-04 18:13:36.195  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_COMMON_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found
+04-04 18:13:36.195  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_DEVICE_DEFAULT not found
+04-04 18:13:36.196  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_DEVICE_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found
+04-04 18:13:36.196  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_PROJECT_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found
+对应这里, 看一下正常情况下这里的symbol是否相同, 如果相同, 会不会是so库出了问题?
+@startuml
+getMtkcamProviderInstance -&gt; MtkCameraProvider
+MtkCameraProvider -&gt; CameraDeviceManagerImpl.initialize : CameraDeviceManagerImpl继承CameraDeviceManagerBase
+CameraDeviceManagerImpl.initialize -&gt; NSTemplateRequestManager.constructTemplateRequests
+NSTemplateRequestManager.constructTemplateRequests -&gt; ITemplateRequest.getInstance
+ITemplateRequest.getInstance -&gt; onCreate
+onCreate -&gt; constructRequestMetadata
+constructRequestMetadata -&gt; impConstructRequestMetadata
+impConstructRequestMetadata -&gt; dlopen : libmtkcam_metastore.so
+impConstructRequestMetadata -&gt; impConstructRequestMetadata_by_SymbolName
+@enduml
+正常版本也有此log, 非问题.">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "2025-04-07",
+  "datePublished": "2025-04-07T09:57:07+00:00",
+  "dateModified": "2025-04-09T10:10:31+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  728 ,
+  "description": "2025-04-07 N12 UFI 111778190 无Log\n‍\n==111772006== 预览卡顿\n有trace, 从trace上看是没内存了, kswap0占用极高, 导致卡顿\n‍\n111745689 打开微距闪退\n‍\nlog丢失严重\n看log是成功打开了微距对应的摄像头, 但是没有出帧, 中间log全丢了\n大量:\n04-04 18:13:36.195 1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_COMMON_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found 04-04 18:13:36.195 1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_DEVICE_DEFAULT not found 04-04 18:13:36.196 1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_DEVICE_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found 04-04 18:13:36.196 1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_PROJECT_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found 对应这里, 看一下正常情况下这里的symbol是否相同, 如果相同, 会不会是so库出了问题?\n@startuml getMtkcamProviderInstance -\u0026gt; MtkCameraProvider MtkCameraProvider -\u0026gt; CameraDeviceManagerImpl.initialize : CameraDeviceManagerImpl继承CameraDeviceManagerBase CameraDeviceManagerImpl.initialize -\u0026gt; NSTemplateRequestManager.constructTemplateRequests NSTemplateRequestManager.constructTemplateRequests -\u0026gt; ITemplateRequest.getInstance ITemplateRequest.getInstance -\u0026gt; onCreate onCreate -\u0026gt; constructRequestMetadata constructRequestMetadata -\u0026gt; impConstructRequestMetadata impConstructRequestMetadata -\u0026gt; dlopen : libmtkcam_metastore.so impConstructRequestMetadata -\u0026gt; impConstructRequestMetadata_by_SymbolName @enduml 正常版本也有此log, 非问题.\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="2025-04-07">2025-04-07</h1>
+<h1 id="n12-ufi">N12 UFI</h1>
+<h2 id="111778190">111778190</h2>
+<p>无Log</p>
+<p>‍</p>
+<h2 id="111772006">==111772006==</h2>
+<p>预览卡顿</p>
+<p>有trace, 从trace上看是没内存了, kswap0占用极高, 导致卡顿</p>
+<p>‍</p>
+<h2 id="111745689">111745689</h2>
+<p>打开微距闪退</p>
+<p>‍</p>
+<p>log丢失严重</p>
+<h2></h2>
+<p>看log是成功打开了微距对应的摄像头, 但是没有出帧, 中间log全丢了</p>
+<p>大量:</p>
+<pre tabindex="0"><code class="language-log" data-lang="log">04-04 18:13:36.195  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_COMMON_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found
+04-04 18:13:36.195  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_DEVICE_DEFAULT not found
+04-04 18:13:36.196  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_DEVICE_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found
+04-04 18:13:36.196  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_PROJECT_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found
+</code></pre><p>对应<a href="https://source-u.dun.mi.com/opengrok-u/xref/mivendor_u_mt6989/vendor/mediatek/proprietary/hardware/mtkcam-android/utils/metastore/templateRequest/TemplateRequestImp.cpp?r=unknown#89" target="_blank" rel="noopener">这里</a>, 看一下正常情况下这里的symbol是否相同, 如果相同, 会不会是<a href="https://source-u.dun.mi.com/opengrok-u/xref/mivendor_u_mt6989/vendor/mediatek/proprietary/hardware/mtkcam/utils/metastore/templateRequest/TemplateRequest.cpp?r=unknown#123" target="_blank" rel="noopener">so库</a>出了问题?</p>
+<pre tabindex="0"><code class="language-plantuml" data-lang="plantuml">@startuml
+getMtkcamProviderInstance -&gt; MtkCameraProvider
+MtkCameraProvider -&gt; CameraDeviceManagerImpl.initialize : CameraDeviceManagerImpl继承CameraDeviceManagerBase
+CameraDeviceManagerImpl.initialize -&gt; NSTemplateRequestManager.constructTemplateRequests
+NSTemplateRequestManager.constructTemplateRequests -&gt; ITemplateRequest.getInstance
+ITemplateRequest.getInstance -&gt; onCreate
+onCreate -&gt; constructRequestMetadata
+constructRequestMetadata -&gt; impConstructRequestMetadata
+impConstructRequestMetadata -&gt; dlopen : libmtkcam_metastore.so
+impConstructRequestMetadata -&gt; impConstructRequestMetadata_by_SymbolName
+@enduml
+</code></pre><p>正常版本也有此log, 非问题.</p>
+<p>‍</p>
+<h2 id="111745348">==111745348==</h2>
+<p>预览卡顿, 变焦卡顿</p>
+<p>内存不足, log显示经常到10MB左右内存</p>
+<p>‍</p>
+<h2 id="111729675">111729675</h2>
+<p>出现ANR, 大量</p>
+<pre tabindex="0"><code class="language-log" data-lang="log">dma-buf leak:2,813,036kB , camera in the foreground
+CAM_DbItemSaveTask: queryRaw: count = 1
+</code></pre><p>dma-buf泄漏导致ANR</p>
+<p>‍</p>
+<h2 id="111723708-111723396-111722336">111723708 111723396 111722336</h2>
+<p>无log</p>
+<p>‍</p>
+<p>‍</p>
+<h2 id="heading">‍</h2>
+<h2 id="lastmod-2025-04-09t101031z">title: 2025-04-07
+date: 2025-04-07T09:57:07Z
+lastmod: 2025-04-09T10:10:31Z</h2>
+<h1 id="2025-04-07-1">2025-04-07</h1>
+<h1 id="n12-ufi-1">N12 UFI</h1>
+<h2 id="111778190-1">111778190</h2>
+<p>无Log</p>
+<p>‍</p>
+<h2 id="111772006-1">==111772006==</h2>
+<p>预览卡顿</p>
+<p>有trace, 从trace上看是没内存了, kswap0占用极高, 导致卡顿</p>
+<p>‍</p>
+<h2 id="111745689-1">111745689</h2>
+<p>打开微距闪退</p>
+<p>‍</p>
+<p>log丢失严重</p>
+<h2></h2>
+<p>看log是成功打开了微距对应的摄像头, 但是没有出帧, 中间log全丢了</p>
+<p>大量:</p>
+<pre tabindex="0"><code class="language-log" data-lang="log">04-04 18:13:36.195  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_COMMON_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found
+04-04 18:13:36.195  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_DEVICE_DEFAULT not found
+04-04 18:13:36.196  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_DEVICE_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found
+04-04 18:13:36.196  1047 22711 23012 W MtkCam/TemplateRequest: impConstructRequestMetadata_by_SymbolName(100):constructCustRequestMetadata_PROJECT_SENSOR_DRVNAME_ROTHKOIMX906WIDE_MIPI_RAW not found
+</code></pre><p>对应<a href="https://source-u.dun.mi.com/opengrok-u/xref/mivendor_u_mt6989/vendor/mediatek/proprietary/hardware/mtkcam-android/utils/metastore/templateRequest/TemplateRequestImp.cpp?r=unknown#89" target="_blank" rel="noopener">这里</a>, 看一下正常情况下这里的symbol是否相同, 如果相同, 会不会是<a href="https://source-u.dun.mi.com/opengrok-u/xref/mivendor_u_mt6989/vendor/mediatek/proprietary/hardware/mtkcam/utils/metastore/templateRequest/TemplateRequest.cpp?r=unknown#123" target="_blank" rel="noopener">so库</a>出了问题?</p>
+<pre tabindex="0"><code class="language-plantuml" data-lang="plantuml">@startuml
+getMtkcamProviderInstance -&gt; MtkCameraProvider
+MtkCameraProvider -&gt; CameraDeviceManagerImpl.initialize : CameraDeviceManagerImpl继承CameraDeviceManagerBase
+CameraDeviceManagerImpl.initialize -&gt; NSTemplateRequestManager.constructTemplateRequests
+NSTemplateRequestManager.constructTemplateRequests -&gt; ITemplateRequest.getInstance
+ITemplateRequest.getInstance -&gt; onCreate
+onCreate -&gt; constructRequestMetadata
+constructRequestMetadata -&gt; impConstructRequestMetadata
+impConstructRequestMetadata -&gt; dlopen : libmtkcam_metastore.so
+impConstructRequestMetadata -&gt; impConstructRequestMetadata_by_SymbolName
+@enduml
+</code></pre><p>正常版本也有此log, 非问题.</p>
+<p>‍</p>
+<h2 id="111745348-1">==111745348==</h2>
+<p>预览卡顿, 变焦卡顿</p>
+<p>内存不足, log显示经常到10MB左右内存</p>
+<p>‍</p>
+<h2 id="111729675-1">111729675</h2>
+<p>出现ANR, 大量</p>
+<pre tabindex="0"><code class="language-log" data-lang="log">dma-buf leak:2,813,036kB , camera in the foreground
+CAM_DbItemSaveTask: queryRaw: count = 1
+</code></pre><p>dma-buf泄漏导致ANR</p>
+<p>‍</p>
+<h2 id="111723708-111723396-111722336-1">111723708 111723396 111722336</h2>
+<p>无log</p>
+<p>‍</p>
+<p>‍</p>
+<p>‍</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

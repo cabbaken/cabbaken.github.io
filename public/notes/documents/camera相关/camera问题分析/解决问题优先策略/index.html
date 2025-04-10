@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>解决问题优先策略</title>
+
+<meta name="description" content="解决问题优先策略 解决问题优先策略 后台应用, CPU占用 频率是否正常
+杀后台多时可以看看杀的都是哪些后台(三方/系统)
+三方: 可以找测试重新测(非多后台场景) 系统: 需要看一下 看P1, P2出帧, 算法堆积 P1出帧有问题: 可以看看是否是request下发问题.
+方法 提优先级 算法: https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/&#43;/4818058 P2Node: https://gerrit.pt.mioffice.cn/c/quark/mtkcam-core/&#43;/4970783 title: 解决问题优先策略 date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z 解决问题优先策略 解决问题优先策略 后台应用, CPU占用 频率是否正常
+杀后台多时可以看看杀的都是哪些后台(三方/系统)
+三方: 可以找测试重新测(非多后台场景) 系统: 需要看一下 看P1, P2出帧, 算法堆积 P1出帧有问题: 可以看看是否是request下发问题.
+方法 提优先级 算法: https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/&#43;/4818058 P2Node: https://gerrit.pt.mioffice.cn/c/quark/mtkcam-core/&#43;/4970783
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E4%BC%98%E5%85%88%E7%AD%96%E7%95%A5/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E4%BC%98%E5%85%88%E7%AD%96%E7%95%A5/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E4%BC%98%E5%85%88%E7%AD%96%E7%95%A5/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="解决问题优先策略">
+<meta property="og:description" content="解决问题优先策略
+解决问题优先策略
+后台应用, CPU占用 频率是否正常
+杀后台多时可以看看杀的都是哪些后台(三方/系统)
+
+三方: 可以找测试重新测(非多后台场景)
+系统: 需要看一下
+
+看P1, P2出帧, 算法堆积
+P1出帧有问题: 可以看看是否是request下发问题.
+方法
+提优先级
+算法:
+https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/&#43;/4818058
+P2Node:
+https://gerrit.pt.mioffice.cn/c/quark/mtkcam-core/&#43;/4970783
+title: 解决问题优先策略
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+解决问题优先策略
+解决问题优先策略
+后台应用, CPU占用 频率是否正常
+杀后台多时可以看看杀的都是哪些后台(三方/系统)
+
+三方: 可以找测试重新测(非多后台场景)
+系统: 需要看一下
+
+看P1, P2出帧, 算法堆积
+P1出帧有问题: 可以看看是否是request下发问题.
+方法
+提优先级
+算法:
+https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/&#43;/4818058
+P2Node:
+https://gerrit.pt.mioffice.cn/c/quark/mtkcam-core/&#43;/4970783">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E4%BC%98%E5%85%88%E7%AD%96%E7%95%A5/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="解决问题优先策略">
+<meta name="twitter:description" content="解决问题优先策略
+解决问题优先策略
+后台应用, CPU占用 频率是否正常
+杀后台多时可以看看杀的都是哪些后台(三方/系统)
+
+三方: 可以找测试重新测(非多后台场景)
+系统: 需要看一下
+
+看P1, P2出帧, 算法堆积
+P1出帧有问题: 可以看看是否是request下发问题.
+方法
+提优先级
+算法:
+https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/&#43;/4818058
+P2Node:
+https://gerrit.pt.mioffice.cn/c/quark/mtkcam-core/&#43;/4970783
+title: 解决问题优先策略
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+解决问题优先策略
+解决问题优先策略
+后台应用, CPU占用 频率是否正常
+杀后台多时可以看看杀的都是哪些后台(三方/系统)
+
+三方: 可以找测试重新测(非多后台场景)
+系统: 需要看一下
+
+看P1, P2出帧, 算法堆积
+P1出帧有问题: 可以看看是否是request下发问题.
+方法
+提优先级
+算法:
+https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/&#43;/4818058
+P2Node:
+https://gerrit.pt.mioffice.cn/c/quark/mtkcam-core/&#43;/4970783">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "解决问题优先策略",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  283 ,
+  "description": "解决问题优先策略 解决问题优先策略 后台应用, CPU占用 频率是否正常\n杀后台多时可以看看杀的都是哪些后台(三方/系统)\n三方: 可以找测试重新测(非多后台场景) 系统: 需要看一下 看P1, P2出帧, 算法堆积 P1出帧有问题: 可以看看是否是request下发问题.\n方法 提优先级 算法: https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/+/4818058 P2Node: https://gerrit.pt.mioffice.cn/c/quark/mtkcam-core/+/4970783 title: 解决问题优先策略 date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z 解决问题优先策略 解决问题优先策略 后台应用, CPU占用 频率是否正常\n杀后台多时可以看看杀的都是哪些后台(三方/系统)\n三方: 可以找测试重新测(非多后台场景) 系统: 需要看一下 看P1, P2出帧, 算法堆积 P1出帧有问题: 可以看看是否是request下发问题.\n方法 提优先级 算法: https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/+/4818058 P2Node: https://gerrit.pt.mioffice.cn/c/quark/mtkcam-core/+/4970783\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="解决问题优先策略">解决问题优先策略</h1>
+<h2 id="解决问题优先策略-1">解决问题优先策略</h2>
+<p>后台应用, CPU占用 频率是否正常</p>
+<p>杀后台多时可以看看杀的都是哪些后台(三方/系统)</p>
+<ul>
+<li>三方: 可以找测试重新测(非多后台场景)</li>
+<li>系统: 需要看一下</li>
+</ul>
+<p>看P1, P2出帧, 算法堆积
+P1出帧有问题: 可以看看是否是request下发问题.</p>
+<h2 id="方法">方法</h2>
+<h3 id="提优先级">提优先级</h3>
+<h2>算法:
+<a href="https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/&#43;/4818058" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/+/4818058</a>
+P2Node:
+<a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-core/&#43;/4970783" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-core/+/4970783</a></h2>
+<h2 id="lastmod-2025-03-11t094648z">title: 解决问题优先策略
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="解决问题优先策略-2">解决问题优先策略</h1>
+<h2 id="解决问题优先策略-3">解决问题优先策略</h2>
+<p>后台应用, CPU占用 频率是否正常</p>
+<p>杀后台多时可以看看杀的都是哪些后台(三方/系统)</p>
+<ul>
+<li>三方: 可以找测试重新测(非多后台场景)</li>
+<li>系统: 需要看一下</li>
+</ul>
+<p>看P1, P2出帧, 算法堆积
+P1出帧有问题: 可以看看是否是request下发问题.</p>
+<h2 id="方法-1">方法</h2>
+<h3 id="提优先级-1">提优先级</h3>
+<p>算法:
+<a href="https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/&#43;/4818058" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/platform/vendor/xiaomi/proprietary/mivifwk/+/4818058</a>
+P2Node:
+<a href="https://gerrit.pt.mioffice.cn/c/quark/mtkcam-core/&#43;/4970783" target="_blank" rel="noopener">https://gerrit.pt.mioffice.cn/c/quark/mtkcam-core/+/4970783</a></p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>Android图形系统</title>
+
+<meta name="description" content="Android图形系统 ‍ title: Android图形系统 date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z Android图形系统 ‍
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/">
+
+
+
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/index.xml">
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Android图形系统">
+<meta property="og:description" content="">
+<meta property="og:type" content="website">
+<meta property="og:url" content="http://localhost:1313/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/">
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Android图形系统">
+<meta name="twitter:description" content="">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs list d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+
+    
+
+    
+
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">BufferQueue概述</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="bufferqueue概述">BufferQueue概述</h1>
+<h1 id="bufferqueue概述-1">BufferQueue概述</h1>
+<h1 id="bufferqueue概览">BufferQueue概览</h1>
+<p>BufferQueue可以将可生成图形数据buffer的组件 (生产方) 连接到接受数据以便进行显示或进一步处理的组件 (使用方) . 几乎所有在系统中移动图形数据buffer的内容都依赖于BufferQueue. BufferQueue是Android显示系统的核心, 实际上Surface, ImageReader, ImageWriter是对BufferQueue的生产者消费者的封装, 而BufferQueue是一个生产者消费者模型又是GraphicBuffer管理者, 它和显示系统以及Camera流媒体紧密关系着.</p>
+<p>定义在frameworks/native/libs/gui/</p>
+<h2 id="bufferqueue中的生产者与消费者框架">BufferQueue中的生产者与消费者框架</h2>
+<p>BufferQueue的核心逻辑是生产者消费者逻辑. 在BufferQueue这 …</p>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/bufferqueue%E6%A6%82%E8%BF%B0/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">Gralloc</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="gralloc">Gralloc</h1>
+<h1 id="gralloc-1">Gralloc</h1>
+<h2 id="linux显示">Linux显示</h2>
+<p>Linux内核在启动的过程中会创建一个类别和名称分别为&quot;graphics&quot;和&quot;fb0&quot;(0表示从设备号)的设备, 用来描述系统中的第一个帧缓冲区, 即第一个显示屏.
+init进程在启动的过程中, 会启动另外一个进程ueventd来管理系统的设备文件. 当ueventd进程启动起来之后, 会通过netlink接口来Linux内核通信, 以便可以获得内核中的硬件设备变化通知. 而当ueventd进程发现内核中创建了一个类型和名称分别为&quot;graphics&quot;和&quot;fb0&quot;的设备的时候, 就会这个设备创建一个/dev/graphics/fb0设备文件.
+这样, 用户空间的应用程序就可以通过设备文件/dev/graphics/fb0来访问内核中的帧缓冲区, 即在设备的显示屏中绘 …</p>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/gralloc/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="card border-light-subtle mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-4 d-flex align-items-center">
+                    
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">GraphicBuffer</h2>
+
+                        <div class="card-subtitle text-muted mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="feather"><use href="/images/feather/feather-sprite.svg#calendar"/></svg>
+                            <time class="ms-2" datetime="2025-03-11T09:46:48Z">March 11, 2025</time>
+
+                            
+
+                            
+                        </div>
+
+                        <div class="card-text">
+                            
+                                <h1 id="graphicbuffer">GraphicBuffer</h1>
+<h1 id="graphicbuffer-1">GraphicBuffer</h1>
+<h2 id="heading">‍</h2>
+<h2 id="lastmod-2025-03-11t094648z">title: GraphicBuffer
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="graphicbuffer-2">GraphicBuffer</h1>
+<h1 id="graphicbuffer-3">GraphicBuffer</h1>
+<p>‍</p>
+                            
+                        </div>
+                        
+                        <a class="stretched-link" href="/notes/documents/aosp-related/android%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/graphicbuffer/"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+
+    
+
+</div>
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

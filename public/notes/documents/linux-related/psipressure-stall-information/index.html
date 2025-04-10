@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>PSI(Pressure Stall Information)</title>
+
+<meta name="description" content="PSI(Pressure Stall Information) PSI(Pressure Stall Information) CPU, RAM, I/O是3个重要的计算资源, 当其耗尽, 进程间对CPU, 内存或IO设备发生竞争时, 工作负载会出现延迟峰值, 吞吐量损失, 并面临OOM(out of memory)终止的风险. 如果无法准确衡量此类竞争, 就无法充分利用硬件资源.
+PSI可识别和量化此类资源紧缺造成的中断, 以及它对复杂工作负载甚至整个系统的影响. 准确衡量资源短缺造成的生产力损失, 有助于用户根据硬件调整工作负载大小, 或根据工作负载需求配置硬件.
+由于PSI实时汇总这些信息, 可以使用诸如负载削减, 将任务迁移到其他系统或数据中心, 或策略性地暂停或终止低优先级或可重新启动的批处理作业等行为动态管理系统. 这样可以最大限度地提高硬件利用率, 而不会牺牲工作负载健康或冒着OOM等风险.
+Pressure Interface 资源（cpu, memory, io）的压力信息通过/proc/pressure/中的各个文件导出. 如下图 内核以10s/60s/300s（为了了解短期/中期/长期的趋势）的频率跟踪可运行的程序因资源不可用而延迟的时间百分比(avg). 总停滞时间(total)也被跟踪并导出, 以便检测不一定对平均数据造成影响的峰值数据和平均自定义时间范围的趋势(就是进程停滞的总时间(us)). 如果这些数字开始大幅增加, 则意味着由于对应的资源过载, 进程的运行速度比正常情况下要慢.
+上图中的&quot;some&quot;行表示了一些使用资源的任务所停滞的时间. 而&quot;full&quot;行表示所有非空闲任务在给定资源上停滞的时间. 长时间处于这种状态被称为&quot;抖动&quot;, cpu资源会被浪费, 对性能造成严重影响. 将&quot;抖动&quot;与任务停滞但不让cpu空转的状态区分是必要的, 因此将停滞状态的任务单独跟踪并导出到&quot;full&quot;行.
+更多的对于some和full的解释见此文章
+Monitoring for pressure thresholds 用户可以注册触发器并使用poll()在资源压力超过特定阈值时唤醒. 触发器描述特定时间窗口内的最大累积停顿时间. 例如, 任何500毫秒窗口内的总停顿时间为100毫秒, 则生成唤醒事件. 要注册触发器, 用户必须打开/proc/pressure/下表示要监视的资源的psi接口文件, 并写入所需的阈值和时间窗口. 打开的文件描述符应该用于等待使用select(), poll(), epoll()的触发事件. 使用以下格式：
+&lt;some|full&gt; &lt;stall amount(us)&gt; &lt;tracking window time(us)&gt; 例如, 将&quot;some 150000 1000000&quot;写入/proc/pressure/memory会为1秒时间窗口内测量的部分内存停顿添加150ms阈值. 将&quot;full 50000 1000000&quot;写入/proc/pressure/io会为1秒时间窗口内测量的完整io停顿添加50ms阈值.
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/linux-related/psipressure-stall-information/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/linux-related/psipressure-stall-information/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/linux-related/psipressure-stall-information/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="PSI(Pressure Stall Information)">
+<meta property="og:description" content="PSI(Pressure Stall Information)
+PSI(Pressure Stall Information)
+CPU, RAM, I/O是3个重要的计算资源, 当其耗尽, 进程间对CPU, 内存或IO设备发生竞争时, 工作负载会出现延迟峰值, 吞吐量损失, 并面临OOM(out of memory)终止的风险. 如果无法准确衡量此类竞争, 就无法充分利用硬件资源.
+PSI可识别和量化此类资源紧缺造成的中断, 以及它对复杂工作负载甚至整个系统的影响. 准确衡量资源短缺造成的生产力损失, 有助于用户根据硬件调整工作负载大小, 或根据工作负载需求配置硬件.
+由于PSI实时汇总这些信息, 可以使用诸如负载削减, 将任务迁移到其他系统或数据中心, 或策略性地暂停或终止低优先级或可重新启动的批处理作业等行为动态管理系统. 这样可以最大限度地提高硬件利用率, 而不会牺牲工作负载健康或冒着OOM等风险.
+Pressure Interface
+资源（cpu, memory, io）的压力信息通过/proc/pressure/中的各个文件导出. 如下图
+
+内核以10s/60s/300s（为了了解短期/中期/长期的趋势）的频率跟踪可运行的程序因资源不可用而延迟的时间百分比(avg). 总停滞时间(total)也被跟踪并导出, 以便检测不一定对平均数据造成影响的峰值数据和平均自定义时间范围的趋势(就是进程停滞的总时间(us)). 如果这些数字开始大幅增加, 则意味着由于对应的资源过载, 进程的运行速度比正常情况下要慢.
+上图中的&quot;some&quot;行表示了一些使用资源的任务所停滞的时间.
+而&quot;full&quot;行表示所有非空闲任务在给定资源上停滞的时间. 长时间处于这种状态被称为&quot;抖动&quot;, cpu资源会被浪费, 对性能造成严重影响. 将&quot;抖动&quot;与任务停滞但不让cpu空转的状态区分是必要的, 因此将停滞状态的任务单独跟踪并导出到&quot;full&quot;行.
+更多的对于some和full的解释见此文章
+Monitoring for pressure thresholds
+用户可以注册触发器并使用poll()在资源压力超过特定阈值时唤醒. 触发器描述特定时间窗口内的最大累积停顿时间. 例如, 任何500毫秒窗口内的总停顿时间为100毫秒, 则生成唤醒事件.
+要注册触发器, 用户必须打开/proc/pressure/下表示要监视的资源的psi接口文件, 并写入所需的阈值和时间窗口. 打开的文件描述符应该用于等待使用select(), poll(), epoll()的触发事件. 使用以下格式：
+&lt;some|full&gt; &lt;stall amount(us)&gt; &lt;tracking window time(us)&gt;
+例如, 将&quot;some 150000 1000000&quot;写入/proc/pressure/memory会为1秒时间窗口内测量的部分内存停顿添加150ms阈值. 将&quot;full 50000 1000000&quot;写入/proc/pressure/io会为1秒时间窗口内测量的完整io停顿添加50ms阈值.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/linux-related/psipressure-stall-information/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-19T10:49:59+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="PSI(Pressure Stall Information)">
+<meta name="twitter:description" content="PSI(Pressure Stall Information)
+PSI(Pressure Stall Information)
+CPU, RAM, I/O是3个重要的计算资源, 当其耗尽, 进程间对CPU, 内存或IO设备发生竞争时, 工作负载会出现延迟峰值, 吞吐量损失, 并面临OOM(out of memory)终止的风险. 如果无法准确衡量此类竞争, 就无法充分利用硬件资源.
+PSI可识别和量化此类资源紧缺造成的中断, 以及它对复杂工作负载甚至整个系统的影响. 准确衡量资源短缺造成的生产力损失, 有助于用户根据硬件调整工作负载大小, 或根据工作负载需求配置硬件.
+由于PSI实时汇总这些信息, 可以使用诸如负载削减, 将任务迁移到其他系统或数据中心, 或策略性地暂停或终止低优先级或可重新启动的批处理作业等行为动态管理系统. 这样可以最大限度地提高硬件利用率, 而不会牺牲工作负载健康或冒着OOM等风险.
+Pressure Interface
+资源（cpu, memory, io）的压力信息通过/proc/pressure/中的各个文件导出. 如下图
+
+内核以10s/60s/300s（为了了解短期/中期/长期的趋势）的频率跟踪可运行的程序因资源不可用而延迟的时间百分比(avg). 总停滞时间(total)也被跟踪并导出, 以便检测不一定对平均数据造成影响的峰值数据和平均自定义时间范围的趋势(就是进程停滞的总时间(us)). 如果这些数字开始大幅增加, 则意味着由于对应的资源过载, 进程的运行速度比正常情况下要慢.
+上图中的&quot;some&quot;行表示了一些使用资源的任务所停滞的时间.
+而&quot;full&quot;行表示所有非空闲任务在给定资源上停滞的时间. 长时间处于这种状态被称为&quot;抖动&quot;, cpu资源会被浪费, 对性能造成严重影响. 将&quot;抖动&quot;与任务停滞但不让cpu空转的状态区分是必要的, 因此将停滞状态的任务单独跟踪并导出到&quot;full&quot;行.
+更多的对于some和full的解释见此文章
+Monitoring for pressure thresholds
+用户可以注册触发器并使用poll()在资源压力超过特定阈值时唤醒. 触发器描述特定时间窗口内的最大累积停顿时间. 例如, 任何500毫秒窗口内的总停顿时间为100毫秒, 则生成唤醒事件.
+要注册触发器, 用户必须打开/proc/pressure/下表示要监视的资源的psi接口文件, 并写入所需的阈值和时间窗口. 打开的文件描述符应该用于等待使用select(), poll(), epoll()的触发事件. 使用以下格式：
+&lt;some|full&gt; &lt;stall amount(us)&gt; &lt;tracking window time(us)&gt;
+例如, 将&quot;some 150000 1000000&quot;写入/proc/pressure/memory会为1秒时间窗口内测量的部分内存停顿添加150ms阈值. 将&quot;full 50000 1000000&quot;写入/proc/pressure/io会为1秒时间窗口内测量的完整io停顿添加50ms阈值.">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "PSI(Pressure Stall Information)",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-19T10:49:59+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  1954 ,
+  "description": "PSI(Pressure Stall Information) PSI(Pressure Stall Information) CPU, RAM, I/O是3个重要的计算资源, 当其耗尽, 进程间对CPU, 内存或IO设备发生竞争时, 工作负载会出现延迟峰值, 吞吐量损失, 并面临OOM(out of memory)终止的风险. 如果无法准确衡量此类竞争, 就无法充分利用硬件资源.\nPSI可识别和量化此类资源紧缺造成的中断, 以及它对复杂工作负载甚至整个系统的影响. 准确衡量资源短缺造成的生产力损失, 有助于用户根据硬件调整工作负载大小, 或根据工作负载需求配置硬件.\n由于PSI实时汇总这些信息, 可以使用诸如负载削减, 将任务迁移到其他系统或数据中心, 或策略性地暂停或终止低优先级或可重新启动的批处理作业等行为动态管理系统. 这样可以最大限度地提高硬件利用率, 而不会牺牲工作负载健康或冒着OOM等风险.\nPressure Interface 资源（cpu, memory, io）的压力信息通过/proc/pressure/中的各个文件导出. 如下图 内核以10s/60s/300s（为了了解短期/中期/长期的趋势）的频率跟踪可运行的程序因资源不可用而延迟的时间百分比(avg). 总停滞时间(total)也被跟踪并导出, 以便检测不一定对平均数据造成影响的峰值数据和平均自定义时间范围的趋势(就是进程停滞的总时间(us)). 如果这些数字开始大幅增加, 则意味着由于对应的资源过载, 进程的运行速度比正常情况下要慢.\n上图中的\u0026quot;some\u0026quot;行表示了一些使用资源的任务所停滞的时间. 而\u0026quot;full\u0026quot;行表示所有非空闲任务在给定资源上停滞的时间. 长时间处于这种状态被称为\u0026quot;抖动\u0026quot;, cpu资源会被浪费, 对性能造成严重影响. 将\u0026quot;抖动\u0026quot;与任务停滞但不让cpu空转的状态区分是必要的, 因此将停滞状态的任务单独跟踪并导出到\u0026quot;full\u0026quot;行.\n更多的对于some和full的解释见此文章\nMonitoring for pressure thresholds 用户可以注册触发器并使用poll()在资源压力超过特定阈值时唤醒. 触发器描述特定时间窗口内的最大累积停顿时间. 例如, 任何500毫秒窗口内的总停顿时间为100毫秒, 则生成唤醒事件. 要注册触发器, 用户必须打开/proc/pressure/下表示要监视的资源的psi接口文件, 并写入所需的阈值和时间窗口. 打开的文件描述符应该用于等待使用select(), poll(), epoll()的触发事件. 使用以下格式：\n\u0026lt;some|full\u0026gt; \u0026lt;stall amount(us)\u0026gt; \u0026lt;tracking window time(us)\u0026gt; 例如, 将\u0026quot;some 150000 1000000\u0026quot;写入/proc/pressure/memory会为1秒时间窗口内测量的部分内存停顿添加150ms阈值. 将\u0026quot;full 50000 1000000\u0026quot;写入/proc/pressure/io会为1秒时间窗口内测量的完整io停顿添加50ms阈值.\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="psipressure-stall-information">PSI(Pressure Stall Information)</h1>
+<h1 id="psipressure-stall-information-1">PSI(Pressure Stall Information)</h1>
+<p>CPU, RAM, I/O是3个重要的计算资源, 当其耗尽, 进程间对CPU, 内存或IO设备发生竞争时, 工作负载会出现延迟峰值, 吞吐量损失, 并面临OOM(out of memory)终止的风险. 如果无法准确衡量此类竞争, 就无法充分利用硬件资源.</p>
+<p>PSI可识别和量化此类资源紧缺造成的中断, 以及它对复杂工作负载甚至整个系统的影响. 准确衡量资源短缺造成的生产力损失, 有助于用户根据硬件调整工作负载大小, 或根据工作负载需求配置硬件.</p>
+<p>由于PSI实时汇总这些信息, 可以使用诸如负载削减, 将任务迁移到其他系统或数据中心, 或策略性地暂停或终止低优先级或可重新启动的批处理作业等行为动态管理系统. 这样可以最大限度地提高硬件利用率, 而不会牺牲工作负载健康或冒着OOM等风险.</p>
+<h1 id="pressure-interface">Pressure Interface</h1>
+<p>资源（cpu, memory, io）的压力信息通过/proc/pressure/中的各个文件导出. 如下图
+<img src="assets/psi_info-20241008184607-hkon68s.jpg" alt="">
+内核以10s/60s/300s（为了了解短期/中期/长期的趋势）的频率跟踪可运行的程序因资源不可用而延迟的时间百分比(avg). 总停滞时间(total)也被跟踪并导出, 以便检测不一定对平均数据造成影响的峰值数据和平均自定义时间范围的趋势(就是进程停滞的总时间(us)). 如果这些数字开始大幅增加, 则意味着由于对应的资源过载, 进程的运行速度比正常情况下要慢.</p>
+<p>上图中的&quot;some&quot;行表示了一些使用资源的任务所停滞的时间.
+而&quot;full&quot;行表示所有非空闲任务在给定资源上停滞的时间. 长时间处于这种状态被称为&quot;抖动&quot;, cpu资源会被浪费, 对性能造成严重影响. 将&quot;抖动&quot;与任务停滞但不让cpu空转的状态区分是必要的, 因此将停滞状态的任务单独跟踪并导出到&quot;full&quot;行.</p>
+<p>更多的对于some和full的解释见此<a href="https://facebookmicrosites.github.io/psi/docs/overview.html" target="_blank" rel="noopener">文章</a></p>
+<h1 id="monitoring-for-pressure-thresholds">Monitoring for pressure thresholds</h1>
+<p>用户可以注册触发器并使用<code>poll()</code>在资源压力超过特定阈值时唤醒. 触发器描述特定时间窗口内的最大累积停顿时间. 例如, 任何500毫秒窗口内的总停顿时间为100毫秒, 则生成唤醒事件.
+要注册触发器, 用户必须打开/proc/pressure/下表示要监视的资源的psi接口文件, 并写入所需的阈值和时间窗口. 打开的文件描述符应该用于等待使用select(), poll(), epoll()的触发事件. 使用以下格式：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plain" data-lang="plain"><span style="display:flex;"><span>&lt;some|full&gt; &lt;stall amount(us)&gt; &lt;tracking window time(us)&gt;
+</span></span></code></pre></div><p>例如, 将&quot;some 150000 1000000&quot;写入/proc/pressure/memory会为1秒时间窗口内测量的部分内存停顿添加150ms阈值. 将&quot;full 50000 1000000&quot;写入/proc/pressure/io会为1秒时间窗口内测量的完整io停顿添加50ms阈值.</p>
+<p>可以在多个psi指标上设置触发器, 并且可以为同一psi指标指定多个触发器. 但是, 对于每个触发器, 都需要一个单独的文件描述符才能将其与其他文件描述符分开轮询, 因此, 即使打开相同的psi接口文件, 也应该为每个触发器进行单独的<code>open()</code>系统调用. 对具有现有psi触发器的文件描述符的写入操作将失败(触发EBUSY).</p>
+<p>当系统进入受监控psi指标的停顿状态时, 监视器才会激活, 并在退出停顿状态时停用. 当系统处于停顿状态时, psi信号的增长以每个跟踪窗口（tracking window, 上述格式中的第三个参数）10次的速率进行监控.
+内核接受的窗口大小范围从500毫秒到10秒, 因此最小监控更新间隔为50毫秒, 最大为1秒.
+设置最小限制以防止过于频繁的轮询. 最大限制选择为足够高的数字, 超过该数字后很可能不需要监控器, 而可以使用psi平均值.
+普通用户也可以创建监控器, 唯一的限制是窗口大小必须是2秒的倍数, 以防止过度使用资源. 激活后, psi监控器至少在一个跟踪窗口的持续时间内保持活动状态, 以避免在系统进入和退出停顿状态时重复激活/停用.</p>
+<p>对userspace的通知速率限制为每个跟踪窗口一次.</p>
+<p>当用于定义触发器的文件描述符关闭时, 触发器将取消注册.</p>
+<h1 id="userspace-monitor-usage-example">Userspace monitor usage example</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;errno.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;fcntl.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;poll.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;string.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;unistd.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * Monitor memory partial stall with 1s tracking window size
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * and 150ms threshold.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> trig[] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;some 150000 1000000&#34;</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">struct</span> pollfd fds;
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">int</span> n;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      fds.fd <span style="color:#f92672">=</span> <span style="color:#a6e22e">open</span>(<span style="color:#e6db74">&#34;/proc/pressure/memory&#34;</span>, O_RDWR <span style="color:#f92672">|</span> O_NONBLOCK);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (fds.fd <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>              <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;/proc/pressure/memory open error: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,
+</span></span><span style="display:flex;"><span>                      <span style="color:#a6e22e">strerror</span>(errno));
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      fds.events <span style="color:#f92672">=</span> POLLPRI;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">write</span>(fds.fd, trig, <span style="color:#a6e22e">strlen</span>(trig) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>              <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;/proc/pressure/memory write error: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,
+</span></span><span style="display:flex;"><span>                      <span style="color:#a6e22e">strerror</span>(errno));
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;waiting for events...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">while</span> (<span style="color:#ae81ff">1</span>) {
+</span></span><span style="display:flex;"><span>              n <span style="color:#f92672">=</span> <span style="color:#a6e22e">poll</span>(<span style="color:#f92672">&amp;</span>fds, <span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">if</span> (n <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>                      <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;poll error: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">strerror</span>(errno));
+</span></span><span style="display:flex;"><span>                      <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>              }
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">if</span> (fds.revents <span style="color:#f92672">&amp;</span> POLLERR) {
+</span></span><span style="display:flex;"><span>                      <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;got POLLERR, event source is gone</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>                      <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>              }
+</span></span><span style="display:flex;"><span>              <span style="color:#66d9ef">if</span> (fds.revents <span style="color:#f92672">&amp;</span> POLLPRI) {
+</span></span><span style="display:flex;"><span>                      <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;event triggered!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>              } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                      <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;unknown event received: 0x%x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, fds.revents);
+</span></span><span style="display:flex;"><span>                      <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>              }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="cgroup2-interface">Cgroup2 Interface</h1>
+<p>如果系统的kernel在编译时设置<code>CONFIG_CGROUPS=y</code>并且cgroup2文件系统被挂载, 还会跟踪分组到cgroups中的任务的psi.
+cgroupfs挂载点中的每个子目录都包含cpu pressure, memory pressure, io pressure文件, 其格式与/proc/pressure/文件相同.
+每个cgroup psi监视器可以与系统范围的监视器相同的方式指定和使用.</p>
+<p><a href="http://localhost:1313/notes/documents/linux-related/cgroup/">cgroup</a></p>
+<p>‍</p>
+<h2 id="backlinks">Backlinks</h2>
+<ul>
+<li><a href="http://localhost:1313/notes/documents/linux-related/cgroup/">cgroup</a></li>
+</ul>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

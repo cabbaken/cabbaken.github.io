@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>AOSP directories intro</title>
+
+<meta name="description" content="AOSP directories intro AOSP directories intro The ​​​Android Open Source Project (AOSP)​​​ is a large-scale project, and its source code is organized into various directories. Each directory plays a specific role in the Android platform&rsquo;s development. Below is a high-level overview of the main directories within AOSP:
+1. art/ Purpose: Contains the Android Runtime (ART), which is responsible for executing Android applications. ART is the runtime that replaced the Dalvik VM, supporting Ahead-of-Time (AOT) and Just-in-Time (JIT) compilation. Key subdirectories: compiler/: Handles the AOT/JIT compilation of bytecode. runtime/: Core runtime engine that executes the compiled code. 2. bionic/ Purpose: Implements the Android version of the standard C library (libc), optimized for low memory and performance in embedded systems. It also includes the dynamic linker (libdl) and the math library (libm). Key subdirectories: libc/: The C standard library. libm/: The math library. linker/: The dynamic linker responsible for loading shared libraries. 3. bootable/ Purpose: Contains components for the boot process of Android devices, such as the recovery system. Key subdirectories: recovery/: Source for the Android recovery system, used for flashing, updating, or resetting the device. 4. build/ Purpose: This directory manages the build system for Android, containing scripts and configuration files that define how the entire Android platform is compiled. Key subdirectories: core/: Core makefiles and scripts for the build process. soong/: Newer build system based on Soong, which is gradually replacing the older make system. 5. cts/ Purpose: Houses the Compatibility Test Suite (CTS), used to ensure that devices comply with Android’s compatibility requirements. Key subdirectories: tests/: The actual test cases for various components of Android. 6. dalvik/ Purpose: Contains the legacy Dalvik VM, the runtime environment that was used before ART. Although no longer actively used, this directory holds the legacy code for reference. Key subdirectories: vm/: The Dalvik virtual machine. 7. development/ Purpose: Contains tools and utilities for Android developers, such as sample code, development tools, and debugging utilities. Key subdirectories: tools/: Various development tools and scripts. samples/: Sample applications and framework examples. 8. device/ Purpose: Contains device-specific configurations, typically used to define device hardware characteristics, build configurations, and board support packages (BSPs). Key subdirectories: ​generic/​: Generic configurations for reference devices. ​google/​: Device-specific configurations for Google-branded devices like Pixel. ​qcom/​: Qcom defined SSI ​xiaomi/missi/​: Extend SSI of xiaomi from Qcom SSI ​xiaomi/xxx/product/​: xxx&rsquo;s product 9. external/ Purpose: Includes external open-source libraries and projects that Android depends on but are not natively developed by the Android team. Key subdirectories: Multiple external libraries like openssl/, sqlite/, webkit/, etc. 10. frameworks/ Purpose: Contains the core framework that defines Android’s application model and essential system services. It’s one of the most critical directories in AOSP. Key subdirectories: base/: Core Android framework, containing essential services like Activity Manager, Package Manager, etc. av/: Audio/Video framework, handles media playback, recording, and camera access. native/: Native system framework that handles low-level services such as SurfaceFlinger for rendering. opt/: Optional framework components such as Bluetooth and telephony. 11. hardware/ Purpose: Contains hardware abstraction layers (HALs) for different devices, allowing Android to interact with hardware like cameras, sensors, and radios. Key subdirectories: libhardware/: Generic hardware abstraction library. interfaces/: HAL interfaces for different hardware components. 12. kernel/ (Optional, not always part of AOSP) Purpose: Contains device-specific Linux kernel sources. Not every AOSP repository includes the kernel, as it is typically distributed separately. Note: This directory may vary depending on the device and is often provided by the device manufacturer. 13. libcore/ Purpose: Provides core libraries for Android, including the Java class libraries (like java.util, java.lang) and APIs that Android applications depend on. Key subdirectories: ojluni/: OpenJDK-based libraries used by Android for its Java runtime. 14. packages/ Purpose: Contains default system applications and services that come with Android, like the launcher, calendar, contacts, and messaging apps. Key subdirectories: apps/: Core Android applications (e.g., Dialer, Settings). providers/: Content providers (e.g., ContactsProvider, MediaProvider). services/: System services that interact with apps and hardware. 15. platform_testing/ Purpose: Contains test suites and testing frameworks to ensure that the platform functions as expected. This is vital for regression testing. Key subdirectories: tests/: Test cases for platform functionality. cts/: Compatibility Test Suite cases for platform compliance. 16. prebuilts/ Purpose: Houses precompiled binaries and libraries used during the build process, such as toolchains, compilers, and prebuilt SDK components. Key subdirectories: sdk/: Prebuilt SDK libraries for Android development. gcc/: Prebuilt toolchains for compiling Android. 17. sdk/ Purpose: Contains components for the Android Software Development Kit (SDK), such as the Android emulator and tools for application development. Key subdirectories: tools/: Android SDK tools like adb and emulator. 18. system/ Purpose: Contains the core system components needed for Android’s runtime and basic system services. Key subdirectories: core/: Core system services like init, logcat, adb. sepolicy/: SELinux policy configuration. vold/: Volume daemon for managing storage. 19. test/ Purpose: Contains tests for various parts of the system, particularly focusing on lower-level functionalities. Key subdirectories: jni/: Tests for native code (JNI). suites/: Organized test suites. 20. tools/ Purpose: Provides a range of utilities and tools for building and debugging Android, such as the Android Debug Bridge (adb), the TraceView profiler, and others. Key subdirectories: adb/: Source code for the adb tool. traceview/: Tools for profiling and performance analysis. 21. vendor/ Purpose: Contains vendor-specific code, such as proprietary drivers, HAL implementations, and device-specific configurations provided by device manufacturers. Key subdirectories: Vendor-specific configurations and binaries. ‍ title: AOSP directories intro date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z AOSP directories intro AOSP directories intro The ​​​Android Open Source Project (AOSP)​​​ is a large-scale project, and its source code is organized into various directories. Each directory plays a specific role in the Android platform&rsquo;s development. Below is a high-level overview of the main directories within AOSP:
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/aosp-related/aosp-directories-intro/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/aosp-related/aosp-directories-intro/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/aosp-related/aosp-directories-intro/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="AOSP directories intro">
+<meta property="og:description" content="AOSP directories intro
+AOSP directories intro
+The ​​​Android Open Source Project (AOSP)​​​  is a large-scale project, and its source code is organized into various directories. Each directory plays a specific role in the Android platform&rsquo;s development. Below is a high-level overview of the main directories within AOSP:
+1. art/
+
+Purpose: Contains the Android Runtime (ART), which is responsible for executing Android applications. ART is the runtime that replaced the Dalvik VM, supporting Ahead-of-Time (AOT) and Just-in-Time (JIT) compilation.
+Key subdirectories:
+
+compiler/: Handles the AOT/JIT compilation of bytecode.
+runtime/: Core runtime engine that executes the compiled code.
+
+
+
+2. bionic/
+
+Purpose: Implements the Android version of the standard C library (libc), optimized for low memory and performance in embedded systems. It also includes the dynamic linker (libdl) and the math library (libm).
+Key subdirectories:
+
+libc/: The C standard library.
+libm/: The math library.
+linker/: The dynamic linker responsible for loading shared libraries.
+
+
+
+3. bootable/
+
+Purpose: Contains components for the boot process of Android devices, such as the recovery system.
+Key subdirectories:
+
+recovery/: Source for the Android recovery system, used for flashing, updating, or resetting the device.
+
+
+
+4. build/
+
+Purpose: This directory manages the build system for Android, containing scripts and configuration files that define how the entire Android platform is compiled.
+Key subdirectories:
+
+core/: Core makefiles and scripts for the build process.
+soong/: Newer build system based on Soong, which is gradually replacing the older make system.
+
+
+
+5. cts/
+
+Purpose: Houses the Compatibility Test Suite (CTS), used to ensure that devices comply with Android’s compatibility requirements.
+Key subdirectories:
+
+tests/: The actual test cases for various components of Android.
+
+
+
+6. dalvik/
+
+Purpose: Contains the legacy Dalvik VM, the runtime environment that was used before ART. Although no longer actively used, this directory holds the legacy code for reference.
+Key subdirectories:
+
+vm/: The Dalvik virtual machine.
+
+
+
+7. development/
+
+Purpose: Contains tools and utilities for Android developers, such as sample code, development tools, and debugging utilities.
+Key subdirectories:
+
+tools/: Various development tools and scripts.
+samples/: Sample applications and framework examples.
+
+
+
+8. device/
+
+Purpose: Contains device-specific configurations, typically used to define device hardware characteristics, build configurations, and board support packages (BSPs).
+Key subdirectories:
+
+​generic/​: Generic configurations for reference devices.
+​google/​: Device-specific configurations for Google-branded devices like Pixel.
+​qcom/​: Qcom defined SSI
+​xiaomi/missi/​: Extend SSI of xiaomi from Qcom SSI
+​xiaomi/xxx/product/​: xxx&rsquo;s product
+
+
+
+9. external/
+
+Purpose: Includes external open-source libraries and projects that Android depends on but are not natively developed by the Android team.
+Key subdirectories:
+
+Multiple external libraries like openssl/, sqlite/, webkit/, etc.
+
+
+
+10. frameworks/
+
+Purpose: Contains the core framework that defines Android’s application model and essential system services. It’s one of the most critical directories in AOSP.
+Key subdirectories:
+
+base/: Core Android framework, containing essential services like Activity Manager, Package Manager, etc.
+av/: Audio/Video framework, handles media playback, recording, and camera access.
+native/: Native system framework that handles low-level services such as SurfaceFlinger for rendering.
+opt/: Optional framework components such as Bluetooth and telephony.
+
+
+
+11. hardware/
+
+Purpose: Contains hardware abstraction layers (HALs) for different devices, allowing Android to interact with hardware like cameras, sensors, and radios.
+Key subdirectories:
+
+libhardware/: Generic hardware abstraction library.
+interfaces/: HAL interfaces for different hardware components.
+
+
+
+12. kernel/   (Optional, not always part of AOSP)
+
+Purpose: Contains device-specific Linux kernel sources. Not every AOSP repository includes the kernel, as it is typically distributed separately.
+Note: This directory may vary depending on the device and is often provided by the device manufacturer.
+
+13. libcore/
+
+Purpose: Provides core libraries for Android, including the Java class libraries (like java.util, java.lang) and APIs that Android applications depend on.
+Key subdirectories:
+
+ojluni/: OpenJDK-based libraries used by Android for its Java runtime.
+
+
+
+14. packages/
+
+Purpose: Contains default system applications and services that come with Android, like the launcher, calendar, contacts, and messaging apps.
+Key subdirectories:
+
+apps/: Core Android applications (e.g., Dialer, Settings).
+providers/: Content providers (e.g., ContactsProvider, MediaProvider).
+services/: System services that interact with apps and hardware.
+
+
+
+15. platform_testing/
+
+Purpose: Contains test suites and testing frameworks to ensure that the platform functions as expected. This is vital for regression testing.
+Key subdirectories:
+
+tests/: Test cases for platform functionality.
+cts/: Compatibility Test Suite cases for platform compliance.
+
+
+
+16. prebuilts/
+
+Purpose: Houses precompiled binaries and libraries used during the build process, such as toolchains, compilers, and prebuilt SDK components.
+Key subdirectories:
+
+sdk/: Prebuilt SDK libraries for Android development.
+gcc/: Prebuilt toolchains for compiling Android.
+
+
+
+17. sdk/
+
+Purpose: Contains components for the Android Software Development Kit (SDK), such as the Android emulator and tools for application development.
+Key subdirectories:
+
+tools/: Android SDK tools like adb and emulator.
+
+
+
+18. system/
+
+Purpose: Contains the core system components needed for Android’s runtime and basic system services.
+Key subdirectories:
+
+core/: Core system services like init, logcat, adb.
+sepolicy/: SELinux policy configuration.
+vold/: Volume daemon for managing storage.
+
+
+
+19. test/
+
+Purpose: Contains tests for various parts of the system, particularly focusing on lower-level functionalities.
+Key subdirectories:
+
+jni/: Tests for native code (JNI).
+suites/: Organized test suites.
+
+
+
+20. tools/
+
+Purpose: Provides a range of utilities and tools for building and debugging Android, such as the Android Debug Bridge (adb), the TraceView profiler, and others.
+Key subdirectories:
+
+adb/: Source code for the adb tool.
+traceview/: Tools for profiling and performance analysis.
+
+
+
+21. vendor/
+
+Purpose: Contains vendor-specific code, such as proprietary drivers, HAL implementations, and device-specific configurations provided by device manufacturers.
+Key subdirectories:
+
+Vendor-specific configurations and binaries.
+
+
+
+‍
+title: AOSP directories intro
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+AOSP directories intro
+AOSP directories intro
+The ​​​Android Open Source Project (AOSP)​​​  is a large-scale project, and its source code is organized into various directories. Each directory plays a specific role in the Android platform&rsquo;s development. Below is a high-level overview of the main directories within AOSP:">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/aosp-related/aosp-directories-intro/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="AOSP directories intro">
+<meta name="twitter:description" content="AOSP directories intro
+AOSP directories intro
+The ​​​Android Open Source Project (AOSP)​​​  is a large-scale project, and its source code is organized into various directories. Each directory plays a specific role in the Android platform&rsquo;s development. Below is a high-level overview of the main directories within AOSP:
+1. art/
+
+Purpose: Contains the Android Runtime (ART), which is responsible for executing Android applications. ART is the runtime that replaced the Dalvik VM, supporting Ahead-of-Time (AOT) and Just-in-Time (JIT) compilation.
+Key subdirectories:
+
+compiler/: Handles the AOT/JIT compilation of bytecode.
+runtime/: Core runtime engine that executes the compiled code.
+
+
+
+2. bionic/
+
+Purpose: Implements the Android version of the standard C library (libc), optimized for low memory and performance in embedded systems. It also includes the dynamic linker (libdl) and the math library (libm).
+Key subdirectories:
+
+libc/: The C standard library.
+libm/: The math library.
+linker/: The dynamic linker responsible for loading shared libraries.
+
+
+
+3. bootable/
+
+Purpose: Contains components for the boot process of Android devices, such as the recovery system.
+Key subdirectories:
+
+recovery/: Source for the Android recovery system, used for flashing, updating, or resetting the device.
+
+
+
+4. build/
+
+Purpose: This directory manages the build system for Android, containing scripts and configuration files that define how the entire Android platform is compiled.
+Key subdirectories:
+
+core/: Core makefiles and scripts for the build process.
+soong/: Newer build system based on Soong, which is gradually replacing the older make system.
+
+
+
+5. cts/
+
+Purpose: Houses the Compatibility Test Suite (CTS), used to ensure that devices comply with Android’s compatibility requirements.
+Key subdirectories:
+
+tests/: The actual test cases for various components of Android.
+
+
+
+6. dalvik/
+
+Purpose: Contains the legacy Dalvik VM, the runtime environment that was used before ART. Although no longer actively used, this directory holds the legacy code for reference.
+Key subdirectories:
+
+vm/: The Dalvik virtual machine.
+
+
+
+7. development/
+
+Purpose: Contains tools and utilities for Android developers, such as sample code, development tools, and debugging utilities.
+Key subdirectories:
+
+tools/: Various development tools and scripts.
+samples/: Sample applications and framework examples.
+
+
+
+8. device/
+
+Purpose: Contains device-specific configurations, typically used to define device hardware characteristics, build configurations, and board support packages (BSPs).
+Key subdirectories:
+
+​generic/​: Generic configurations for reference devices.
+​google/​: Device-specific configurations for Google-branded devices like Pixel.
+​qcom/​: Qcom defined SSI
+​xiaomi/missi/​: Extend SSI of xiaomi from Qcom SSI
+​xiaomi/xxx/product/​: xxx&rsquo;s product
+
+
+
+9. external/
+
+Purpose: Includes external open-source libraries and projects that Android depends on but are not natively developed by the Android team.
+Key subdirectories:
+
+Multiple external libraries like openssl/, sqlite/, webkit/, etc.
+
+
+
+10. frameworks/
+
+Purpose: Contains the core framework that defines Android’s application model and essential system services. It’s one of the most critical directories in AOSP.
+Key subdirectories:
+
+base/: Core Android framework, containing essential services like Activity Manager, Package Manager, etc.
+av/: Audio/Video framework, handles media playback, recording, and camera access.
+native/: Native system framework that handles low-level services such as SurfaceFlinger for rendering.
+opt/: Optional framework components such as Bluetooth and telephony.
+
+
+
+11. hardware/
+
+Purpose: Contains hardware abstraction layers (HALs) for different devices, allowing Android to interact with hardware like cameras, sensors, and radios.
+Key subdirectories:
+
+libhardware/: Generic hardware abstraction library.
+interfaces/: HAL interfaces for different hardware components.
+
+
+
+12. kernel/   (Optional, not always part of AOSP)
+
+Purpose: Contains device-specific Linux kernel sources. Not every AOSP repository includes the kernel, as it is typically distributed separately.
+Note: This directory may vary depending on the device and is often provided by the device manufacturer.
+
+13. libcore/
+
+Purpose: Provides core libraries for Android, including the Java class libraries (like java.util, java.lang) and APIs that Android applications depend on.
+Key subdirectories:
+
+ojluni/: OpenJDK-based libraries used by Android for its Java runtime.
+
+
+
+14. packages/
+
+Purpose: Contains default system applications and services that come with Android, like the launcher, calendar, contacts, and messaging apps.
+Key subdirectories:
+
+apps/: Core Android applications (e.g., Dialer, Settings).
+providers/: Content providers (e.g., ContactsProvider, MediaProvider).
+services/: System services that interact with apps and hardware.
+
+
+
+15. platform_testing/
+
+Purpose: Contains test suites and testing frameworks to ensure that the platform functions as expected. This is vital for regression testing.
+Key subdirectories:
+
+tests/: Test cases for platform functionality.
+cts/: Compatibility Test Suite cases for platform compliance.
+
+
+
+16. prebuilts/
+
+Purpose: Houses precompiled binaries and libraries used during the build process, such as toolchains, compilers, and prebuilt SDK components.
+Key subdirectories:
+
+sdk/: Prebuilt SDK libraries for Android development.
+gcc/: Prebuilt toolchains for compiling Android.
+
+
+
+17. sdk/
+
+Purpose: Contains components for the Android Software Development Kit (SDK), such as the Android emulator and tools for application development.
+Key subdirectories:
+
+tools/: Android SDK tools like adb and emulator.
+
+
+
+18. system/
+
+Purpose: Contains the core system components needed for Android’s runtime and basic system services.
+Key subdirectories:
+
+core/: Core system services like init, logcat, adb.
+sepolicy/: SELinux policy configuration.
+vold/: Volume daemon for managing storage.
+
+
+
+19. test/
+
+Purpose: Contains tests for various parts of the system, particularly focusing on lower-level functionalities.
+Key subdirectories:
+
+jni/: Tests for native code (JNI).
+suites/: Organized test suites.
+
+
+
+20. tools/
+
+Purpose: Provides a range of utilities and tools for building and debugging Android, such as the Android Debug Bridge (adb), the TraceView profiler, and others.
+Key subdirectories:
+
+adb/: Source code for the adb tool.
+traceview/: Tools for profiling and performance analysis.
+
+
+
+21. vendor/
+
+Purpose: Contains vendor-specific code, such as proprietary drivers, HAL implementations, and device-specific configurations provided by device manufacturers.
+Key subdirectories:
+
+Vendor-specific configurations and binaries.
+
+
+
+‍
+title: AOSP directories intro
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+AOSP directories intro
+AOSP directories intro
+The ​​​Android Open Source Project (AOSP)​​​  is a large-scale project, and its source code is organized into various directories. Each directory plays a specific role in the Android platform&rsquo;s development. Below is a high-level overview of the main directories within AOSP:">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "AOSP directories intro",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  1788 ,
+  "description": "AOSP directories intro AOSP directories intro The ​​​Android Open Source Project (AOSP)​​​ is a large-scale project, and its source code is organized into various directories. Each directory plays a specific role in the Android platform\u0026rsquo;s development. Below is a high-level overview of the main directories within AOSP:\n1. art/ Purpose: Contains the Android Runtime (ART), which is responsible for executing Android applications. ART is the runtime that replaced the Dalvik VM, supporting Ahead-of-Time (AOT) and Just-in-Time (JIT) compilation. Key subdirectories: compiler/: Handles the AOT/JIT compilation of bytecode. runtime/: Core runtime engine that executes the compiled code. 2. bionic/ Purpose: Implements the Android version of the standard C library (libc), optimized for low memory and performance in embedded systems. It also includes the dynamic linker (libdl) and the math library (libm). Key subdirectories: libc/: The C standard library. libm/: The math library. linker/: The dynamic linker responsible for loading shared libraries. 3. bootable/ Purpose: Contains components for the boot process of Android devices, such as the recovery system. Key subdirectories: recovery/: Source for the Android recovery system, used for flashing, updating, or resetting the device. 4. build/ Purpose: This directory manages the build system for Android, containing scripts and configuration files that define how the entire Android platform is compiled. Key subdirectories: core/: Core makefiles and scripts for the build process. soong/: Newer build system based on Soong, which is gradually replacing the older make system. 5. cts/ Purpose: Houses the Compatibility Test Suite (CTS), used to ensure that devices comply with Android’s compatibility requirements. Key subdirectories: tests/: The actual test cases for various components of Android. 6. dalvik/ Purpose: Contains the legacy Dalvik VM, the runtime environment that was used before ART. Although no longer actively used, this directory holds the legacy code for reference. Key subdirectories: vm/: The Dalvik virtual machine. 7. development/ Purpose: Contains tools and utilities for Android developers, such as sample code, development tools, and debugging utilities. Key subdirectories: tools/: Various development tools and scripts. samples/: Sample applications and framework examples. 8. device/ Purpose: Contains device-specific configurations, typically used to define device hardware characteristics, build configurations, and board support packages (BSPs). Key subdirectories: ​generic/​: Generic configurations for reference devices. ​google/​: Device-specific configurations for Google-branded devices like Pixel. ​qcom/​: Qcom defined SSI ​xiaomi/missi/​: Extend SSI of xiaomi from Qcom SSI ​xiaomi/xxx/product/​: xxx\u0026rsquo;s product 9. external/ Purpose: Includes external open-source libraries and projects that Android depends on but are not natively developed by the Android team. Key subdirectories: Multiple external libraries like openssl/, sqlite/, webkit/, etc. 10. frameworks/ Purpose: Contains the core framework that defines Android’s application model and essential system services. It’s one of the most critical directories in AOSP. Key subdirectories: base/: Core Android framework, containing essential services like Activity Manager, Package Manager, etc. av/: Audio/Video framework, handles media playback, recording, and camera access. native/: Native system framework that handles low-level services such as SurfaceFlinger for rendering. opt/: Optional framework components such as Bluetooth and telephony. 11. hardware/ Purpose: Contains hardware abstraction layers (HALs) for different devices, allowing Android to interact with hardware like cameras, sensors, and radios. Key subdirectories: libhardware/: Generic hardware abstraction library. interfaces/: HAL interfaces for different hardware components. 12. kernel/ (Optional, not always part of AOSP) Purpose: Contains device-specific Linux kernel sources. Not every AOSP repository includes the kernel, as it is typically distributed separately. Note: This directory may vary depending on the device and is often provided by the device manufacturer. 13. libcore/ Purpose: Provides core libraries for Android, including the Java class libraries (like java.util, java.lang) and APIs that Android applications depend on. Key subdirectories: ojluni/: OpenJDK-based libraries used by Android for its Java runtime. 14. packages/ Purpose: Contains default system applications and services that come with Android, like the launcher, calendar, contacts, and messaging apps. Key subdirectories: apps/: Core Android applications (e.g., Dialer, Settings). providers/: Content providers (e.g., ContactsProvider, MediaProvider). services/: System services that interact with apps and hardware. 15. platform_testing/ Purpose: Contains test suites and testing frameworks to ensure that the platform functions as expected. This is vital for regression testing. Key subdirectories: tests/: Test cases for platform functionality. cts/: Compatibility Test Suite cases for platform compliance. 16. prebuilts/ Purpose: Houses precompiled binaries and libraries used during the build process, such as toolchains, compilers, and prebuilt SDK components. Key subdirectories: sdk/: Prebuilt SDK libraries for Android development. gcc/: Prebuilt toolchains for compiling Android. 17. sdk/ Purpose: Contains components for the Android Software Development Kit (SDK), such as the Android emulator and tools for application development. Key subdirectories: tools/: Android SDK tools like adb and emulator. 18. system/ Purpose: Contains the core system components needed for Android’s runtime and basic system services. Key subdirectories: core/: Core system services like init, logcat, adb. sepolicy/: SELinux policy configuration. vold/: Volume daemon for managing storage. 19. test/ Purpose: Contains tests for various parts of the system, particularly focusing on lower-level functionalities. Key subdirectories: jni/: Tests for native code (JNI). suites/: Organized test suites. 20. tools/ Purpose: Provides a range of utilities and tools for building and debugging Android, such as the Android Debug Bridge (adb), the TraceView profiler, and others. Key subdirectories: adb/: Source code for the adb tool. traceview/: Tools for profiling and performance analysis. 21. vendor/ Purpose: Contains vendor-specific code, such as proprietary drivers, HAL implementations, and device-specific configurations provided by device manufacturers. Key subdirectories: Vendor-specific configurations and binaries. ‍ title: AOSP directories intro date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z AOSP directories intro AOSP directories intro The ​​​Android Open Source Project (AOSP)​​​ is a large-scale project, and its source code is organized into various directories. Each directory plays a specific role in the Android platform\u0026rsquo;s development. Below is a high-level overview of the main directories within AOSP:\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="aosp-directories-intro">AOSP directories intro</h1>
+<h1 id="aosp-directories-intro-1">AOSP directories intro</h1>
+<p>The <strong>​</strong>​<strong>​<code>Android Open Source Project (AOSP)</code>​</strong>​<strong>​</strong>  is a large-scale project, and its source code is organized into various directories. Each directory plays a specific role in the Android platform&rsquo;s development. Below is a high-level overview of the <strong>main directories</strong> within AOSP:</p>
+<h3 id="1-art">1. <strong>art/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains the Android Runtime (ART), which is responsible for executing Android applications. ART is the runtime that replaced the Dalvik VM, supporting Ahead-of-Time (AOT) and Just-in-Time (JIT) compilation.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>compiler/</code>: Handles the AOT/JIT compilation of bytecode.</li>
+<li><code>runtime/</code>: Core runtime engine that executes the compiled code.</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-bionic">2. <strong>bionic/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Implements the Android version of the standard C library (<code>libc</code>), optimized for low memory and performance in embedded systems. It also includes the dynamic linker (<code>libdl</code>) and the math library (<code>libm</code>).</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>libc/</code>: The C standard library.</li>
+<li><code>libm/</code>: The math library.</li>
+<li><code>linker/</code>: The dynamic linker responsible for loading shared libraries.</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-bootable">3. <strong>bootable/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains components for the boot process of Android devices, such as the recovery system.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>recovery/</code>: Source for the Android recovery system, used for flashing, updating, or resetting the device.</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-build">4. <strong>build/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: This directory manages the build system for Android, containing scripts and configuration files that define how the entire Android platform is compiled.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>core/</code>: Core makefiles and scripts for the build process.</li>
+<li><code>soong/</code>: Newer build system based on Soong, which is gradually replacing the older make system.</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-cts">5. <strong>cts/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Houses the Compatibility Test Suite (CTS), used to ensure that devices comply with Android’s compatibility requirements.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>tests/</code>: The actual test cases for various components of Android.</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-dalvik">6. <strong>dalvik/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains the legacy Dalvik VM, the runtime environment that was used before ART. Although no longer actively used, this directory holds the legacy code for reference.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>vm/</code>: The Dalvik virtual machine.</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-development">7. <strong>development/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains tools and utilities for Android developers, such as sample code, development tools, and debugging utilities.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>tools/</code>: Various development tools and scripts.</li>
+<li><code>samples/</code>: Sample applications and framework examples.</li>
+</ul>
+</li>
+</ul>
+<h3 id="8-device">8. <strong>device/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains device-specific configurations, typically used to define device hardware characteristics, build configurations, and board support packages (BSPs).</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li>​<code>generic/</code>​: Generic configurations for reference devices.</li>
+<li>​<code>google/</code>​: Device-specific configurations for Google-branded devices like Pixel.</li>
+<li>​<code>qcom/</code>​: Qcom defined SSI</li>
+<li>​<code>xiaomi/missi/</code>​: Extend SSI of xiaomi from Qcom SSI</li>
+<li>​<code>xiaomi/xxx/product/</code>​: xxx&rsquo;s product</li>
+</ul>
+</li>
+</ul>
+<h3 id="9-external">9. <strong>external/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Includes external open-source libraries and projects that Android depends on but are not natively developed by the Android team.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li>Multiple external libraries like <code>openssl/</code>, <code>sqlite/</code>, <code>webkit/</code>, etc.</li>
+</ul>
+</li>
+</ul>
+<h3 id="10-frameworks">10. <strong>frameworks/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains the core framework that defines Android’s application model and essential system services. It’s one of the most critical directories in AOSP.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>base/</code>: Core Android framework, containing essential services like Activity Manager, Package Manager, etc.</li>
+<li><code>av/</code>: Audio/Video framework, handles media playback, recording, and camera access.</li>
+<li><code>native/</code>: Native system framework that handles low-level services such as SurfaceFlinger for rendering.</li>
+<li><code>opt/</code>: Optional framework components such as Bluetooth and telephony.</li>
+</ul>
+</li>
+</ul>
+<h3 id="11-hardware">11. <strong>hardware/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains hardware abstraction layers (HALs) for different devices, allowing Android to interact with hardware like cameras, sensors, and radios.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>libhardware/</code>: Generic hardware abstraction library.</li>
+<li><code>interfaces/</code>: HAL interfaces for different hardware components.</li>
+</ul>
+</li>
+</ul>
+<h3 id="12-kernel---optional-not-always-part-of-aosp">12. <strong>kernel/</strong>   (Optional, not always part of AOSP)</h3>
+<ul>
+<li><strong>Purpose</strong>: Contains device-specific Linux kernel sources. Not every AOSP repository includes the kernel, as it is typically distributed separately.</li>
+<li><strong>Note</strong>: This directory may vary depending on the device and is often provided by the device manufacturer.</li>
+</ul>
+<h3 id="13-libcore">13. <strong>libcore/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Provides core libraries for Android, including the Java class libraries (like java.util, java.lang) and APIs that Android applications depend on.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>ojluni/</code>: OpenJDK-based libraries used by Android for its Java runtime.</li>
+</ul>
+</li>
+</ul>
+<h3 id="14-packages">14. <strong>packages/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains default system applications and services that come with Android, like the launcher, calendar, contacts, and messaging apps.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>apps/</code>: Core Android applications (e.g., Dialer, Settings).</li>
+<li><code>providers/</code>: Content providers (e.g., ContactsProvider, MediaProvider).</li>
+<li><code>services/</code>: System services that interact with apps and hardware.</li>
+</ul>
+</li>
+</ul>
+<h3 id="15-platform_">15. <strong>platform_testing/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains test suites and testing frameworks to ensure that the platform functions as expected. This is vital for regression testing.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>tests/</code>: Test cases for platform functionality.</li>
+<li><code>cts/</code>: Compatibility Test Suite cases for platform compliance.</li>
+</ul>
+</li>
+</ul>
+<h3 id="16-prebuilts">16. <strong>prebuilts/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Houses precompiled binaries and libraries used during the build process, such as toolchains, compilers, and prebuilt SDK components.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>sdk/</code>: Prebuilt SDK libraries for Android development.</li>
+<li><code>gcc/</code>: Prebuilt toolchains for compiling Android.</li>
+</ul>
+</li>
+</ul>
+<h3 id="17-sdk">17. <strong>sdk/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains components for the Android Software Development Kit (SDK), such as the Android emulator and tools for application development.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>tools/</code>: Android SDK tools like <code>adb</code> and <code>emulator</code>.</li>
+</ul>
+</li>
+</ul>
+<h3 id="18-system">18. <strong>system/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains the core system components needed for Android’s runtime and basic system services.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>core/</code>: Core system services like init, logcat, adb.</li>
+<li><code>sepolicy/</code>: SELinux policy configuration.</li>
+<li><code>vold/</code>: Volume daemon for managing storage.</li>
+</ul>
+</li>
+</ul>
+<h3 id="19-test">19. <strong>test/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains tests for various parts of the system, particularly focusing on lower-level functionalities.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>jni/</code>: Tests for native code (JNI).</li>
+<li><code>suites/</code>: Organized test suites.</li>
+</ul>
+</li>
+</ul>
+<h3 id="20-tools">20. <strong>tools/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Provides a range of utilities and tools for building and debugging Android, such as the Android Debug Bridge (<code>adb</code>), the TraceView profiler, and others.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>adb/</code>: Source code for the <code>adb</code> tool.</li>
+<li><code>traceview/</code>: Tools for profiling and performance analysis.</li>
+</ul>
+</li>
+</ul>
+<h3 id="21-vendor">21. <strong>vendor/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains vendor-specific code, such as proprietary drivers, HAL implementations, and device-specific configurations provided by device manufacturers.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li>Vendor-specific configurations and binaries.</li>
+</ul>
+</li>
+</ul>
+<h2 id="heading">‍</h2>
+<h2 id="lastmod-2025-03-11t094648z">title: AOSP directories intro
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="aosp-directories-intro-2">AOSP directories intro</h1>
+<h1 id="aosp-directories-intro-3">AOSP directories intro</h1>
+<p>The <strong>​</strong>​<strong>​<code>Android Open Source Project (AOSP)</code>​</strong>​<strong>​</strong>  is a large-scale project, and its source code is organized into various directories. Each directory plays a specific role in the Android platform&rsquo;s development. Below is a high-level overview of the <strong>main directories</strong> within AOSP:</p>
+<h3 id="1-art-1">1. <strong>art/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains the Android Runtime (ART), which is responsible for executing Android applications. ART is the runtime that replaced the Dalvik VM, supporting Ahead-of-Time (AOT) and Just-in-Time (JIT) compilation.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>compiler/</code>: Handles the AOT/JIT compilation of bytecode.</li>
+<li><code>runtime/</code>: Core runtime engine that executes the compiled code.</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-bionic-1">2. <strong>bionic/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Implements the Android version of the standard C library (<code>libc</code>), optimized for low memory and performance in embedded systems. It also includes the dynamic linker (<code>libdl</code>) and the math library (<code>libm</code>).</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>libc/</code>: The C standard library.</li>
+<li><code>libm/</code>: The math library.</li>
+<li><code>linker/</code>: The dynamic linker responsible for loading shared libraries.</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-bootable-1">3. <strong>bootable/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains components for the boot process of Android devices, such as the recovery system.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>recovery/</code>: Source for the Android recovery system, used for flashing, updating, or resetting the device.</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-build-1">4. <strong>build/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: This directory manages the build system for Android, containing scripts and configuration files that define how the entire Android platform is compiled.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>core/</code>: Core makefiles and scripts for the build process.</li>
+<li><code>soong/</code>: Newer build system based on Soong, which is gradually replacing the older make system.</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-cts-1">5. <strong>cts/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Houses the Compatibility Test Suite (CTS), used to ensure that devices comply with Android’s compatibility requirements.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>tests/</code>: The actual test cases for various components of Android.</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-dalvik-1">6. <strong>dalvik/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains the legacy Dalvik VM, the runtime environment that was used before ART. Although no longer actively used, this directory holds the legacy code for reference.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>vm/</code>: The Dalvik virtual machine.</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-development-1">7. <strong>development/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains tools and utilities for Android developers, such as sample code, development tools, and debugging utilities.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>tools/</code>: Various development tools and scripts.</li>
+<li><code>samples/</code>: Sample applications and framework examples.</li>
+</ul>
+</li>
+</ul>
+<h3 id="8-device-1">8. <strong>device/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains device-specific configurations, typically used to define device hardware characteristics, build configurations, and board support packages (BSPs).</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li>​<code>generic/</code>​: Generic configurations for reference devices.</li>
+<li>​<code>google/</code>​: Device-specific configurations for Google-branded devices like Pixel.</li>
+<li>​<code>qcom/</code>​: Qcom defined SSI</li>
+<li>​<code>xiaomi/missi/</code>​: Extend SSI of xiaomi from Qcom SSI</li>
+<li>​<code>xiaomi/xxx/product/</code>​: xxx&rsquo;s product</li>
+</ul>
+</li>
+</ul>
+<h3 id="9-external-1">9. <strong>external/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Includes external open-source libraries and projects that Android depends on but are not natively developed by the Android team.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li>Multiple external libraries like <code>openssl/</code>, <code>sqlite/</code>, <code>webkit/</code>, etc.</li>
+</ul>
+</li>
+</ul>
+<h3 id="10-frameworks-1">10. <strong>frameworks/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains the core framework that defines Android’s application model and essential system services. It’s one of the most critical directories in AOSP.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>base/</code>: Core Android framework, containing essential services like Activity Manager, Package Manager, etc.</li>
+<li><code>av/</code>: Audio/Video framework, handles media playback, recording, and camera access.</li>
+<li><code>native/</code>: Native system framework that handles low-level services such as SurfaceFlinger for rendering.</li>
+<li><code>opt/</code>: Optional framework components such as Bluetooth and telephony.</li>
+</ul>
+</li>
+</ul>
+<h3 id="11-hardware-1">11. <strong>hardware/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains hardware abstraction layers (HALs) for different devices, allowing Android to interact with hardware like cameras, sensors, and radios.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>libhardware/</code>: Generic hardware abstraction library.</li>
+<li><code>interfaces/</code>: HAL interfaces for different hardware components.</li>
+</ul>
+</li>
+</ul>
+<h3 id="12-kernel---optional-not-always-part-of-aosp-1">12. <strong>kernel/</strong>   (Optional, not always part of AOSP)</h3>
+<ul>
+<li><strong>Purpose</strong>: Contains device-specific Linux kernel sources. Not every AOSP repository includes the kernel, as it is typically distributed separately.</li>
+<li><strong>Note</strong>: This directory may vary depending on the device and is often provided by the device manufacturer.</li>
+</ul>
+<h3 id="13-libcore-1">13. <strong>libcore/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Provides core libraries for Android, including the Java class libraries (like java.util, java.lang) and APIs that Android applications depend on.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>ojluni/</code>: OpenJDK-based libraries used by Android for its Java runtime.</li>
+</ul>
+</li>
+</ul>
+<h3 id="14-packages-1">14. <strong>packages/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains default system applications and services that come with Android, like the launcher, calendar, contacts, and messaging apps.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>apps/</code>: Core Android applications (e.g., Dialer, Settings).</li>
+<li><code>providers/</code>: Content providers (e.g., ContactsProvider, MediaProvider).</li>
+<li><code>services/</code>: System services that interact with apps and hardware.</li>
+</ul>
+</li>
+</ul>
+<h3 id="15-platform_-1">15. <strong>platform_testing/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains test suites and testing frameworks to ensure that the platform functions as expected. This is vital for regression testing.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>tests/</code>: Test cases for platform functionality.</li>
+<li><code>cts/</code>: Compatibility Test Suite cases for platform compliance.</li>
+</ul>
+</li>
+</ul>
+<h3 id="16-prebuilts-1">16. <strong>prebuilts/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Houses precompiled binaries and libraries used during the build process, such as toolchains, compilers, and prebuilt SDK components.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>sdk/</code>: Prebuilt SDK libraries for Android development.</li>
+<li><code>gcc/</code>: Prebuilt toolchains for compiling Android.</li>
+</ul>
+</li>
+</ul>
+<h3 id="17-sdk-1">17. <strong>sdk/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains components for the Android Software Development Kit (SDK), such as the Android emulator and tools for application development.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>tools/</code>: Android SDK tools like <code>adb</code> and <code>emulator</code>.</li>
+</ul>
+</li>
+</ul>
+<h3 id="18-system-1">18. <strong>system/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains the core system components needed for Android’s runtime and basic system services.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>core/</code>: Core system services like init, logcat, adb.</li>
+<li><code>sepolicy/</code>: SELinux policy configuration.</li>
+<li><code>vold/</code>: Volume daemon for managing storage.</li>
+</ul>
+</li>
+</ul>
+<h3 id="19-test-1">19. <strong>test/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains tests for various parts of the system, particularly focusing on lower-level functionalities.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>jni/</code>: Tests for native code (JNI).</li>
+<li><code>suites/</code>: Organized test suites.</li>
+</ul>
+</li>
+</ul>
+<h3 id="20-tools-1">20. <strong>tools/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Provides a range of utilities and tools for building and debugging Android, such as the Android Debug Bridge (<code>adb</code>), the TraceView profiler, and others.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li><code>adb/</code>: Source code for the <code>adb</code> tool.</li>
+<li><code>traceview/</code>: Tools for profiling and performance analysis.</li>
+</ul>
+</li>
+</ul>
+<h3 id="21-vendor-1">21. <strong>vendor/</strong></h3>
+<ul>
+<li><strong>Purpose</strong>: Contains vendor-specific code, such as proprietary drivers, HAL implementations, and device-specific configurations provided by device manufacturers.</li>
+<li><strong>Key subdirectories</strong>:
+<ul>
+<li>Vendor-specific configurations and binaries.</li>
+</ul>
+</li>
+</ul>
+<p>‍</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

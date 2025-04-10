@@ -1,0 +1,1242 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>Android相机架构概览</title>
+
+<meta name="description" content="Android相机架构概览 安卓相机架构 Android系统将相机架构分层, 各层的接口与实现分开, 使用接口连接各层, Android相机的架构共被分为5层. 如下图, 包括APP, framework, Service, HAL, driver.
+![](assets/Pasted image 20241203164642-20250311094648-1a43amv.png )
+Camera APP Camera APP是最上层, 不同的APP有不同的界面, 负责与用户直接交互. 通过Camera2 API将需求发送到Camera Framework层, 以此控制相机, 再将接收到的结果反馈给用户.
+Camera Framework Camera Framework层封装了Camera2 API的实现细节, 并将接口提供给Camera APP层, 供其调用. 收到APP层的请求后通过AIDL实现IPC, 将请求发送给Camera Service层, 并等待其回传结果, 然后将结果发送给Camera APP. 而Camera2作为jar包供Camera APP调用.
+Camera2 API的实现: frameworks/base/core/java/android/hardware/camera2/
+Camera Service Camera Service层会作为一个独立的进程(cameraserver)在系统启动后运行, 封装了AIDL接口供Framework层进行调用. 接收到Framework层的请求后通过HIDL或AIDL接口将请求发送至Camera HAL层, 并在收到结果后将结果回传给Framework层.
+Camera Service的相关实现: frameworks/av/services/camera/libcameraservice/
+Camera HAL Camera HAL层处于Driver与Service之间. Camera HAL内部分为两层, 分别为Camera Provider和Camera HAL Module. 而HAL层由于不同厂商的硬件差异, 所以HAL的实现也有所不同, HAL的实现由厂商提供.
+高通的Camera HAL实现: vendor/qcom/proprietary/camx/
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/android%E7%9B%B8%E6%9C%BA%E6%9E%B6%E6%9E%84%E6%A6%82%E8%A7%88/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/android%E7%9B%B8%E6%9C%BA%E6%9E%B6%E6%9E%84%E6%A6%82%E8%A7%88/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/android%E7%9B%B8%E6%9C%BA%E6%9E%B6%E6%9E%84%E6%A6%82%E8%A7%88/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="Android相机架构概览">
+<meta property="og:description" content="Android相机架构概览
+安卓相机架构
+Android系统将相机架构分层, 各层的接口与实现分开, 使用接口连接各层, Android相机的架构共被分为5层. 如下图, 包括APP, framework, Service, HAL, driver.
+![](assets/Pasted image 20241203164642-20250311094648-1a43amv.png )
+Camera APP
+Camera APP是最上层, 不同的APP有不同的界面, 负责与用户直接交互. 通过Camera2 API将需求发送到Camera Framework层, 以此控制相机, 再将接收到的结果反馈给用户.
+Camera Framework
+Camera Framework层封装了Camera2 API的实现细节, 并将接口提供给Camera APP层, 供其调用. 收到APP层的请求后通过AIDL实现IPC, 将请求发送给Camera Service层, 并等待其回传结果, 然后将结果发送给Camera APP. 而Camera2作为jar包供Camera APP调用.
+Camera2 API的实现: frameworks/base/core/java/android/hardware/camera2/
+Camera Service
+Camera Service层会作为一个独立的进程(cameraserver)在系统启动后运行, 封装了AIDL接口供Framework层进行调用. 接收到Framework层的请求后通过HIDL或AIDL接口将请求发送至Camera HAL层, 并在收到结果后将结果回传给Framework层.
+Camera Service的相关实现: frameworks/av/services/camera/libcameraservice/
+Camera HAL
+Camera HAL层处于Driver与Service之间. Camera HAL内部分为两层, 分别为Camera Provider和Camera HAL Module. 而HAL层由于不同厂商的硬件差异, 所以HAL的实现也有所不同, HAL的实现由厂商提供.
+高通的Camera HAL实现: vendor/qcom/proprietary/camx/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/android%E7%9B%B8%E6%9C%BA%E6%9E%B6%E6%9E%84%E6%A6%82%E8%A7%88/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Android相机架构概览">
+<meta name="twitter:description" content="Android相机架构概览
+安卓相机架构
+Android系统将相机架构分层, 各层的接口与实现分开, 使用接口连接各层, Android相机的架构共被分为5层. 如下图, 包括APP, framework, Service, HAL, driver.
+![](assets/Pasted image 20241203164642-20250311094648-1a43amv.png )
+Camera APP
+Camera APP是最上层, 不同的APP有不同的界面, 负责与用户直接交互. 通过Camera2 API将需求发送到Camera Framework层, 以此控制相机, 再将接收到的结果反馈给用户.
+Camera Framework
+Camera Framework层封装了Camera2 API的实现细节, 并将接口提供给Camera APP层, 供其调用. 收到APP层的请求后通过AIDL实现IPC, 将请求发送给Camera Service层, 并等待其回传结果, 然后将结果发送给Camera APP. 而Camera2作为jar包供Camera APP调用.
+Camera2 API的实现: frameworks/base/core/java/android/hardware/camera2/
+Camera Service
+Camera Service层会作为一个独立的进程(cameraserver)在系统启动后运行, 封装了AIDL接口供Framework层进行调用. 接收到Framework层的请求后通过HIDL或AIDL接口将请求发送至Camera HAL层, 并在收到结果后将结果回传给Framework层.
+Camera Service的相关实现: frameworks/av/services/camera/libcameraservice/
+Camera HAL
+Camera HAL层处于Driver与Service之间. Camera HAL内部分为两层, 分别为Camera Provider和Camera HAL Module. 而HAL层由于不同厂商的硬件差异, 所以HAL的实现也有所不同, HAL的实现由厂商提供.
+高通的Camera HAL实现: vendor/qcom/proprietary/camx/">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Android相机架构概览",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  34309 ,
+  "description": "Android相机架构概览 安卓相机架构 Android系统将相机架构分层, 各层的接口与实现分开, 使用接口连接各层, Android相机的架构共被分为5层. 如下图, 包括APP, framework, Service, HAL, driver.\n![](assets/Pasted image 20241203164642-20250311094648-1a43amv.png )\nCamera APP Camera APP是最上层, 不同的APP有不同的界面, 负责与用户直接交互. 通过Camera2 API将需求发送到Camera Framework层, 以此控制相机, 再将接收到的结果反馈给用户.\nCamera Framework Camera Framework层封装了Camera2 API的实现细节, 并将接口提供给Camera APP层, 供其调用. 收到APP层的请求后通过AIDL实现IPC, 将请求发送给Camera Service层, 并等待其回传结果, 然后将结果发送给Camera APP. 而Camera2作为jar包供Camera APP调用.\nCamera2 API的实现: frameworks/base/core/java/android/hardware/camera2/\nCamera Service Camera Service层会作为一个独立的进程(cameraserver)在系统启动后运行, 封装了AIDL接口供Framework层进行调用. 接收到Framework层的请求后通过HIDL或AIDL接口将请求发送至Camera HAL层, 并在收到结果后将结果回传给Framework层.\nCamera Service的相关实现: frameworks/av/services/camera/libcameraservice/\nCamera HAL Camera HAL层处于Driver与Service之间. Camera HAL内部分为两层, 分别为Camera Provider和Camera HAL Module. 而HAL层由于不同厂商的硬件差异, 所以HAL的实现也有所不同, HAL的实现由厂商提供.\n高通的Camera HAL实现: vendor/qcom/proprietary/camx/\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="android相机架构概览">Android相机架构概览</h1>
+<h1 id="安卓相机架构">安卓相机架构</h1>
+<p>Android系统将相机架构分层, 各层的接口与实现分开, 使用接口连接各层, Android相机的架构共被分为5层. 如下图, 包括APP, framework, Service, HAL, driver.</p>
+<p>![](assets/Pasted image 20241203164642-20250311094648-1a43amv.png )</p>
+<h2 id="camera-app">Camera APP</h2>
+<p>Camera APP是最上层, 不同的APP有不同的界面, 负责与用户直接交互. 通过Camera2 API将需求发送到Camera Framework层, 以此控制相机, 再将接收到的结果反馈给用户.</p>
+<h2 id="camera-framework">Camera Framework</h2>
+<p>Camera Framework层封装了Camera2 API的实现细节, 并将接口提供给Camera APP层, 供其调用. 收到APP层的请求后通过AIDL实现IPC, 将请求发送给Camera Service层, 并等待其回传结果, 然后将结果发送给Camera APP. 而Camera2作为jar包供Camera APP调用.</p>
+<p>Camera2 API的实现: frameworks/base/core/java/android/hardware/camera2/</p>
+<h2 id="camera-service">Camera Service</h2>
+<p>Camera Service层会作为一个独立的进程(cameraserver)在系统启动后运行, 封装了AIDL接口供Framework层进行调用. 接收到Framework层的请求后通过HIDL或AIDL接口将请求发送至Camera HAL层, 并在收到结果后将结果回传给Framework层.</p>
+<p>Camera Service的相关实现: frameworks/av/services/camera/libcameraservice/</p>
+<h2 id="camera-hal">Camera HAL</h2>
+<p>Camera HAL层处于Driver与Service之间. Camera HAL内部分为两层, 分别为Camera Provider和Camera HAL Module. 而HAL层由于不同厂商的硬件差异, 所以HAL的实现也有所不同, HAL的实现由厂商提供.</p>
+<p>高通的Camera HAL实现: vendor/qcom/proprietary/camx/</p>
+<p>MTK的Camera HAL实现: vendor/mediatek/proprietary/hardware/mtkcam3/</p>
+<h3 id="camera-provider">Camera Provider</h3>
+<p>Camera Provider作为HAL的上层, 是一个独立的进程, 在系统启动的初期被启动, 提供HIDL或AIDL接口供Camer Service调用, 而HAL3标准的实现在HAL Module中. Provider负责接收来自Camera Service的请求, 通过回调调用HAL Module, 然后等待其结果回传并将结果通过HIDL/AIDL接口发送至Camera Service.</p>
+<p>高通的Camera Provider实现: vendor/qcom/proprietary/camx/camx-service/provider/</p>
+<p>MTK的Camera Provider实现: vendor/mediatek/proprietary/hardware/mtkcam3/main/HAL/entry/hidl/provider/</p>
+<h3 id="camera-hal-module">Camera HAL Module</h3>
+<p>Camera HAL Module是Cmaera HAL的一部分, 被编译成动态链接库并被加载至Camera Provider. 与Camera Provider类似, 由于硬件厂商的不同, 实现也不同, 主要分析Qcom和MTK的实现. 其中Qcom使用cmax-chi架构, MTK使用TinyMW架构.</p>
+<h4 id="qcom-camx-chi">Qcom CamX-CHI</h4>
+<p>高通对Camera HAL的架构为CamX-CHI, 以so库的形式被加载至Camera Provider, 提供HAL3标准的接口供Provider调用, 接收Provider的请求. 其内部实现了HAL3接口, 通过V4L2标准框架控制相机驱动层, 将请求下发至驱动部分, 并等待结果然后回传给Provider.</p>
+<p>CamX-CHI分为CamX和CHI两个部分, CamX中基本是架构的核心跳转及处理业务的代码, 一般不需要更改, 相关实现在vendor/qcom/proprietary/camx/中. CHI中一般是手机厂商定制功能的地方, 代码目录在vendor/qcom/proprietary/chi-cdk/. 一个请求会先交给CamX处理, 然后经过CHI进行对请求的重新定制化打包后交给CamX实际执行或与Camera Driver进行交互.</p>
+<h4 id="mtk-hal">MTK HAL</h4>
+<p>MTK HAL内部实现了HAL3接口, 接收Provider的请求并通过V4L2标准框架控制相机驱动层, 将请求下发至驱动部分, 并等待结果然后回传给Provider.</p>
+<p>MTK HAL分为Core Device, PostProc Device, PipelineModel, MTK HAL Interface四部分. Core Device提供Interface来连接Custom Zone, 作为客制化代码区域. 在Custom Zone中集成三方算法, 然后通过控制Core Device和PostProc Device完成相机处理流程. MTK HAL Interface是MTK在HAL层定义的全新的接口, 用于三方算法集成, 更完整的完成客制化代码区与MTK HAL代码的解耦. PostProc Device为Custom Zone提供独立的平台硬件能力或算法, 通过MTK HAL Interface开放给Custom Zone. PipelineModel是MTK Camera HAL pipeline的实际处理的模块.</p>
+<p>其相关代码实现: vendor/mediatek/proprietary/hardware/mtkcam3/</p>
+<h2 id="camera-driver">Camera Driver</h2>
+<p>Camera Driver负责驱动相机. Linux为摄像头制定了V4L2 (Video For Linux 2) 接口, 这为驱动和应用程序提供了一套统一的接口规范, 内核中实现了其基础框架. Camera Driver按照I2C协议与硬件通信, 根据MIPI CSI协议传递数据, 硬件相关驱动代码的编写, 除了编写具体硬件的控制代码外, 主要是将驱动与V4L2框架绑定, 包括V4L2中的数据结构与驱动的数据结构和ioctl的相关函数指针. 用户空间进程可以通过V4L2接口调用相关设备功能, 而不用考虑其实现细节.</p>
+<p>V4L2 Core代码实现: kernel/drivers/media/v4l2-core/</p>
+<p>Qcom Camera Driver代码实现: vendor/qcom/opensource/ais-kernel/drivers/</p>
+<p>MTK Camera Driver代码实现: vendor/mediatek/kernel_modules/mtkcam/</p>
+<h2 id="camera-hardware">Camera Hardware</h2>
+<p>相机硬件处在整个相机体系的最底层, 是相机系统的物理实现部分. 包括镜头、感光器、ISP三个主要模块, 还有对焦马达、闪光灯、滤光片、光圈等辅助模块. 镜头的作用是汇聚光线, 利用光的折射性把射入的光线汇聚到感光器上. 感光器的作用是负责光电转换, 通过内部感光元件将接收到的光信号转换为电子信号进而通过数电转换模块转为数字信号, 并最后传给ISP. ISP负责对数字图像进行一些算法处理, 如白平衡、降噪、去马赛克等.</p>
+<h2 id="架构总结">架构总结</h2>
+<p>通过上述对相机架构各层的介绍, 我们可以发现Android系统中相机架构中层与层之间由不同的接口沟通, 其中大致可以理解为上层通过标准接口将请求发送给下层, 下层根据自身对标准接口的实现处理请求后发送给更下层, 最后将下层收到的结果回传给上层. 从整体上看, 分层利用标准接口让整个框架结构分明, 减少耦合, 使整个框架更利于维护.</p>
+<p>总体符合下图</p>
+<p><img src="assets/image-20250311094648-f3esd4j.png" alt=""></p>
+<h1 id="camera-app-1">Camera APP</h1>
+<p>Camera APP通常是一个java程序, 为了满足各种场景, 会加入很多业务处理逻辑, 而其核心是调用谷歌制定的Camera2 API对相机进行控制. Camera2 API引入了Session和Reques,</p>
+<h2 id="camera2-api">Camera2 API</h2>
+<p>谷歌提出Camera Api v2接口, 引入了Session以及Request概念, 将控制逻辑统一成一个视图, 因此在使用上更加复杂, 同时也支持了更多特性, 比如逐帧控制曝光、感光度以及支持Raw格式的输出等. 并且由于对控制逻辑的高度抽象化, 使得该接口具有很高的灵活性. 总得来说, 该接口极大地提高了对于相机框架的控制能力, 同时也进一步大幅度提升了其整体性能. 谷歌将其具体实现放入了Camera Framework中来完成, Framework内部负责解析来自App的请求, 并且通过AIDL跨进程接口下发到Camera Service中进行处理, 并且等待结果的回传.</p>
+<p>Camera2 API主要包含以下类:</p>
+<ul>
+<li>
+<p>CameraManager: 用于检测(getCameraIdList())并打开(openCamera(String, CameraDevice.StateCallback, Handler))可见的相机, 也可以用于获取当前Camera设备支持的属性信息(使用getCameraCharacteristics(String)返回一个CameraCharacteristics)</p>
+<ul>
+<li>CameraDevice.StateCallback: 一个由开发者实现的抽象类, 当openCamera()成功打开相机时, 执行CameraDevice.StateCallback.onOpened(CameraDevice)</li>
+</ul>
+</li>
+<li>
+<p>CameraDevice: 通过CameraDevice.StateCallback.onOpened获得CameraDevice, 表示一个相机设备, 使用此类的方法可以控制相机并与其交互</p>
+<ul>
+<li>createCaptureSession(SessionConfiguration): 用于获取一个CaptureSession</li>
+<li>createCaptureRequest(int): 用于获取一个CaptureRequest.Builder, 创建一个Request</li>
+</ul>
+</li>
+<li>
+<p>CameraCaptureSession: CaptureSession可被用于拍摄照片, 它需要配置相机设备的内部设置并分配内存缓冲区(Surface)以将图像发送到目标位置</p>
+<ul>
+<li>capture(CaptureRequest, CameraCaptureSession.CaptureCallback, Handler): 用于进行一次照片拍摄. 其中CaptureRequest一般来自于CaptureRequest.Builder.build(), 表示此次拍摄的设置. CameraCaptureSession.CaptureCallback与前文提到的CameraDevice.StateCallback类似, 在图片拍摄完成时调用CameraCaptureSession.CaptureCallback.onCaptureCompleted(CameraCaptureSession, CaptureRequest, TotalCaptureResult). capture的全部输出数据存储在result中, 其中包含了最终拍摄设置和输出数据</li>
+</ul>
+</li>
+<li>
+<p>CaptureRequest: 由CaptureRequest.Builder创建, 包含了拍摄的硬件设置, 处理流程和算法, 也包含数据要发送到的Surface列表. Surface是图像的数据缓冲区</p>
+</li>
+<li>
+<p>CaptureResult: 包含了部分拍摄设置和输出数据</p>
+</li>
+<li>
+<p>TotalCaptureResult: 包含了最终拍摄设置和输出数据</p>
+</li>
+</ul>
+<p>Camera APP是Android相机架构的最上层, 为了保证整个框架的稳定性以及高效性, 谷歌重新设计了Camera2 API, 将控制逻辑高度抽象成了一个控制视图, 所以可以逐帧控制硬件参数, 进而实现一系列强大的功能. Api v2接口的实现在Camera Framework中完成, 内部并没有采用十分复杂的控制逻辑, 保证了该层的稳定以及高效.</p>
+<h1 id="camera-framework-1">Camera Framework</h1>
+<p>基于接口与实现相分离的基本设计原则, 谷歌通过Camera2 API接口的定义, 搭建起了APP与相机系统的桥梁, 而具体实现便是由Camera Framework来负责完成的. Camera Framework通过AIDL机制让Camera2 API得以直接与Camera Service通信, 简化了框架. 以下对Camera2 API中的主要实现进行介绍:</p>
+<h2 id="cameramanageropencamera">CameraManager.openCamera()</h2>
+<p>当用户打开相机应用时, 会去调用该方法打开一个相机设备, openCamera()的内部实现如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>openCamera()-&gt;
+</span></span><span style="display:flex;"><span>    openCameraForUid()
+</span></span><span style="display:flex;"><span>    openCameraDeviceUserAsync()-&gt;
+</span></span><span style="display:flex;"><span>        getCameraCharacteristics()
+</span></span><span style="display:flex;"><span>        getPhysicalIdToCharsMap()
+</span></span><span style="display:flex;"><span>        new CameraDeviceImpl()
+</span></span><span style="display:flex;"><span>        ICameraService.connectDevice()
+</span></span><span style="display:flex;"><span>        CameraDeviceImpl.setRemoteDevice()
+</span></span></code></pre></div><p>openCameraDeviceUserAsync()主要工作为:</p>
+<ol>
+<li>创建一个CameraDevice实例 (new CameraDeviceImpl()) , 其中APP定义的CameraDevice.StateCallback将会被保存在此CameraDeviceImpl中.</li>
+<li>调用Camera Service的AIDL接口, 与摄像头连接 (ICameraService.connectDevice()) .</li>
+</ol>
+<p>连接完成后, 来自APP的CameraDevice.StateCallback.onOpen()会被调用, 把CameraDevice对象返回给APP.</p>
+<h2 id="cameradevicecreatecapturesession">CameraDevice.createCaptureSession()</h2>
+<p>打开相机后需要创建一个CaptureSession才可以开始发送图像传输的请求, 具体过程如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>createCaptureSession()-&gt;
+</span></span><span style="display:flex;"><span>    createCaptureSessionInternal()-&gt;
+</span></span><span style="display:flex;"><span>        configureStreamsChecked()-&gt;
+</span></span><span style="display:flex;"><span>            ICameraDeviceUserWrapper.beginConfigure()
+</span></span><span style="display:flex;"><span>            ICameraDeviceUserWrapper.deleteStream()
+</span></span><span style="display:flex;"><span>            ICameraDeviceUserWrapper.createStream()
+</span></span><span style="display:flex;"><span>            ICameraDeviceUserWrapper.endConfigure()
+</span></span><span style="display:flex;"><span>        ICameraDeviceUserWrapper.getInputSurface()
+</span></span><span style="display:flex;"><span>        new CameraCaptureSessionImpl()
+</span></span></code></pre></div><p>createCaptureSessionInternal()主要工作为:</p>
+<ol>
+<li>使用configureStreamsChecked()对流进行配置</li>
+<li>实例化一个CameraCaptureSessionImpl, 其中APP定义的CameraCaptureSession.StateCallback将会被保存在此CameraCaptureSessionImpl中.</li>
+</ol>
+<h2 id="cameracapturesessioncapture">CameraCaptureSession.capture()</h2>
+<p>有了CameraCaptureSession就可以使用capture()进行拍照, capture()的具体过程如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>capture()-&gt;
+</span></span><span style="display:flex;"><span>    CameraDevice.capture()-&gt;
+</span></span><span style="display:flex;"><span>        CameraDevice.submitCaptureRequest()-&gt;
+</span></span><span style="display:flex;"><span>            ICameraDeviceUserWrapper.submitRequestList()-&gt;
+</span></span><span style="display:flex;"><span>                ICameraDeviceUser.submitRequestList()
+</span></span></code></pre></div><p>capture()最终调用CameraDevice.submitCaptureRequest(), 其通过AIDL接口调用Camera Service层的ICameraDeviceUser.submitRequestList().</p>
+<p>Camera Framework负责处理来自Camera APP对于Camera2 API的调用, 并根据APP所调用的接口使用AIDL接口对Camera Service层进行调用. 其中主要的AIDL接口定义于如下两个文件:</p>
+<p>frameworks/av/camera/aidl/android/hardware/ICameraService.aidl frameworks/av/camera/aidl/android/hardware/camera2/ICameraDeviceUser.aidl</p>
+<p>其中ICameraService表示Camera Service, 而ICameraDeviceUser被ICameraDeviceUserWrapper封装, 也用于调用Camera Service层.</p>
+<h1 id="camera-service-1">Camera Service</h1>
+<p>Camera Service是一个独立的进程, 作为服务端处理来自Camera Framework通过AIDL发送的请求, 并将对应请求发送给Camera Provider, 整个流程涉及两个跨进程操作, 都是进程间通信, 前者通过AIDL实现, 后者为AIDL/HIDL实现. 我们将首先介绍这两种机制.</p>
+<h2 id="aidl">AIDL</h2>
+<p>AIDL (Android Interface Definition Language) 定义了让客户端和服务端为了能够进行进程间通讯 (IPC) 而能够达成一致的接口. 在Android中, 使用Binder进行IPC, 需要将对象分解为操作系统可以理解的原始类型, 再进行数据传输. 编写这种编组的代码很繁琐, 所以Android用AIDL处理.</p>
+<p>AIDL利用binder驱动完成调用. 进行接口调用时, 函数标识 (method identifier) 和所有对象 (参数) 被打包到缓冲区中, 并复制到远程进程中, 在远程进程中, 有binder线程等待读取数据. binder线程读取数据后, 会在本进程找到对应对象存储数据并调用本地接口 (client调用的实际执行的函数) .</p>
+<h2 id="hidl">HIDL</h2>
+<p>HIDL (HAL interface definition language) 描述了HAL层与调用HAL层的接口, HIDL使HAL层能通过binder来进行IPC.</p>
+<p>待补充</p>
+<h2 id="camera-service的启动">Camera Service的启动</h2>
+<p>在系统启动时, 运行init进程, init会识别并读取frameworks/av/camera/cameraserver/cameraserver.rc, 并启动cameraserver, 而cameraserver进程就是cameraservice.</p>
+<p>Camera server: frameworks/av/camera/cameraserver/main_cameraserver.cpp</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>CameraService::instantiate()-&gt;
+</span></span><span style="display:flex;"><span>    BinderService::publish()
+</span></span></code></pre></div><p>最终会创建一个Camera Service实例 (在frameworks/av/services/camera/libcameraservice/CameraService.cpp中定义) . 实例创建后, 首次被强指针引用会调用<code>CameraService::onFirstRef()</code> (<code>CameraService</code>继承自<code>BinderService</code>) . 对Camera Service启动的详细介绍会在下文详细介绍.</p>
+<h2 id="camera-service主程序">Camera Service主程序</h2>
+<ul>
+<li>CameraService: 相机服务实例, 手机启动时会生成该类的对象. 应用对ICameraService的函数调用, 会访问到CameraService.</li>
+<li>CameraDeviceClient: 当应用调用<code>openCamera()</code>打开指定相机设备时, 会生成一个对应的CameraDeviceClient. 应用通过对ICameraDeviceUser的函数调用, 会访问到CameraDeviceClient.</li>
+<li>CameraProviderManager: CameraService对象生成时创建的对象, 用于同HAL交互.</li>
+<li>Camera3Device: 应用调用<code>openCamera()</code>时生成该类的对象, 即具体的Camera设备.</li>
+</ul>
+<p>Camera3Device相关类图如下:</p>
+<p>![](assets/Pasted image 20241203164702-20250311094648-by5x9w9.png )</p>
+<p>![](assets/Pasted image 20241203164710-20250311094648-v02lau3.png )</p>
+<p>![](assets/Pasted image 20241203164717-20250311094648-pcayn3c.png )
+具体说明待补充</p>
+<h1 id="camera-hal-1">Camera HAL</h1>
+<p>Camera HAL是硬件抽象层, 所以是硬件依赖的, 不同的CPU需要使用不同的HAL. 为了让Camera Service能够调用HAL层, 我们需要让HAL提供一致的API, 也就是HAL3接口.</p>
+<p>而只有HAL3接口还不够, 还需要有API的具体实现, 包括硬件厂商自己的实现, 如高通和MTK.</p>
+<h2 id="camera-hal3">Camera HAL3</h2>
+<p>HAL3定义了自己的一套通用标准接口 (hardware/libhardware/include/hardware/camera3.h, hardware/libhardware/include/hardware/camera_common.h) , 平台厂商要根据以下规则实现自己的module.</p>
+<ul>
+<li>每个硬件都通过<code>hw_module_t</code>来描述, 被称为HMI.</li>
+<li>每一个HMI都要实现自身的<code>open()</code>, 用于打开设备, 并返回对应的操作接口.</li>
+<li>使用<code>hw_device_t</code>来描述<code>open()</code>返回的操作接口.</li>
+</ul>
+<p>以下, 我们先来介绍几个数据结构.</p>
+<h3 id="hw_module_t">hw_module_t</h3>
+<p>其中<code>hw_module_t</code> (hardware/libhardware/include/hardware/hardware.h) :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hw_module_t</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** tag must be initialized to HARDWARE_MODULE_TAG */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> tag;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint16_t</span> module_api_version;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** Identifier of module */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>id;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** Name of this module */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>name;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** Author/owner/implementor of the module */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>author;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** Modules methods */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hw_module_methods_t</span><span style="color:#f92672">*</span> methods;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** module&#39;s dso */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> dso;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint64_t</span> reserved[<span style="color:#ae81ff">32</span><span style="color:#f92672">-</span><span style="color:#ae81ff">7</span>];
+</span></span><span style="display:flex;"><span>} hw_module_t;
+</span></span></code></pre></div><p><code>hw_module_t</code>中的主要内容是<code>hw_module_methods_t</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hw_module_methods_t</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** Open a specific device */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>open)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hw_module_t</span><span style="color:#f92672">*</span> module, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> id,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hw_device_t</span><span style="color:#f92672">**</span> device);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>} hw_module_methods_t;
+</span></span></code></pre></div><p><code>hw_module_methods_t</code>的作用为打开设备, 也就是上文提到的<code>open()</code>.</p>
+<p>接下来我们看看<code>hw_device_t</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * Every device data structure must begin with hw_device_t
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * followed by module specific public methods and attributes.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hw_device_t</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** tag must be initialized to HARDWARE_DEVICE_TAG */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> tag;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> version;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** reference to the module this device belongs to */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hw_module_t</span><span style="color:#f92672">*</span> module;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint64_t</span> reserved[<span style="color:#ae81ff">12</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/** Close this device */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>close)(<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hw_device_t</span><span style="color:#f92672">*</span> device);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>} hw_device_t;
+</span></span></code></pre></div><p><code>hw_module_t</code>代表模块, 通过其<code>open()</code>用来打开一个设备, 而该设备是用<code>hw_device_t</code>来表示, 其中除了用来关闭设备的<code>close()</code>外, 并无其它方法, 由此可见谷歌定义的HAL接口, 并不能满足绝大部分HAL模块的需要, 所以谷歌想出了一个比较好的解决方式, 那便是将这两个基本结构嵌入到更大的结构体内部, 同时在更大的结构内部定义了各自模块特有的方法, 用于实现模块的功能, 保持了HAL的统一规范的同时扩展了模块的功能.</p>
+<p>这些结构体用于描述最基础的硬件操作. 而相机相关的Camera HAL3接口定义了另外的结构体, 包括<code>camera_module_t</code>、<code>camera3_device_t</code>、<code>camera3_stream_configuration</code>、<code>camera3_stream</code>、<code>camera3_stream_buffer</code>等.</p>
+<h3 id="camera_module_t">camera_module_t</h3>
+<p><code>camera_module_t</code>的数据结构如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera_module</span> {
+</span></span><span style="display:flex;"><span>    hw_module_t common;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>get_number_of_cameras)(<span style="color:#66d9ef">void</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>get_camera_info)(<span style="color:#66d9ef">int</span> camera_id, <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera_info</span> <span style="color:#f92672">*</span>info);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>set_callbacks)(<span style="color:#66d9ef">const</span> camera_module_callbacks_t <span style="color:#f92672">*</span>callbacks);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>get_vendor_tag_ops)(vendor_tag_ops_t<span style="color:#f92672">*</span> ops);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>open_legacy)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hw_module_t</span><span style="color:#f92672">*</span> module, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> id,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">uint32_t</span> HALVersion, <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hw_device_t</span><span style="color:#f92672">**</span> device);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>set_torch_mode)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> camera_id, <span style="color:#66d9ef">bool</span> enabled);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>init)();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>get_physical_camera_info)(<span style="color:#66d9ef">int</span> physical_camera_id,
+</span></span><span style="display:flex;"><span>            camera_metadata_t <span style="color:#f92672">**</span>static_metadata);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>is_stream_combination_supported)(<span style="color:#66d9ef">int</span> camera_id,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> camera_stream_combination_t <span style="color:#f92672">*</span>streams);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>notify_device_state_change)(<span style="color:#66d9ef">uint64_t</span> deviceState);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>get_camera_device_version)(<span style="color:#66d9ef">int</span> camera_id, <span style="color:#66d9ef">uint32_t</span> <span style="color:#f92672">*</span>version);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> reserved[<span style="color:#ae81ff">1</span>];
+</span></span><span style="display:flex;"><span>} camera_module_t;
+</span></span></code></pre></div><p>由于以上结构体中的注释篇幅较长, 故在此对其简要说明:</p>
+<ul>
+<li><code>hw_module_t common</code>: 相机模块的常用方法. 这必须为<code>camera_module</code> 的第一个成员, 使用此结构体时会利用<code>hw_module_t common</code>获取<code>camera_module</code>指针.</li>
+<li><code>int (*get_number_of_cameras)(void)</code>: 返回能够通过<code>camera_module</code>访问的相机数量. 相机设备的编号为0～N-1, <code>common.methods-&gt;open()</code>使用的id就是对应的数字转化为字符串得来的.</li>
+<li><code>int (*get_camera_info)(int camera_id, struct camera_info *info)</code>: 返回相机的静态信息 (不会改变的信息)</li>
+<li><code>int (*set_callbacks)(const camera_module_callbacks_t *callbacks)</code>: 向HAL提供回调函数指针, 通知framework层异步相机事件, framework层会在初始化相机 HAL module加载、首次调用 <code>get_number_of_cameras()</code>方法后以及对模块进行任何其他调用之前调用此函数.</li>
+<li><code>void (*get_vendor_tag_ops)(vendor_tag_ops_t* ops)</code>: 获取查询vendor extension metadata tag (包含用于枚举一组不可变的vendor定义的相机元数据标签以及查询有关其结构/类型的静态信息的基本函数. 用途是验证相机 HAL 返回的元数据的结构, 并允许vendor定义的元数据标签在面向应用程序的相机 API 中可见. ) 的方法. HAL 应填写所有vendor tag方法, 如果未定义则<code>ops</code>不变. (<code>vendor_tag_ops</code>在system/media/camera/include/system/vendor_tags.h中定义)</li>
+<li><code>int (*open_legacy)(const struct hw_module_t* module, const char* id, uint32_t HALVersion, struct hw_device_t** device)</code>: 如果此相机 HAL 模块支持多个HAL的API版本, 打开特定的旧版的HAL模块. (一般不需要)</li>
+<li><code>int (*set_torch_mode)(const char* camera_id, bool enabled)</code>: 打开或关闭与<code>camera_id</code>关联的闪光灯单元的torch mode, 若成功, HAL需要通知framework层torch状态被改变 (通过<code>camera_module_callbacks.torch_mode_status_change()</code>) .</li>
+<li><code>int (*init)()</code>: 此函数被camera service在调用其他函数前调用, 将会加载camera HAL库.</li>
+<li><code>int (*get_physical_camera_info)(int physical_camera_id, camera_metadata_t **static_metadata)</code>: 返回一个物理摄像头的静态元数据作为逻辑摄像头的一部分, 此函数只有在物理摄像头的id没有公开时被调用, 也就是说camera_id会大于等于<code>get_number_of_cameras()</code>的返回值.</li>
+<li><code>int (*is_stream_combination_supported)(int camera_id, const camera_stream_combination_t *streams)</code>: 查看设备对特定相机流组合的支持.</li>
+<li><code>void (*notify_device_state_change)(uint64_t deviceState)</code>: 通知相机模块整个设备的状态已经以某种方式发生了变化.</li>
+<li><code>int (*get_camera_device_version)(int camera_id, uint32_t *version)</code>: 返回给定相机设备的设备版本. 对于相机设备, 此值可能不会改变. 此处返回的版本必须与<code>get_camera_info()</code>中的版本相同.</li>
+</ul>
+<p><code>camera_module_t</code>包含了<code>hw_module_t</code>, 用于表示相机模块, 定义了拓展方法.</p>
+<h3 id="camera3_device_t">camera3_device_t</h3>
+<p><code>camera3_device_t</code>的定义如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_device</span> {
+</span></span><span style="display:flex;"><span>    hw_device_t common;
+</span></span><span style="display:flex;"><span>    camera3_device_ops_t <span style="color:#f92672">*</span>ops;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>priv;
+</span></span><span style="display:flex;"><span>} camera3_device_t;
+</span></span></code></pre></div><p><code>camera3_device_t</code>包含了<code>hw_device_t</code>, 主要用来表示Camera设备. 其中, <code>camera3_device_ops_t *ops</code>中存放一系列对<code>camera3_device</code>的操作, 用来实现正常获取图像数据以及控制Camera的功能, 是核心接口, 将会在下文重点介绍.</p>
+<h3 id="camera3_stream_configuration_t">camera3_stream_configuration_t</h3>
+<p><code>camera3_stream_configuration_t</code>是一个包含了流定义的结构体, 被用与<code>configure_streams()</code>. 其定义了所有的输出流和重处理输入流, 其中包括了:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_stream_configuration</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> num_streams;
+</span></span><span style="display:flex;"><span>    camera3_stream_t <span style="color:#f92672">**</span>streams;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> operation_mode;
+</span></span><span style="display:flex;"><span>} camera3_stream_configuration_t;
+</span></span></code></pre></div><ul>
+<li><code>uint32_t num_streams</code>: 表示framework层需要的流的总数量, 包含input和output流. (至少有一条可以output的流)</li>
+<li><code>camera3_stream_t **streams</code>: 相机流指针数组, 定义相机 HAL 设备的输入/输出配置. 单个<code>camera3_stream_configuration</code>中最多可定义一个支持输入的流 (INPUT 或 BIDIRECTIONAL) 和至少一个支持输出的流 (OUTPUT 或 BIDIRECTIONAL) .</li>
+<li><code>uint32_t operation_mode</code>: 是<code>camera3_stream_configuration_mode_t</code>中的值, 表示这个配置中流的运行模式.</li>
+</ul>
+<h3 id="camera3_stream_t">camera3_stream_t</h3>
+<p><code>camera3_stream_t</code>用于描述单个摄像头输入或输出流的属性. Framework通过流的buffer format (缓冲区中数据的组织和编码方式, 决定了图像数据如何在内存中表示) 和buffer resolution (buffer resolution通常指的是在图像处理或者视频流处理中, 用于存储图像或视频帧的缓冲区的尺寸, 决定了能够处理的最大图像尺寸和质量) , gralloc usage flag (内存分配和访问权限指示, 告诉gralloc如何分配内存 (比如内存是用于CPU访问、GPU访问还是同时用于两者) 指定了内存区域可以被哪些组件访问 (如CPU、GPU、Camera等) 以及访问的方式 (读、写、渲染等) ) 和in-flight buffer count (多个request在HAL中等待处理, 这些request携带的buffer被称为in-flight buffer) 定义流.</p>
+<p>stream的所有者是framework, 但是指向<code>camera3_stream_t</code>的指针通过<code>configure_streams()</code>被传入HAL, 这个指针在下一个不包含<code>camera3_stream</code>的<code>configure_streams()</code>或<code>close()</code>前都有效.</p>
+<p>一旦将<code>camera3_stream</code>传递到<code>configure_streams()</code>, 所有<code>camera3_stream</code>中由framework管理的成员都不可变. HAL只能在<code>configure_streams()</code>调用期间更改HAL控制的参数 (私有指针的内容除外) .</p>
+<p><code>camera3_stream_t</code>中包含:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_stream</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> stream_type;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> width;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> height;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> format;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> usage;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> max_buffers;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>priv;
+</span></span><span style="display:flex;"><span>    android_dataspace_t data_space;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> rotation;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> physical_camera_id;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>reserved[<span style="color:#ae81ff">6</span>];
+</span></span><span style="display:flex;"><span>} camera3_stream_t;
+</span></span></code></pre></div><ul>
+<li><code>int stream_type</code>: 表示此流的种类 (在<code>camera3_stream_type_t</code>中定义)</li>
+<li><code>uint32_t width</code>: 表示buffer的宽度 (像素为单位)</li>
+<li><code>uint32_t height</code>: 表示buffer的高度 (像素为单位)</li>
+<li><code>int format</code>: 表示此流中buffer的像素格式. 格式来自system/core/include/system/graphics.h中的HAL_PIXEL_FORMAT_*列表的值, 或者是来自设备特定头文件的值. 如果定义了HAL_PIXEL_FORMAT_IMPLEMENTATION_DEFINED, 则平台的gralloc模块将根据相机设备和流的另一端提供的使用标志来选择一个格式.</li>
+</ul>
+<p>以上成员由framework设置.</p>
+<ul>
+<li><code>uint32_t usage</code>: 表示此流中HAL需要的gralloc usage flag (在gralloc.h或是设备特定头文件中定义的GRALLOC_USAGE_*) . 对于输出流, 这些是HAL的生产者usage flag；对于输入流, 这些是HAL的消费者usage flag. 来自生产者和消费者的使用标志将被组合在一起, 然后传递给gralloc HAL模块, 为每个流分配gralloc buffer.</li>
+<li><code>uint32_t max_buffers</code>: HAL可能需要同时出队的缓冲区的最大数量. HAL在此流中正在运行的缓冲区数量不得超过此值.</li>
+<li><code>void *priv</code>: 指向HAL对此流的私有信息, 不会被framework查看.</li>
+<li><code>android_dataspace_t data_space</code>: 描述buffer中的内容 (用途与含义) , 包括颜色空间等信息. 具体可见system/core/include/system/graphics.h</li>
+<li><code>int rotation</code>: 流所需要旋转的角度 (在<code>camera3_stream_rotation_t</code>中定义) , 与流宽度和高度一起由HAL检查, 相机HAL忽略输入流的旋转字段.</li>
+<li><code>const char* physical_camera_id</code>: 表示此流对应的相机的id.</li>
+</ul>
+<h3 id="camera3_stream_buffer_t">camera3_stream_buffer_t</h3>
+<p><code>camera3_stream_buffer_t</code>来自camera3流的单个buffer. buffer未指定其用于输入还是输出, 取决于其父流类型以及buffer如何传递到HAL.</p>
+<p><code>camera3_stream_buffer_t</code>中包含:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_stream_buffer</span> {
+</span></span><span style="display:flex;"><span>    camera3_stream_t <span style="color:#f92672">*</span>stream;
+</span></span><span style="display:flex;"><span>    buffer_handle_t <span style="color:#f92672">*</span>buffer;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> status;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> acquire_fence;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> release_fence;
+</span></span><span style="display:flex;"><span>} camera3_stream_buffer_t;
+</span></span></code></pre></div><ul>
+<li><code>camera3_stream_t *stream</code>: 一个指向此buffer对应的stream的指针.</li>
+<li><code>buffer_handle_t *buffer</code>: 一个指向此buffer的native指针, 用于访问实际的图像数据.</li>
+<li><code>int status</code>: buffer此刻的状态 (在camera3_buffer_status_t中定义) . 如果HAL无法填充缓冲区, 它必须在调用 process_capture_result() 时将状态设置为CAMERA3_BUFFER_STATUS_ERROR.</li>
+<li><code>int acquire_fence</code>: 用于同步, HAL必须等待此fence的文件描述符变为可用, 然后才能尝试读取或写入buffer. 如果不需要等待, framework会将其设置为-1.</li>
+<li><code>int release_fence</code>: 用于同步, HAL在返回缓冲区给framework时必须设置这个栅栏, 或者写-1表示不需要等待. 此后, HAL不能再尝试访问buffer中的内容, 因为buffer的所有权已经完全被转移给了framework.</li>
+</ul>
+<h3 id="camera3_device_ops_t">camera3_device_ops_t</h3>
+<p><code>camera3_device_ops_t</code>是HAL3的核心接口, 其定义如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_device_ops</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>initialize)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_device</span> <span style="color:#f92672">*</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> camera3_callback_ops_t <span style="color:#f92672">*</span>callback_ops);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>configure_streams)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_device</span> <span style="color:#f92672">*</span>,
+</span></span><span style="display:flex;"><span>            camera3_stream_configuration_t <span style="color:#f92672">*</span>stream_list);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>register_stream_buffers)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_device</span> <span style="color:#f92672">*</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> camera3_stream_buffer_set_t <span style="color:#f92672">*</span>buffer_set);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> camera_metadata_t<span style="color:#f92672">*</span> (<span style="color:#f92672">*</span>construct_default_request_settings)(
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_device</span> <span style="color:#f92672">*</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> type);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>process_capture_request)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_device</span> <span style="color:#f92672">*</span>,
+</span></span><span style="display:flex;"><span>            camera3_capture_request_t <span style="color:#f92672">*</span>request);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>get_metadata_vendor_tag_ops)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_device</span><span style="color:#f92672">*</span>,
+</span></span><span style="display:flex;"><span>            vendor_tag_query_ops_t<span style="color:#f92672">*</span> ops);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>dump)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_device</span> <span style="color:#f92672">*</span>, <span style="color:#66d9ef">int</span> fd);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>flush)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_device</span> <span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>signal_stream_flush)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_device</span><span style="color:#f92672">*</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">uint32_t</span> num_streams,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> camera3_stream_t<span style="color:#f92672">*</span> <span style="color:#66d9ef">const</span><span style="color:#f92672">*</span> streams);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>is_reconfiguration_required)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_device</span><span style="color:#f92672">*</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> camera_metadata_t<span style="color:#f92672">*</span> old_session_params,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> camera_metadata_t<span style="color:#f92672">*</span> new_session_params);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>reserved[<span style="color:#ae81ff">6</span>];
+</span></span><span style="display:flex;"><span>} camera3_device_ops_t;
+</span></span></code></pre></div><ul>
+<li><code>int (*initialize)(const struct camera3_device *, const camera3_callback_ops_t *callback_ops)</code>: 一次性初始化, 将框架回调函数指针传递给HAL. 在成功调用<code>open()</code>后, 在对 <code>camera3_device_ops</code>结构调用任何其他函数之前, 将调用一次. 该函数是非阻塞的, 需要在5ms内返回, 最长不能超过10ms.</li>
+<li><code>int (*configure_streams)(const struct camera3_device *, camera3_stream_configuration_t *stream_list)</code>:</li>
+<li><code>int (*register_stream_buffers)(const struct camera3_device *, const camera3_stream_buffer_set_t *buffer_set)</code>:</li>
+<li><code>const camera_metadata_t* (*construct_default_request_settings)(const struct camera3_device *, int type)</code>:</li>
+<li><code>int (*process_capture_request)(const struct camera3_device *, camera3_capture_request_t *request)</code>: 向HAL发送capture请求. HAL不应从此调用返回, 直到它准备好接受下一个要处理的请求. Framework一次只会对<code>process_capture_request()</code>进行一次调用, 并且所有调用都将来自同一线程. 一旦有新请求及其相关buffer可用, 就会对<code>process_capture_request()</code>进行下一次调用. 在正常的预览场景中, framework将不停调用该函数. 对请求的处理是异步的, 捕获结果由HAL通过<code>process_capture_result()</code>调用返回. 此调用要求元数据可用, output buffer可能要等待同步. 多个请求同时进行时, 保持完整的输出帧速率. framework保留请求的所有权, 它只保证在此调用期间有效, HAL必须复制需要的信息. HAL负责等待并关闭buffer的栅栏并将缓冲区句柄返回给framework. 如果input_buffer不为NULL, 则HAL必须将input buffer的释放同步栅栏的文件描述符写入input_buffer-&gt;release_fence. 如果HAL为input buffer释放同步栅栏返回-1, 则框架可以立即重新使用input buffer, 否则framework将等待同步栅栏, 然后再重新填充使用input buffer.</li>
+<li><code>void (*get_metadata_vendor_tag_ops)(const struct camera3_device*, vendor_tag_query_ops_t* ops)</code>:</li>
+<li><code>void (*dump)(const struct camera3_device *, int fd)</code>:</li>
+<li><code>int (*flush)(const struct camera3_device *)</code>:</li>
+<li><code>void (*signal_stream_flush)(const struct camera3_device*, uint32_t num_streams, const camera3_stream_t* const* streams)</code>:</li>
+<li><code>int (*is_reconfiguration_required)(const struct camera3_device*, const camera_metadata_t* old_session_params, const camera_metadata_t* new_session_params)</code>:</li>
+</ul>
+<p>待补充</p>
+<p>太多了建议自己看文档</p>
+<h3 id="camera3_callback_ops_t">camera3_callback_ops_t</h3>
+<p><code>camera3_callback_ops_t</code>包含供HAL调用到framework中的回调方法. 这些方法用于返回已完成或失败的capture的元数据和buffer, 并通知framework异步事件 (例如错误) . framework不会从这些回调中回调到 HAL, 并且这些调用不会长时间阻塞.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_callback_ops</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>process_capture_result)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_callback_ops</span> <span style="color:#f92672">*</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> camera3_capture_result_t <span style="color:#f92672">*</span>result);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>notify)(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_callback_ops</span> <span style="color:#f92672">*</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> camera3_notify_msg_t <span style="color:#f92672">*</span>msg);
+</span></span><span style="display:flex;"><span>    camera3_buffer_request_status_t (<span style="color:#f92672">*</span>request_stream_buffers)(
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_callback_ops</span> <span style="color:#f92672">*</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">uint32_t</span> num_buffer_reqs,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> camera3_buffer_request_t <span style="color:#f92672">*</span>buffer_reqs,
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/*out*/</span><span style="color:#66d9ef">uint32_t</span> <span style="color:#f92672">*</span>num_returned_buf_reqs,
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/*out*/</span>camera3_stream_buffer_ret_t <span style="color:#f92672">*</span>returned_buf_reqs);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>return_stream_buffers)(
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">camera3_callback_ops</span> <span style="color:#f92672">*</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">uint32_t</span> num_buffers,
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> camera3_stream_buffer_t<span style="color:#f92672">*</span> <span style="color:#66d9ef">const</span><span style="color:#f92672">*</span> buffers);
+</span></span><span style="display:flex;"><span>} camera3_callback_ops_t;
+</span></span></code></pre></div><p>具体说明待补充</p>
+<h3 id="hal3总结">HAL3总结</h3>
+<p>上文中提到的HAL3相关的数据结构之间的关系不够直观, 对其进行整理如下:</p>
+<p>![](assets/Pasted image 20241203164733-20250311094648-1linxxf.png )
+(箭头含义: A-&gt;B表示A中有指向B的指针或A包含B)</p>
+<p>可以看到, HAL3中的这些数据结构基本可以分为两部分, 通过<code>camera3_device_ops_t</code>进行连接.</p>
+<h2 id="camera-provider-1">Camera Provider</h2>
+<p>(MTK平台叫做camerahalserver)</p>
+<p>谷歌为了将系统框架和平台厂商的自定义部分相分离, 将平台厂商的实现部分放入vendor分区中进行管理, 进而与system分区保持隔离, 这样便可以在相互独立的空间中进行各自的迭代升级, 而互不干扰.</p>
+<p>而在相机框架体系中, 将Camera HAL Module从Camera Service中解耦出来, 放入独立进程Camera Provider中进行管理, 而为了更好的进行跨进程访问, 谷歌针对Provider提出了HIDL机制用于Camera Service对于Camera Provider的访问, 而HIDL接口的实现是在Camera Provider中实现, 针对Camera HAL Module的控制又是通过谷歌制定的Camera HAL3接口来完成. 由此看来, Camera Provider的职责也比较简单, 通过HIDL机制保持与Camera Service的通信, 通过HAL3接口控制着Camera HAL Module.</p>
+<p>![](assets/Pasted image 20241203164745-20250311094648-8wr8ysa.png )
+上图中, 实线箭头是调用关系. 左边是cameraserver进程中的动作, 右边则是cameraprovider进程中的动作, 它们之间通过ICameraProvider联系在了一起.</p>
+<p>Cameraserver一侧, CameraService类依旧是主体. 它通过CameraProviderManager来管理对CameraProvider进行操作. 此处初始化的最终目的是连接上CameraProvider. 而CameraProvider一侧, 最终主体是CameraProvider类. 初始化最终目的是得到一个mModule, 通过它可以直接与HAL接口定义层进行交互.</p>
+<p>与CameraService的启动相同, CameraProvider的启动也由init进程读取rc文件开始.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>android::ProcessState::initWithDriver()
+</span></span><span style="display:flex;"><span>registerPassthroughServiceImplementation()-&gt;
+</span></span><span style="display:flex;"><span>     getRawServiceInternal()
+</span></span></code></pre></div><p>CameraProvider的启动很简单, 主要动作是 (通过system/libhidl/transport/LegacySupport.cpp中定义的<code>registerPassthroughServiceImplementation()</code>) 注册该CameraProvider, 以便CameraServer启动时能找到它. 这里的PassThrough服务是指将请求转发给另一个服务, 而不进行任何处理的服务. 需要注意的是, 此时CameraProvider还未实例化.</p>
+<p>上文中提到, CameraService在实例化后会调用<code>CameraService::onFirstRef()</code>. 其中出现的HidlCameraService继承于ICameraService (在frameworks/av/services/camera/libcameraservice/hidl/HidlCameraService.h中定义) .</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>CameraService::onFirstRef()-&gt;
+</span></span><span style="display:flex;"><span>    CameraService::enumerateProviders()-&gt;
+</span></span><span style="display:flex;"><span>        new CameraProviderManager()
+</span></span><span style="display:flex;"><span>        mCameraProviderManager::initialize(this)-&gt;
+</span></span><span style="display:flex;"><span>            CameraProviderManager::addProviderLocked()-&gt;
+</span></span><span style="display:flex;"><span>                getServiceInternal()-&gt;
+</span></span><span style="display:flex;"><span>                    (IServiceManager)PassthroughServiceManager::get()-&gt;
+</span></span><span style="display:flex;"><span>                        HIDL_FETCH_ICameraProvider()
+</span></span><span style="display:flex;"><span>    HidlCameraService::getInstance(this)
+</span></span><span style="display:flex;"><span>    ICameraService::registerAsService()-&gt;    //这里是注册cameraserver而不是camera provider
+</span></span><span style="display:flex;"><span>        registerAsServiceInternal()
+</span></span></code></pre></div><p>在CameraService初始化时, 会调用<code>CameraService::enumerateProviders()</code>, 通过<code>CameraProviderManager</code>连接CameraProvider. 其中, <code>CameraProviderManager</code>在frameworks/av/services/camera/libcameraservice/common/CameraProviderManager.h中定义. 在<code>PassthroughServiceManager::get()</code> (定义在system/libhidl/transport/ServiceManagement.cpp) 中, CameraProvider与CameraService连接起来. 而<code>get()</code>中加载了动态链接库, 调用了<code>HIDL_FETCH_ICameraProvider()</code> (在hardware/interfaces/camera/provider/2.4/default/CameraProvider_2_4.cpp中定义) . 其中调用<code>getProviderImpl()</code>创建CameraProvider实例并初始化.</p>
+<p>下图是Camera Service视角的初始化时序图:</p>
+<p>![](assets/Pasted image 20241203164758-20250311094648-50nrlzn.png )
+Camera Provider在Qcom和MTK上的实现不同.</p>
+<p>MTK平台中Camera Provider实例化时调用了:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>new CameraProvider()
+</span></span><span style="display:flex;"><span>provider-&gt;initialize()-&gt;
+</span></span><span style="display:flex;"><span>    setupVendorTags()
+</span></span><span style="display:flex;"><span>    LegacyCameraModule::getDevicesNameList()-&gt;
+</span></span><span style="display:flex;"><span>        CameraDeviceManagerBase::getDeviceNameList()
+</span></span></code></pre></div><p>MTK平台通过加载动态库调用<code>HIDL_FETCH_ICameraProvider()</code>创建实例.</p>
+<p><code>camera_module_t</code>类型的变量<code>HAL_MODULE_INFO_SYM</code>在vendor/mediatek/proprietary/hardware/mtkcam3/main/mtkHAL/hidl/depend/entry.cpp中定义.</p>
+<p>Qcom平台中Camera Provider实例化时调用了:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Plain" data-lang="Plain"><span style="display:flex;"><span>CameraProvider::Create()-&gt;
+</span></span><span style="display:flex;"><span>    provider-&gt;initialize()-&gt;
+</span></span><span style="display:flex;"><span>        hw_get_module()
+</span></span><span style="display:flex;"><span>        mModule-&gt;init()
+</span></span><span style="display:flex;"><span>        setUpVendorTags()
+</span></span><span style="display:flex;"><span>        mModule-&gt;setCallbacks()
+</span></span></code></pre></div><p>下图是Camera Provider视角的初始化时序图 (随着代码更新, 后半部分不太准确, 看起来前半段像MTK, 后半段像高通) :</p>
+<p>![](assets/Pasted image 20241203164808-20250311094648-bqectfj.png )
+![](assets/Pasted image 20241203164814-20250311094648-64smw6b.png )
+上图描述了CameraService与CameraProvider进行沟通的类的关系. 黄色的部分是HAL层接口类, 而绿色部分为CameraService用于调用HAL的类.</p>
+<p>下图对几个重要流程进行描述.</p>
+<p>![](assets/Pasted image 20241203164820-20250311094648-rnqemtc.png )
+当CameraService和CameraProvider初始化完成了之后, CameraProvider进程 (在MTK平台上叫做CameraHALServer) 便一直便存在于系统中, 等待来自Camera Service的调用.</p>
+<p>Camera provider interface: hardware/interfaces/camera/provider/</p>
+<p>Camera provider(Qcom): vendor/qcom/proprietary/camx/camx-service/provider/</p>
+<p>Camera provider(MTK): vendor/mediatek/proprietary/hardware/mtkcam3/main/mtkHAL/custom/provider/</p>
+<p>vendor/mediatek/proprietary/hardware/mtkcam3/main/mtkHAL/hidl/provider/</p>
+<h2 id="mivi">MIVI</h2>
+<p>MiVi: vendor/xiaomi/proprietary/mivifwk</p>
+<h3 id="算法上移10">算法上移1.0</h3>
+<p>![](assets/Pasted image 20241203164832-20250311094648-jhwuise.png )
+算法上移的根本逻辑是通过预览camera将拍照的request下发下去后, 通过相应的回调获取拍摄的图像以及对应的meta信息, 然后将这些信息打包通过并行化服务, JNI送给算法框架. 算法框架内部是异步处理, 此时预览camera可以正常close, 相机也可以退出后台. 当算法框架算法处理完成, 会通过回调接口将数据返回给App, App再进行水印滤镜处理, 然后通过另一个虚拟camera做Jpeg编码. 生成的Jpeg图像再通过ImageSaver进行存储. 这就是整个拍摄图片的处理流程.</p>
+<p>好处:</p>
+<ul>
+<li>降低shot_2_shot的时间</li>
+<li>通过通用算法集成框架可以复用APP控制逻辑, 节省新项目适配成本</li>
+<li>通过算法框架管理算法, 降低算法集成与平台的耦合</li>
+</ul>
+<h3 id="mivi10">MIVI1.0</h3>
+<p>![](assets/Pasted image 20241203164840-20250311094648-jl25alh.png )
+与算法上移1.0相比, 最大的变化是将算法框架运行进程从APP层下移到HAL层, 同时添加了小米图像后处理服务. APP与算法框架通过后处理服务的客户端和服务端交互. MIVI1.0提供了高通硬件算法管理模块给算法框架使用, 让其拥有raw2yuv的能力. 无法应用到MTK平台.</p>
+<h3 id="mivi20">MIVI2.0</h3>
+<p>MIVI2.0的架构如下 (vendor/xiaomi/proprietary/mivifwk)</p>
+<p>![](assets/Pasted image 20241203164849-20250311094648-gjtqxxr.png )
+重构了小米相机HAL, 目前mihal运行在camera provider进程中, 位于legacy camera hal implementation下, soc hal之上. mihal与mialgoengine一同构成了小米自研的相机中间层服务. mihal承载了miui相机app的下沉业务, 所有的拍照策略与后处理都由mihal主导控制与任务调度.</p>
+<p>Mihal 核心组件如下:</p>
+<p>![](assets/Pasted image 20241203164858-20250311094648-sgpt67w.png )
+mihal可以根据上图划分为3大部分:</p>
+<ul>
+<li>CameraHALImpl: 基于HAL3标准封装mi camera hal impl, 对hal3标准中的camera_module和camera_device进行扩展, 由CameraManager管理.()</li>
+<li>Mivi Foundation: MIVI的基础组件
+<ul>
+<li>Camera3Plus: 对HAL3标准中的部分定义进行封装、扩展, 以便在mihal中通用.</li>
+<li>Stream: 针对camera3_stream进行扩张, 包含了BufferManager用于管理internal buffer (GraphicBuffer)</li>
+<li>BGService: 是一个HIDL serice, 搭配MockCamera实现异步的大图回调</li>
+</ul>
+</li>
+<li>SessionManager: 以Session为调度中心的后处理管理器.</li>
+</ul>
+<h4 id="camerahalimpl">CameraHALImpl</h4>
+<p>![](assets/Pasted image 20241203164909-20250311094648-fqqu2om.png )</p>
+<p>CameraHALImpl是mihal用于兼容google camera3的接口, 沟通android和vendor的适配层.</p>
+<ul>
+<li>CameraManager: 管理CameraModule和CameraDevice, 提供获取CameraInfo和CameraDevice的接口. (vendor/xiaomi/proprietary/mivifwk-cn/hal/micam-core/CameraManager.cpp)</li>
+<li>CameraModule: 用于包装CameraDevice, 其派生类持有google camera_module.
+<ul>
+<li>VendorModule: 对camera_module的封装, 内部此有一个camera_module, 借助CameraDevice的封装此有camera3_device实例.</li>
+<li>MockModule: 是mihal中单独实现的虚拟相机模块, 用于和app配合拍照后处理收大图</li>
+</ul>
+</li>
+<li>CameraDevice: 是对camera3中camera_device的扩展思想, 自身此有hal3的camera3_device实例. (vendor/xiaomi/proprietary/mivifwk-cn/hal/micam-core/CameraDevice.cpp)
+<ul>
+<li>VendorCamera: 每个VendorCamera对应一个camera3_device实例, 后续app对camera的操作都可以在VendorCamera中进行捕获与扩展处理. (vendor/xiaomi/proprietary/mivifwk-cn/hal/micam-core/VendorCamera.cpp)</li>
+<li>MockCamera: 对MockModule的camera3_device实现, app调用它来完成拍照后处理收大图. 其暴露给framework, 在拍照后处理在算法框架运行到最后一个plugin时需要获得app下发的output buffer, 这个output buffer就是app通过MockCamera下发. (vendor/xiaomi/proprietary/mivifwk-cn/hal/micam-core/MockCamera.cpp)</li>
+</ul>
+</li>
+</ul>
+<h4 id="mivi-foundation">Mivi Foundation</h4>
+<p>![](assets/Pasted image 20241203165025-20250311094648-bcedz0c.png )</p>
+<h5 id="camera3plus">Camera3Plus</h5>
+<p>Camera3Plus对hal3中的数据结构进行拓展.</p>
+<ul>
+<li>StreamConfig
+<ul>
+<li>RemoteConfig: 封装mihal捕捉客制化的StreamConfig, 直接下发给SOC HAL</li>
+<li>LocalConfig: 对特定场景的stream进行客制化, 包括stream信息和buffer</li>
+</ul>
+</li>
+<li>StreamBuffer
+<ul>
+<li>RemoteStreamBuffer: 封装无需mihal客制化的buffer (来自CameraService的buffer)</li>
+<li>LocalStreamBuffer: 封装mihal需要后处理的StreamBuffer</li>
+</ul>
+</li>
+<li>CaptureRequest
+<ul>
+<li>RemoteRequest: 封装mihal不作处理的request, 直接下发给SOC HAL</li>
+<li>LocalRequest: 封装需要后处理的request, 发送给SOC HAL或darkroom</li>
+</ul>
+</li>
+<li>CaptureResult
+<ul>
+<li>RemoteResult: 封装mihal不作处理的result, 返回给framework</li>
+<li>LocalResult: 对mihal需要处理的result进行修改和控制, 返回给framework</li>
+</ul>
+</li>
+<li>NotifyMessage: 用于控制notify message的内容</li>
+<li>Metadata: 为mihal提供metadata相关操作接口</li>
+</ul>
+<h5 id="stream">Stream</h5>
+<p>mihal使用StreamWraper类来管理streams. 每一个StreamWraper都包含一个BufferManager.</p>
+<p>BufferManager用于申请graphic buffer. Mihal在CameraMode中构建internal stream, 规定buffer的规格, 后续通过StreamWraper中的BufferManager申请internal buffer.</p>
+<p>注: 这里的buffer并不是hal3中的<code>camera3_stream_buffer_t</code>. mihal的buffer有两种, 分为LocalStream和RemoteStream. 其中CameraService传入的buffer属于RemoteStream, 会原封不动的发送到vendor hal. mihal中申请的buffer属于LocalStream, 用于封装mihal客制化的buffer.</p>
+<p>BufferManager管理buffer的模型如下:</p>
+<p>![](assets/Pasted image 20241203165037-20250311094648-rwhr6ty.png )
+BufferManager通过Android接口(在mihal中以ImageBuffer的形式被封装)申请GraphicBuffer并对其管理.</p>
+<p>上图不同颜色的箭头展示了BufferManager的主要功能.</p>
+<ul>
+<li>requestBuffer: 请求graphic buffer</li>
+<li>releaseBuffer: 释放graphic buffer, 先从mBusyBuffers中出名, 再添加到mIdleBuffers中供后续使用</li>
+<li>reclaim: 回收Buffer, 在request</li>
+</ul>
+<h5 id="bgservice">BGService</h5>
+<p>vendor/xiaomi/proprietary/mivifwk/interfaces/bgservice/</p>
+<p>MIVI2.0独立实现了一个名为IBGService的HIDL接口服务, 同时运行在camera app和camera provider中, 让两者直接通信. BGService由IBGService和IEventCallback两个部分组成.</p>
+<ul>
+<li>IBGService用于在SDK场景下获取云控信息. Camera app使用此接口获取<code>setEventCallback()</code>接口.</li>
+<li>IEventCallback中四个回调函数:
+<ul>
+<li>notifyCallback: mihal通过此接口将MockCamera下发的request的信息回调给app, 包含request buffer中的size, format等信息.</li>
+<li>notifySnapshotAvailability(): mihal通过此接口控制app的拍照频率.</li>
+<li>onCaptureCompleted: mihal会在合适的阶段通知app拍照完成, app会开放拍照点击, 而此次拍照处理并未真正完成, 将在后台继续进行后处理.</li>
+<li>onCaptureFailed: soc hal取帧阶段出现错误或需要drop调这次拍照任务都会调用此接口通知app, mihal会取消后续后处理任务.</li>
+</ul>
+</li>
+</ul>
+<h5 id="appsnapshotcontroller与mialgotaskmonitor">AppSnapshotController与MiAlgoTaskMonitor</h5>
+<p>AppSnapshotController是进行拍照控制的模块, 目标是实现平滑拍照，提升用户体验. 其为单例实现，包含三个关键接口和一个常驻的指令处理线程.</p>
+<ul>
+<li>onRecordUpdate: 外部调用，将最新的是否可以拍照的状态，更新给指令队列</li>
+<li>onRecordDelete: 在切换模式or退出相机时触发，清空指令队列，默认允许app拍照</li>
+<li>onRecordChangedLocked: 确认指令，唤醒指令处理线程并更新app状态，被onRecordUpdate和onRecordDelete所调用</li>
+<li>processCommandLoop: 常驻的指令处理线程，会将最新指令发送给app，最终实现继续拍照/停止拍照</li>
+<li>mBufferCapacity: 当前模式下stream的最大buffer数量的限定</li>
+<li>mBufferLimitCnt: 用来限定当前模式下最少保留拥有下一次拍照的buffer数量，该值与当前模式下可能需要的最大帧数相等。</li>
+</ul>
+<p>mBufferCapacity和mBufferLimitCnt可通过mivivendorstreamconfig.json进行配置, 其中的VendorSnapshotBufferQueueSize对应BufferCapacity.</p>
+<p>MiAlgoTaskMonitor针对算法框架的后处理任务并发情况, 结合AppSnapshotController对拍照频率进行补充调控. app能否进行下一次拍照由AppSnapshotController控制，受buffer数量及后处理任务数共同影响.</p>
+<h4 id="sessionmanager">SessionManager</h4>
+<p>vendor/xiaomi/proprietary/mivifwk-cn/hal/micam-core/Session.cpp</p>
+<p>![](assets/Pasted image 20241203165058-20250311094648-rgifg3c.png )
+SessionManager (单例) 用于管理Session生命周期. Session通过对CameraMode和Photographer的管理实现整体业务控制. 其中分为3种Session:</p>
+<ul>
+<li>AsyncAlgoSession: 用于管理MIUICamera的各个拍照模式, 以异步方式实现拍照收图, 即quickview小图+大图异步后处理.</li>
+<li>SyncAlgoSession: 用于管理和小米合作的三方相机的拍照功能, 采取同步收图方案, 即app拍照直接收取最终jpeg大图, 不支持quickview, 属于原始android camera方案.</li>
+<li>NonAlgoSession: 无需任何拍照后处理, 通过此Session直接与SOC HAL沟通.</li>
+</ul>
+<p>主要关注AsyncAlgoSession, 每次configure_stream对应一次Session创建.</p>
+<h5 id="cameramode">CameraMode</h5>
+<p>vendor/xiaomi/proprietary/mivifwk-cn/hal/micam-core/CameraMode.cpp</p>
+<p>CameraMode是Session的一部分, 客制化不同场景的stream控制策略, 创建RequestExecutor实现后处理管控. 其主要功能有:</p>
+<ul>
+<li>搭配json客制化内容, 为不同场景构建相应的stream, 对发往vendor的streamConfig进行调整</li>
+<li>创建并管理各个internal stream及其internal buffer</li>
+<li>根据request和stream信息, 构建正确的Photographer, 实现具体拍照逻辑</li>
+<li>依赖PostProcessorManager对mialgoengine完成stream配置和初始化, 构建后续MockCamera的配流信息.</li>
+<li>以loop线程为核心实现quickview的主干逻辑</li>
+</ul>
+<p>CameraMode针对场景模式, 完成大量stream客制化管理与分配.</p>
+<h5 id="requestexecutor">RequestExecutor</h5>
+<p>vendor/xiaomi/proprietary/mivifwk-cn/hal/micam-core/RequestExecutor.cpp</p>
+<p>RequestExecutor对request任务进行包装, mihal使用RequestExecutor进行任务与资源的管理, 每一个RequestExecuetor既是资源单位也是执行单位.</p>
+<p>拍照的后处理需要利用RequestExecutor的派生类Photographer对PostProcessorManager进行任务分发.</p>
+<p>也就是说, 各个Photographer(和Previewer)都是RequestExecutor的子类.</p>
+<h5 id="postprocessormanager">PostProcessorManager</h5>
+<p>vendor/xiaomi/proprietary/mivifwk/hal/micam-core/PostProcessor.h</p>
+<p>PostProcessorManager是单例实现, 管理所有PostProcessor. 一个PostProcessor对应一个mialgoengine, 也就是说PostProcessorManager本质上是在管理算法框架实例.</p>
+<p>首先来介绍以下PostProcessor.</p>
+<p>PorstProcessor管理一个算法框架实例, 其主要接口为:</p>
+<ul>
+<li>PostProcessor(): PostProcessor的构造函数会创建新的算法框架实例.</li>
+<li>preProcessCaptureRequest: 算法框架实例进行算法预处理.</li>
+<li>processInputRequest: 将input frame输入算法框架.</li>
+<li>InviteForMockRequest: 通过bgservice的notifyCallback接口见算法框架的output buffer的规格通知camera app, 让app能够通过MockCamera下发对应规格的request.</li>
+<li>processOutputRequest: MockCamera下发的request将buffer通过此接口传给算法框架, 作为算法框架输出大图的output buffer.</li>
+<li>processMialgoResult: 算法框架输出的大图的output buffer通过此接口回调给MockCamera, 再以result返回给camera app, 完成收大图.</li>
+<li>flush: 对算法框架进行fush, 清空冗余任务.</li>
+</ul>
+<p>而PostProcessorManager的大多数操作都通过调用PostProcessor来完成, 管理PostProcessor的接口如下:</p>
+<ul>
+<li>configureStreams: 传入对算法框架input/output stream的规格信息, 构建PostProcessor.</li>
+<li>quickFinishTask: 快速终止后处理任务.</li>
+<li>clear: 析构所有的PostProcessor.</li>
+</ul>
+<p>PostProcessor与PostProcessorManager是mihal后处理的核心.</p>
+<p>TODO, 待补充</p>
+<h2 id="mtk-hal-1">MTK HAL</h2>
+<p>MTK Camera HAL代码目录如下</p>
+<p>![](assets/Pasted image 20241203165109-20250311094648-kkdck1p.png )
+MTK Camera HAL3架构如下</p>
+<p>![](assets/Pasted image 20241203165114-20250311094648-2ff406q.png )
+MTK通过实现Android的ICameraProvider, ICameraDevice, ICameraDeviceSession和ICameraDeviceCallback等接口来实现自己的功能.</p>
+<p>ICameraProvider对应CameraProviderImpl, 包在camera device manager外围, 是一个adapter, 适配不同版本的camera device interface. Camera Service可以通过ICameraProvider得到ICameraDevice.</p>
+<p>ICameraDevice对应CameraDevice3Impl, ICameraDeviceSession对应CameraDevice3SessionImpl. 两者用于操作每一个camera. 还包含了 IVirtualDevice 的实现. 用于camera device manager去跟camera device交互.</p>
+<h3 id="pipelinemodel">PipelineModel</h3>
+<p>![](assets/Pasted image 20241203165122-20250311094648-ovpez3b.png )
+![](assets/Pasted image 20241203165128-20250311094648-c346cqt.png )
+![](assets/Pasted image 20241203165135-20250311094648-lkjmblk.png )
+PipelineModel是HAL3核心架构, 对上需要开放对Pipeline创建与操作的API, 对下需要建立Pipeline并管理Pipeline的生命周期. 上图描述了PipelineModel的在不同时期的任务. PipelineModel在config阶段根据APP的<code>createCaptureSession()</code>里面带下来的surface list, 推测Output, 按照request所需要的经过的Node推测Pipeline各个Node是否需要创建以及各个Node的I/O buffer, 建立整条PipelineModel. 接到上层传输下来的request, 转化为Pipleline统一的IPipelineFrame, 决定这个request的I/O buffer, Topological, sub frame, dummy frame, feature set等信息.</p>
+<ul>
+<li>Topological是指这个request要经过的处理节点 (Node) , 这个节点的拓扑图只能是config阶段创建的PipelineModel拓扑图的子集.</li>
+<li>sub frame指是否需要多帧frame来做出这个request, 例如4 frame MFNR拍照, 上层只会给1个request, 但做出1张MFNR结果需要4个frame叠合, 所以另外3个就是sub frame.</li>
+<li>dummy frame是指是否需要多帧来产生一张3A收敛的frame结果, 例如HDR一般需要EV +1/0/-1, 需要重新做AE计算, 但AE可能需要2-3 frame才能做完收敛, 多出的frame就叫做dummy frame.</li>
+<li>feature set是指这个request要用的feature, 例如HDR、MFNR, 美颜, 或者MFNR+美颜.</li>
+</ul>
+<h3 id="pipelinecontext">PipelineContext</h3>
+<p>![](assets/Pasted image 20241203165144-20250311094648-yf58zsr.png )
+PipelineContext主要包含有创建与管理Pipeline内部组件 (IPipelineNode (即各个HwNode) 和IPipelineFramework) 相关的对象以及Utils. 其中包括:</p>
+<ul>
+<li>PipelineDAG: 保存并管理Pipeline以及Node全部的Topological关系</li>
+<li>PipelineNodeMap: 保存并管理Pipeline以及Node全部IO map以及StreamInfo</li>
+<li>StreamBuilder: Pipeline Stream的构建</li>
+<li>PipelineBuilder: Pipeline的构建</li>
+<li>NodeBuilder: 各个HWNode的构建</li>
+<li>RequestBuilder: IPipelineFrame的构建</li>
+<li>InFlightRequest: 注册在Pipeline执行中的IPipelineFrame</li>
+</ul>
+<h3 id="hwnode">HWNode</h3>
+<p>HWNode负责整合MTK硬件功能, 软件算法, 3A算法. 以下对各个Node进行介绍.</p>
+<h4 id="p1node">P1Node</h4>
+<p>P1Node是pipeline的根节点, 输入数据来自于上层. P1Node的主要功能是输出raw buffer. P1Node会与CamIO, HAL3A, P2进行交互. 通过HAL3A get和set 3A信息, CamIO enque和deque buffer, 最后输出RAW图给P2Node处理.</p>
+<p>![](assets/Pasted image 20241203165151-20250311094648-hrez5r4.png )
+![](assets/Pasted image 20241203165156-20250311094648-rz53c89.png )</p>
+<h4 id="p2capturenode">P2CaptureNode</h4>
+<p>P2CaptureNode继承自IPipelineNode, 数据来源为P1Node, 主要负责Capture frame的处理, 其中包含:</p>
+<ul>
+<li>CaptureProcessor: 封装P2/Capture request, 决定request要做什么处理 (执行哪些node)</li>
+<li>CaptureFeaturePipe: 串联各个pipe node</li>
+</ul>
+<p>过程如下, 其中CFP是Capture Feature Pipe的缩写</p>
+<p>![](assets/Pasted image 20241203165207-20250311094648-89qjblf.png )
+P2CaptureNode转换raw数据为yuv数据, 支持缩放与裁减.</p>
+<p>更具体的说明可见<a href="https://online.mediatek.com/apps/quickstart/QS00137#QSS01441" target="_blank" rel="noopener">Capture Framework</a></p>
+<h4 id="p2streamingnode">P2StreamingNode</h4>
+<p>P2StreamingNode继承自IPipelineNode, 数据来源为P1Node.</p>
+<ul>
+<li>P2StreamingNode: 接收Pipeline Frame, 转成MWFrame .</li>
+<li>DispatchProcessor: 控制feature的dispatch. 将一般的Streaming request dispatch给StreamingProcessor 处理. 将slow motion和debug的request dispatch给BasiceProcessor处理. 还可以控制debug机制(dump buffer, sanline等).</li>
+<li>StreamingProcessor: 准备feature on/off/combination parameters, 准备output buffer的crop calculation, enque到StreamingFeaturePipe中做feature处理.</li>
+<li>StreamingFeaturePipe: 做Raw转YUV, 结合MTK HW和三方algo实现各种feature.</li>
+</ul>
+<p>![](assets/Pasted image 20241203165219-20250311094648-kmi2096.png )
+P2StreamingNode转换raw数据为yuv数据, 支持缩放与裁减.</p>
+<p>SFP Node (Streaming Feature Pipe) 是SFP下的各个node. request传到SFP后, SFP会往下丢到SFP Node处理. SFP Node的flow总是从RootNode开始, 中间根据不同的处理需求, 流经各个不同的node处理, 最终都会流到HelperNode处理. HelperNode会将处理结果callback回StreamingProcessor. TPINode是用于挂载三方算法的Node.</p>
+<p>更具体的说明可见<a href="https://online.mediatek.com/apps/quickstart/QS00137#QSS01440" target="_blank" rel="noopener">Streaming Framework</a></p>
+<h4 id="jpegnode">JpegNode</h4>
+<p>JpegNode转换YUV数据为Jpeg数据. 数据来源为P2CaptureNode或P2StreamingNode, 输出数据到app.</p>
+<p>![](assets/Pasted image 20241203165229-20250311094648-7h0pw1e.png )
+![](assets/Pasted image 20241203165234-20250311094648-adnt0dx.png )</p>
+<h4 id="fdnode">FDNode</h4>
+<p>生成FD信息.</p>
+<p>![](assets/Pasted image 20241203165242-20250311094648-axu57y4.png )</p>
+<p>其中MTK HAL相关总结如下:</p>
+<ul>
+<li>
+<p>P1Node主要功能是负责出raw buffer, YUV Buffer. 通常与camIO,Hal3A,P2C,P2S打交道. Pass1Node 通过camIO enque, deque buffer送给P2C或者P2S处理.</p>
+</li>
+<li>
+<p>P2StreamingNode接收P1Node传过来的Pipeline Frame, 转成MWFrame, MWFrame封装了mNodeID, mNodeName以及Pipeline Frame.</p>
+</li>
+<li>
+<p>DispatchProcessor主要将一般的Streaming request dispatch给StreamingProcessor处理,还可以生成dumplugin来控制P2 dump buffer.</p>
+</li>
+<li>
+<p>StreamingProcessor get到FeaturePipeParam, 准备 feature on/off/combination parameters, 注册mCallback 给到后面helpnode直接回调, 然后enque到StreamingFeaturePipe中做feature处理.</p>
+</li>
+<li>
+<p>StreamingFeaturePipe做Raw转YUV, 串各个TPI Node实现第三方preview算法的各种feature</p>
+</li>
+<li>
+<p>TPINode主要是接收P2A输出的yuv, 通过TPIMgr call到plugin去执行process处理第三方算法</p>
+</li>
+<li>
+<p>TPIMgr主要是管理各个plugin,及对各个plugin进行排序等操作, 最后把各个plugin, property, Selection封装到PluginMap</p>
+</li>
+<li>
+<p>P2CaptureNode接收P1Node传过来的Pipeline Frame, 转成MWFrame</p>
+</li>
+<li>
+<p>CaptureProcessor通过获取MTK_FEATURE_CAPTURE这个tag来得到feature的参数, 并加到mFeatures, 并把当前request enque到CaptureFeaturePipe做多帧算法或单帧算法的处理</p>
+</li>
+<li>
+<p>CaptureFeaturePipe在构造的时候会创建RootNode, P2Node, MultiFrameNode, YUVNode, MDPNode等node及分配node id, 串联各个pipe node.</p>
+</li>
+<li>
+<p>JpegNode主要负责将yuv转换成Jpeg</p>
+</li>
+<li>
+<p>FDNode主要call到FD Algo去做 Face detection, smile, gestures, asd等detection</p>
+</li>
+<li>
+<p>AppStreamManager</p>
+<ul>
+<li>config : 主要是创建createMetaStreamInfo, createImageStreamInfo并做mtk的转换</li>
+<li>submitRequest: 主要是createMTKRequests, 还有通过CallbackHandler把result进行返回</li>
+</ul>
+</li>
+<li>
+<p>PipelineModelSession</p>
+<ul>
+<li>open/close:主要通过HalDeviceAdapter中间类调power on/off</li>
+<li>config: 根据app带下来的surfaceList及相关设定决定Pipeline各个Node是否需要创建以及各个Node的I/O buffer, 建立整条PipelineModel</li>
+<li>request: 接到上层queue下来的request, 转化为Pipleline统一的IPipelineFrame, 然后通过PipelineContext send到RootNode处理</li>
+</ul>
+</li>
+<li>
+<p>Policy</p>
+<ul>
+<li>config: 主要是做pipeline相关设定的配置, 主要是需要创建哪些HWNode, HWNode中各node的可能所有连接</li>
+<li>request: 主要是决定实际的HWNode的Topology, 决定feature的相关设定, PipeineModelSession会根据解析出Policy设定再去 build 出 PipelineFrame queue到pipeline</li>
+</ul>
+</li>
+<li>
+<p>PipelineContext主要包含有创建/管理Pipeline内部组件, 内部主要包含PipelineDAG, PipelineNodeMap等</p>
+</li>
+<li>
+<p>MTK ISP Hidl主要就是将三方算法的整合, 由MTK HAL层内进行整合, 上移到app层, 以降低与MTK HAL的耦合度. 藉由app取得input buffer后, 通过isp hidl操作来做拍照jpeg等动作.</p>
+</li>
+</ul>
+<p>各个流程如下:</p>
+<p>![](assets/Pasted image 20241203165251-20250311094648-8v70r5d.png )
+![](assets/Pasted image 20241203165258-20250311094648-iwbcnsq.png )
+(Face Detection)</p>
+<p>![](assets/Pasted image 20241203165304-20250311094648-ceflkmo.png )</p>
+<h4 id="pipelineplugin">PipelinePlugin</h4>
+<p>PipelinePlugin是HAL3统一的三方算法挂载界面, 无论是Streaming/Capture/DualCam, 还是RAW/YUV算法, 都是在PipelinePlugin里面挂载并运行. PipelinePlugin主要有2个部分:</p>
+<ul>
+<li>IInterface部分: 提供三方算法的接入, 会用selection详细描述可以提供的buffer与metadata形式；</li>
+<li>IProvider部分: 提供三方算法的挂载 (将三方算法能力提供出来) , 同样也会用selection来声明可以使用什么buffer与metadata形式；</li>
+</ul>
+<p>例:</p>
+<p>![](assets/Pasted image 20241203165310-20250311094648-etsv2as.png )
+其中REGISTER_PLUGIN_INTERFACE与REGISTER_PLUGIN_PROVIDER分别为IInterface与IProvider注册.</p>
+<p>TODO: 待补充三方算法挂载等内容<a href="https://online.mediatek.com/apps/quickstart/QS00137#QSS01437" target="_blank" rel="noopener">PipelinePlugin</a></p>
+<h3 id="关键流程">关键流程</h3>
+<h3 id="tinymw">TinyMW</h3>
+<p>新一代MTK Camera架构</p>
+<p>TODO: 待补充</p>
+<h2 id="qcom-hal">Qcom HAL</h2>
+<h1 id="camera-driver-1">Camera Driver</h1>
+<h1 id="camera-hardware-1">Camera Hardware</h1>
+<h1 id="camera-buffer">Camera Buffer</h1>
+<p>Camera的buffer在用途上主要分为两种类型:</p>
+<ul>
+<li>Input buffer: Input buffer是有实际内容的buffer, 通过request流程送到HAL中, 由HAL读取并进行一系列处理.</li>
+<li>Output buffer: Output buffer是一块内存, 其中不包含具体数据, HAL将处理得到的数据存入output buffer.</li>
+</ul>
+<p>在Camera2 API和HAL3中, buffer被交由stream管理. 对stream的定义在前文介绍<code>camera3_stream_t</code>的时候已经说明, 其有四种属性, 分别为:</p>
+<ul>
+<li>resolution: 在图像处理或者视频流处理中, 用于存储图像或视频帧的缓冲区的尺寸, 决定了能够处理的最大图像尺寸和质量</li>
+<li>format: 缓冲区中数据的组织和编码方式, 决定了图像数据如何在内存中表示</li>
+<li>gralloc usage flag: 内存分配和访问权限指示, 告诉gralloc如何分配内存 (比如内存是用于CPU访问、GPU访问还是同时用于两者) 指定了内存区域可以被哪些组件访问 (如CPU、GPU、Camera等) 以及访问的方式 (读、写、渲染等) .</li>
+<li>maximum in-flight buffer count: 最大in-flight buffer数量 (多个request在HAL中等待处理, 这些request携带的buffer被称为in-flight buffer)</li>
+</ul>
+<h2 id="buffer的流向">Buffer的流向</h2>
+<p><code>configure_stream()</code>配置的stream定义了HAL可以处理的buffer的类型, 每一个stream对应一种的buffer. 由于camera的buffer都随着request和result流动, 下文将通过梳理request和result的流程来对buffer的流向进行分析.</p>
+<p>注: request和result携带的buffer类型是buffer_handle_t *, buffer_handle_t实际上是一个native_handle_t的指针, 而native_handle是对Gralloc分配的buffer的描述. camera_capture_request_t与camera_capture_result_t定义在frameworks/av/services/camera/libcameraservice/device3/Camera3OutputUtils.h</p>
+<p>request与result是相机子系统中的重要概念, app向framework发送request来获取result.</p>
+<ul>
+<li>一个request可以对应一系列的result</li>
+<li>request包含所有必要的配置信息, 存放于metadata中. 如: 分辨率和像素格式；sensor、镜头、闪光等的控制信息；3A 操作模式；RAW 到 YUV 处理控件；以及统计信息的生成等.</li>
+<li>request携带对应的surface (也就是框架里面的stream) , 用于接收返回的图像.</li>
+<li>Framework发送异步的request到HAL, 也就是说, 上一个request没有处理完, 也可以submit新的request. 多个request可以同时处于in-flight状态.</li>
+<li>HAL必须顺序处理request (总是按照FIFO (队列) 的形式) , 对于每一个request都要返回timestamp (shutter, 也就是帧的生成时间) , metadata, image buffers.</li>
+<li>HAL需要的信息都通过request携带的metadata接收, HAL需要返回的信息都通过result携带的metadata返回.</li>
+<li>snapshot的request拥有更高的优先级.</li>
+</ul>
+<p>![](assets/Pasted image 20241203165339-20250311094648-7h62zc5.png )
+上图为request的整体处理流程</p>
+<ul>
+<li>
+<p>open 流程 (黑色箭头线条)</p>
+<ul>
+<li>CameraManager注册AvailabilityCallback回调, 用于接收相机设备的可用性状态变更的通知.</li>
+<li>CameraManager通过调用<code>getCameraIdList()</code>获取到当前可用的camera id, 通过<code>getCameraCharacteristcs()</code>函数获取到指定相机设备的特性.</li>
+<li>CameraManager调用<code>openCamera()</code>打开指定相机设备, 并返回一个CameraDevice对象, 后续通过该CameraDevice对象操控具体的相机设备.</li>
+<li>使用CameraDevice对象的<code>createCaptureSession()</code>创建一个session, 数据请求 (预览、拍照等) 都是通过session进行. 在创建session时, 需要提供Surface作为参数, 用于接收返回的图像.</li>
+</ul>
+</li>
+<li>
+<p>configure stream流程 (蓝色箭头线条)</p>
+<ul>
+<li>申请Surface, 如上图的OUTPUT STREAMS DESTINATIONS框, 用于在创建session时作为参数, 接收session返回的图像.</li>
+<li>创建session后, surface会被配置成框架的stream. 在框架中, stream定义了图像的size及format.</li>
+<li>每个request都需要携带target surface用于指定返回的图像是归属到哪个被configure的stream的.</li>
+</ul>
+</li>
+<li>
+<p>request处理流程 (橙色箭头线条)</p>
+<ul>
+<li>CameraDevice对象通过<code>createCaptureRequest()</code>来创建request, 每个request都需要有surface和settings (settings就是metadata, request包含的所有配置信息都是放在metadata中的) .</li>
+<li>使用session的<code>capture()</code>, <code>captureBurst()</code>, <code>setStreamingRequest()</code>, <code>setStreamingBurst()</code>等api可以将request发送到框架.</li>
+<li>预览的request, 通过<code>setStreamingRequest()</code>, <code>setStreamingBurst()</code>发送, 仅调用一次. 将request set到repeating request list里面. 只要pending request queue里面没有request, 就将repeating list里面的request copy到pending queue里面.</li>
+<li>拍照的request, 通过<code>capture()</code>, <code>captureBurst()</code>发送, 每次需要拍照都会调用. 每次触发, 都会直接将request入到pending request queue里面, 所以拍照的request比预览的request的优先级更高.</li>
+<li>in-progress queue代表当前正在处理的request的queue, 每处理完一个, 都会从pending queue里面拿出来一个新的request放到这里.</li>
+</ul>
+</li>
+<li>
+<p>数据返回流程 (紫色箭头线条)</p>
+<ul>
+<li>硬件层面返回的数据会放到result里面返回, 会通过session的capture callback回调响应.</li>
+</ul>
+</li>
+</ul>
+<p>注意到request进入IN-PROGRESS QUEUE后的流程在HAL中完成, 其具体过程如下图</p>
+<p>![](assets/Pasted image 20241203165348-20250311094648-w7rcgts.png )</p>
+<ul>
+<li>
+<p>request处理流程 (黑色箭头线条)</p>
+<ul>
+<li>framework异步地submit request到HAL, HAL依次处理, 并返回result.</li>
+<li>每个被submit到HAL的request都必须携带stream. stream分为input stream和output stream: input stream对应的buffer是已有图像数据的buffer, HAL对这些buffer进行reprocess；output stream对应的buffer是empty buffer, HAL将生成的图像数据填充的这些buffer里面.</li>
+</ul>
+</li>
+<li>
+<p>input stream处理流程 (图中的INPUT STREAM)</p>
+<ul>
+<li>request携带input stream及input buffer到HAL.</li>
+<li>HAL进行reprocess, 然后新的图像数据重新填充到buffer里面, 返回到framework.</li>
+</ul>
+</li>
+<li>
+<p>output stream处理流程 (图中的OUTPUT STREAM)</p>
+<ul>
+<li>result携带output stream及output buffer到HAL.</li>
+<li>HAL经过一系列模块的的处理, 将图像数据写到buffer中, 返回到framework.</li>
+</ul>
+</li>
+</ul>
+<p>对buffer的流向有了一个总体的认识, 为了详细介绍buffer的管理, 需要先了解BufferQueue的概念, 见下文.</p>
+<h2 id="cameraservice中的buffer">CameraService中的buffer</h2>
+<p>![](assets/Pasted image 20241203165356-20250311094648-ipq2wdq.png )</p>
+<ul>
+<li>camera3_stream: stream基础类型, 定义了buffer的四个基本属性: resolution, format, gralloc usage flags, maximum in-flight buffer count.</li>
+<li>Camera3StreamInterface: 定义了一系列操作stream的接口, 如: <code>startConfiguration()</code>, <code>getBuffer()</code>, <code>returnBuffer()</code>等.</li>
+<li>Camera3Stream: 用于管理来自摄像机设备的单个输入或输出数据流的类, 并定义了一个内部状态机用于追踪stream的状态, 如: connected、configured等状态.</li>
+<li>Camera3IOStreamBase: 维护了一系列用于管理buffer的成员, 如: mTotalBufferCount (该stream允许的最大buffer数量) , mHandoutTotalBufferCount (发送给HAL的buffer总数, 包括input buffer和output buffer) 等.</li>
+<li>Camera3InputStream: 用于管理相机设备的单一输入数据流的类, 该类充当HAL的消费者适配器 (HAL是消费者, 该类用于获取Input Buffer, 然后分发给HAL使用) , 当HAL消费完成后, Input Buffer则会通过该类释放.</li>
+<li>Camera3OutputStream: 用于管理相机设备的单一输出数据流的类.</li>
+<li>Camera3BufferManager: 管理相机output stream使用的buffer的类. 它根据请求分配并分发Gralloc buffer给客户端 (例如Camera3OutputStream) . 当客户端请求buffer时, 如果已经分配了一些可用的buffer, buffer manager将选择一个buffer, 否则将分配一个buffer. 当buffer manager维护的已分配buffer过多时, 它将动态释放一些仅由该buffer manager拥有的buffer. 这样做可以减少内存占用, 除非内存占用已经很小, 而不会影响性能.</li>
+</ul>
+<p>下图描述了request在Camera Service中的关键流程</p>
+<p>![](assets/Pasted image 20241203165404-20250311094648-z4zg9xe.png )</p>
+<ul>
+<li>threadLoop: open camera时启动的线程函数, 用于向HAL发request, close camera时结束该线程. 当App没有下发request到framework时, 该函数会wait在waitForNextRequestLocked中, 等待request的到来.</li>
+<li>getInputBuffer: 仅当request携带input stream才会触发, 用于获取input buffer.</li>
+<li>getBuffer: 用于获取request携带的output stream的buffer.</li>
+</ul>
+<p>首先<code>waitForNextRequestBatch()</code>获取到NextRequest, 而NextRequest包含了CameraApp在执行Request的时候带下来的CaptureRequest, 给CameraHardwareInterface使用的halRequest, outputBuffers.</p>
+<p>接着<code>waitForNextRequestLocked()</code>从RequestQueue中拿出一个request并返回, 如果RequestQueue中没有request, 则从RepeatingRequestQueue中拿出一个request.</p>
+<p>然后在<code>prepareHalRequests()</code>的过程中, 会通过CaptureRequest的setting设置, stream信息, buffer信息对halRequest进行填充. 通过CaptureRequest找到mOutputStreams,然后通过Camera3OutputStream的getBuffer方法获取output buffers, 这个是buffer的dequeue过程.</p>
+<p>之后申请的buffer以buffer_handle_t的形式存于output buffers中. 同时这个output buffer会赋值到halRequest-&gt;output_buffers中.</p>
+<p>最终填充好NextRequest之后调用<code>sendRequestsBatch()</code>提取halRequest然后调用<code>Camera3Device::HalInterface::processBatchCaptureRequests()</code>. 其中会调用<code>wrapAsHidlRequest()</code>把halRequest再次封装成device::Vx_x::CaptureRequest, 之后调用<code>processCaptureRequest_x_x()</code>交给CameraProvider进程处理. (x_x表示hidl版本号)</p>
+<p>注: 无论是input buffer还是output buffer, 都有最大数量限制, 由stream的max_buffers来确定, 即上文提到的maximum in-flight buffer count, 这个值由HAL设置. 当buffer数量不够时, 会触发wait等待.</p>
+<p>下图描述了result在Camera Service中的关键流程</p>
+<p>![](assets/Pasted image 20241203165412-20250311094648-03zmsrz.png )</p>
+<ul>
+<li>processCaptureResult: HAL返回result到framework会触发该函数. 该函数会将metadata返回给app, 以及将output buffer和input buffer返回给stream.</li>
+<li>returnBuffer: 将output buffer还给stream.</li>
+<li>returnInputBuffer: 将input buffer还给stream.</li>
+</ul>
+<h3 id="inputbuffer与outputbuffer的申请与释放">InputBuffer与OutputBuffer的申请与释放</h3>
+<p>![](assets/Pasted image 20241203165417-20250311094648-g42wjyn.png )
+上图描述了通过Camera3Stream申请与释放InputBuffer的过程, 从图中可以看出, 最终buffer的实际申请和释放都是通过BufferItemConsumer (也就是BufferQueue中的消费者端) 的acquireBuffer和releaseBuffer来实现的.</p>
+<ul>
+<li><code>acquireBuffer()</code>: 从生产者处获取buffer.</li>
+<li><code>releaseBuffer()</code>: 将获取的buffer返回到队列, 以允许重复使用.</li>
+</ul>
+<p>BufferItemConsumer是BufferQueue的消费者端点, 允许客户端访问BufferQueue中的整个BufferItem entry, 消费者可以采用同步或异步模式一次获取多个缓冲区, 以供其同时使用.</p>
+<p>![](assets/Pasted image 20241203165423-20250311094648-1iwibk9.png )
+对应上述流程图, 可以看出OutputBuffer的申请有三种情况:</p>
+<ul>
+<li>当mUseBufferManager为TRUE时, 从Camera3BufferManager中申请.</li>
+<li>当mUseBufferManager为TRUE, 但是无法从Camera3BufferManager中申请时, 从ANativeWindow中dequeue buffer. 这个buffer实际上也是Camera3BufferManager申请的, 然后将其attach到ANativeWindow.</li>
+<li>当mUseBufferManager为FALSE时, 直接从ANativeWindow中dequeue buffer, 这个buffer则是由 ANativeWindow申请.</li>
+</ul>
+<p>总而言之, output buffer要么从Camera3BufferManager中申请, 要么从ANativeWindow申请. 从前者申请的话, CameraService会拥有对output buffer更多的控制权, 如动态申请释放buffer来省内存.</p>
+<p>将上面的四张图合成即可得到完整的buffer在CameraService中流转的过程.</p>
+<h2 id="hal中的buffer">HAL中的buffer</h2>
+<p>继续上文中对request与result的分析, 对传入HAL层的buffer流转进行分析.</p>
+<h3 id="mtk">MTK</h3>
+<p>vendor/mediatek/proprietary/hardware/mtkcam3/main/mtkhal/hidl/device/3.x/HidlCameraDeviceSession.cpp::processCaptureRequest()</p>
+<h3 id="qcom">Qcom</h3>
+<p>TODO</p>
+<h1 id="bufferqueue概览">BufferQueue概览</h1>
+<p>BufferQueue可以将可生成图形数据buffer的组件 (生产方) 连接到接受数据以便进行显示或进一步处理的组件 (使用方) . 几乎所有在系统中移动图形数据buffer的内容都依赖于BufferQueue. BufferQueue是Android显示系统的核心, 实际上Surface, ImageReader, ImageWriter是对BufferQueue的生产者消费者的封装, 而BufferQueue是一个生产者消费者模型又是GraphicBuffer管理者, 它和显示系统以及Camera流媒体紧密关系着.</p>
+<p>定义在frameworks/native/libs/gui/</p>
+<h2 id="bufferqueue中的生产者与消费者框架">BufferQueue中的生产者与消费者框架</h2>
+<p>BufferQueue的核心逻辑是生产者消费者逻辑. 在BufferQueue这个生产者消费者框架中, BufferQueueCore可以理解为buffer的管理者, 它的消费者是BufferQueueConsumer, 它的生产者是BufferQueueProducer.</p>
+<p>![](assets/Pasted image 20241203165431-20250311094648-hwr5t04.png )
+上图描述了BufferQueue中的生产者与消费者的工作流程, 根据个人理解, 可以做一个比喻:</p>
+<p>大厨在做菜, 顾客在吃菜, 菜用盘子装, 服务员送盘子.</p>
+<p>Producer就是大厨, consumer是顾客, 盘子是buffer, 而服务员是binder.</p>
+<p>大厨在做菜需要盘子装就是dequeue的过程, 装好菜后服务员上菜是queue的过程.</p>
+<p>菜端给顾客吃是acquire的过程, 顾客吃完菜然后服务员把盘子送回去是release的过程.</p>
+<p>在此过程中, buffer有5种状态, 分别为: free, dequeued, queue, acquired, shared.</p>
+<p>状态变化如下图:</p>
+<p>![](assets/Pasted image 20241203165437-20250311094648-n72bx1x.png )</p>
+<ul>
+<li>FREE: 表示缓冲区可供生产者出队. 该slot由BufferQueue拥有. 当调用<code>dequeueBuffer()</code>时, 它会转换为 DEQUEUED.</li>
+<li>DEQUEUED: 表示缓冲区已由生产者出队, 但尚未排队或取消. 生产者可以在相关释放栅栏发出信号后立即修改缓冲区的内容. 该槽位由生产者拥有. 它可以转换为QUEUED (通过<code>queueBuffer()</code>或<code>attachBuffer()</code>) 或返回FREE (通过<code>cancelBuffer()</code>或<code>detachBuffer()</code>) .</li>
+<li>QUEUED: 表示缓冲区已被生产者填充并排队供消费者使用. 缓冲区内容可能会在有限的时间内继续被修改, 因此在相关栅栏发出信号之前, 不得访问内容. 该slot(buffer, 下同)由BufferQueue拥有. 它可以转换为ACQUIRED (通过<code>acquireBuffer()</code>) 或FREE (如果另一个缓冲区以异步模式排队) .</li>
+<li>ACQUIRED: 表示缓冲区已被消费者获取. 与QUEUED一样, 在获取栅栏信号发出之前, 消费者不得访问内容. 该slot由消费者拥有. 当调用<code>releaseBuffer()</code>或<code>detachBuffer()</code>时, 它会转换为FREE. 分离的缓冲区也可以通过<code>attachBuffer()</code>进入ACQUIRED状态.</li>
+<li>SHARED: 表示此缓冲区正在共享缓冲区模式下使用. 它可以同时处于其他状态的任意组合 (FREE 除外, 因为这排除了处于任何其他状态) . 它也可以多次被出队、排队或获取.</li>
+</ul>
+<p>![](assets/Pasted image 20241203165445-20250311094648-sbe33h9.png )</p>
+<h2 id="bufferqueue的构成">BufferQueue的构成</h2>
+<p>BufferQueueCore是由BufferQueue调用<code>BufferQueue::createBufferQueue()</code>创建的. BufferQueue中主要定义了<code>BufferQueue::createBufferQueue()</code>和ProxyConsumerListener. 封装的消费者调用<code>BufferQueue::createBufferQueue()</code>创建BufferQueueCore, 然后根据BufferQueueCore创建原始消费者生产者BufferQueueConsumer和BufferQueueProducer. BufferQueueCore负责维护BufferQueue的基本数据结构, 而BufferQueueProducer和BufferQueueConsumer则负责提供操作BufferQueue的基本接口.</p>
+<p>消费者BufferQueueConsumer在调用<code>BufferQueueConsumer::connect()</code>的时候把ConsumerListener相关的回调接口注册进BufferQueueCore供ProxyConsumerListener回调使用.</p>
+<p>生产者BufferQueueProducer也有一个<code>BufferQueueProducer::connect()</code>接口, 其注册IProducerListener到BufferQueueCore中, 在消费者使用完GraphicBuffer释放的时候通过IProducerListener通知生产者.</p>
+<p>同时这个IProducerListener会注册Binder死亡通知函数, 在死亡的时候回调BufferQueueProducer的<code>binderDied()</code>, 取消链接. 至此由BufferQueue, BufferQueueCore, BufferQueueConsumer, BufferQueueProducer组成的核心的生产者消费者模型就建立起来了.</p>
+<h3 id="bufferqueue">BufferQueue</h3>
+<p>在BufferQueue中首先定义了ProxyConsumerListener. ProxyConsumerListener类是ConsumerListener类的实现, 主要用来保存一个指向真正的consumer object的weak pointer. ProxyConsumerListener的主要目的是避免BufferQueue对象和consumer对象的循环引用. ProxyConsumerListener的使用在ConsumerBase中. ProxyConsumerListener的实现比较简单, 几个函数的功能主要是监听一些动作, 当这些对应的事件发生后, 及时通知另一端, 做数据同步 (producer和consumer两端的关系) .</p>
+<p>然后定义了<code>createBufferQueue()</code>, 前文中提到过此函数用于创建BufferQueueCore等BufferQueue的基本组成.</p>
+<h3 id="bufferqueuecore">BufferQueueCore</h3>
+<ul>
+<li>slots相关, 用于关联数据核心GraphicBuffer, 包括mSlots mQueue mFreeSlots mfreeBuffers mUnusedSlots,mActiveBuffers</li>
+<li>listener相关, 用于通知和回调, 包括mConsumerListener mLinkedToDeath mConnectedProducerListener</li>
+<li>Buffercount相关, 用于定BufferQuue中的Buffer数量, 包括mMaxBufferCount mMaxAcquiredBufferCount mMaxDequeuedBufferCount</li>
+<li>一些设置项, 包括 mConsumerName mDefaultWidth mDefaultHeight mDefaultBufferFormat mDefaultBufferDataSpace. 主要是name, 宽高信息, format信息, dataspace信息等.</li>
+</ul>
+<p>BufferQueueCore正常会放在消费者中去创建,两点原因:</p>
+<ol>
+<li>出于consumer准备好消费了再去生产的思想考虑, 因为生产的目的为了消费.</li>
+<li>以consumer作为核心端去管理, consumer创建方便统一管理.</li>
+</ol>
+<h3 id="bufferslot与bufferitem">BufferSlot与BufferItem</h3>
+<p>BufferQueueCore管理buffer, 而其核心GraphicBuffer关联在BufferSlot中. BufferQueueCore定义了<code>BufferQueueDefs::SlotsType mSlots</code>, 其本质是一个BufferSlot数组, 而BufferSlot定义如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">BufferSlot</span> {
+</span></span><span style="display:flex;"><span>    sp<span style="color:#f92672">&lt;</span>GraphicBuffer<span style="color:#f92672">&gt;</span> mGraphicBuffer;
+</span></span><span style="display:flex;"><span>    EGLDisplay mEglDisplay;
+</span></span><span style="display:flex;"><span>    BufferState mBufferState;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> mRequestBufferCalled;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint64_t</span> mFrameNumber;
+</span></span><span style="display:flex;"><span>    EGLSyncKHR mEglFence;
+</span></span><span style="display:flex;"><span>    sp<span style="color:#f92672">&lt;</span>Fence<span style="color:#f92672">&gt;</span> mFence;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> mAcquireCalled;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> mNeedsReallocation;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>其中重点是<code>sp&lt;GraphicBuffer&gt; mGraphicBuffer</code>, 也就是实际使用的buffer. BufferQueue框架中, 消费者和生产者对buffer操作的单元核心就是一个BufferSlot, 也就是说所有对GraphicBuffer的操作都是针对BufferSlot来完成的.</p>
+<p>具体的BufferQueueCore对BufferSlot的操作是通过BufferQueueCore中的<code>Fifo mQueue</code>. 其实际类型是<code>typedef Vector&lt;BufferItem&gt; Fifo</code>. 所以Fifo中存的是BufferItem, BufferItem中定义了mslots, 表示此BufferItem中的buffer的slot序号, 以此找到对应的BufferSlot.</p>
+<p>可以简单理解成BufferQueueCore, 生产者从mQueue上获取BufferItem从而找到了对应的BufferSlot, 并对它完成一系列的操作, 之后, 放回到mQueue中供消费者使用, 消费者也是从mQueue上获取BufferItem从而找到对应的BufferSlot来消费, 消费完成之后放回mQueue.</p>
+<p>注: 实际上不是真正的把BufferSlot取出放回mQueue, 而是mSlots索引值的传递过程.</p>
+<h3 id="surface与bufferitemconsumer">Surface与BufferItemConsumer</h3>
+<p>Surface是ANativeWindow的实现, 作用是将buffer送到BufferQueue. ANativeWindow 表示图像队列的生产者端. 它是Java中android.view.Surface对象的C对应物, 并且可以双向转换.</p>
+<p>根据消费者的不同, 提交给ANativeWindow的图像可以显示在显示屏上或发送给其他消费者, 例如视频编码器.</p>
+<p>Surface将buffer送到BufferQueue, 通常通过某种方式 (可能是OpenGL、软件渲染器或硬件解码器) 渲染帧并将其创建的帧转发到SurfaceFlinger进行合成的程序使用. 例如, 视频解码器可以渲染帧并调用<code>eglSwapBuffers()</code>, 这会调用在Surface中实现的ANativeWindow回调. 然后, Surface通过Binder将buffer转发到BufferQueue的生产者接口, 将新帧提供给消费者 (例如GLConsumer) .</p>
+<p>BufferItemConsumer是一个BufferQueue消费者端点, 允许客户端访问BufferQueue中的整个BufferItem. 可以一次获取多个buffer供客户端同时使用. 此消费者可以采用同步或异步模式运行.</p>
+<p>其中, BufferItemConsumer封装并简化了BufferQueueConsumer的操作, Surface封装并简化了BufferQueueProducer的操作 (两者都与BufferQueue相连) .</p>
+<h3 id="imagewriter与imagereader">ImageWriter与ImageReader</h3>
+<p>![](assets/Pasted image 20241203165457-20250311094648-sm9qmgl.png )
+ImageReader (frameworks/base/media/java/android/media/ImageReader.java) 是消费者, 消费者承担创建BufferQueue的责任. 所以在ImageReader初始化的时候创建了BufferQueue以及最原始的生产者BufferQueueProducer和消费者BufferItemConsumer. ImageReader是java层的概念, 其调用JNI接口<code>ImageReader_init()</code> (frameworks/base/media/jni/android_media_ImageReader.cpp) 来初始化.</p>
+<p>ImageReader工作的时候调用<code>acquirenextImage()</code>经过层层调用获取到BufferQueue中的buffer来使用, 并将状态改成acquired状态. 使用完成之后调用release接口放回到freeBuffers队列中并通知生产者释放Buffer.</p>
+<p>ImageReader的基本操作流程如下:</p>
+<p>![](assets/Pasted image 20241203165503-20250311094648-ktc931c.png )
+ImageWriter (frameworks/base/media/java/android/media/ImageWriter.java ) 是生产者, 根据消费者的创建的原始生产者封装并创建自己, 然后link到消费者进程. 然后调用<code>dequeueInputImage()</code>最终调用<code>BufferQueueProducer:dequeueBuffer()</code>拿到buffer进行处理. 处理完成之后调用<code>queueInputImage()</code>最终调用<code>BufferQueueProducer:queueBuffer()</code>把buffer放回队列供消费者使用.</p>
+<p>ImageReader的基本操作流程如下:</p>
+<p>![](assets/Pasted image 20241203165512-20250311094648-xdl7pmp.png )</p>
+<h2 id="bufferqueue中类关系总结">BufferQueue中类关系总结</h2>
+<p>![](assets/Pasted image 20241203165517-20250311094648-evfz84s.png )</p>
+<p>![](assets/Pasted image 20241203165526-20250311094648-xfg4fzd.png )
+具体说明待补充 (TODO)</p>
+<h2 id="bufferqueue在相机中的应用">BufferQueue在相机中的应用</h2>
+<p>![](assets/Pasted image 20241203165533-20250311094648-jwy4umb.png )</p>
+<p>![](assets/Pasted image 20241203165541-20250311094648-zqqvvke.png )</p>
+<p>TODO</p>
+<h3 id="补充">补充</h3>
+<p>OpenGL能进行高效得渲染图形图像, 并支持各种复杂的特效和动画. 在Android当中, 运用的是OpenGL ES, 是OpenGL的一个轻量级版本, 其工作流程基本如下:</p>
+<p>![](assets/Pasted image 20241203165552-20250311094648-mmoc2ad.png )
+首先Camera把摄像头收集到的数据传给SurfaceTexture, SurfaceTexture将数据转换为OpenGL ES可用的纹理, 并将其更新到绑定的纹理对象中, OpenGL ES根据纹理ID获取到纹理对象后, 渲染成帧数据, 再通过EGL显示在 Surface上.</p>
+<ul>
+<li>纹理: 是一种可以被OpenGL识别和使用的渲染数据源.</li>
+<li>纹理对象: 是一个用于存储和处理纹理数据的对象.</li>
+<li>纹理ID: 用于标识和操作这个纹理对象的唯一编号.</li>
+<li>SurfaceTexture: 将数据转换为OpenGL ES可用的纹理, 并将其更新到绑定的纹理对象中, 以供OpenGL ES进行渲染和显示.</li>
+<li>EGL: OpenGL ES与底层窗口系统 (如Android、Linux等) 之间的中间层, 用于管理与窗口系统的交互以及OpenGL ES渲染表面的创建、绑定和显示等操作.</li>
+</ul>
+<h1 id="sp与wp">sp与wp</h1>
+<p>sp: system/core/libutils/StrongPointer.cpp</p>
+<p>TODO</p>
+<h1 id="对binder的一些理解">对Binder的一些理解</h1>
+<p>Binder通信是一种client-server的通信结构</p>
+<ul>
+<li>从表面上来看, 是client通过获得一个server的代理接口, 对server进行直接调用</li>
+<li>代理接口中定义的方法与server中定义的方法一一对应</li>
+<li>client调用某个代理接口中的方法时, 代理接口的方法会将client传递的参数打包成为Parcel对象；</li>
+<li>代理接口将该Parcel发送给内核中的binder driver.</li>
+<li>server会读取binder driver中的请求数据, 如果是发送给自己的, 解包Parcel对象, 处理并将结果返回；</li>
+<li>整个的调用过程是一个同步过程, 在server处理的时候, client会block住.</li>
+</ul>
+<p>Bp, Bn同时实现一个接口I. Bp主要用于处理服务请求, 然后通过<code>transact()</code>通过binder将处理请求传给Bn. BpINTERFACE是client端的代理接口, BnINTERFACE是server端的代理接口.</p>
+<p>BpBinder (Binder Proxy) 负责向Bnbinder (Binder Native) 发送调用请求的数据. BpBinder是client端binder通信的核心对象, 通过调用<code>transact()</code>, client就可以向Bnbinder发送调用请求和数据.</p>
+<p>![](assets/Pasted image 20241203165602-20250311094648-ft3jtwv.png )</p>
+<ol>
+<li>client端通过<code>transact()</code>对binder驱动发起操作请求, 并等待返回结果.</li>
+<li>binder驱动将该请求转发给对应的server端.</li>
+<li>server端通过<code>onTransact()</code>来响应client的操作请求, 并将结果返回给client端.</li>
+</ol>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

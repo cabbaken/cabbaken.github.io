@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>11 on My New Hugo Site</title>
+    <link>http://localhost:1313/notes/daily-note/2024/11/</link>
+    <description>Recent content in 11 on My New Hugo Site</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 11 Mar 2025 09:49:35 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/notes/daily-note/2024/11/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>20241105</title>
+      <link>http://localhost:1313/notes/daily-note/2024/11/2024_11_05/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/11/2024_11_05/</guid>
+      <description>&lt;h1 id=&#34;2024_11_05&#34;&gt;2024_11_05&lt;/h1&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;[[App in background is killed问题分析]]&lt;/li&gt;&#xA;&lt;li&gt;尝试将模型转换为ONNX格式然后用ONNX Runtime在手机上跑&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_11_05&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_11_05-1&#34;&gt;2024_11_05&lt;/h1&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;[[App in background is killed问题分析]]&lt;/li&gt;&#xA;&lt;li&gt;尝试将模型转换为ONNX格式然后用ONNX Runtime在手机上跑&lt;/li&gt;&#xA;&lt;/ol&gt;</description>
+    </item>
+    <item>
+      <title>20241107</title>
+      <link>http://localhost:1313/notes/daily-note/2024/11/2024_11_07/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/11/2024_11_07/</guid>
+      <description>&lt;h1 id=&#34;2024_11_07&#34;&gt;2024_11_07&lt;/h1&gt;&#xA;&lt;h2 id=&#34;了解oom-killer和lmk机制oom与lmk&#34;&gt;相机性能问题分析&#xA;了解OOM killer和lmk机制[[OOM与LMK]]&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_11_07&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_11_07-1&#34;&gt;2024_11_07&lt;/h1&gt;&#xA;&lt;p&gt;相机性能问题分析&#xA;了解OOM killer和lmk机制[[OOM与LMK]]&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20241111</title>
+      <link>http://localhost:1313/notes/daily-note/2024/11/2024_11_11/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/11/2024_11_11/</guid>
+      <description>&lt;h1 id=&#34;2024_11_11&#34;&gt;2024_11_11&lt;/h1&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;成功使用C++加载并运行模型, 下一步适配NDK&lt;/li&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGN16UUPV-969&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN16UUPV-969&lt;/a&gt; MIUI.home is killed, 经典问题澄清&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_11_11&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_11_11-1&#34;&gt;2024_11_11&lt;/h1&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;成功使用C++加载并运行模型, 下一步适配NDK&lt;/li&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGN16UUPV-969&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN16UUPV-969&lt;/a&gt; MIUI.home is killed, 经典问题澄清&lt;/li&gt;&#xA;&lt;/ol&gt;</description>
+    </item>
+    <item>
+      <title>20241118</title>
+      <link>http://localhost:1313/notes/daily-note/2024/11/2024_11_18/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/11/2024_11_18/</guid>
+      <description>&lt;h1 id=&#34;2024_11_18&#34;&gt;2024_11_18&lt;/h1&gt;&#xA;&lt;h2 id=&#34;shot_2_view性能问题bugn16uupv-893&#34;&gt;[[shot_2_view性能问题#&lt;a href=&#34;https%20//jira-phone.mioffice.cn/browse/BUGN16UUPV-893&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN16UUPV-893&lt;/a&gt;]]&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_11_18&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_11_18-1&#34;&gt;2024_11_18&lt;/h1&gt;&#xA;&lt;p&gt;[[shot_2_view性能问题#[BUGN16UUPV-893](https //jira-phone.mioffice.cn/browse/BUGN16UUPV-893)]]&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20241119</title>
+      <link>http://localhost:1313/notes/daily-note/2024/11/2024_11_19/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/11/2024_11_19/</guid>
+      <description>&lt;h1 id=&#34;2024_11_19&#34;&gt;2024_11_19&lt;/h1&gt;&#xA;&lt;h2 id=&#34;完善shot_2_view性能问题bugn16uupv-893-和gallery同事联系并抓log和trace&#34;&gt;完善[[shot_2_view性能问题#&lt;a href=&#34;https%20//jira-phone.mioffice.cn/browse/BUGN16UUPV-893&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN16UUPV-893&lt;/a&gt;]] 和gallery同事联系并抓log和trace&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_11_19&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_11_19-1&#34;&gt;2024_11_19&lt;/h1&gt;&#xA;&lt;p&gt;完善[[shot_2_view性能问题#[BUGN16UUPV-893](https //jira-phone.mioffice.cn/browse/BUGN16UUPV-893)]] 和gallery同事联系并抓log和trace&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20241120</title>
+      <link>http://localhost:1313/notes/daily-note/2024/11/2024_11_20/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/11/2024_11_20/</guid>
+      <description>&lt;h1 id=&#34;2024_11_20&#34;&gt;2024_11_20&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://jira-phone.mioffice.cn/browse/BUGN11AUPV-1657&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN11AUPV-1657&lt;/a&gt;&#xA;初看trace发现decode耗时如下, 和shot_2_view很相似.&#xA;![](assets/Pasted image 20241122104100-20250311094935-0j640n6.png )&#xA;需要抓U版本的trace排查一下相关的问题&lt;/p&gt;&#xA;&lt;p&gt;&lt;img src=&#34;assets/ed4b737a-404f-406f-9e33-a74c5820cd22-20250311094935-p1up56p.jpeg&#34; alt=&#34;&#34;&gt;&#xA;log上看是这个原因&lt;/p&gt;&#xA;&lt;p&gt;&lt;img src=&#34;assets/12b38abf-34ec-403d-982d-85827e0e4bcf-20250311094935-yl8sebm.jpeg&#34; alt=&#34;&#34;&gt;&#xA;trace上看似乎是mediaserver的framedecoder线程耗时长, 这个不确定.&#xA;&lt;img src=&#34;assets/b6ba1850-289a-4c95-adc6-dae80d443d49-20250311094935-515j820.jpeg&#34; alt=&#34;&#34;&gt;&#xA;相机的流程耗时都在正常范围内&#xA;找相册端同事帮助分析&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20241121</title>
+      <link>http://localhost:1313/notes/daily-note/2024/11/2024_11_21/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/11/2024_11_21/</guid>
+      <description>&lt;h1 id=&#34;2024_11_21&#34;&gt;2024_11_21&lt;/h1&gt;&#xA;&lt;h2 id=&#34;发现不是相册问题-现在n16u测shot_2_view已经不走相册了-刷新版本问题不复现&#34;&gt;[[shot_2_view性能问题#&lt;a href=&#34;https%20//jira-phone.mioffice.cn/browse/BUGN16UUPV-893&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN16UUPV-893&lt;/a&gt;]]&#xA;发现不是相册问题, 现在N16U测shot_2_view已经不走相册了, 刷新版本问题不复现&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_11_21&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_11_21-1&#34;&gt;2024_11_21&lt;/h1&gt;&#xA;&lt;p&gt;[[shot_2_view性能问题#[BUGN16UUPV-893](https //jira-phone.mioffice.cn/browse/BUGN16UUPV-893)]]&#xA;发现不是相册问题, 现在N16U测shot_2_view已经不走相册了, 刷新版本问题不复现&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20241125</title>
+      <link>http://localhost:1313/notes/daily-note/2024/11/2024_11_25/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/11/2024_11_25/</guid>
+      <description>&lt;h1 id=&#34;2024_11_25&#34;&gt;2024_11_25&lt;/h1&gt;&#xA;&lt;h2 id=&#34;提高线程优先级-最后说是最新版本不复现了-就没上&#34;&gt;[[shot_2_view性能问题#&lt;a href=&#34;https%20//jira-phone.mioffice.cn/browse/BUGN16UUPV-893&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;BUGN16UUPV-893&lt;/a&gt;]]&#xA;提高线程优先级, 最后说是最新版本不复现了, 就没上&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_11_25&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_11_25-1&#34;&gt;2024_11_25&lt;/h1&gt;&#xA;&lt;p&gt;[[shot_2_view性能问题#[BUGN16UUPV-893](https //jira-phone.mioffice.cn/browse/BUGN16UUPV-893)]]&#xA;提高线程优先级, 最后说是最新版本不复现了, 就没上&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20241126</title>
+      <link>http://localhost:1313/notes/daily-note/2024/11/2024_11_26/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/11/2024_11_26/</guid>
+      <description>&lt;h1 id=&#34;2024_11_26&#34;&gt;2024_11_26&lt;/h1&gt;&#xA;&lt;h2 id=&#34;准备接入orion&#34;&gt;本地跑通jira-analyzer&#xA;准备接入orion.&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_11_26&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_11_26-1&#34;&gt;2024_11_26&lt;/h1&gt;&#xA;&lt;p&gt;本地跑通jira-analyzer&#xA;准备接入orion.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>20241127</title>
+      <link>http://localhost:1313/notes/daily-note/2024/11/2024_11_27/</link>
+      <pubDate>Tue, 11 Mar 2025 09:49:35 +0000</pubDate>
+      <guid>http://localhost:1313/notes/daily-note/2024/11/2024_11_27/</guid>
+      <description>&lt;h1 id=&#34;2024_11_27&#34;&gt;2024_11_27&lt;/h1&gt;&#xA;&lt;h2 id=&#34;完善内存分析工具-支持多种文件多种格式解压&#34;&gt;完善内存分析工具, 支持多种文件多种格式解压&lt;/h2&gt;&#xA;&lt;h2 id=&#34;lastmod-2025-03-11t094935z&#34;&gt;title: 2024_11_27&#xA;date: 2025-03-11T09:49:35Z&#xA;lastmod: 2025-03-11T09:49:35Z&lt;/h2&gt;&#xA;&lt;h1 id=&#34;2024_11_27-1&#34;&gt;2024_11_27&lt;/h1&gt;&#xA;&lt;p&gt;完善内存分析工具, 支持多种文件多种格式解压&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

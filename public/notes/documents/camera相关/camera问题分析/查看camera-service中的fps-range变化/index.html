@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>查看Camera Service中的fps range变化</title>
+
+<meta name="description" content="查看Camera Service中的fps range变化 gerrit.pt.mioffice.cn/c/platform/frameworks/av/&#43;/4180649
+此patch可以跟踪fps range在CameraService中的变化.
+From 91fe6b8ab1c36bc68d4d05983488663585e7ff04 Mon Sep 17 00:00:00 2001 From: tangzhiying &lt;tangzhiying@xiaomi.com&gt; Date: Wed, 03 Jul 2024 16:55:27 &#43;0800 Subject: [PATCH] [cameraperf][fpsdetect]for test MIUIROM-2211540 Test Change-Id: I6a8628471b94dc61504b732d03bb064601fdb421 Signed-off-by: tangzhiying &lt;tangzhiying@xiaomi.com&gt; --- diff --git a/services/camera/libcameraservice/device3/Camera3Device.cpp b/services/camera/libcameraservice/device3/Camera3Device.cpp index 685e194..7195256 100644 --- a/services/camera/libcameraservice/device3/Camera3Device.cpp &#43;&#43;&#43; b/services/camera/libcameraservice/device3/Camera3Device.cpp @@ -124,6 &#43;124,12 @@ using namespace android::camera3; using namespace android::hardware::camera; &#43;typedef struct &#43;{ &#43; int32_t min; ///&lt; The minimum FPS value; units are frames per second &#43; int32_t max; ///&lt; The maximum FPS value; units are frames per second &#43;} FPSRange__; &#43; namespace android { Camera3Device::Camera3Device(std::shared_ptr&lt;CameraServiceProxyWrapper&gt;&amp; cameraServiceProxyWrapper, @@ -843,6 &#43;849,26 @@ std::list&lt;const SurfaceMap&gt;::const_iterator surfaceMapIt = surfaceMaps.begin(); for (; metadataIt != metadataList.end() &amp;&amp; surfaceMapIt != surfaceMaps.end(); &#43;&#43;metadataIt, &#43;&#43;surfaceMapIt) { &#43; &#43; const camera_metadata_t* raw = metadataIt-&gt;begin()-&gt;metadata.getAndLock(); &#43; camera_metadata_ro_entry_t fpsEntry; &#43; find_camera_metadata_ro_entry(raw, ANDROID_CONTROL_AE_TARGET_FPS_RANGE, &amp;fpsEntry); &#43; if (fpsEntry.count &gt; 1) { &#43; CLOGE(&#34;tzy Request repeating:%d,minfps:%d,maxfps:%d&#34;,repeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]); &#43; &#43; if (!repeating) { &#43; // fpsEntry.data.i32[1]=25; &#43; FPSRange__ fpsRange; &#43; fpsRange.min = 14; &#43; fpsRange.max = 25; &#43; &#43; // int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2); &#43; int sstuta = update_camera_metadata_entry((camera_metadata_t*)raw, fpsEntry.index, &amp;fpsRange, (sizeof(FPSRange__)/sizeof(int32_t)), nullptr); &#43; // update_camera_metadata_entry(raw, fpsEntry.index, &amp;fpsEntry.data, fpsEntry.count, nullptr); &#43; CLOGE(&#34;tzy after modify sstuta:%d, repeating:%d,minfps:%d,maxfps:%d&#34;,sstuta,repeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]); &#43; } &#43; } &#43; sp&lt;CaptureRequest&gt; newRequest = setUpRequestLocked(*metadataIt, *surfaceMapIt); if (newRequest == 0) { CLOGE(&#34;Can&#39;t create capture request&#34;); @@ -857,6 &#43;883,48 @@ CLOGE(&#34;RequestID does not exist in metadata&#34;); return BAD_VALUE; } &#43; &#43; //for test &#43; // auto fpsEntry = metadataIt-&gt;begin()-&gt;metadata.find(ANDROID_CONTROL_AE_TARGET_FPS_RANGE); &#43; // if (fpsEntry.count &gt; 1) { &#43; // CLOGE(&#34;tzy Request newRequest-&gt;mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]); &#43; // } &#43; &#43; &#43; // const camera_metadata_t* raw = metadataIt-&gt;begin()-&gt;metadata.getAndLock(); &#43; // camera_metadata_ro_entry_t fpsEntry; &#43; // find_camera_metadata_ro_entry(raw, ANDROID_CONTROL_AE_TARGET_FPS_RANGE, &amp;fpsEntry); &#43; // if (fpsEntry.count &gt; 1) { &#43; // CLOGE(&#34;tzy Request newRequest-&gt;mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]); &#43; &#43; // if (!repeating) { &#43; // // fpsEntry.data.i32[1]=25; &#43; // FPSRange__ fpsRange; &#43; // fpsRange.min = 14; &#43; // fpsRange.max = 25; &#43; &#43; // // int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2); &#43; // update_camera_metadata_entry((camera_metadata_t*)raw, fpsEntry.index, &amp;fpsRange, (sizeof(FPSRange__)/sizeof(int32_t)), nullptr); &#43; // // update_camera_metadata_entry(raw, fpsEntry.index, &amp;fpsEntry.data, fpsEntry.count, nullptr); &#43; // CLOGE(&#34;tzy after modify mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]); &#43; // } &#43; // } &#43; &#43; // if (fpsEntry.count &gt; 1&amp;&amp; !repeating) { &#43; // int myfps[2]; &#43; // myfps[0]=14; &#43; // myfps[1]=25; &#43; // // camera_metadata_ro_entry_t e = camera_metadata_ro_entry_t(); &#43; // fpsEntry.data.i32[1]=25; &#43; // update_camera_metadata_entry(metadataIt-&gt;begin()-&gt;metadata, fpsEntry.index, fpsEntry.data, fpsEntry.count, fpsEntry); &#43; &#43; // int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2); &#43; // if (tres != OK) { &#43; // CLOGE(&#34;tzy RequestID error!&#34;); &#43; // } &#43; // CLOGE(&#34;tzy after modify mRepeating:%d,minfps:%d,maxfps:%d,1e9 / fpsEntry.data.i32[1]:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1],1e9 / fpsEntry.data.i32[1]); &#43; // } &#43; newRequest-&gt;mResultExtras.requestId = requestIdEntry.data.i32[0]; requestList-&gt;push_back(newRequest); @@ -2111,6 &#43;2179,7 @@ &amp;&amp; minDurations.data.i64[i&#43;1] == stream-&gt;getWidth() &amp;&amp; minDurations.data.i64[i&#43;2] == stream-&gt;getHeight()) { int64_t minFrameDuration = minDurations.data.i64[i&#43;3]; &#43; CLOGE(&#34;tzy getMaxPreviewFps:%d&#34;,1e9f / minFrameDuration); return 1e9f / minFrameDuration; } } @@ -2151,6 &#43;2220,7 @@ float streamMaxPreviewFps = getMaxPreviewFps(stream); sessionMaxPreviewFps = std::max(sessionMaxPreviewFps, streamMaxPreviewFps); &#43; CLOGE(&#34;tzy sessionMaxPreviewFps:%d&#34;,sessionMaxPreviewFps); // Populate stream statistics in case of Idle if (idle) { @@ -3692,6 &#43;3762,7 @@ expectedDurationInfo.minDuration = 1e9 / e.data.i32[1]; expectedDurationInfo.maxDuration = 1e9 / e.data.i32[0]; } &#43; CLOGE(&#34;SSSS ExpectedDurationInfo expectedDurationInfo.minDuration = 1e9 / e.data.i32[1]:%d&#34;,expectedDurationInfo.minDuration = 1e9 / e.data.i32[1]); expectedDurationInfo.isFixedFps = (e.data.i32[1] == e.data.i32[0]); break; } @@ -3821,6 &#43;3892,8 @@ reconfigureRequired = false; } &#43; ALOGE(&#34;tzy reconfigureRequired: %d&#34;, reconfigureRequired); &#43; return reconfigureRequired; } title: 查看Camera Service中的fps range变化 date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z 查看Camera Service中的fps range变化 gerrit.pt.mioffice.cn/c/platform/frameworks/av/&#43;/4180649
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E6%9F%A5%E7%9C%8Bcamera-service%E4%B8%AD%E7%9A%84fps-range%E5%8F%98%E5%8C%96/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E6%9F%A5%E7%9C%8Bcamera-service%E4%B8%AD%E7%9A%84fps-range%E5%8F%98%E5%8C%96/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E6%9F%A5%E7%9C%8Bcamera-service%E4%B8%AD%E7%9A%84fps-range%E5%8F%98%E5%8C%96/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="查看Camera Service中的fps range变化">
+<meta property="og:description" content="查看Camera Service中的fps range变化
+gerrit.pt.mioffice.cn/c/platform/frameworks/av/&#43;/4180649
+此patch可以跟踪fps range在CameraService中的变化.
+From 91fe6b8ab1c36bc68d4d05983488663585e7ff04 Mon Sep 17 00:00:00 2001
+From: tangzhiying &lt;tangzhiying@xiaomi.com&gt;
+Date: Wed, 03 Jul 2024 16:55:27 &#43;0800
+Subject: [PATCH] [cameraperf][fpsdetect]for test
+
+MIUIROM-2211540
+
+Test
+
+Change-Id: I6a8628471b94dc61504b732d03bb064601fdb421
+Signed-off-by: tangzhiying &lt;tangzhiying@xiaomi.com&gt;
+---
+
+diff --git a/services/camera/libcameraservice/device3/Camera3Device.cpp b/services/camera/libcameraservice/device3/Camera3Device.cpp
+index 685e194..7195256 100644
+--- a/services/camera/libcameraservice/device3/Camera3Device.cpp
+&#43;&#43;&#43; b/services/camera/libcameraservice/device3/Camera3Device.cpp
+@@ -124,6 &#43;124,12 @@
+ using namespace android::camera3;
+ using namespace android::hardware::camera;
+ 
+&#43;typedef struct
+&#43;{
+&#43;    int32_t    min;   ///&lt; The minimum FPS value; units are frames per second
+&#43;    int32_t    max;   ///&lt; The maximum FPS value; units are frames per second
+&#43;} FPSRange__;
+&#43;
+ namespace android {
+ 
+ Camera3Device::Camera3Device(std::shared_ptr&lt;CameraServiceProxyWrapper&gt;&amp; cameraServiceProxyWrapper,
+@@ -843,6 &#43;849,26 @@
+     std::list&lt;const SurfaceMap&gt;::const_iterator surfaceMapIt = surfaceMaps.begin();
+     for (; metadataIt != metadataList.end() &amp;&amp; surfaceMapIt != surfaceMaps.end();
+             &#43;&#43;metadataIt, &#43;&#43;surfaceMapIt) {
+&#43;
+&#43;        const camera_metadata_t* raw = metadataIt-&gt;begin()-&gt;metadata.getAndLock();
+&#43;        camera_metadata_ro_entry_t fpsEntry;
+&#43;        find_camera_metadata_ro_entry(raw, ANDROID_CONTROL_AE_TARGET_FPS_RANGE, &amp;fpsEntry);
+&#43;        if (fpsEntry.count &gt; 1) {
+&#43;            CLOGE(&#34;tzy Request repeating:%d,minfps:%d,maxfps:%d&#34;,repeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+&#43;          
+&#43;            if (!repeating) {
+&#43;                // fpsEntry.data.i32[1]=25;
+&#43;                FPSRange__ fpsRange;
+&#43;                fpsRange.min = 14;
+&#43;                fpsRange.max = 25;
+&#43;              
+&#43;                // int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2);
+&#43;                int sstuta = update_camera_metadata_entry((camera_metadata_t*)raw, fpsEntry.index, &amp;fpsRange, (sizeof(FPSRange__)/sizeof(int32_t)), nullptr);
+&#43;                // update_camera_metadata_entry(raw, fpsEntry.index, &amp;fpsEntry.data, fpsEntry.count, nullptr);
+&#43;                CLOGE(&#34;tzy after modify sstuta:%d, repeating:%d,minfps:%d,maxfps:%d&#34;,sstuta,repeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+&#43;                }
+&#43;        }
+&#43;
+         sp&lt;CaptureRequest&gt; newRequest = setUpRequestLocked(*metadataIt, *surfaceMapIt);
+         if (newRequest == 0) {
+             CLOGE(&#34;Can&#39;t create capture request&#34;);
+@@ -857,6 &#43;883,48 @@
+             CLOGE(&#34;RequestID does not exist in metadata&#34;);
+             return BAD_VALUE;
+         }
+&#43;
+&#43;        //for test
+&#43;        // auto fpsEntry = metadataIt-&gt;begin()-&gt;metadata.find(ANDROID_CONTROL_AE_TARGET_FPS_RANGE);
+&#43;        // if (fpsEntry.count &gt; 1) {
+&#43;        //     CLOGE(&#34;tzy Request newRequest-&gt;mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+&#43;        // }
+&#43;
+&#43;      
+&#43;        // const camera_metadata_t* raw = metadataIt-&gt;begin()-&gt;metadata.getAndLock();
+&#43;        // camera_metadata_ro_entry_t fpsEntry;
+&#43;        // find_camera_metadata_ro_entry(raw, ANDROID_CONTROL_AE_TARGET_FPS_RANGE, &amp;fpsEntry);
+&#43;        // if (fpsEntry.count &gt; 1) {
+&#43;        //     CLOGE(&#34;tzy Request newRequest-&gt;mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+&#43;          
+&#43;        //     if (!repeating) {
+&#43;        //         // fpsEntry.data.i32[1]=25;
+&#43;        //         FPSRange__ fpsRange;
+&#43;        //         fpsRange.min = 14;
+&#43;        //         fpsRange.max = 25;
+&#43;              
+&#43;        //         // int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2);
+&#43;        //         update_camera_metadata_entry((camera_metadata_t*)raw, fpsEntry.index, &amp;fpsRange, (sizeof(FPSRange__)/sizeof(int32_t)), nullptr);
+&#43;        //         // update_camera_metadata_entry(raw, fpsEntry.index, &amp;fpsEntry.data, fpsEntry.count, nullptr);
+&#43;        //         CLOGE(&#34;tzy after modify mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+&#43;        //         }
+&#43;        // }
+&#43;
+&#43;        // if (fpsEntry.count &gt; 1&amp;&amp; !repeating) {
+&#43;        //     int myfps[2];
+&#43;        //     myfps[0]=14;
+&#43;        //     myfps[1]=25;
+&#43;        //     // camera_metadata_ro_entry_t e = camera_metadata_ro_entry_t();
+&#43;        //     fpsEntry.data.i32[1]=25;
+&#43;        //     update_camera_metadata_entry(metadataIt-&gt;begin()-&gt;metadata, fpsEntry.index, fpsEntry.data, fpsEntry.count, fpsEntry);
+&#43;
+&#43;        //     int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2);
+&#43;        //     if (tres != OK) {
+&#43;        //         CLOGE(&#34;tzy RequestID error!&#34;);
+&#43;        //     }
+&#43;        //     CLOGE(&#34;tzy after modify mRepeating:%d,minfps:%d,maxfps:%d,1e9 / fpsEntry.data.i32[1]:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1],1e9 / fpsEntry.data.i32[1]);
+&#43;        // }
+&#43;
+         newRequest-&gt;mResultExtras.requestId = requestIdEntry.data.i32[0];
+         requestList-&gt;push_back(newRequest);
+ 
+@@ -2111,6 &#43;2179,7 @@
+                 &amp;&amp; minDurations.data.i64[i&#43;1] == stream-&gt;getWidth()
+                 &amp;&amp; minDurations.data.i64[i&#43;2] == stream-&gt;getHeight()) {
+             int64_t minFrameDuration = minDurations.data.i64[i&#43;3];
+&#43;            CLOGE(&#34;tzy getMaxPreviewFps:%d&#34;,1e9f / minFrameDuration);
+             return 1e9f / minFrameDuration;
+         }
+     }
+@@ -2151,6 &#43;2220,7 @@
+ 
+             float streamMaxPreviewFps = getMaxPreviewFps(stream);
+             sessionMaxPreviewFps = std::max(sessionMaxPreviewFps, streamMaxPreviewFps);
+&#43;            CLOGE(&#34;tzy sessionMaxPreviewFps:%d&#34;,sessionMaxPreviewFps);
+ 
+             // Populate stream statistics in case of Idle
+             if (idle) {
+@@ -3692,6 &#43;3762,7 @@
+                 expectedDurationInfo.minDuration = 1e9 / e.data.i32[1];
+                 expectedDurationInfo.maxDuration = 1e9 / e.data.i32[0];
+             }
+&#43;            CLOGE(&#34;SSSS ExpectedDurationInfo expectedDurationInfo.minDuration = 1e9 / e.data.i32[1]:%d&#34;,expectedDurationInfo.minDuration = 1e9 / e.data.i32[1]);
+             expectedDurationInfo.isFixedFps = (e.data.i32[1] == e.data.i32[0]);
+             break;
+     }
+@@ -3821,6 &#43;3892,8 @@
+         reconfigureRequired = false;
+     }
+ 
+&#43;    ALOGE(&#34;tzy reconfigureRequired: %d&#34;, reconfigureRequired);
+&#43;
+     return reconfigureRequired;
+ }
+
+title: 查看Camera Service中的fps range变化
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+查看Camera Service中的fps range变化
+gerrit.pt.mioffice.cn/c/platform/frameworks/av/&#43;/4180649">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E6%9F%A5%E7%9C%8Bcamera-service%E4%B8%AD%E7%9A%84fps-range%E5%8F%98%E5%8C%96/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="查看Camera Service中的fps range变化">
+<meta name="twitter:description" content="查看Camera Service中的fps range变化
+gerrit.pt.mioffice.cn/c/platform/frameworks/av/&#43;/4180649
+此patch可以跟踪fps range在CameraService中的变化.
+From 91fe6b8ab1c36bc68d4d05983488663585e7ff04 Mon Sep 17 00:00:00 2001
+From: tangzhiying &lt;tangzhiying@xiaomi.com&gt;
+Date: Wed, 03 Jul 2024 16:55:27 &#43;0800
+Subject: [PATCH] [cameraperf][fpsdetect]for test
+
+MIUIROM-2211540
+
+Test
+
+Change-Id: I6a8628471b94dc61504b732d03bb064601fdb421
+Signed-off-by: tangzhiying &lt;tangzhiying@xiaomi.com&gt;
+---
+
+diff --git a/services/camera/libcameraservice/device3/Camera3Device.cpp b/services/camera/libcameraservice/device3/Camera3Device.cpp
+index 685e194..7195256 100644
+--- a/services/camera/libcameraservice/device3/Camera3Device.cpp
+&#43;&#43;&#43; b/services/camera/libcameraservice/device3/Camera3Device.cpp
+@@ -124,6 &#43;124,12 @@
+ using namespace android::camera3;
+ using namespace android::hardware::camera;
+ 
+&#43;typedef struct
+&#43;{
+&#43;    int32_t    min;   ///&lt; The minimum FPS value; units are frames per second
+&#43;    int32_t    max;   ///&lt; The maximum FPS value; units are frames per second
+&#43;} FPSRange__;
+&#43;
+ namespace android {
+ 
+ Camera3Device::Camera3Device(std::shared_ptr&lt;CameraServiceProxyWrapper&gt;&amp; cameraServiceProxyWrapper,
+@@ -843,6 &#43;849,26 @@
+     std::list&lt;const SurfaceMap&gt;::const_iterator surfaceMapIt = surfaceMaps.begin();
+     for (; metadataIt != metadataList.end() &amp;&amp; surfaceMapIt != surfaceMaps.end();
+             &#43;&#43;metadataIt, &#43;&#43;surfaceMapIt) {
+&#43;
+&#43;        const camera_metadata_t* raw = metadataIt-&gt;begin()-&gt;metadata.getAndLock();
+&#43;        camera_metadata_ro_entry_t fpsEntry;
+&#43;        find_camera_metadata_ro_entry(raw, ANDROID_CONTROL_AE_TARGET_FPS_RANGE, &amp;fpsEntry);
+&#43;        if (fpsEntry.count &gt; 1) {
+&#43;            CLOGE(&#34;tzy Request repeating:%d,minfps:%d,maxfps:%d&#34;,repeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+&#43;          
+&#43;            if (!repeating) {
+&#43;                // fpsEntry.data.i32[1]=25;
+&#43;                FPSRange__ fpsRange;
+&#43;                fpsRange.min = 14;
+&#43;                fpsRange.max = 25;
+&#43;              
+&#43;                // int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2);
+&#43;                int sstuta = update_camera_metadata_entry((camera_metadata_t*)raw, fpsEntry.index, &amp;fpsRange, (sizeof(FPSRange__)/sizeof(int32_t)), nullptr);
+&#43;                // update_camera_metadata_entry(raw, fpsEntry.index, &amp;fpsEntry.data, fpsEntry.count, nullptr);
+&#43;                CLOGE(&#34;tzy after modify sstuta:%d, repeating:%d,minfps:%d,maxfps:%d&#34;,sstuta,repeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+&#43;                }
+&#43;        }
+&#43;
+         sp&lt;CaptureRequest&gt; newRequest = setUpRequestLocked(*metadataIt, *surfaceMapIt);
+         if (newRequest == 0) {
+             CLOGE(&#34;Can&#39;t create capture request&#34;);
+@@ -857,6 &#43;883,48 @@
+             CLOGE(&#34;RequestID does not exist in metadata&#34;);
+             return BAD_VALUE;
+         }
+&#43;
+&#43;        //for test
+&#43;        // auto fpsEntry = metadataIt-&gt;begin()-&gt;metadata.find(ANDROID_CONTROL_AE_TARGET_FPS_RANGE);
+&#43;        // if (fpsEntry.count &gt; 1) {
+&#43;        //     CLOGE(&#34;tzy Request newRequest-&gt;mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+&#43;        // }
+&#43;
+&#43;      
+&#43;        // const camera_metadata_t* raw = metadataIt-&gt;begin()-&gt;metadata.getAndLock();
+&#43;        // camera_metadata_ro_entry_t fpsEntry;
+&#43;        // find_camera_metadata_ro_entry(raw, ANDROID_CONTROL_AE_TARGET_FPS_RANGE, &amp;fpsEntry);
+&#43;        // if (fpsEntry.count &gt; 1) {
+&#43;        //     CLOGE(&#34;tzy Request newRequest-&gt;mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+&#43;          
+&#43;        //     if (!repeating) {
+&#43;        //         // fpsEntry.data.i32[1]=25;
+&#43;        //         FPSRange__ fpsRange;
+&#43;        //         fpsRange.min = 14;
+&#43;        //         fpsRange.max = 25;
+&#43;              
+&#43;        //         // int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2);
+&#43;        //         update_camera_metadata_entry((camera_metadata_t*)raw, fpsEntry.index, &amp;fpsRange, (sizeof(FPSRange__)/sizeof(int32_t)), nullptr);
+&#43;        //         // update_camera_metadata_entry(raw, fpsEntry.index, &amp;fpsEntry.data, fpsEntry.count, nullptr);
+&#43;        //         CLOGE(&#34;tzy after modify mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+&#43;        //         }
+&#43;        // }
+&#43;
+&#43;        // if (fpsEntry.count &gt; 1&amp;&amp; !repeating) {
+&#43;        //     int myfps[2];
+&#43;        //     myfps[0]=14;
+&#43;        //     myfps[1]=25;
+&#43;        //     // camera_metadata_ro_entry_t e = camera_metadata_ro_entry_t();
+&#43;        //     fpsEntry.data.i32[1]=25;
+&#43;        //     update_camera_metadata_entry(metadataIt-&gt;begin()-&gt;metadata, fpsEntry.index, fpsEntry.data, fpsEntry.count, fpsEntry);
+&#43;
+&#43;        //     int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2);
+&#43;        //     if (tres != OK) {
+&#43;        //         CLOGE(&#34;tzy RequestID error!&#34;);
+&#43;        //     }
+&#43;        //     CLOGE(&#34;tzy after modify mRepeating:%d,minfps:%d,maxfps:%d,1e9 / fpsEntry.data.i32[1]:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1],1e9 / fpsEntry.data.i32[1]);
+&#43;        // }
+&#43;
+         newRequest-&gt;mResultExtras.requestId = requestIdEntry.data.i32[0];
+         requestList-&gt;push_back(newRequest);
+ 
+@@ -2111,6 &#43;2179,7 @@
+                 &amp;&amp; minDurations.data.i64[i&#43;1] == stream-&gt;getWidth()
+                 &amp;&amp; minDurations.data.i64[i&#43;2] == stream-&gt;getHeight()) {
+             int64_t minFrameDuration = minDurations.data.i64[i&#43;3];
+&#43;            CLOGE(&#34;tzy getMaxPreviewFps:%d&#34;,1e9f / minFrameDuration);
+             return 1e9f / minFrameDuration;
+         }
+     }
+@@ -2151,6 &#43;2220,7 @@
+ 
+             float streamMaxPreviewFps = getMaxPreviewFps(stream);
+             sessionMaxPreviewFps = std::max(sessionMaxPreviewFps, streamMaxPreviewFps);
+&#43;            CLOGE(&#34;tzy sessionMaxPreviewFps:%d&#34;,sessionMaxPreviewFps);
+ 
+             // Populate stream statistics in case of Idle
+             if (idle) {
+@@ -3692,6 &#43;3762,7 @@
+                 expectedDurationInfo.minDuration = 1e9 / e.data.i32[1];
+                 expectedDurationInfo.maxDuration = 1e9 / e.data.i32[0];
+             }
+&#43;            CLOGE(&#34;SSSS ExpectedDurationInfo expectedDurationInfo.minDuration = 1e9 / e.data.i32[1]:%d&#34;,expectedDurationInfo.minDuration = 1e9 / e.data.i32[1]);
+             expectedDurationInfo.isFixedFps = (e.data.i32[1] == e.data.i32[0]);
+             break;
+     }
+@@ -3821,6 &#43;3892,8 @@
+         reconfigureRequired = false;
+     }
+ 
+&#43;    ALOGE(&#34;tzy reconfigureRequired: %d&#34;, reconfigureRequired);
+&#43;
+     return reconfigureRequired;
+ }
+
+title: 查看Camera Service中的fps range变化
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+查看Camera Service中的fps range变化
+gerrit.pt.mioffice.cn/c/platform/frameworks/av/&#43;/4180649">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "查看Camera Service中的fps range变化",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  1188 ,
+  "description": "查看Camera Service中的fps range变化 gerrit.pt.mioffice.cn/c/platform/frameworks/av/+/4180649\n此patch可以跟踪fps range在CameraService中的变化.\nFrom 91fe6b8ab1c36bc68d4d05983488663585e7ff04 Mon Sep 17 00:00:00 2001 From: tangzhiying \u0026lt;tangzhiying@xiaomi.com\u0026gt; Date: Wed, 03 Jul 2024 16:55:27 +0800 Subject: [PATCH] [cameraperf][fpsdetect]for test MIUIROM-2211540 Test Change-Id: I6a8628471b94dc61504b732d03bb064601fdb421 Signed-off-by: tangzhiying \u0026lt;tangzhiying@xiaomi.com\u0026gt; --- diff --git a/services/camera/libcameraservice/device3/Camera3Device.cpp b/services/camera/libcameraservice/device3/Camera3Device.cpp index 685e194..7195256 100644 --- a/services/camera/libcameraservice/device3/Camera3Device.cpp +++ b/services/camera/libcameraservice/device3/Camera3Device.cpp @@ -124,6 +124,12 @@ using namespace android::camera3; using namespace android::hardware::camera; +typedef struct +{ + int32_t min; ///\u0026lt; The minimum FPS value; units are frames per second + int32_t max; ///\u0026lt; The maximum FPS value; units are frames per second +} FPSRange__; + namespace android { Camera3Device::Camera3Device(std::shared_ptr\u0026lt;CameraServiceProxyWrapper\u0026gt;\u0026amp; cameraServiceProxyWrapper, @@ -843,6 +849,26 @@ std::list\u0026lt;const SurfaceMap\u0026gt;::const_iterator surfaceMapIt = surfaceMaps.begin(); for (; metadataIt != metadataList.end() \u0026amp;\u0026amp; surfaceMapIt != surfaceMaps.end(); ++metadataIt, ++surfaceMapIt) { + + const camera_metadata_t* raw = metadataIt-\u0026gt;begin()-\u0026gt;metadata.getAndLock(); + camera_metadata_ro_entry_t fpsEntry; + find_camera_metadata_ro_entry(raw, ANDROID_CONTROL_AE_TARGET_FPS_RANGE, \u0026amp;fpsEntry); + if (fpsEntry.count \u0026gt; 1) { + CLOGE(\u0026#34;tzy Request repeating:%d,minfps:%d,maxfps:%d\u0026#34;,repeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]); + + if (!repeating) { + // fpsEntry.data.i32[1]=25; + FPSRange__ fpsRange; + fpsRange.min = 14; + fpsRange.max = 25; + + // int tres = metadataIt-\u0026gt;begin()-\u0026gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2); + int sstuta = update_camera_metadata_entry((camera_metadata_t*)raw, fpsEntry.index, \u0026amp;fpsRange, (sizeof(FPSRange__)/sizeof(int32_t)), nullptr); + // update_camera_metadata_entry(raw, fpsEntry.index, \u0026amp;fpsEntry.data, fpsEntry.count, nullptr); + CLOGE(\u0026#34;tzy after modify sstuta:%d, repeating:%d,minfps:%d,maxfps:%d\u0026#34;,sstuta,repeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]); + } + } + sp\u0026lt;CaptureRequest\u0026gt; newRequest = setUpRequestLocked(*metadataIt, *surfaceMapIt); if (newRequest == 0) { CLOGE(\u0026#34;Can\u0026#39;t create capture request\u0026#34;); @@ -857,6 +883,48 @@ CLOGE(\u0026#34;RequestID does not exist in metadata\u0026#34;); return BAD_VALUE; } + + //for test + // auto fpsEntry = metadataIt-\u0026gt;begin()-\u0026gt;metadata.find(ANDROID_CONTROL_AE_TARGET_FPS_RANGE); + // if (fpsEntry.count \u0026gt; 1) { + // CLOGE(\u0026#34;tzy Request newRequest-\u0026gt;mRepeating:%d,minfps:%d,maxfps:%d\u0026#34;,newRequest-\u0026gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]); + // } + + + // const camera_metadata_t* raw = metadataIt-\u0026gt;begin()-\u0026gt;metadata.getAndLock(); + // camera_metadata_ro_entry_t fpsEntry; + // find_camera_metadata_ro_entry(raw, ANDROID_CONTROL_AE_TARGET_FPS_RANGE, \u0026amp;fpsEntry); + // if (fpsEntry.count \u0026gt; 1) { + // CLOGE(\u0026#34;tzy Request newRequest-\u0026gt;mRepeating:%d,minfps:%d,maxfps:%d\u0026#34;,newRequest-\u0026gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]); + + // if (!repeating) { + // // fpsEntry.data.i32[1]=25; + // FPSRange__ fpsRange; + // fpsRange.min = 14; + // fpsRange.max = 25; + + // // int tres = metadataIt-\u0026gt;begin()-\u0026gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2); + // update_camera_metadata_entry((camera_metadata_t*)raw, fpsEntry.index, \u0026amp;fpsRange, (sizeof(FPSRange__)/sizeof(int32_t)), nullptr); + // // update_camera_metadata_entry(raw, fpsEntry.index, \u0026amp;fpsEntry.data, fpsEntry.count, nullptr); + // CLOGE(\u0026#34;tzy after modify mRepeating:%d,minfps:%d,maxfps:%d\u0026#34;,newRequest-\u0026gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]); + // } + // } + + // if (fpsEntry.count \u0026gt; 1\u0026amp;\u0026amp; !repeating) { + // int myfps[2]; + // myfps[0]=14; + // myfps[1]=25; + // // camera_metadata_ro_entry_t e = camera_metadata_ro_entry_t(); + // fpsEntry.data.i32[1]=25; + // update_camera_metadata_entry(metadataIt-\u0026gt;begin()-\u0026gt;metadata, fpsEntry.index, fpsEntry.data, fpsEntry.count, fpsEntry); + + // int tres = metadataIt-\u0026gt;begin()-\u0026gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2); + // if (tres != OK) { + // CLOGE(\u0026#34;tzy RequestID error!\u0026#34;); + // } + // CLOGE(\u0026#34;tzy after modify mRepeating:%d,minfps:%d,maxfps:%d,1e9 / fpsEntry.data.i32[1]:%d\u0026#34;,newRequest-\u0026gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1],1e9 / fpsEntry.data.i32[1]); + // } + newRequest-\u0026gt;mResultExtras.requestId = requestIdEntry.data.i32[0]; requestList-\u0026gt;push_back(newRequest); @@ -2111,6 +2179,7 @@ \u0026amp;\u0026amp; minDurations.data.i64[i+1] == stream-\u0026gt;getWidth() \u0026amp;\u0026amp; minDurations.data.i64[i+2] == stream-\u0026gt;getHeight()) { int64_t minFrameDuration = minDurations.data.i64[i+3]; + CLOGE(\u0026#34;tzy getMaxPreviewFps:%d\u0026#34;,1e9f / minFrameDuration); return 1e9f / minFrameDuration; } } @@ -2151,6 +2220,7 @@ float streamMaxPreviewFps = getMaxPreviewFps(stream); sessionMaxPreviewFps = std::max(sessionMaxPreviewFps, streamMaxPreviewFps); + CLOGE(\u0026#34;tzy sessionMaxPreviewFps:%d\u0026#34;,sessionMaxPreviewFps); // Populate stream statistics in case of Idle if (idle) { @@ -3692,6 +3762,7 @@ expectedDurationInfo.minDuration = 1e9 / e.data.i32[1]; expectedDurationInfo.maxDuration = 1e9 / e.data.i32[0]; } + CLOGE(\u0026#34;SSSS ExpectedDurationInfo expectedDurationInfo.minDuration = 1e9 / e.data.i32[1]:%d\u0026#34;,expectedDurationInfo.minDuration = 1e9 / e.data.i32[1]); expectedDurationInfo.isFixedFps = (e.data.i32[1] == e.data.i32[0]); break; } @@ -3821,6 +3892,8 @@ reconfigureRequired = false; } + ALOGE(\u0026#34;tzy reconfigureRequired: %d\u0026#34;, reconfigureRequired); + return reconfigureRequired; } title: 查看Camera Service中的fps range变化 date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z 查看Camera Service中的fps range变化 gerrit.pt.mioffice.cn/c/platform/frameworks/av/+/4180649\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="查看camera-service中的fps-range变化">查看Camera Service中的fps range变化</h1>
+<p><a href="https://gerrit.pt.mioffice.cn/c/platform/frameworks/av/&#43;/4180649" target="_blank" rel="noopener">gerrit.pt.mioffice.cn/c/platform/frameworks/av/+/4180649</a></p>
+<p>此patch可以跟踪fps range在CameraService中的变化.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-diff" data-lang="diff"><span style="display:flex;"><span>From 91fe6b8ab1c36bc68d4d05983488663585e7ff04 Mon Sep 17 00:00:00 2001
+</span></span><span style="display:flex;"><span>From: tangzhiying &lt;tangzhiying@xiaomi.com&gt;
+</span></span><span style="display:flex;"><span>Date: Wed, 03 Jul 2024 16:55:27 +0800
+</span></span><span style="display:flex;"><span>Subject: [PATCH] [cameraperf][fpsdetect]for test
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>MIUIROM-2211540
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Test
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Change-Id: I6a8628471b94dc61504b732d03bb064601fdb421
+</span></span><span style="display:flex;"><span>Signed-off-by: tangzhiying &lt;tangzhiying@xiaomi.com&gt;
+</span></span><span style="display:flex;"><span><span style="font-weight:bold">---
+</span></span></span><span style="display:flex;"><span><span style="font-weight:bold"></span>
+</span></span><span style="display:flex;"><span>diff --git a/services/camera/libcameraservice/device3/Camera3Device.cpp b/services/camera/libcameraservice/device3/Camera3Device.cpp
+</span></span><span style="display:flex;"><span>index 685e194..7195256 100644
+</span></span><span style="display:flex;"><span><span style="color:#f92672">--- a/services/camera/libcameraservice/device3/Camera3Device.cpp
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ b/services/camera/libcameraservice/device3/Camera3Device.cpp
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -124,6 +124,12 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> using namespace android::camera3;
+</span></span><span style="display:flex;"><span> using namespace android::hardware::camera;
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+typedef struct
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+{
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+    int32_t    min;   ///&lt; The minimum FPS value; units are frames per second
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+    int32_t    max;   ///&lt; The maximum FPS value; units are frames per second
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+} FPSRange__;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span> namespace android {
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span> Camera3Device::Camera3Device(std::shared_ptr&lt;CameraServiceProxyWrapper&gt;&amp; cameraServiceProxyWrapper,
+</span></span><span style="display:flex;"><span><span style="color:#75715e">@@ -843,6 +849,26 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     std::list&lt;const SurfaceMap&gt;::const_iterator surfaceMapIt = surfaceMaps.begin();
+</span></span><span style="display:flex;"><span>     for (; metadataIt != metadataList.end() &amp;&amp; surfaceMapIt != surfaceMaps.end();
+</span></span><span style="display:flex;"><span>             ++metadataIt, ++surfaceMapIt) {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        const camera_metadata_t* raw = metadataIt-&gt;begin()-&gt;metadata.getAndLock();
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        camera_metadata_ro_entry_t fpsEntry;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        find_camera_metadata_ro_entry(raw, ANDROID_CONTROL_AE_TARGET_FPS_RANGE, &amp;fpsEntry);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        if (fpsEntry.count &gt; 1) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+            CLOGE(&#34;tzy Request repeating:%d,minfps:%d,maxfps:%d&#34;,repeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+          
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+            if (!repeating) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                // fpsEntry.data.i32[1]=25;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                FPSRange__ fpsRange;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                fpsRange.min = 14;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                fpsRange.max = 25;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+              
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                // int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                int sstuta = update_camera_metadata_entry((camera_metadata_t*)raw, fpsEntry.index, &amp;fpsRange, (sizeof(FPSRange__)/sizeof(int32_t)), nullptr);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                // update_camera_metadata_entry(raw, fpsEntry.index, &amp;fpsEntry.data, fpsEntry.count, nullptr);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                CLOGE(&#34;tzy after modify sstuta:%d, repeating:%d,minfps:%d,maxfps:%d&#34;,sstuta,repeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span>         sp&lt;CaptureRequest&gt; newRequest = setUpRequestLocked(*metadataIt, *surfaceMapIt);
+</span></span><span style="display:flex;"><span>         if (newRequest == 0) {
+</span></span><span style="display:flex;"><span>             CLOGE(&#34;Can&#39;t create capture request&#34;);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">@@ -857,6 +883,48 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>             CLOGE(&#34;RequestID does not exist in metadata&#34;);
+</span></span><span style="display:flex;"><span>             return BAD_VALUE;
+</span></span><span style="display:flex;"><span>         }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //for test
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // auto fpsEntry = metadataIt-&gt;begin()-&gt;metadata.find(ANDROID_CONTROL_AE_TARGET_FPS_RANGE);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // if (fpsEntry.count &gt; 1) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     CLOGE(&#34;tzy Request newRequest-&gt;mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+      
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // const camera_metadata_t* raw = metadataIt-&gt;begin()-&gt;metadata.getAndLock();
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // camera_metadata_ro_entry_t fpsEntry;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // find_camera_metadata_ro_entry(raw, ANDROID_CONTROL_AE_TARGET_FPS_RANGE, &amp;fpsEntry);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // if (fpsEntry.count &gt; 1) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     CLOGE(&#34;tzy Request newRequest-&gt;mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+          
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     if (!repeating) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         // fpsEntry.data.i32[1]=25;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         FPSRange__ fpsRange;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         fpsRange.min = 14;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         fpsRange.max = 25;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+              
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         // int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         update_camera_metadata_entry((camera_metadata_t*)raw, fpsEntry.index, &amp;fpsRange, (sizeof(FPSRange__)/sizeof(int32_t)), nullptr);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         // update_camera_metadata_entry(raw, fpsEntry.index, &amp;fpsEntry.data, fpsEntry.count, nullptr);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         CLOGE(&#34;tzy after modify mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // if (fpsEntry.count &gt; 1&amp;&amp; !repeating) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     int myfps[2];
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     myfps[0]=14;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     myfps[1]=25;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     // camera_metadata_ro_entry_t e = camera_metadata_ro_entry_t();
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     fpsEntry.data.i32[1]=25;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     update_camera_metadata_entry(metadataIt-&gt;begin()-&gt;metadata, fpsEntry.index, fpsEntry.data, fpsEntry.count, fpsEntry);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     if (tres != OK) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         CLOGE(&#34;tzy RequestID error!&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     CLOGE(&#34;tzy after modify mRepeating:%d,minfps:%d,maxfps:%d,1e9 / fpsEntry.data.i32[1]:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1],1e9 / fpsEntry.data.i32[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span>         newRequest-&gt;mResultExtras.requestId = requestIdEntry.data.i32[0];
+</span></span><span style="display:flex;"><span>         requestList-&gt;push_back(newRequest);
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">@@ -2111,6 +2179,7 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                 &amp;&amp; minDurations.data.i64[i+1] == stream-&gt;getWidth()
+</span></span><span style="display:flex;"><span>                 &amp;&amp; minDurations.data.i64[i+2] == stream-&gt;getHeight()) {
+</span></span><span style="display:flex;"><span>             int64_t minFrameDuration = minDurations.data.i64[i+3];
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+            CLOGE(&#34;tzy getMaxPreviewFps:%d&#34;,1e9f / minFrameDuration);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span>             return 1e9f / minFrameDuration;
+</span></span><span style="display:flex;"><span>         }
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">@@ -2151,6 +2220,7 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> 
+</span></span><span style="display:flex;"><span>             float streamMaxPreviewFps = getMaxPreviewFps(stream);
+</span></span><span style="display:flex;"><span>             sessionMaxPreviewFps = std::max(sessionMaxPreviewFps, streamMaxPreviewFps);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+            CLOGE(&#34;tzy sessionMaxPreviewFps:%d&#34;,sessionMaxPreviewFps);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span> 
+</span></span><span style="display:flex;"><span>             // Populate stream statistics in case of Idle
+</span></span><span style="display:flex;"><span>             if (idle) {
+</span></span><span style="display:flex;"><span><span style="color:#75715e">@@ -3692,6 +3762,7 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                 expectedDurationInfo.minDuration = 1e9 / e.data.i32[1];
+</span></span><span style="display:flex;"><span>                 expectedDurationInfo.maxDuration = 1e9 / e.data.i32[0];
+</span></span><span style="display:flex;"><span>             }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+            CLOGE(&#34;SSSS ExpectedDurationInfo expectedDurationInfo.minDuration = 1e9 / e.data.i32[1]:%d&#34;,expectedDurationInfo.minDuration = 1e9 / e.data.i32[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span>             expectedDurationInfo.isFixedFps = (e.data.i32[1] == e.data.i32[0]);
+</span></span><span style="display:flex;"><span>             break;
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">@@ -3821,6 +3892,8 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>         reconfigureRequired = false;
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+    ALOGE(&#34;tzy reconfigureRequired: %d&#34;, reconfigureRequired);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span>     return reconfigureRequired;
+</span></span><span style="display:flex;"><span> }
+</span></span></code></pre></div><hr>
+<h2 id="lastmod-2025-03-11t094648z">title: 查看Camera Service中的fps range变化
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</h2>
+<h1 id="查看camera-service中的fps-range变化-1">查看Camera Service中的fps range变化</h1>
+<p><a href="https://gerrit.pt.mioffice.cn/c/platform/frameworks/av/&#43;/4180649" target="_blank" rel="noopener">gerrit.pt.mioffice.cn/c/platform/frameworks/av/+/4180649</a></p>
+<p>此patch可以跟踪fps range在CameraService中的变化.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-diff" data-lang="diff"><span style="display:flex;"><span>From 91fe6b8ab1c36bc68d4d05983488663585e7ff04 Mon Sep 17 00:00:00 2001
+</span></span><span style="display:flex;"><span>From: tangzhiying &lt;tangzhiying@xiaomi.com&gt;
+</span></span><span style="display:flex;"><span>Date: Wed, 03 Jul 2024 16:55:27 +0800
+</span></span><span style="display:flex;"><span>Subject: [PATCH] [cameraperf][fpsdetect]for test
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>MIUIROM-2211540
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Test
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Change-Id: I6a8628471b94dc61504b732d03bb064601fdb421
+</span></span><span style="display:flex;"><span>Signed-off-by: tangzhiying &lt;tangzhiying@xiaomi.com&gt;
+</span></span><span style="display:flex;"><span><span style="font-weight:bold">---
+</span></span></span><span style="display:flex;"><span><span style="font-weight:bold"></span>
+</span></span><span style="display:flex;"><span>diff --git a/services/camera/libcameraservice/device3/Camera3Device.cpp b/services/camera/libcameraservice/device3/Camera3Device.cpp
+</span></span><span style="display:flex;"><span>index 685e194..7195256 100644
+</span></span><span style="display:flex;"><span><span style="color:#f92672">--- a/services/camera/libcameraservice/device3/Camera3Device.cpp
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ b/services/camera/libcameraservice/device3/Camera3Device.cpp
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -124,6 +124,12 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> using namespace android::camera3;
+</span></span><span style="display:flex;"><span> using namespace android::hardware::camera;
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+typedef struct
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+{
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+    int32_t    min;   ///&lt; The minimum FPS value; units are frames per second
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+    int32_t    max;   ///&lt; The maximum FPS value; units are frames per second
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+} FPSRange__;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span> namespace android {
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span> Camera3Device::Camera3Device(std::shared_ptr&lt;CameraServiceProxyWrapper&gt;&amp; cameraServiceProxyWrapper,
+</span></span><span style="display:flex;"><span><span style="color:#75715e">@@ -843,6 +849,26 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     std::list&lt;const SurfaceMap&gt;::const_iterator surfaceMapIt = surfaceMaps.begin();
+</span></span><span style="display:flex;"><span>     for (; metadataIt != metadataList.end() &amp;&amp; surfaceMapIt != surfaceMaps.end();
+</span></span><span style="display:flex;"><span>             ++metadataIt, ++surfaceMapIt) {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        const camera_metadata_t* raw = metadataIt-&gt;begin()-&gt;metadata.getAndLock();
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        camera_metadata_ro_entry_t fpsEntry;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        find_camera_metadata_ro_entry(raw, ANDROID_CONTROL_AE_TARGET_FPS_RANGE, &amp;fpsEntry);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        if (fpsEntry.count &gt; 1) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+            CLOGE(&#34;tzy Request repeating:%d,minfps:%d,maxfps:%d&#34;,repeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+          
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+            if (!repeating) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                // fpsEntry.data.i32[1]=25;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                FPSRange__ fpsRange;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                fpsRange.min = 14;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                fpsRange.max = 25;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+              
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                // int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                int sstuta = update_camera_metadata_entry((camera_metadata_t*)raw, fpsEntry.index, &amp;fpsRange, (sizeof(FPSRange__)/sizeof(int32_t)), nullptr);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                // update_camera_metadata_entry(raw, fpsEntry.index, &amp;fpsEntry.data, fpsEntry.count, nullptr);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                CLOGE(&#34;tzy after modify sstuta:%d, repeating:%d,minfps:%d,maxfps:%d&#34;,sstuta,repeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+                }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span>         sp&lt;CaptureRequest&gt; newRequest = setUpRequestLocked(*metadataIt, *surfaceMapIt);
+</span></span><span style="display:flex;"><span>         if (newRequest == 0) {
+</span></span><span style="display:flex;"><span>             CLOGE(&#34;Can&#39;t create capture request&#34;);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">@@ -857,6 +883,48 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>             CLOGE(&#34;RequestID does not exist in metadata&#34;);
+</span></span><span style="display:flex;"><span>             return BAD_VALUE;
+</span></span><span style="display:flex;"><span>         }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //for test
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // auto fpsEntry = metadataIt-&gt;begin()-&gt;metadata.find(ANDROID_CONTROL_AE_TARGET_FPS_RANGE);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // if (fpsEntry.count &gt; 1) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     CLOGE(&#34;tzy Request newRequest-&gt;mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+      
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // const camera_metadata_t* raw = metadataIt-&gt;begin()-&gt;metadata.getAndLock();
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // camera_metadata_ro_entry_t fpsEntry;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // find_camera_metadata_ro_entry(raw, ANDROID_CONTROL_AE_TARGET_FPS_RANGE, &amp;fpsEntry);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // if (fpsEntry.count &gt; 1) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     CLOGE(&#34;tzy Request newRequest-&gt;mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+          
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     if (!repeating) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         // fpsEntry.data.i32[1]=25;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         FPSRange__ fpsRange;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         fpsRange.min = 14;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         fpsRange.max = 25;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+              
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         // int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         update_camera_metadata_entry((camera_metadata_t*)raw, fpsEntry.index, &amp;fpsRange, (sizeof(FPSRange__)/sizeof(int32_t)), nullptr);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         // update_camera_metadata_entry(raw, fpsEntry.index, &amp;fpsEntry.data, fpsEntry.count, nullptr);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         CLOGE(&#34;tzy after modify mRepeating:%d,minfps:%d,maxfps:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // if (fpsEntry.count &gt; 1&amp;&amp; !repeating) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     int myfps[2];
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     myfps[0]=14;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     myfps[1]=25;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     // camera_metadata_ro_entry_t e = camera_metadata_ro_entry_t();
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     fpsEntry.data.i32[1]=25;
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     update_camera_metadata_entry(metadataIt-&gt;begin()-&gt;metadata, fpsEntry.index, fpsEntry.data, fpsEntry.count, fpsEntry);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     int tres = metadataIt-&gt;begin()-&gt;metadata.update(ANDROID_CONTROL_AE_TARGET_FPS_RANGE, myfps, 2);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     if (tres != OK) {
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //         CLOGE(&#34;tzy RequestID error!&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        //     CLOGE(&#34;tzy after modify mRepeating:%d,minfps:%d,maxfps:%d,1e9 / fpsEntry.data.i32[1]:%d&#34;,newRequest-&gt;mRepeating,fpsEntry.data.i32[0],fpsEntry.data.i32[1],1e9 / fpsEntry.data.i32[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+        // }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span>         newRequest-&gt;mResultExtras.requestId = requestIdEntry.data.i32[0];
+</span></span><span style="display:flex;"><span>         requestList-&gt;push_back(newRequest);
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">@@ -2111,6 +2179,7 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                 &amp;&amp; minDurations.data.i64[i+1] == stream-&gt;getWidth()
+</span></span><span style="display:flex;"><span>                 &amp;&amp; minDurations.data.i64[i+2] == stream-&gt;getHeight()) {
+</span></span><span style="display:flex;"><span>             int64_t minFrameDuration = minDurations.data.i64[i+3];
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+            CLOGE(&#34;tzy getMaxPreviewFps:%d&#34;,1e9f / minFrameDuration);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span>             return 1e9f / minFrameDuration;
+</span></span><span style="display:flex;"><span>         }
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">@@ -2151,6 +2220,7 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> 
+</span></span><span style="display:flex;"><span>             float streamMaxPreviewFps = getMaxPreviewFps(stream);
+</span></span><span style="display:flex;"><span>             sessionMaxPreviewFps = std::max(sessionMaxPreviewFps, streamMaxPreviewFps);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+            CLOGE(&#34;tzy sessionMaxPreviewFps:%d&#34;,sessionMaxPreviewFps);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span> 
+</span></span><span style="display:flex;"><span>             // Populate stream statistics in case of Idle
+</span></span><span style="display:flex;"><span>             if (idle) {
+</span></span><span style="display:flex;"><span><span style="color:#75715e">@@ -3692,6 +3762,7 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                 expectedDurationInfo.minDuration = 1e9 / e.data.i32[1];
+</span></span><span style="display:flex;"><span>                 expectedDurationInfo.maxDuration = 1e9 / e.data.i32[0];
+</span></span><span style="display:flex;"><span>             }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+            CLOGE(&#34;SSSS ExpectedDurationInfo expectedDurationInfo.minDuration = 1e9 / e.data.i32[1]:%d&#34;,expectedDurationInfo.minDuration = 1e9 / e.data.i32[1]);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span>             expectedDurationInfo.isFixedFps = (e.data.i32[1] == e.data.i32[0]);
+</span></span><span style="display:flex;"><span>             break;
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span><span style="color:#75715e">@@ -3821,6 +3892,8 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>         reconfigureRequired = false;
+</span></span><span style="display:flex;"><span>     }
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+    ALOGE(&#34;tzy reconfigureRequired: %d&#34;, reconfigureRequired);
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span>     return reconfigureRequired;
+</span></span><span style="display:flex;"><span> }
+</span></span></code></pre></div>
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

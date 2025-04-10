@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>compiler flags for stack protection</title>
+
+<meta name="description" content="compiler flags for stack protection https://developers.redhat.com/articles/2022/06/02/use-compiler-flags-stack-protection-gcc-and-clang#
+Stack Canary Clang和gcc使用许多机制来保护栈, 最典型的就是stack canary. Stack canary是最初级的侦察栈溢出的方法. 其原理是在运行时的栈帧中插入额外的内存并设置为特定值, 这个值不能被攻击者得知. 在函数跳转的时候会检查这个值是否被改变并以此判断栈是否被破坏. Stack canary(在gcc和clang中)可以通过以下编译选项控制
+-fstack-protector -fstack-protector-strong -fstack-protector-all -fstack-protector-explicit Inserts a guard variable onto the stack frame for each vulnerable function or for all functions. 以下是一个对比示例: int f1(int a) { return a; } void f2(int a) { return ; } int main() { f1(597); return 0; } 编译:
+gcc t.c -o unknow -O0 gcc t.c -o protection -fstack-protector-all -O0 gcc t.c -o no_protection -fno-stack-protector -O0 最后对比可以发现默认状态下是没有开启stack canary的. x86-64架构下开启后对比: ![](assets/Pasted image 20241223150716-20250311094648-ln8eicx.png ) 可以看到每次的函数调用都会在进入函数的时候多使用一块内存, 并在函数返回前调用__stack_chk_fail检查这块内存. 内核中的使用: https://lwn.net/Articles/584225/ 更多信息可见arm doc 和 https://chatgpt.com/share/677202d2-4d58-8009-b1cf-c6eafb3d4b08
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/compiler-flags-for-stack-protection/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/compiler-flags-for-stack-protection/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/compiler-flags-for-stack-protection/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="compiler flags for stack protection">
+<meta property="og:description" content="compiler flags for stack protection
+https://developers.redhat.com/articles/2022/06/02/use-compiler-flags-stack-protection-gcc-and-clang#
+Stack Canary
+Clang和gcc使用许多机制来保护栈, 最典型的就是stack canary.
+Stack canary是最初级的侦察栈溢出的方法. 其原理是在运行时的栈帧中插入额外的内存并设置为特定值, 这个值不能被攻击者得知. 在函数跳转的时候会检查这个值是否被改变并以此判断栈是否被破坏.
+Stack canary(在gcc和clang中)可以通过以下编译选项控制
+
+-fstack-protector
+-fstack-protector-strong
+-fstack-protector-all
+-fstack-protector-explicit
+Inserts a guard variable onto the stack frame for each vulnerable function or for all functions.
+以下是一个对比示例:
+
+int f1(int a)
+{
+	return a;
+}
+
+void f2(int a)
+{
+	return ;
+}
+
+int main()
+{
+	f1(597);
+
+	return 0;
+}
+编译:
+gcc t.c -o unknow -O0
+gcc t.c -o protection -fstack-protector-all -O0
+gcc t.c -o no_protection -fno-stack-protector -O0
+最后对比可以发现默认状态下是没有开启stack canary的.
+x86-64架构下开启后对比:
+![](assets/Pasted image 20241223150716-20250311094648-ln8eicx.png )
+可以看到每次的函数调用都会在进入函数的时候多使用一块内存, 并在函数返回前调用__stack_chk_fail检查这块内存.
+内核中的使用: https://lwn.net/Articles/584225/
+更多信息可见arm doc 和 https://chatgpt.com/share/677202d2-4d58-8009-b1cf-c6eafb3d4b08">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9B%B8%E5%85%B3/compiler-flags-for-stack-protection/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="compiler flags for stack protection">
+<meta name="twitter:description" content="compiler flags for stack protection
+https://developers.redhat.com/articles/2022/06/02/use-compiler-flags-stack-protection-gcc-and-clang#
+Stack Canary
+Clang和gcc使用许多机制来保护栈, 最典型的就是stack canary.
+Stack canary是最初级的侦察栈溢出的方法. 其原理是在运行时的栈帧中插入额外的内存并设置为特定值, 这个值不能被攻击者得知. 在函数跳转的时候会检查这个值是否被改变并以此判断栈是否被破坏.
+Stack canary(在gcc和clang中)可以通过以下编译选项控制
+
+-fstack-protector
+-fstack-protector-strong
+-fstack-protector-all
+-fstack-protector-explicit
+Inserts a guard variable onto the stack frame for each vulnerable function or for all functions.
+以下是一个对比示例:
+
+int f1(int a)
+{
+	return a;
+}
+
+void f2(int a)
+{
+	return ;
+}
+
+int main()
+{
+	f1(597);
+
+	return 0;
+}
+编译:
+gcc t.c -o unknow -O0
+gcc t.c -o protection -fstack-protector-all -O0
+gcc t.c -o no_protection -fno-stack-protector -O0
+最后对比可以发现默认状态下是没有开启stack canary的.
+x86-64架构下开启后对比:
+![](assets/Pasted image 20241223150716-20250311094648-ln8eicx.png )
+可以看到每次的函数调用都会在进入函数的时候多使用一块内存, 并在函数返回前调用__stack_chk_fail检查这块内存.
+内核中的使用: https://lwn.net/Articles/584225/
+更多信息可见arm doc 和 https://chatgpt.com/share/677202d2-4d58-8009-b1cf-c6eafb3d4b08">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "compiler flags for stack protection",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  1270 ,
+  "description": "compiler flags for stack protection https://developers.redhat.com/articles/2022/06/02/use-compiler-flags-stack-protection-gcc-and-clang#\nStack Canary Clang和gcc使用许多机制来保护栈, 最典型的就是stack canary. Stack canary是最初级的侦察栈溢出的方法. 其原理是在运行时的栈帧中插入额外的内存并设置为特定值, 这个值不能被攻击者得知. 在函数跳转的时候会检查这个值是否被改变并以此判断栈是否被破坏. Stack canary(在gcc和clang中)可以通过以下编译选项控制\n-fstack-protector -fstack-protector-strong -fstack-protector-all -fstack-protector-explicit Inserts a guard variable onto the stack frame for each vulnerable function or for all functions. 以下是一个对比示例: int f1(int a) { return a; } void f2(int a) { return ; } int main() { f1(597); return 0; } 编译:\ngcc t.c -o unknow -O0 gcc t.c -o protection -fstack-protector-all -O0 gcc t.c -o no_protection -fno-stack-protector -O0 最后对比可以发现默认状态下是没有开启stack canary的. x86-64架构下开启后对比: ![](assets/Pasted image 20241223150716-20250311094648-ln8eicx.png ) 可以看到每次的函数调用都会在进入函数的时候多使用一块内存, 并在函数返回前调用__stack_chk_fail检查这块内存. 内核中的使用: https://lwn.net/Articles/584225/ 更多信息可见arm doc 和 https://chatgpt.com/share/677202d2-4d58-8009-b1cf-c6eafb3d4b08\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="compiler-flags-for-stack-protection">compiler flags for stack protection</h1>
+<p><a href="https://developers.redhat.com/articles/2022/06/02/use-compiler-flags-stack-protection-gcc-and-clang#" target="_blank" rel="noopener">https://developers.redhat.com/articles/2022/06/02/use-compiler-flags-stack-protection-gcc-and-clang#</a></p>
+<h2 id="stack-canary">Stack Canary</h2>
+<p>Clang和gcc使用许多机制来保护栈, 最典型的就是stack canary.
+Stack canary是最初级的侦察栈溢出的方法. 其原理是在运行时的栈帧中插入额外的内存并设置为特定值, 这个值不能被攻击者得知. 在函数跳转的时候会检查这个值是否被改变并以此判断栈是否被破坏.
+Stack canary(在gcc和clang中)可以通过以下编译选项控制</p>
+<ul>
+<li><code>-fstack-protector</code></li>
+<li><code>-fstack-protector-strong</code></li>
+<li><code>-fstack-protector-all</code></li>
+<li><code>-fstack-protector-explicit</code>
+Inserts a guard variable onto the stack frame for each vulnerable function or for all functions.
+以下是一个对比示例:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">f1</span>(<span style="color:#66d9ef">int</span> a)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> a;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">f2</span>(<span style="color:#66d9ef">int</span> a)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> ;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">f1</span>(<span style="color:#ae81ff">597</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>编译:</p>
+<pre tabindex="0"><code>gcc t.c -o unknow -O0
+gcc t.c -o protection -fstack-protector-all -O0
+gcc t.c -o no_protection -fno-stack-protector -O0
+</code></pre><p>最后对比可以发现默认状态下是没有开启stack canary的.
+x86-64架构下开启后对比:
+![](assets/Pasted image 20241223150716-20250311094648-ln8eicx.png )
+可以看到每次的函数调用都会在进入函数的时候多使用一块内存, 并在函数返回前调用<code>__stack_chk_fail</code>检查这块内存.
+内核中的使用: <a href="https://lwn.net/Articles/584225/" target="_blank" rel="noopener">https://lwn.net/Articles/584225/</a>
+更多信息可见<a href="https://developer.arm.com/documentation/dui0774/l/Compiler-Command-line-Options/-fstack-protector---fstack-protector-all---fstack-protector-strong---fno-stack-protector" target="_blank" rel="noopener">arm doc</a> 和 <a href="https://chatgpt.com/share/677202d2-4d58-8009-b1cf-c6eafb3d4b08" target="_blank" rel="noopener">https://chatgpt.com/share/677202d2-4d58-8009-b1cf-c6eafb3d4b08</a></p>
+<h2 id="shadow-stack-and-safestack">shadow stack and safestack</h2>
+<p>此技术将stack分为两个区域, 用不连续的内存区域存储用户变量和过去的变量.
+GCC和Clang使用:</p>
+<ul>
+<li><code>-mshstk</code>
+增加shadow stack
+Clang使用</li>
+<li><code>-fsanitize=safe-stack</code>
+增加safestack
+<a href="https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html#index-mshstk" target="_blank" rel="noopener">gcc doc</a>
+<a href="https://clang.llvm.org/docs/SafeStack.html" target="_blank" rel="noopener">llvm doc</a></li>
+</ul>
+<h2 id="fortified-source">fortified source</h2>
+<p><a href="https://www.redhat.com/en/blog/security-technologies-fortifysource" target="_blank" rel="noopener">https://www.redhat.com/en/blog/security-technologies-fortifysource</a>
+<code>FORTIFY_SOURCE</code> 提供轻量的编译和运行时内存保护, 可以适用于操作系统中的所有库和应用.
+在gcc中, FORTIFY_SOURCE一般是通过用内置的<code>*_chk</code>替换一些字符串和内存函数来检测溢出(如将<code>memcpy</code>替换为<code>__memcpy_chk</code>), 这些函数会通过做一些必要的计算来检测溢出. 如果发现溢出, 程序将会终止. <code>FORTIFY_SOURCE</code>一般在汇编层面增加指令, 因此开销很小.
+gcc和clang都使用</p>
+<ul>
+<li><code>-D_FORTIFY_SOURCE=&lt;n&gt;</code>
+来使用fortified source. <code>&lt;n&gt;</code>越高, 越能提供更强的保护, 但是相应的性能也会下降, <code>&lt;n&gt;</code>最高为3.</li>
+</ul>
+<h2 id="control-flow-integrity">Control flow integrity</h2>
+<p><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/technical-look-control-flow-enforcement-technology.html" target="_blank" rel="noopener">https://www.intel.com/content/www/us/en/developer/articles/technical/technical-look-control-flow-enforcement-technology.html</a>
+<a href="https://techcommunity.microsoft.com/blog/windowsosplatform/understanding-hardware-enforced-stack-protection/1247815" target="_blank" rel="noopener">https://techcommunity.microsoft.com/blog/windowsosplatform/understanding-hardware-enforced-stack-protection/1247815</a>
+函数返回时可能会出现破坏栈来控制程序的跳转(这里是指执行非正常情况的指令, 如使用<code>jmp</code>指令去到意想不到的地方). 一个应对方法是使用硬件/软件支持保证跳转/返回地址正确.
+GCC和clang可以使用:</p>
+<ul>
+<li><code>-fcf-protection=[full]</code>
+生成Intel CET(<a href="https://www.intel.com/content/www/us/en/developer/articles/technical/technical-look-control-flow-enforcement-technology.html" target="_blank" rel="noopener">Control-flow Enforcement Technology</a>)的机器码.
+Gcc和clang也可以使用:</li>
+<li><code>-mbranch-protection=none|bti|pac-ret+leaf|pac-ret[+leaf+b-key]|standard</code>
+生成支持aarch64 BTI(<a href="https://developer.arm.com/documentation/ddi0596/2020-12/Base-Instructions/BTI--Branch-Target-Identification-" target="_blank" rel="noopener">Branch Target Identification</a>)的机器码.
+以上的两个参数都需要硬件支持, clang提供了纯软件的实现, 可以使用:</li>
+<li><code>-fsanitize=cfi</code></li>
+</ul>
+<h2 id="stack-allocation-control">Stack allocation control</h2>
+<p>以下选项是一些对stack allocation有影响的选项(这不一定会提供额外的安全性保证, 当其副作用有可能对栈安全有影响).
+在x86平台, gcc和clang可以使用</p>
+<ul>
+<li><code>-fsplit-stack</code>
+在stack内存用完后, 自动分配一个不连续的栈.
+在使用GNU linker(<code>ld</code>)时, 可以将stack limit通过symbol或register告诉程序.</li>
+<li><code>-fstack-limit-register</code></li>
+<li><code>-fstack-limit-symbol</code>
+Clang可以使用:</li>
+<li>-fno-stack-array
+禁止在stack中使用array.</li>
+</ul>
+<h2 id="stack-usage-and-statistics">Stack usage and statistics</h2>
+<p>栈的大多数操作是存储调用信息和固定大小的本地变量, 但也会出现使用VLA或使用<code>alloca()</code>分配动态大小的对象的情况. 这经常是栈溢出或是与其他部分内存冲突的来源.
+以下选项可以对<code>alloca()</code>和VLA的使用给出warning:</p>
+<ul>
+<li>通用:
+<ul>
+<li><code>-Wframe-larger-than</code></li>
+<li><code>-Walloca</code></li>
+<li><code>-Walloca-larger-than</code></li>
+<li><code>-Wvla -Wvla-larger-than</code></li>
+</ul>
+</li>
+<li>GCC:
+<ul>
+<li><code>-Wstack-usage</code></li>
+<li><code>-fstack-usage</code></li>
+<li><code>-Walloca</code></li>
+<li><code>-Walloca-larger-than</code></li>
+<li><code>-Wvla</code></li>
+<li><code>-Wvla-larger-than</code></li>
+<li><code>-Wframe-larger-than</code></li>
+<li><code>-mwarn-dynamicstack</code> (s390x)</li>
+<li><code>-Wstack-protector</code></li>
+<li><code>-Wtrampolines</code></li>
+<li><code>-Winfinite-recursion</code></li>
+</ul>
+</li>
+<li>Clang:
+<ul>
+<li><code>-fstack-usage</code></li>
+<li><code>-Walloca</code></li>
+<li><code>-Wframe-larger-than</code></li>
+<li><code>-Wstack-usage</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="扩展">扩展</h2>
+<p><a href="https://www.redhat.com/en/blog/security-technologies-stack-smashing-protection-stackguard" target="_blank" rel="noopener">https://www.redhat.com/en/blog/security-technologies-stack-smashing-protection-stackguard</a>
+<a href="https://www.redhat.com/en/blog/security-technologies-execshield" target="_blank" rel="noopener">https://www.redhat.com/en/blog/security-technologies-execshield</a></p>
+<h2 id="参考">参考</h2>
+<p><a href="https://developer.arm.com/documentation/dui0774/l/Compiler-Command-line-Options/-fstack-protector---fstack-protector-all---fstack-protector-strong---fno-stack-protector" target="_blank" rel="noopener">https://developer.arm.com/documentation/dui0774/l/Compiler-Command-line-Options/-fstack-protector---fstack-protector-all---fstack-protector-strong---fno-stack-protector</a>
+<a href="https://developers.redhat.com/articles/2022/06/02/use-compiler-flags-stack-protection-gcc-and-clang#" target="_blank" rel="noopener">https://developers.redhat.com/articles/2022/06/02/use-compiler-flags-stack-protection-gcc-and-clang#</a>
+<a href="https://lwn.net/Articles/584225/" target="_blank" rel="noopener">https://lwn.net/Articles/584225/</a>
+<a href="https://www.redhat.com/en/blog/security-technologies-fortifysource" target="_blank" rel="noopener">https://www.redhat.com/en/blog/security-technologies-fortifysource</a></p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

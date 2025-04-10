@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>shot_2_view性能问题</title>
+
+<meta name="description" content="shot_2_view性能问题 Shot_2_view性能分析方法 在cameraapp中会有各种性能耗时的时间统计 根据shot_2_view的时间去看当时的cpu占用, 调度, 内存情况, 图库问题, 首先不用去看log 在此问题中 可以看到log的占用有些过于高了, user版本系统的logd不应该占这么多(一般小于5%? 待确认) 等待周一问测试 ‍
+示例 BUGN16UUPV-147 N16U升V后, shot_2_view耗时明显比u增加, 现分析log.
+抓log, 观察P_PERFORM. U: V: 看到性能差异主要的点是shot_device_capture, 去查一下这个用于计算的内容. 序号 性能action 解释 负责模块 1 ​shot_prepare_capture​ 拍照准备阶段耗时，从点击shutter button到下发capture request APP 2 ​shot_on_shutter​ 点击后到快拍shutter返回耗时，如果有shutter返回了就可以做下一次拍照了 HAL 3 ​shot_device_capture​ 点击拍照到HAL返回meta和buffer HAL /MIVI2.0MIHAL,app侧没法统计 4 ​shot_create_thumbnail​ 点击拍照到缩略图生成 HAL 5 ​shot_thumbnail_gap​ 拍照缩略图生成uri与用户点击thumbnail的时间间隔 用户/测试 6 ​shot_2_shot​ 不支持快拍的手机：从点击拍照到可以做下一次拍照的最短时间间隔 HAL 7 ​shot_2_gallery​ 点击拍照到可以跳转到gallery的最短时间间隔，缩略图uri和图片保存好 HAL/APP 8 ​shot_2_view​ 点击拍照到可以跳转到gallery的并且图片变清晰（大图保存好） HAL/APP/Gallery 9 ​shot_2_click_thumbnail​ 点击拍照到点击缩略图的时间 HAL/APP/用户 根据信息查看具体对应的步骤, 排查问题. 根据K_PROCESS查看关键步骤, 时间差距最大的地方在于quickview shot到tuning shot之间, 比U版本多了100ms.
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/shot_2_view%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/shot_2_view%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/shot_2_view%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="shot_2_view性能问题">
+<meta property="og:description" content="shot_2_view性能问题
+Shot_2_view性能分析方法
+
+在cameraapp中会有各种性能耗时的时间统计
+
+根据shot_2_view的时间去看当时的cpu占用, 调度, 内存情况, 图库问题, 首先不用去看log
+在此问题中
+可以看到log的占用有些过于高了, user版本系统的logd不应该占这么多(一般小于5%? 待确认)
+等待周一问测试
+
+‍
+示例
+BUGN16UUPV-147
+N16U升V后, shot_2_view耗时明显比u增加, 现分析log.
+
+抓log, 观察P_PERFORM.
+U:
+V:
+看到性能差异主要的点是shot_device_capture, 去查一下这个用于计算的内容.
+
+  
+      
+          序号
+          性能action
+          解释
+          负责模块
+      
+  
+  
+      
+          1
+          ​shot_prepare_capture​
+          拍照准备阶段耗时，从点击shutter button到下发capture request
+          APP
+      
+      
+          2
+          ​shot_on_shutter​
+          点击后到快拍shutter返回耗时，如果有shutter返回了就可以做下一次拍照了
+          HAL
+      
+      
+          3
+          ​shot_device_capture​
+          点击拍照到HAL返回meta和buffer
+          HAL /MIVI2.0MIHAL,app侧没法统计
+      
+      
+          4
+          ​shot_create_thumbnail​
+          点击拍照到缩略图生成
+          HAL
+      
+      
+          5
+          ​shot_thumbnail_gap​
+          拍照缩略图生成uri与用户点击thumbnail的时间间隔
+          用户/测试
+      
+      
+          6
+          ​shot_2_shot​
+          不支持快拍的手机：从点击拍照到可以做下一次拍照的最短时间间隔
+          HAL
+      
+      
+          7
+          ​shot_2_gallery​
+          点击拍照到可以跳转到gallery的最短时间间隔，缩略图uri和图片保存好
+          HAL/APP
+      
+      
+          8
+          ​shot_2_view​
+          点击拍照到可以跳转到gallery的并且图片变清晰（大图保存好）
+          HAL/APP/Gallery
+      
+      
+          9
+          ​shot_2_click_thumbnail​
+          点击拍照到点击缩略图的时间
+          HAL/APP/用户
+      
+  
+
+
+根据信息查看具体对应的步骤, 排查问题.
+
+
+根据K_PROCESS查看关键步骤, 时间差距最大的地方在于quickview shot到tuning shot之间, 比U版本多了100ms.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/shot_2_view%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="shot_2_view性能问题">
+<meta name="twitter:description" content="shot_2_view性能问题
+Shot_2_view性能分析方法
+
+在cameraapp中会有各种性能耗时的时间统计
+
+根据shot_2_view的时间去看当时的cpu占用, 调度, 内存情况, 图库问题, 首先不用去看log
+在此问题中
+可以看到log的占用有些过于高了, user版本系统的logd不应该占这么多(一般小于5%? 待确认)
+等待周一问测试
+
+‍
+示例
+BUGN16UUPV-147
+N16U升V后, shot_2_view耗时明显比u增加, 现分析log.
+
+抓log, 观察P_PERFORM.
+U:
+V:
+看到性能差异主要的点是shot_device_capture, 去查一下这个用于计算的内容.
+
+  
+      
+          序号
+          性能action
+          解释
+          负责模块
+      
+  
+  
+      
+          1
+          ​shot_prepare_capture​
+          拍照准备阶段耗时，从点击shutter button到下发capture request
+          APP
+      
+      
+          2
+          ​shot_on_shutter​
+          点击后到快拍shutter返回耗时，如果有shutter返回了就可以做下一次拍照了
+          HAL
+      
+      
+          3
+          ​shot_device_capture​
+          点击拍照到HAL返回meta和buffer
+          HAL /MIVI2.0MIHAL,app侧没法统计
+      
+      
+          4
+          ​shot_create_thumbnail​
+          点击拍照到缩略图生成
+          HAL
+      
+      
+          5
+          ​shot_thumbnail_gap​
+          拍照缩略图生成uri与用户点击thumbnail的时间间隔
+          用户/测试
+      
+      
+          6
+          ​shot_2_shot​
+          不支持快拍的手机：从点击拍照到可以做下一次拍照的最短时间间隔
+          HAL
+      
+      
+          7
+          ​shot_2_gallery​
+          点击拍照到可以跳转到gallery的最短时间间隔，缩略图uri和图片保存好
+          HAL/APP
+      
+      
+          8
+          ​shot_2_view​
+          点击拍照到可以跳转到gallery的并且图片变清晰（大图保存好）
+          HAL/APP/Gallery
+      
+      
+          9
+          ​shot_2_click_thumbnail​
+          点击拍照到点击缩略图的时间
+          HAL/APP/用户
+      
+  
+
+
+根据信息查看具体对应的步骤, 排查问题.
+
+
+根据K_PROCESS查看关键步骤, 时间差距最大的地方在于quickview shot到tuning shot之间, 比U版本多了100ms.">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "shot_2_view性能问题",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  2170 ,
+  "description": "shot_2_view性能问题 Shot_2_view性能分析方法 在cameraapp中会有各种性能耗时的时间统计 根据shot_2_view的时间去看当时的cpu占用, 调度, 内存情况, 图库问题, 首先不用去看log 在此问题中 可以看到log的占用有些过于高了, user版本系统的logd不应该占这么多(一般小于5%? 待确认) 等待周一问测试 ‍\n示例 BUGN16UUPV-147 N16U升V后, shot_2_view耗时明显比u增加, 现分析log.\n抓log, 观察P_PERFORM. U: V: 看到性能差异主要的点是shot_device_capture, 去查一下这个用于计算的内容. 序号 性能action 解释 负责模块 1 ​shot_prepare_capture​ 拍照准备阶段耗时，从点击shutter button到下发capture request APP 2 ​shot_on_shutter​ 点击后到快拍shutter返回耗时，如果有shutter返回了就可以做下一次拍照了 HAL 3 ​shot_device_capture​ 点击拍照到HAL返回meta和buffer HAL /MIVI2.0MIHAL,app侧没法统计 4 ​shot_create_thumbnail​ 点击拍照到缩略图生成 HAL 5 ​shot_thumbnail_gap​ 拍照缩略图生成uri与用户点击thumbnail的时间间隔 用户/测试 6 ​shot_2_shot​ 不支持快拍的手机：从点击拍照到可以做下一次拍照的最短时间间隔 HAL 7 ​shot_2_gallery​ 点击拍照到可以跳转到gallery的最短时间间隔，缩略图uri和图片保存好 HAL/APP 8 ​shot_2_view​ 点击拍照到可以跳转到gallery的并且图片变清晰（大图保存好） HAL/APP/Gallery 9 ​shot_2_click_thumbnail​ 点击拍照到点击缩略图的时间 HAL/APP/用户 根据信息查看具体对应的步骤, 排查问题. 根据K_PROCESS查看关键步骤, 时间差距最大的地方在于quickview shot到tuning shot之间, 比U版本多了100ms.\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="shot_2_view性能问题">shot_2_view性能问题</h1>
+<h2 id="shot_2_view性能分析方法">Shot_2_view性能分析方法</h2>
+<ol>
+<li>在cameraapp中会有各种性能耗时的时间统计
+<img src="assets/image-20241019110550-8f6jazo.png" alt=""></li>
+<li>根据shot_2_view的时间去看当时的cpu占用, 调度, 内存情况, 图库问题, 首先不用去看log</li>
+<li>在此问题中
+<img src="assets/image-20241019110812-pzinkb1.png" alt="">可以看到log的占用有些过于高了, user版本系统的logd不应该占这么多(一般小于5%? 待确认)</li>
+<li>等待周一问测试</li>
+</ol>
+<p>‍</p>
+<h2 id="示例">示例</h2>
+<h3 id="bugn16uupv-147"><a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-147" target="_blank" rel="noopener">BUGN16UUPV-147</a></h3>
+<p>N16U升V后, shot_2_view耗时明显比u增加, 现分析log.</p>
+<ol>
+<li>抓log, 观察P_PERFORM.
+U:<img src="assets/image-20241011213557-i2btze8.png" alt="">
+V:<img src="assets/image-20241011213626-atu80ck.png" alt=""></li>
+<li>看到性能差异主要的点是shot_device_capture, 去查一下这个用于计算的内容.
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">序号</th>
+          <th style="text-align: left">性能action</th>
+          <th style="text-align: left">解释</th>
+          <th style="text-align: left">负责模块</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">1</td>
+          <td style="text-align: left">​<code>shot_prepare_capture</code>​</td>
+          <td style="text-align: left">拍照准备阶段耗时，从点击shutter button到下发capture request</td>
+          <td style="text-align: left">APP</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">2</td>
+          <td style="text-align: left">​<code>shot_on_shutter</code>​</td>
+          <td style="text-align: left">点击后到快拍shutter返回耗时，如果有shutter返回了就可以做下一次拍照了</td>
+          <td style="text-align: left">HAL</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">3</td>
+          <td style="text-align: left">​<code>shot_device_capture</code>​</td>
+          <td style="text-align: left">点击拍照到HAL返回meta和buffer</td>
+          <td style="text-align: left">HAL /MIVI2.0MIHAL,app侧没法统计</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">4</td>
+          <td style="text-align: left">​<code>shot_create_thumbnail</code>​</td>
+          <td style="text-align: left">点击拍照到缩略图生成</td>
+          <td style="text-align: left">HAL</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">5</td>
+          <td style="text-align: left">​<code>shot_thumbnail_gap</code>​</td>
+          <td style="text-align: left">拍照缩略图生成uri与用户点击thumbnail的时间间隔</td>
+          <td style="text-align: left">用户/测试</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">6</td>
+          <td style="text-align: left">​<code>shot_2_shot</code>​</td>
+          <td style="text-align: left">不支持快拍的手机：从点击拍照到可以做下一次拍照的最短时间间隔</td>
+          <td style="text-align: left">HAL</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">7</td>
+          <td style="text-align: left">​<code>shot_2_gallery</code>​</td>
+          <td style="text-align: left">点击拍照到可以跳转到gallery的最短时间间隔，缩略图uri和图片保存好</td>
+          <td style="text-align: left">HAL/APP</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">8</td>
+          <td style="text-align: left">​<code>shot_2_view</code>​</td>
+          <td style="text-align: left">点击拍照到可以跳转到gallery的并且图片变清晰（大图保存好）</td>
+          <td style="text-align: left">HAL/APP/Gallery</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">9</td>
+          <td style="text-align: left">​<code>shot_2_click_thumbnail</code>​</td>
+          <td style="text-align: left">点击拍照到点击缩略图的时间</td>
+          <td style="text-align: left">HAL/APP/用户</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+<li>根据信息查看具体对应的步骤, 排查问题.</li>
+</ol>
+<p><img src="assets/image-20241014153025-s579ng2.png" alt=""></p>
+<p>根据K_PROCESS查看关键步骤, 时间差距最大的地方在于quickview shot到tuning shot之间, 比U版本多了100ms.</p>
+<p>log分析时遇到了很多类似</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plain" data-lang="plain"><span style="display:flex;"><span>10-11 17:49:36.178  1339 14679 D MiAlgoEngine: [Core] MiCamSession.cpp:440 processCaptureResult()[1]+
+</span></span><span style="display:flex;"><span>10-11 17:49:36.178  1339 14679 D MiAlgoEngine: [Core] MiAlgoCamMode.cpp:978 processCaptureResult()[1]+
+</span></span><span style="display:flex;"><span>10-11 17:49:36.178  1339 14679 D MiAlgoEngine: [Core] MiAlgoCamMode.cpp:981 processCaptureResult()[1]vnd res: { frameNumber: 363, result: 0, halResult: 0, physicalCameraMetadata: 0, bLastPartialResult: 0, outputBuffers(1): [{ streamId: 200011, bufferId: 2550137308, status: 0, acquireFenceFd: -1, releaseFenceFd: -1, bufferSettings.count: 0, buffer(0x0xb400006fdfe82328): { format: 17, width: 1440, height: 1080, stride: 1472, bufferSize: 2384640, }, }, ], }
+</span></span><span style="display:flex;"><span>10-11 17:49:36.178  1339 14679 D MiAlgoEngine: [Core] MiAlgoCamMode.cpp:1010 processCaptureResult()[1]before enque, mPendingVndResults: 0
+</span></span><span style="display:flex;"><span>10-11 17:49:36.178  1339 14679 D MiAlgoEngine: [Core] MiAlgoCamMode.cpp:1013 processCaptureResult()[1]after enque, mPendingVndResults: 1
+</span></span><span style="display:flex;"><span>10-11 17:49:36.178  1339 14679 D MiAlgoEngine: [Core] MiAlgoCamMode.cpp:1018 processCaptureResult()[1]-
+</span></span><span style="display:flex;"><span>10-11 17:49:36.178  1339 14679 D MiAlgoEngine: [Core] MiCamSession.cpp:493 processCaptureResult()[1]-
+</span></span><span style="display:flex;"><span>10-14 21:29:25.314  1339  2039 D MiAlgoEngine: [Core] MiVendorCamera.cpp:82 processCaptureRequest()+
+</span></span><span style="display:flex;"><span>10-14 21:29:25.371  1339  2039 D MiAlgoEngine: [Core] MiVendorCamera.cpp:87 processCaptureRequest()-
+</span></span><span style="display:flex;"><span>10-14 21:29:25.372  1339  2039 D MiAlgoEngine: [Core] MiAlgoCamMode.cpp:972 processCaptureRequest()[0]-
+</span></span><span style="display:flex;"><span>10-14 21:29:25.372  1339  2039 D MiAlgoEngine: [Core] MiCamSession.cpp:287 processCaptureRequest()[0]-
+</span></span><span style="display:flex;"><span>10-14 21:29:25.375  1339  2039 D MiAlgoEngine: [Core] MiCamSession.cpp:263 processCaptureRequest()[0]+
+</span></span></code></pre></div><p>的log, 这些基本都是预览产生的log, 可以利用grep -v过滤掉. 之后可以去学以下log开关相关内容.</p>
+<p>U版本:</p>
+<pre tabindex="0"><code class="language-log" data-lang="log">10-11 16:52:57.131  6393  7302 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: mMiCamera2QuickViewQueue.poll, size:0
+10-11 16:52:57.349  6393 10540 V CAM_ParallelProcessProvider: getDbItemSaveTask
+60ms
+10-11 16:52:57.410  1361 17398 I MtkCam/IspTuningDataPackNode: [queue] queue in frame
+10-11 16:52:57.411  1361 17384 I MtkCam/IspTuningDataPackNode: [onProcessFrame] CAM_PERF Feature: IspTuningDataPack, process time: 1.00
+30ms
+10-11 16:52:57.441  1361 17482 I MtkCam/IspTuningDataPackNode: [onProcessFrame] CAM_PERF Feature: IspTuningDataPack, process time: 0.00
+10-11 16:52:57.445  6393  7302 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: tuning timestamp = 4827276433000
+</code></pre><p>V版本:</p>
+<pre tabindex="0"><code class="language-log" data-lang="log">10-11 17:49:46.400 10295 10854 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: mMiCamera2QuickViewQueue.poll, size:0
+10-11 17:49:46.628 10295 10918 V CAM_ParallelProcessProvider: getDbItemSaveTask
+118ms
+10-11 17:49:46.746  1339 14753 I MtkCam/IspTuningDataPackNode: [queue] queue in frame
+10-11 17:49:46.746  1339 14743 I MtkCam/IspTuningDataPackNode: [onProcessFrame] CAM_PERF Feature: IspTuningDataPack, process time: 0.00
+47ms
+10-11 17:49:46.793  1339 14840 I MtkCam/IspTuningDataPackNode: [onProcessFrame] CAM_PERF Feature: IspTuningDataPack, process time: 1.00
+10-11 17:49:46.798 10295 10854 D CAM_MiCamera2: [K_PROCESS]: onImageAvailable: tuning timestamp = 874493324000
+</code></pre><p>过程中MtkCam/IspTuningDataPackNode耗时长
+其他的差距可以等关闭log后再测, 预计U和V差别不大.</p>
+<p>看trace发现是log开太多导致的.</p>
+<p>‍</p>
+<h3 id="bugn16uupv-893"><a href="https://jira-phone.mioffice.cn/browse/BUGN16UUPV-893" target="_blank" rel="noopener">BUGN16UUPV-893</a></h3>
+<p>![](assets/Pasted image 20241118112950-20250311094648-3mhy1x0.png )</p>
+<p>可以看出cpu占用异常, kswap0占用高, 推测是测试环境内存占用异常.
+排除这一点后, 抓trace可以看到</p>
+<ul>
+<li>U:
+![](assets/Pasted image 20241118151432-20250311094648-3vg84ct.png )</li>
+<li>V:
+![](assets/Pasted image 20241118151447-20250311094648-m1b8vep.png )
+可以看到V中的gallery不知为何占用变高.
+抓simpleperf对比发现是一个库的占用变多了.</li>
+</ul>
+<p>![](assets/Pasted image 20241118181411-20250311094648-hxmwv1w.png )
+由于对比机是GL版本的, 所以需要排除一下是否版本相同.
+在Gerrit中找到这个库属于alps/vendor/mediatek/proprietary/external/libjpeg-alpha, 去BBM上查一下GL和CN用的库的版本是否相同.</p>
+<p>这个库在N16U的CN的V版本属于<code>master-v-mtk</code>分支, CN的U版本属于<code>release-u-mtk-15.0.3</code>, 与GL共线.
+对比发现两文件不同</p>
+<p>找到一个文件:</p>
+<p><a href="https://xiaomi.f.mioffice.cn/docx/doxk4ADeAlHNkNOxMFRKff50wpc" target="_blank" rel="noopener">相机进大图 shotToView 超时分析</a></p>
+<p>![](assets/Pasted image 20241118192940-20250311094648-ehlbwbq.png )
+log如下:
+![](assets/Pasted image 20241118192951-20250311094648-2zzobdc.png )</p>
+<p>看trace发现是decodeFileDescriptor在占用CPU时间(它在使用上面那个库).</p>
+<p>![](assets/Pasted image 20241119094657-20250311094648-4s1gtco.png )
+看了CPU使用发现V版本的decode一直跑在小核上, 而U版本是全核心在跑, 转给调度分析.</p>
+<p>![](assets/Pasted image 20241119111124-20250311094648-8iqezs9.png )</p>
+<p>现在测shot_2_view已经不用进图库了, shot_2_view和decode关系不大.
+![](assets/Pasted image 20241121163138-20250311094648-ot40trc.png )
+重新再看这个问题, 似乎关键还是一开始发现的kswap0的占用问题</p>
+<p>![](assets/Pasted image 20241122140751-20250311094648-nwto3b9.png )
+看trace发现在正常光照下似乎没有走这个算法. 需要排查一下U版本这个算法的耗时.
+发现
+U:
+![](assets/Pasted image 20241122165322-20250311094648-58epmui.png )
+V:
+![](assets/Pasted image 20241122165315-20250311094648-wr232o6.png )
+走到算法之前的流程多了500ms, 可以看一下算法为什么耗时变久
+可以看到running的时间基本没有变化, 但是sleeping变久了.
+U:
+![](assets/Pasted image 20241122165454-20250311094648-lchax1s.png )
+V:
+![](assets/Pasted image 20241122165510-20250311094648-ye7y4oy.png )
+可以看到线程优先级变低了, 调高试试.
+![](assets/Pasted image 20241125185835-20250311094648-0qy4dm8.png )
+在MiaNode.cpp中有Node相关的log.
+调高Node的优先级
+![](assets/Pasted image 20241125185904-20250311094648-rsi1m3h.png )</p>
+<h3 id="bugn11aupv-1657"><a href="https://jira-phone.mioffice.cn/browse/BUGN11AUPV-1657" target="_blank" rel="noopener">BUGN11AUPV-1657</a></h3>
+<p><a href="https://xiaomi.f.mioffice.cn/docx/doxk4ADeAlHNkNOxMFRKff50wpc" target="_blank" rel="noopener">相机进大图 shotToView 超时分析</a>
+初看trace发现decode耗时如下, 和shot_2_view很相似.
+![](assets/Pasted image 20241120142401-20250311094648-g0ibhea.png )
+需要抓U版本的trace排查一下相关的问题</p>
+<p><img src="assets/ed4b737a-404f-406f-9e33-a74c5820cd22-20250311094648-w0iz5c9.jpeg" alt="">
+log上看是这个原因</p>
+<p><img src="assets/12b38abf-34ec-403d-982d-85827e0e4bcf-20250311094648-o1iwg1o.jpeg" alt="">
+trace上看似乎是mediaserver的framedecoder线程耗时长, 这个不确定.
+<img src="assets/b6ba1850-289a-4c95-adc6-dae80d443d49-20250311094648-kav9k40.jpeg" alt="">
+相机的流程耗时看起来都在正常范围内
+找相册端同事帮助分析</p>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

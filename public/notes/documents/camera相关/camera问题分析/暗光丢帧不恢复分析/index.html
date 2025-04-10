@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta http-equiv='Content-Security-Policy' content="script-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'">
+    
+
+<link rel="stylesheet" href="/css/style.css" media="screen">
+
+    <title>暗光丢帧不恢复分析</title>
+
+<meta name="description" content="暗光丢帧不恢复分析 CN的N12相机的UW模式开启自动ISO后在暗光环境下： 预览（此时为30fps）-&gt;进图库-&gt;退出图库-&gt;预览（此时为低帧数）
+BUGN12UPV-1426
+经过排查，暗光环境下快门速度变慢，导致帧率变低，进入图库时保存了慢的快门速度（如1/14），出图库时会有一个做曝光时间的重新收敛，有个热启动的过程。
+目前看来，帧数是固定在进相册之前的快门速度关联的帧数上，按照常理来说帧数应该会根据快门速度的变化而变化，但是实际上并没有。
+观察到P1出帧时间异常
+进入图库再返回后的sensor取帧速度变慢，从这里入手，看看具体代码。
+观察到P1Node中有参数SensorParams._fps似乎相关。
+跟踪metadata的设置, 目前知道request会配置fps range, 引起fps设置变化.
+根据查看Camera Service中的fps range变化
+发现fps range没有变化.
+‍
+推测为MTK问题, 正在提case沟通
+MTK要求提供mobile log mobile log获取方法:
+MTK mobile log --测试前-- adb shell &#34;echo mobile:on &gt; /proc/mtkfb&#34; (可选) adb shell &#34;echo irq:on &gt; /proc/mtkfb&#34; (可选) adb shell &#34;echo detail:on &gt; /proc/mtkfb&#34; 开启开发者选项, 输入*#*#3646633#*#*(*#*#98685#*#*), 开始录制MobileLog --复现问题-- 停止录制MobileLog, adb pull /data/debuglogger/ 具体的操作详情见录屏
+注: 给MTK的log最好使用稳定版的系统抓取.
+MTK现在需要提供sensor owner分析
+与同事(luoyijie)沟通解决, 底层framelength写入问题.
+多了解一些底层知识, 有时间可以看一下驱动相关内容. AE基础知识
+Backlinks Task &amp;&amp; Object&mdash; title: 暗光丢帧不恢复分析 date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z 暗光丢帧不恢复分析 CN的N12相机的UW模式开启自动ISO后在暗光环境下： 预览（此时为30fps）-&gt;进图库-&gt;退出图库-&gt;预览（此时为低帧数）
+">
+  
+
+
+<link rel="canonical" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E6%9A%97%E5%85%89%E4%B8%A2%E5%B8%A7%E4%B8%8D%E6%81%A2%E5%A4%8D%E5%88%86%E6%9E%90/">
+
+
+<link rel="alternate" hreflang="en-us" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E6%9A%97%E5%85%89%E4%B8%A2%E5%B8%A7%E4%B8%8D%E6%81%A2%E5%A4%8D%E5%88%86%E6%9E%90/">
+
+
+
+<link rel="alternate" hreflang="x-default" href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E6%9A%97%E5%85%89%E4%B8%A2%E5%B8%A7%E4%B8%8D%E6%81%A2%E5%A4%8D%E5%88%86%E6%9E%90/">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta property="og:title" content="暗光丢帧不恢复分析">
+<meta property="og:description" content="暗光丢帧不恢复分析
+CN的N12相机的UW模式开启自动ISO后在暗光环境下： 预览（此时为30fps）-&gt;进图库-&gt;退出图库-&gt;预览（此时为低帧数）
+BUGN12UPV-1426
+经过排查，暗光环境下快门速度变慢，导致帧率变低，进入图库时保存了慢的快门速度（如1/14），出图库时会有一个做曝光时间的重新收敛，有个热启动的过程。
+目前看来，帧数是固定在进相册之前的快门速度关联的帧数上，按照常理来说帧数应该会根据快门速度的变化而变化，但是实际上并没有。
+观察到P1出帧时间异常
+进入图库再返回后的sensor取帧速度变慢，从这里入手，看看具体代码。
+观察到P1Node中有参数SensorParams._fps似乎相关。
+跟踪metadata的设置, 目前知道request会配置fps range, 引起fps设置变化.
+根据查看Camera Service中的fps range变化
+发现fps range没有变化.
+‍
+推测为MTK问题, 正在提case沟通
+MTK要求提供mobile log
+mobile log获取方法:
+MTK mobile log
+--测试前--
+adb shell &#34;echo mobile:on &gt; /proc/mtkfb&#34;
+(可选) adb shell &#34;echo irq:on &gt; /proc/mtkfb&#34;
+(可选) adb shell &#34;echo detail:on &gt; /proc/mtkfb&#34;
+开启开发者选项, 输入*#*#3646633#*#*(*#*#98685#*#*), 开始录制MobileLog
+--复现问题--
+停止录制MobileLog, adb pull /data/debuglogger/
+具体的操作详情见录屏
+注: 给MTK的log最好使用稳定版的系统抓取.
+MTK现在需要提供sensor owner分析
+与同事(luoyijie)沟通解决, 底层framelength写入问题.
+多了解一些底层知识, 有时间可以看一下驱动相关内容.
+AE基础知识
+Backlinks
+
+Task &amp;&amp; Object&mdash;
+title: 暗光丢帧不恢复分析
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+
+
+暗光丢帧不恢复分析
+CN的N12相机的UW模式开启自动ISO后在暗光环境下： 预览（此时为30fps）-&gt;进图库-&gt;退出图库-&gt;预览（此时为低帧数）">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/camera%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/%E6%9A%97%E5%85%89%E4%B8%A2%E5%B8%A7%E4%B8%8D%E6%81%A2%E5%A4%8D%E5%88%86%E6%9E%90/">
+  <meta property="article:section" content="notes">
+  
+    <meta property="article:published_time" content="2025-03-11T09:46:48+00:00">
+  
+  
+    <meta property="article:modified_time" content="2025-03-11T09:46:48+00:00">
+  
+  <meta property="og:site_name" content="My New Hugo Site">
+
+
+
+
+
+
+
+
+
+
+<meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="暗光丢帧不恢复分析">
+<meta name="twitter:description" content="暗光丢帧不恢复分析
+CN的N12相机的UW模式开启自动ISO后在暗光环境下： 预览（此时为30fps）-&gt;进图库-&gt;退出图库-&gt;预览（此时为低帧数）
+BUGN12UPV-1426
+经过排查，暗光环境下快门速度变慢，导致帧率变低，进入图库时保存了慢的快门速度（如1/14），出图库时会有一个做曝光时间的重新收敛，有个热启动的过程。
+目前看来，帧数是固定在进相册之前的快门速度关联的帧数上，按照常理来说帧数应该会根据快门速度的变化而变化，但是实际上并没有。
+观察到P1出帧时间异常
+进入图库再返回后的sensor取帧速度变慢，从这里入手，看看具体代码。
+观察到P1Node中有参数SensorParams._fps似乎相关。
+跟踪metadata的设置, 目前知道request会配置fps range, 引起fps设置变化.
+根据查看Camera Service中的fps range变化
+发现fps range没有变化.
+‍
+推测为MTK问题, 正在提case沟通
+MTK要求提供mobile log
+mobile log获取方法:
+MTK mobile log
+--测试前--
+adb shell &#34;echo mobile:on &gt; /proc/mtkfb&#34;
+(可选) adb shell &#34;echo irq:on &gt; /proc/mtkfb&#34;
+(可选) adb shell &#34;echo detail:on &gt; /proc/mtkfb&#34;
+开启开发者选项, 输入*#*#3646633#*#*(*#*#98685#*#*), 开始录制MobileLog
+--复现问题--
+停止录制MobileLog, adb pull /data/debuglogger/
+具体的操作详情见录屏
+注: 给MTK的log最好使用稳定版的系统抓取.
+MTK现在需要提供sensor owner分析
+与同事(luoyijie)沟通解决, 底层framelength写入问题.
+多了解一些底层知识, 有时间可以看一下驱动相关内容.
+AE基础知识
+Backlinks
+
+Task &amp;&amp; Object&mdash;
+title: 暗光丢帧不恢复分析
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z
+
+
+暗光丢帧不恢复分析
+CN的N12相机的UW模式开启自动ISO后在暗光环境下： 预览（此时为30fps）-&gt;进图库-&gt;退出图库-&gt;预览（此时为低帧数）">
+
+<meta name="twitter:site" content="@https://twitter.com/yourusername">
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "暗光丢帧不恢复分析",
+  "datePublished": "2025-03-11T09:46:48+00:00",
+  "dateModified": "2025-03-11T09:46:48+00:00",
+  "mainEntityOfPage": "http://localhost:1313/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site"
+  },
+  "wordcount" :  1348 ,
+  "description": "暗光丢帧不恢复分析 CN的N12相机的UW模式开启自动ISO后在暗光环境下： 预览（此时为30fps）-\u0026gt;进图库-\u0026gt;退出图库-\u0026gt;预览（此时为低帧数）\nBUGN12UPV-1426\n经过排查，暗光环境下快门速度变慢，导致帧率变低，进入图库时保存了慢的快门速度（如1/14），出图库时会有一个做曝光时间的重新收敛，有个热启动的过程。\n目前看来，帧数是固定在进相册之前的快门速度关联的帧数上，按照常理来说帧数应该会根据快门速度的变化而变化，但是实际上并没有。\n观察到P1出帧时间异常\n进入图库再返回后的sensor取帧速度变慢，从这里入手，看看具体代码。\n观察到P1Node中有参数SensorParams._fps似乎相关。\n跟踪metadata的设置, 目前知道request会配置fps range, 引起fps设置变化.\n根据查看Camera Service中的fps range变化\n发现fps range没有变化.\n‍\n推测为MTK问题, 正在提case沟通\nMTK要求提供mobile log mobile log获取方法:\nMTK mobile log --测试前-- adb shell \u0026#34;echo mobile:on \u0026gt; /proc/mtkfb\u0026#34; (可选) adb shell \u0026#34;echo irq:on \u0026gt; /proc/mtkfb\u0026#34; (可选) adb shell \u0026#34;echo detail:on \u0026gt; /proc/mtkfb\u0026#34; 开启开发者选项, 输入*#*#3646633#*#*(*#*#98685#*#*), 开始录制MobileLog --复现问题-- 停止录制MobileLog, adb pull /data/debuglogger/ 具体的操作详情见录屏\n注: 给MTK的log最好使用稳定版的系统抓取.\nMTK现在需要提供sensor owner分析\n与同事(luoyijie)沟通解决, 底层framelength写入问题.\n多了解一些底层知识, 有时间可以看一下驱动相关内容. AE基础知识\nBacklinks Task \u0026amp;\u0026amp; Object\u0026mdash; title: 暗光丢帧不恢复分析 date: 2025-03-11T09:46:48Z lastmod: 2025-03-11T09:46:48Z 暗光丢帧不恢复分析 CN的N12相机的UW模式开启自动ISO后在暗光环境下： 预览（此时为30fps）-\u0026gt;进图库-\u0026gt;退出图库-\u0026gt;预览（此时为低帧数）\n",
+  "keywords":  null 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+</head>
+
+<body class="docs single d-flex flex-column min-vh-100"><header class="main-header">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+      
+      <a class="navbar-brand" href="/">
+        
+        My New Hugo Site
+      </a>
+
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="menu-main navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/" title='My New Hugo Site' aria-label='My New Hugo Site'>Home</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Posts</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/tags/" title='Tags' aria-label='Tags'>Tags</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">About</a>
+          </li>
+          
+          
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/notes/" title='Notes' aria-label='Notes'>Notes</a>
+          </li>
+          
+          </ul>
+
+        
+        
+        
+
+      </div>
+    </div>
+  </nav>
+</header><div id="content">
+        
+
+<div class="container py-3">
+  <h1 id="暗光丢帧不恢复分析">暗光丢帧不恢复分析</h1>
+<p>CN的N12相机的UW模式开启自动ISO后在暗光环境下： 预览（此时为30fps）-&gt;进图库-&gt;退出图库-&gt;预览（此时为低帧数）</p>
+<p><a href="https://jira-phone.mioffice.cn/browse/BUGN12UPV-1426" target="_blank" rel="noopener">BUGN12UPV-1426</a></p>
+<p>经过排查，暗光环境下快门速度变慢，导致帧率变低，进入图库时保存了慢的快门速度（如1/14），出图库时会有一个做曝光时间的重新收敛，有个热启动的过程。</p>
+<p>目前看来，帧数是固定在进相册之前的快门速度关联的帧数上，按照常理来说帧数应该会根据快门速度的变化而变化，但是实际上并没有。</p>
+<p>观察到P1出帧时间异常</p>
+<p>进入图库再返回后的sensor取帧速度变慢，从这里入手，看看具体代码。</p>
+<p>观察到P1Node中有参数SensorParams._fps似乎相关。</p>
+<p>跟踪metadata的设置, 目前知道request会配置fps range, 引起fps设置变化.</p>
+<p>根据查看Camera Service中的fps range变化</p>
+<p>发现fps range没有变化.</p>
+<p>‍</p>
+<p>推测为MTK问题, 正在提<a href="https://eservice.mediatek.com/eservice-portal/issue_manager/update/142692430" target="_blank" rel="noopener">case</a>沟通</p>
+<p>MTK要求提供mobile log
+mobile log获取方法:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>MTK mobile log
+</span></span><span style="display:flex;"><span>--测试前--
+</span></span><span style="display:flex;"><span>adb shell &#34;echo mobile:on &gt; /proc/mtkfb&#34;
+</span></span><span style="display:flex;"><span>(可选) adb shell &#34;echo irq:on &gt; /proc/mtkfb&#34;
+</span></span><span style="display:flex;"><span>(可选) adb shell &#34;echo detail:on &gt; /proc/mtkfb&#34;
+</span></span><span style="display:flex;"><span>开启开发者选项, 输入*#*#3646633#*#*(*#*#98685#*#*), 开始录制MobileLog
+</span></span><span style="display:flex;"><span>--复现问题--
+</span></span><span style="display:flex;"><span>停止录制MobileLog, adb pull /data/debuglogger/
+</span></span></code></pre></div><p>具体的操作详情见录屏</p>
+<p>注: 给MTK的log最好使用稳定版的系统抓取.</p>
+<p>MTK现在需要提供sensor owner分析</p>
+<p>与同事(luoyijie)沟通解决, 底层framelength写入问题.</p>
+<p>多了解一些底层知识, 有时间可以看一下驱动相关内容.
+<a href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/ae%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">AE基础知识</a></p>
+<h2 id="backlinks">Backlinks</h2>
+<ul>
+<li><a href="http://localhost:1313/notes/daily-note/task--object/">Task &amp;&amp; Object</a>&mdash;
+title: 暗光丢帧不恢复分析
+date: 2025-03-11T09:46:48Z
+lastmod: 2025-03-11T09:46:48Z</li>
+</ul>
+<hr>
+<h1 id="暗光丢帧不恢复分析-1">暗光丢帧不恢复分析</h1>
+<p>CN的N12相机的UW模式开启自动ISO后在暗光环境下： 预览（此时为30fps）-&gt;进图库-&gt;退出图库-&gt;预览（此时为低帧数）</p>
+<p><a href="https://jira-phone.mioffice.cn/browse/BUGN12UPV-1426" target="_blank" rel="noopener">BUGN12UPV-1426</a></p>
+<p>经过排查，暗光环境下快门速度变慢，导致帧率变低，进入图库时保存了慢的快门速度（如1/14），出图库时会有一个做曝光时间的重新收敛，有个热启动的过程。</p>
+<p>目前看来，帧数是固定在进相册之前的快门速度关联的帧数上，按照常理来说帧数应该会根据快门速度的变化而变化，但是实际上并没有。</p>
+<p>观察到P1出帧时间异常</p>
+<p>进入图库再返回后的sensor取帧速度变慢，从这里入手，看看具体代码。</p>
+<p>观察到P1Node中有参数SensorParams._fps似乎相关。</p>
+<p>跟踪metadata的设置, 目前知道request会配置fps range, 引起fps设置变化.</p>
+<p>根据查看Camera Service中的fps range变化</p>
+<p>发现fps range没有变化.</p>
+<p>‍</p>
+<p>推测为MTK问题, 正在提<a href="https://eservice.mediatek.com/eservice-portal/issue_manager/update/142692430" target="_blank" rel="noopener">case</a>沟通</p>
+<p>MTK要求提供mobile log
+mobile log获取方法:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>MTK mobile log
+</span></span><span style="display:flex;"><span>--测试前--
+</span></span><span style="display:flex;"><span>adb shell &#34;echo mobile:on &gt; /proc/mtkfb&#34;
+</span></span><span style="display:flex;"><span>(可选) adb shell &#34;echo irq:on &gt; /proc/mtkfb&#34;
+</span></span><span style="display:flex;"><span>(可选) adb shell &#34;echo detail:on &gt; /proc/mtkfb&#34;
+</span></span><span style="display:flex;"><span>开启开发者选项, 输入*#*#3646633#*#*(*#*#98685#*#*), 开始录制MobileLog
+</span></span><span style="display:flex;"><span>--复现问题--
+</span></span><span style="display:flex;"><span>停止录制MobileLog, adb pull /data/debuglogger/
+</span></span></code></pre></div><p>具体的操作详情见录屏</p>
+<p>注: 给MTK的log最好使用稳定版的系统抓取.</p>
+<p>MTK现在需要提供sensor owner分析</p>
+<p>与同事(luoyijie)沟通解决, 底层framelength写入问题.</p>
+<p>多了解一些底层知识, 有时间可以看一下驱动相关内容.
+<a href="http://localhost:1313/notes/documents/camera%E7%9B%B8%E5%85%B3/ae%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">AE基础知识</a></p>
+<h2 id="backlinks-1">Backlinks</h2>
+<ul>
+<li><a href="http://localhost:1313/notes/daily-note/task--object/">Task &amp;&amp; Object</a></li>
+</ul>
+
+</div>
+
+
+    </div>
+    <footer class="py-3 mt-auto bg-light">
+  <div class="container py-1 my-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <p class="col-md mb-0 text-muted"></p>
+      <ul class="nav col-md-auto justify-content-end">
+        </ul>
+    </div>
+  </div>
+</footer>
+    
+
+
+
+
+
+    <script src="/js/main.js" defer></script>
+  
+
+</body>
+</html>

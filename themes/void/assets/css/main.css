@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200..900&display=swap');
+
+@import "tailwindcss";
+@source "hugo_stats.json";
+
+/* 增强Markdown渲染样式 */
+@theme {
+  --font-bilingual:ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif, "Noto Serif SC";
+}
+
+/* 表格样式增强 */
+.prose table {
+  @apply w-full text-left border-collapse;
+}
+
+.prose table th {
+  @apply bg-gray-100 p-2 border border-gray-300 font-semibold;
+}
+
+.prose table td {
+  @apply p-2 border border-gray-200;
+}
+
+/* 引用块样式增强 */
+.prose blockquote {
+  @apply border-l-4 border-blue-500 bg-blue-50 pl-4 py-2 my-4 italic;
+}
+
+/* 链接样式增强 */
+.prose a {
+  @apply text-blue-600 hover:text-blue-800 transition-colors duration-200 underline underline-offset-2;
+}
+
+/* 标题样式增强 */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  @apply font-bold text-gray-900 scroll-mt-20;
+}
+
+.prose h1 {
+  @apply text-3xl mt-8 mb-4 pb-2 border-b border-gray-200;
+}
+
+.prose h2 {
+  @apply text-2xl mt-6 mb-3 pb-1 border-b border-gray-100;
+}
+
+.prose h3 {
+  @apply text-xl mt-6 mb-3;
+}
+
+/* 列表样式增强 */
+.prose ul {
+  @apply list-disc pl-5 space-y-1;
+}
+
+.prose ol {
+  @apply list-decimal pl-5 space-y-1;
+}
+
+/* 任务列表样式增强 */
+.prose ul li.task-list-item {
+  @apply list-none pl-0;
+}
+
+.prose ul li.task-list-item input[type="checkbox"] {
+  @apply mr-2;
+}
+
+/* 图片样式增强 */
+.prose img {
+  @apply rounded-lg mx-auto shadow-md max-w-full my-6;
+}
+
+/* 水平线样式增强 */
+.prose hr {
+  @apply border-t-2 border-gray-200 my-8;
+}
+
+/* 脚注样式增强 */
+.prose .footnotes {
+  @apply text-sm text-gray-600 mt-8 pt-6 border-t border-gray-200;
+}
+
+/* 添加脚注返回链接样式 */
+.prose .footnote-backref {
+  @apply ml-2 text-blue-600 no-underline hover:text-blue-800 transition-colors duration-200 text-base font-bold px-2 py-1 rounded hover:bg-blue-100;
+}
+
+/* 脚注引用样式 */
+.prose .footnote-ref {
+  @apply no-underline text-blue-600 hover:text-blue-800 transition-colors duration-200 font-bold;
+}
+
+/* 脚注高亮效果 */
+.prose .footnote-highlight {
+  @apply bg-yellow-200 transition-colors duration-500 px-2 py-1 rounded;
+}
+
+/* 脚注引用样式 */
+.prose sup[id^="fnref"] {
+  @apply text-blue-600;
+}
+
+/* 脚注列表样式 */
+.prose .footnotes ol {
+  @apply pl-5 space-y-2;
+}
+
+.prose .footnotes li {
+  @apply text-gray-700;
+}
+
+/* Code block enhancements */
+.code-block-container {
+  @apply my-6 rounded-lg overflow-hidden border border-gray-200 shadow-md w-full;
+  background-color: #ffffff;
+}
+
+/* Code block header bar */
+.code-block-header {
+  @apply flex justify-between items-center px-4 py-2 text-sm w-full;
+  background-color: #f6f8fa;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+/* Language label */
+.code-language-label {
+  @apply px-2 py-1 rounded font-mono text-xs uppercase tracking-wider;
+  color: #24292e;
+  background-color: #e1e4e8;
+}
+
+/* Copy button */
+.copy-button {
+  @apply flex items-center space-x-1 px-2 py-1 rounded text-xs transition-colors duration-200;
+  color: #24292e;
+  background-color: #f6f8fa;
+  border: 1px solid #e1e4e8;
+}
+
+.copy-button:hover {
+  background-color: #e1e4e8;
+}
+
+.copy-button svg {
+  @apply w-4 h-4 inline-block mr-1;
+}
+
+/* Code block styles */
+.code-block-container pre {
+  @apply p-4 overflow-x-auto m-0 w-full;
+  background-color: #ffffff;
+  border: none;
+}
+
+.code-block-container pre code {
+  @apply w-full inline-block;
+  word-wrap: normal;
+  word-break: normal;
+  white-space: pre;
+  line-height: 1.5rem;
+  background-color: #ffffff;
+  padding: 0;
+}
+
+/* 禁止Disqus广告 */
+div#disqus_thread iframe[sandbox] {
+  max-height: 0px !important;
+}

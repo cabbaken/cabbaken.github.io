@@ -1,17 +1,17 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://cabbaken.github.io/'
 languageCode = 'en-us'
-title = 'My New Hugo Site'
+title = "Cabbaken's Notes"
 theme = 'void'
 
 
 # Social media links
 [params]
   [params.social]
-    github = "https://github.com/yourusername"
-    twitter = "https://twitter.com/yourusername"
-    email = "your.email@example.com"
+    github = "https://github.com/cabbaken"
+    telegram = "https://twitter.com/yourusername"
+    email = "cabbaken@outlook.com"
   [params.avatar]
-    url = "assets/111.jpg"
+    url = "https://github.com/cabbaken/cabbaken.github.io/blob/main/assets/avatar.jpg?raw=true"
 
 # Main menu
 [[menus.main]]

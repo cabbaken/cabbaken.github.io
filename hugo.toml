@@ -1,6 +1,6 @@
 baseURL = 'https://cabbaken.github.io/'
 languageCode = 'en-us'
-title = "Cabbaken's Notes"
+title = "Cabbaken's Blog"
 theme = 'void'
 
 
@@ -25,11 +25,16 @@ pageRef = '/posts'
 weight = 20
 
 [[menus.main]]
+name = 'Categories'
+pageRef = '/categories'
+weight = 30
+
+[[menus.main]]
 name = 'Tags'
 pageRef = '/tags'
-weight = 30
+weight = 40
 
 [[menus.main]]
 name = 'About'
 pageRef = '/about'
-weight = 40
+weight = 50

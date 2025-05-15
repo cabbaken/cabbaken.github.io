@@ -1,0 +1,1 @@
+Welcome to [Cabbaken](about/about)'s Blog.

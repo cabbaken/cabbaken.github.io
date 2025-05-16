@@ -8,8 +8,11 @@ lastmod: 2025-05-06T19:41:16Z
 
 Cache作为CPU高速缓存, 用于减少处理器访问内存所需平均时间.  
 在远古时期, CPU并没有Cache, 但随着CPU的快速发展, CPU访问其registers与访问内存速度差距越来越大, 所以就需要Cache这一中间层来提升性能.  
+
 ![](https://pub-33412179390046d2b4017e671ebbd429.r2.dev/Pasted%20image%2020250117151028-20250311094648-cf17dqm.png)
-上图可见, CPU访问registers的延迟为0.3ns, 而访问内存的延迟为62.9ns. 如果没有Cache, CPU将要花费漫长的时间从内存中获取数据. 引入多级Cache, 等级越高, 速度越慢, 容量越大. 这种设计既填补CPU registers与内存之间的空白, 提升性能, 又能够平衡成本(更快的Cache会更贵). 现代CPU一般使用3级Cache, 在3级Cache的缓冲, 相邻Cache之间和Cache与memory之间的延迟差距越来越小.  
+上图可见, CPU访问registers的延迟为0.3ns, 而访问内存的延迟为62.9ns. 如果没有Cache, CPU将要花费漫长的时间从内存中获取数据. 引入多级Cache, 等级越高, 速度越慢, 容量越大. 这种设计既填补CPU registers与内存之间的空白, 提升性能, 又能够平衡成本(更快的Cache会更贵).  
+现代CPU一般使用3级Cache, 在3级Cache的缓冲, 相邻Cache之间和Cache与memory之间的延迟差距越来越小.  
+
 以Arm64-v8a架构的Cortex-A53为例, 其Cache的组织方式如下图.
 ![](https://pub-33412179390046d2b4017e671ebbd429.r2.dev/Pasted%20image%2020250117152525-20250311094648-s8khsxw.png)
 其中, 每个CPU core(核心)独享L1 Cache, 而两个CPU core组成一个Cluster(集群), 一个Cluster共享一个L2 Cache, 所有的Cluster共享L3 Cache, 而L3 Cache通过Bus(总线)与内存相连.  
@@ -21,7 +24,9 @@ Cache作为CPU高速缓存, 用于减少处理器访问内存所需平均时间.
 
 ### Cache的存取方式
 
-程序访问内存具有空间局部性的特征, 短时间内访问的数据或是指令大概率会在一段连续的地址范围内, 因此Cache和内存之间的传输却不是以单个字节进行的, 而是一次取特定大小的连续内存. 这个特定大小我们就称为Cache Line, 也是Cache的基本组成单位. Cache Line的大小在4-128字节, 一般为64B. 事实上, Cache Line作为Cache的基本组成单位, 包含两个部分: Metadata和真正需要的数据, 我们所说的Cache Line的大小是指第二部分的大小(即真正从内存中映射的数据大小).  
+程序访问内存具有空间局部性的特征, 短时间内访问的数据或是指令大概率会在一段连续的地址范围内, 因此Cache和内存之间的传输却不是以单个字节进行的, 而是一次取特定大小的连续内存. 这个特定大小我们就称为Cache Line, 也是Cache的基本组成单位.    
+
+Cache Line的大小在4-128字节, 一般为64B. 事实上, Cache Line作为Cache的基本组成单位, 包含两个部分: Metadata和真正需要的数据, 我们所说的Cache Line的大小是指第二部分的大小(即真正从内存中映射的数据大小).  
 
 Cache Line的大小也是我们在开发程序的时候要重视内存对齐的底层原因. 假设Cache Line的大小为64B, 有一个64字节大小数据, 如果地址对齐过, 那一次内存IO就可以完成访问, 但如果未曾对齐, 那就要两次内存IO才行.  
 下文以64位系统, 32GB($2^{35}$B)内存, 1MB($2^{20}$B) L1 Cache, 64B($2^{6}$B) Cache Line为例.  
@@ -37,6 +42,7 @@ L1 Cache中一共有$1MB/64B=2^{20}B/2^{6}B=2^{14}$个Cache Line, 因此我们�
 5. 根据Offset获取数据
 
 这种方式存在着问题: 当我们需要访问多个地址时, 如果这些地址包含着相同的Index, 那么就会频繁的发生冲突, 因为他们只能被mapping到唯一的Cache Line(因为这种Direct Mapping本质上是Cache Line - Index的映射), 这种现象叫做Cache Thrashing(缓存颠簸).  
+
 Direct Mapping存在的问题可以使用新的方式改善, 也是现在普遍使用的组织方式, 即Set Associative.  
 总的来说, Set Associative将内存分为多个set, 每个set中有n个Cache Line, 这样在遇到Index相同但是tag不同的情况, 可以将这些数据都存放在同组的Cache Line中.  
 下文将每组Cache Line数量设为4个.  

@@ -3,7 +3,6 @@ languageCode = 'en-us'
 title = "Cabbaken's Blog"
 theme = 'void'
 
-
 # Social media links
 [params]
   [params.social]

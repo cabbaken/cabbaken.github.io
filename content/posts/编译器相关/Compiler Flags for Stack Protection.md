@@ -2,6 +2,8 @@
 title: Compiler Flags for Stack Protection
 date: 2025-03-11T09:46:48Z
 lastmod: 2025-05-12T17:52:07Z
+categories: ["Compiler"]
+tags: ["Compiler", "C/C++", "OS"]
 ---
 
 https://developers.redhat.com/articles/2022/06/02/use-compiler-flags-stack-protection-gcc-and-clang#

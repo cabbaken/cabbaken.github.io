@@ -2,6 +2,8 @@
 title: Linux Middle Click paste disable
 date: 2025-03-11T09:46:48Z
 lastmod: 2025-03-11T09:46:48Z
+categories: ["Tools"]
+tags: ["Tools"]
 ---
 
 

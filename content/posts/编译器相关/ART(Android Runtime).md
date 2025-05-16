@@ -2,6 +2,8 @@
 title: ART(Android Runtime)
 date: 2025-04-21T13:49:24Z
 lastmod: 2025-05-12T15:51:41Z
+categories: ["Compiler"]
+tags: ["Compiler", "Arm", "ART", "Android"]
 ---
 
 # ART(Android Runtime)

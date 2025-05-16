@@ -11,7 +11,7 @@ theme = 'void'
     telegram = "https://twitter.com/yourusername"
     email = "cabbaken@outlook.com"
   [params.avatar]
-    url = "https://github.com/cabbaken/cabbaken.github.io/blob/main/assets/avatar.jpg?raw=true"
+    url = "https://avatars.githubusercontent.com/u/62502537?v=4"
 
 # Main menu
 [[menus.main]]

@@ -5,4 +5,4 @@ categories = ["CV"]
 tags = ["CV"]
 +++
 
-this is a test file
+My [CV](https://pub-33412179390046d2b4017e671ebbd429.r2.dev/RuoyuQiu%20resume.pdf)

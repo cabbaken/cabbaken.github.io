@@ -1,1 +1,1 @@
-Welcome to [Cabbaken](about/about)'s Blog.
+Welcome to [Cabbaken](about)'s Blog.

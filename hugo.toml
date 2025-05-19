@@ -10,7 +10,8 @@ theme = 'void'
     telegram = "https://twitter.com/yourusername"
     email = "cabbaken@outlook.com"
   [params.avatar]
-    url = "https://avatars.githubusercontent.com/u/62502537?v=4"
+#    url = "https://avatars.githubusercontent.com/u/62502537?v=4"
+    url = "https://pub-33412179390046d2b4017e671ebbd429.r2.dev/avatar.png"
 
 # Main menu
 [[menus.main]]

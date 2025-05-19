@@ -30,7 +30,7 @@ Android Property机制的运作原理大致如下
 
 Android Property的命名可以是任意字符串, 推荐以下格式:
 
-```
+```plain
 [{prefix}.]{group}[.{subgroup}]*.{name}[.{type}]
 ```
 

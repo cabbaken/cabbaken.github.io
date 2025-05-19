@@ -3,7 +3,8 @@ languageCode = 'en-us'
 title = "Cabbaken's Blog"
 theme = 'void'
 
-enableRobotsTXT = true
+[markup.highlight]
+  noClasses = false
 
 # Social media links
 [params]

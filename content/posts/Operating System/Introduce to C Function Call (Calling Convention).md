@@ -6,8 +6,6 @@ tags: ["OS", "C/C++", "ABI"]
 categories: ["Operating System"]
 ---
 
-# Introduce to C Function Call
-
 ## Vocabulary Interpretion
 
 ### ABI (Application Binary Interface)
@@ -57,7 +55,7 @@ int main()
 You can make function calls with just one line code `c=f1(a,b)`​. But what happen behind this line? How the parameters transfer? How return value transfer?
 I want to dive into the details. So I decide to read the assembly code. Let's read it with `objdump`​.
 
-```assembly
+```asm
 0000000000401110 <f1>:
   401110:       55                      push   %rbp
   401111:       48 89 e5                mov    %rsp,%rbp
@@ -113,7 +111,7 @@ gcc -S [filename]
 
 then we can edit the code like this. It can pass the compiler and run nomorally.
 
-```
+```diff
 14,15c14,15
 <       movl    %edi, -20(%rbp)
 <       movl    %esi, -24(%rbp)
@@ -132,20 +130,22 @@ then we can edit the code like this. It can pass the compiler and run nomorally.
 >       movl    %eax, %r9d
 ```
 
-I just change some registers and the code runs successful. Is this proving that I can casually use the stack and registers to pass parameter or retrive return value?
+I just change some registers and the code runs successful. Is this proving that I can casually use the stack and registers to pass parameter or retrive return value?  
+
 The answer is NO! Imagine a scenario like "I want to call a function from a library or system call", you will find that the program may not work properly.
-But why? we can see that if we change the registers that carry the parameters, the function won't know which register it should read if we did't edit the function! That is definitely a disaster.
-To avoid this disaster, the [ABI](#abi-application-binary-interface) was born. The compiler should implement the standard that ABI provides to achieve the "program compatibility" which makes the libraries, system call, and user-programs work together properly.
+But why? we can see that if we change the registers that carry the parameters, the function won't know which register it should read if we did't edit the function! That is definitely a disaster.  
+
+To avoid this disaster, the [ABI](#abi-application-binary-interface) was born. The compiler should implement the standard that ABI provides to achieve the "program compatibility" which makes the libraries, system call, and user-programs work together properly.  
+
 I won't introduce the details of ABI to you here. You can read the docs of the ABI. The mainly used ABI are [Microsoft x64 ABI](https://learn.microsoft.com/en-us/cpp/build/x64-software-conventions) and [System V ABI](https://wiki.osdev.org/System_V_ABI). the former mainly used in Windows and the latter is used on GNU/Linux and other systems. You can also find some detail about ABI [here](https://pub-33412179390046d2b4017e671ebbd429.r2.dev/calling_conventions.pdf)
+
+
 But if we can switch the function we define with different ABI? Yes! You can read [this](https://stackoverflow.com/questions/66756382/how-to-make-my-c-program-compiled-with-sysv-calling-convention-run-under-mingw) for more info.
 
 ## Reference
-
 * [https://learn.microsoft.com/en-us/cpp/build/x64-software-conventions?view=msvc-170](https://learn.microsoft.com/en-us/cpp/build/x64-software-conventions?view=msvc-170)
 * [https://gcc.gnu.org/onlinedocs/gcc-11.2.0/gcc/x86-Function-Attributes.html#x86-Function-Attributes](https://gcc.gnu.org/onlinedocs/gcc-11.2.0/gcc/x86-Function-Attributes.html#x86-Function-Attributes)
 * [https://en.wikipedia.org/wiki/Application_binary_interface](https://en.wikipedia.org/wiki/Application_binary_interface)
 * [https://en.wikipedia.org/wiki/Calling_convention](https://en.wikipedia.org/wiki/Calling_convention)
 * [https://osdev.org/System_V_ABI](https://osdev.org/System_V_ABI)
-* [calling_conventions.pdf](assets/calling_conventions-20250506150106-g9upgy3.pdf)
-
-‍
+* [calling_conventions.pdf](https://pub-33412179390046d2b4017e671ebbd429.r2.dev/calling_conventions.pdf)

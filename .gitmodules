@@ -1,24 +1,3 @@
 [submodule "themes/void"]
 	path = themes/void
-	url = https://github.com/Daucloud/hugo-theme-void.git
-[submodule "themes/zen"]
-	path = themes/zen
-	url = https://github.com/frjo/hugo-theme-zen.git
-[submodule "themes/no_style"]
-	path = themes/no_style
-	url = https://github.com/hanwenguo/hugo-theme-nostyleplease.git
-[submodule "themes/whiteplain"]
-	path = themes/whiteplain
-	url = https://github.com/taikii/whiteplain.git
-[submodule "themes/hugo-texify3"]
-	path = themes/hugo-texify3
-	url = https://github.com/michaelneuper/hugo-texify3.git
-[submodule "themes/hugo-texify2"]
-	path = themes/hugo-texify2
-	url = https://github.com/weastur/hugo-texify2.git
-[submodule "themes/hugo-book"]
-	path = themes/hugo-book
-	url = https://github.com/alex-shpak/hugo-book
-[submodule "themes/introduction"]
-	path = themes/introduction
-	url = https://github.com/victoriadrake/hugo-theme-introduction.git
+	url = https://github.com/cabbaken/hugo-theme-void.git

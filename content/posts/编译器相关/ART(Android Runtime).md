@@ -31,7 +31,7 @@ ART是AOT-compilation, JIT-compilation, interpretation结合的复杂系统. 这
 
 ### AOT
 
-AOT compilation主要通过dex2oat来实现. dex2oat一般被存放在/system/bin文件夹,编译出的OAT文件通常存放在/data/dalvik-cache/<architecture>中 dex2oat的行为可以被各种编译器选项控制, 如:
+AOT compilation主要通过dex2oat来实现. dex2oat一般被存放在/system/bin文件夹,编译出的OAT文件通常存放在`/data/dalvik-cache/<architecture>`中 dex2oat的行为可以被各种编译器选项控制, 如:
 
 * speed: 尝试编译所有method
 * speed-profile: 编译在profile中指定的method
@@ -141,7 +141,8 @@ ART uses a unified call stack that can accommodate frames from both compiled nat
 
 ‍
 
-### TODO: [https://docs.google.com/document/d/1qV10T5U69_3hFFmgqG4ibhVT5WklmY8lo02oylF439k/edit?tab=t.0](https://docs.google.com/document/d/1qV10T5U69_3hFFmgqG4ibhVT5WklmY8lo02oylF439k/edit?tab=t.0)
+### TODO:
+[https://docs.google.com/document/d/1qV10T5U69_3hFFmgqG4ibhVT5WklmY8lo02oylF439k/edit?tab=t.0](https://docs.google.com/document/d/1qV10T5U69_3hFFmgqG4ibhVT5WklmY8lo02oylF439k/edit?tab=t.0)
 
 ‍
 
